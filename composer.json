@@ -25,5 +25,8 @@
             "src/general.php",
             "strings.php"
         ]
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.4"
     }
 }
