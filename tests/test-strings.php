@@ -1,20 +1,20 @@
 <?php declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
-use PinkCrab\Modules\FunctionConstructors\Strings as Str;
-use PinkCrab\Modules\FunctionConstructors\FunctionsLoader;
+use PinkCrab\FunctionConstructors\Strings as Str;
+use PinkCrab\FunctionConstructors\FunctionsLoader;
 
 /**
  * StringFunction class.
  */
 class StringFunctionTest extends TestCase {
 
-	public function setup() {
+	public function setup(): void {
 		FunctionsLoader::include();
 
 	}
 
-	public function testCanWrapStringWithHTMLTags() {
+	public function testCanWrapStringWithHTMLTags(): void {
 
 		$asDiv = Str\tagWrap( 'div class="test"', 'div' );
 		$this->assertEquals( '<div class="test">HI</div>', $asDiv( 'HI' ) );
@@ -25,7 +25,7 @@ class StringFunctionTest extends TestCase {
 		$this->assertEquals( '<li>123</li>', $asLi( '123' ) );
 	}
 
-	public function testCanWrapString() {
+	public function testCanWrapString(): void {
 		$foo = Str\wrap( '--', '++' );
 		$this->assertEquals( '--HI++', $foo( 'HI' ) );
 		$this->assertEquals( '--123++', $foo( '123' ) );
@@ -35,7 +35,7 @@ class StringFunctionTest extends TestCase {
 		$this->assertEquals( '\/123\/', $bar( '123' ) );
 	}
 
-	public function testCanMakeUrl() {
+	public function testCanMakeUrl(): void {
 		$makeUrl = Str\asUrl( 'http://test.com' );
 		$this->assertEquals(
 			"<a href='http://test.com'>test</a>",
@@ -49,19 +49,19 @@ class StringFunctionTest extends TestCase {
 		);
 	}
 
-	public function testCanPrependString() {
+	public function testCanPrependString(): void {
 		$prep10 = Str\prepend( '10' );
 		$this->assertEquals( '10HI', $prep10( 'HI' ) );
 		$this->assertEquals( '1077', $prep10( '77' ) );
 	}
 
-	public function testCanAppendString() {
+	public function testCanAppendString(): void {
 		$append10 = Str\append( '10' );
 		$this->assertEquals( 'HI10', $append10( 'HI' ) );
 		$this->assertEquals( '7710', $append10( '77' ) );
 	}
 
-	public function testCanCurryReplace() {
+	public function testCanCurryReplace(): void {
 		$find_to_mask = Str\findToReplace( 'to mask' );
 
 		// Mask with XX
@@ -88,31 +88,31 @@ class StringFunctionTest extends TestCase {
 
 	}
 
-	public function testCanReplaceInString() {
+	public function testCanReplaceInString(): void {
 		$replaceGlynnWithHa = Str\replaceWith( 'glynn', 'ha' );
 		$this->assertEquals( 'Hi ha', $replaceGlynnWithHa( 'Hi glynn' ) );
 		$this->assertEquals( 'ha ha ha', $replaceGlynnWithHa( 'glynn glynn glynn' ) );
 	}
 
-	public function testStringContains() {
+	public function testStringContains(): void {
 		$contains = Str\contains( '--' );
 		$this->assertTrue( $contains( '--True' ) );
 		$this->assertFalse( $contains( '++False' ) );
 	}
 
-	public function testStringStartWith() {
+	public function testStringStartWith(): void {
 		$startsWithA = Str\startsWith( '--' );
 		$this->assertTrue( $startsWithA( '--True' ) );
 		$this->assertFalse( $startsWithA( '++False' ) );
 	}
 
-	public function testStringEndWith() {
+	public function testStringEndWith(): void {
 		$endsWith = Str\endsWith( '--' );
 		$this->assertTrue( $endsWith( '--True--' ) );
 		$this->assertFalse( $endsWith( '++False++' ) );
 	}
 
-	public function testCanComposeWithSafeStrings() {
+	public function testCanComposeWithSafeStrings(): void {
 		$reutrnsArray = function( $e ) {
 			return array();
 		};
@@ -127,7 +127,7 @@ class StringFunctionTest extends TestCase {
 		$this->assertNull( $function( '1122334455667788' ) );
 	}
 
-	public function testStringCompilerCanBeUsedAsAJournal() {
+	public function testStringCompilerCanBeUsedAsAJournal(): void {
 		$journal = Str\stringCompiler( '' );
 		$journal = $journal( '11' );
 		$this->assertEquals( '11', $journal() );
@@ -137,7 +137,7 @@ class StringFunctionTest extends TestCase {
 		$this->assertEquals( '112233', $journal() );
 	}
 
-	public function testComposedWithArrayMap() {
+	public function testComposedWithArrayMap(): void {
 		$function = Str\composeSafeStringFunc(
 			Str\replaceWith( 'a', '_a_' ),
 			Str\replaceWith( 't', '-t-' ),

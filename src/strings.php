@@ -11,9 +11,9 @@
  * @since 0.1.0
  */
 
-namespace PinkCrab\Modules\FunctionConstructors\Strings;
+namespace PinkCrab\FunctionConstructors\Strings;
 
-use PinkCrab\Modules\FunctionConstructors\GeneralFunctions as Func;
+use PinkCrab\FunctionConstructors\GeneralFunctions as Func;
 
 /**
  * Creates a callable for wrapping a string with html/xml style tags.

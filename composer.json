@@ -2,7 +2,13 @@
     "name": "pinkcrab/function-constructors",
     "type": "library",
     "description": "A collection of functions to make working with the standard php library a little easier for function composition. Allows the creation of partially applied library functions, to work as close to pure fucntions as possible.",
-    "keywords": ["FP", "Partial Application", "Currying", "Piping", "Functional"],
+    "keywords": [
+        "FP",
+        "Partial Application",
+        "Currying",
+        "Piping",
+        "Functional"
+    ],
     "homepage": "https://pinkcrab.co.uk",
     "license": "MIT",
     "authors": [{
@@ -10,5 +16,17 @@
         "email": "glynn.quelch@pinkcrab.co.uk",
         "homepage": "http://clappo.co.uk",
         "role": "Developer"
-    }]
+    }],
+    "minimum-stability": "stable",
+    "autoload": {
+        "files": [
+            "src/arrays.php",
+            "src/comparisons.php",
+            "src/general.php",
+            "src/strings.php"
+        ]
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.4"
+    }
 }

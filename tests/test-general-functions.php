@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /**
  * Tests for the StrictMap class.
@@ -7,21 +9,24 @@
  * @author GLynn Quelch <glynn.quelch@gmail.com>
  */
 
+require_once dirname( __FILE__, 2 ) . '/FunctionsLoader.php';
+
 use PHPUnit\Framework\TestCase;
-use PinkCrab\Modules\FunctionConstructors\Strings as Str;
-use PinkCrab\Modules\FunctionConstructors\FunctionsLoader;
-use PinkCrab\Modules\FunctionConstructors\GeneralFunctions as Func;
+use PinkCrab\FunctionConstructors\Strings as Str;
+use PinkCrab\FunctionConstructors\FunctionsLoader;
+use PinkCrab\FunctionConstructors\GeneralFunctions as Func;
+
 
 /**
  * StringFunction class.
  */
 class GeneralFunctionTest extends TestCase {
 
-	public function setup() {
+	public function setup(): void {
 		FunctionsLoader::include();
 	}
 
-	public function testFunctionCompose() {
+	public function testFunctionCompose(): void {
 		$function = Func\compose(
 			Str\replaceWith( '1122', '*\/*' ),
 			Str\replaceWith( '6677', '=/\=' ),
@@ -47,7 +52,7 @@ class GeneralFunctionTest extends TestCase {
 		);
 	}
 
-	public function testFunctionCompseSafeHandlesNull() {
+	public function testFunctionCompseSafeHandlesNull(): void {
 
 		$reutrnsNull = function( $e ) {
 			return null;
@@ -63,7 +68,7 @@ class GeneralFunctionTest extends TestCase {
 		$this->assertNull( $function( '1122334455667788' ) );
 	}
 
-	public function testTypeSafeFunctionalComposer() {
+	public function testTypeSafeFunctionalComposer(): void {
 		$function = Func\composeTypeSafe(
 			'is_string',
 			Str\replaceWith( '3344', '*\/*' ),

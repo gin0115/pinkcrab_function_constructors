@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PinkCrab\Modules\FunctionConstructors\Comparisons;
+namespace PinkCrab\FunctionConstructors\Comparisons;
 
 /**
  * Returns a callback for checkining is a value is equal.

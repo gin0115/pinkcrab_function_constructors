@@ -3,10 +3,10 @@
 namespace TestStub;
 
 use DateTime;
-use PinkCrab\Modules\FunctionConstructors\Arrays as Arr;
-use PinkCrab\Modules\FunctionConstructors\Strings as Str;
-use PinkCrab\Modules\FunctionConstructors\Comparisons as Comp;
-use PinkCrab\Modules\FunctionConstructors\GeneralFunctions as Func;
+use PinkCrab\FunctionConstructors\Arrays as Arr;
+use PinkCrab\FunctionConstructors\Strings as Str;
+use PinkCrab\FunctionConstructors\Comparisons as Comp;
+use PinkCrab\FunctionConstructors\GeneralFunctions as Func;
 
 
 class ComparissonCases {

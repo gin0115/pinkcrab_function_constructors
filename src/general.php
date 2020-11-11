@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PinkCrab\Modules\FunctionConstructors\GeneralFunctions;
+namespace PinkCrab\FunctionConstructors\GeneralFunctions;
 
 /**
  * Composes a function based on a set of callbacks.
@@ -108,7 +108,7 @@ function propertyEquals( string $property, $value ): callable {
 	return function( $data ) use ( $property, $value ): bool {
 		return compose(
 			getProperty( $property ),
-			\PinkCrab\Modules\FunctionConstructors\Comparisons\isEqualTo( $value )
+			\PinkCrab\FunctionConstructors\Comparisons\isEqualTo( $value )
 		)( $data );
 	};
 }
