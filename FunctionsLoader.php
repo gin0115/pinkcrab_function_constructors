@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PinkCrab\Modules\FunctionConstructors;
+namespace PinkCrab\FunctionConstructors;
 
 
 class FunctionsLoader {

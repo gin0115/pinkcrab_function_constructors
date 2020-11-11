@@ -18,12 +18,12 @@ declare(strict_types=1);
  *
  * @author Glynn Quelch <glynn.quelch@gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
- * @package PinkCrab\FunctionConstructors
+ * @package PinkCrab\PinkCrab\FunctionConstructors
  */
 
-namespace PinkCrab\Modules\FunctionConstructors\Arrays;
+namespace PinkCrab\FunctionConstructors\Arrays;
 
-use PinkCrab\Modules\FunctionConstructors\Comparisons as Comp;
+use PinkCrab\FunctionConstructors\Comparisons as Comp;
 
 
 /**

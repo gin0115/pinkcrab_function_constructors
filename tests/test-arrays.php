@@ -7,9 +7,9 @@
  * @author GLynn Quelch <glynn.quelch@gmail.com>
  */
 use PHPUnit\Framework\TestCase;
-use PinkCrab\Modules\FunctionConstructors\Arrays as Arr;
-use PinkCrab\Modules\FunctionConstructors\FunctionsLoader;
-use PinkCrab\Modules\FunctionConstructors\GeneralFunctions as Func;
+use PinkCrab\FunctionConstructors\Arrays as Arr;
+use PinkCrab\FunctionConstructors\FunctionsLoader;
+use PinkCrab\FunctionConstructors\GeneralFunctions as Func;
 
 /**
  * ArrayFunction class.

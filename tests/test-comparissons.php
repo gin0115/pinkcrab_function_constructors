@@ -5,8 +5,8 @@ require_once( dirname( __FILE__ ) . '/ComparissonCases.php' );
 
 use TestStub\ComparissonCases;
 use PHPUnit\Framework\TestCase;
-use PinkCrab\Modules\FunctionConstructors\FunctionsLoader;
-use PinkCrab\Modules\FunctionConstructors\Comparisons as Comp;
+use PinkCrab\FunctionConstructors\FunctionsLoader;
+use PinkCrab\FunctionConstructors\Comparisons as Comp;
 
 /**
  * Tests for general purpose functions.
@@ -120,7 +120,7 @@ class ComparissonFunctionTest extends TestCase {
 		foreach ( ComparissonCases::scalarComparisons( 'pass' )  as $condition ) {
 			$this->assertTrue(
 				call_user_func_array(
-					'PinkCrab\Modules\FunctionConstructors\Comparisons\sameScalar',
+					'PinkCrab\FunctionConstructors\Comparisons\sameScalar',
 					$condition
 				)
 			);
@@ -128,7 +128,7 @@ class ComparissonFunctionTest extends TestCase {
 		foreach ( ComparissonCases::scalarComparisons( 'fail' ) as $condition ) {
 			$this->assertFalse(
 				call_user_func_array(
-					'PinkCrab\Modules\FunctionConstructors\Comparisons\sameScalar',
+					'PinkCrab\FunctionConstructors\Comparisons\sameScalar',
 					$condition
 				)
 			);
