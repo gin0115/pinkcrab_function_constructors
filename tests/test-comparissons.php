@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 require_once( dirname( __FILE__ ) . '/ComparissonCases.php' );
+require_once dirname( __FILE__, 2 ) . '/FunctionsLoader.php';
 
 use TestStub\ComparissonCases;
 use PHPUnit\Framework\TestCase;
@@ -13,11 +14,11 @@ use PinkCrab\FunctionConstructors\Comparisons as Comp;
  */
 class ComparissonFunctionTest extends TestCase {
 
-	public function setup() {
+	public function setup(): void {
 		FunctionsLoader::include();
 	}
 
-	public function testCanFindEqualToString() {
+	public function testCanFindEqualToString(): void {
 		foreach ( ComparissonCases::stringComparisson( 'pass' ) as $condition ) {
 			$this->assertTrue(
 				Comp\isEqualTo( $condition['expected'] )( $condition['test'] ),
@@ -32,7 +33,7 @@ class ComparissonFunctionTest extends TestCase {
 		}
 	}
 
-	public function testCanFindEqualToInteger() {
+	public function testCanFindEqualToInteger(): void {
 		foreach ( ComparissonCases::integerComparisons( 'pass' )  as $condition ) {
 			$this->assertTrue(
 				Comp\isEqualTo( $condition['expected'] )( $condition['test'] ),
@@ -47,7 +48,7 @@ class ComparissonFunctionTest extends TestCase {
 		}
 	}
 
-	public function testCanFindEqualToFloat() {
+	public function testCanFindEqualToFloat(): void {
 		foreach ( ComparissonCases::floatComparisons( 'pass' )  as $condition ) {
 			$this->assertTrue(
 				Comp\isEqualTo( $condition['expected'] )( $condition['test'] ),
@@ -62,7 +63,7 @@ class ComparissonFunctionTest extends TestCase {
 		}
 	}
 
-	public function testCanFindEqualToArray() {
+	public function testCanFindEqualToArray(): void {
 		foreach ( ComparissonCases::arrayComparisons( 'pass' )  as $condition ) {
 			$this->assertTrue(
 				Comp\isEqualTo( $condition['expected'] )( $condition['test'] )
@@ -75,7 +76,7 @@ class ComparissonFunctionTest extends TestCase {
 		}
 	}
 
-	public function testCanFindEqualToObject() {
+	public function testCanFindEqualToObject(): void {
 		foreach ( ComparissonCases::objectComparisons( 'pass' )  as $condition ) {
 			$this->assertTrue(
 				Comp\isEqualTo( $condition['expected'] )( $condition['test'] )
@@ -89,7 +90,7 @@ class ComparissonFunctionTest extends TestCase {
 	}
 
 	// Test notEqual with just 1 set, its just !isEqualTo()()
-	public function testCanNotFindEqualToObject() {
+	public function testCanNotFindEqualToObject(): void {
 		foreach ( ComparissonCases::objectComparisons( 'fail' )  as $condition ) {
 			$this->assertTrue(
 				Comp\isNotEqualTo( $condition['expected'] )( $condition['test'] )
@@ -102,21 +103,21 @@ class ComparissonFunctionTest extends TestCase {
 		}
 	}
 
-	public function testCanDoGreaterThan() {
+	public function testCanDoGreaterThan(): void {
 		$this->assertTrue( Comp\isGreaterThan( 12 )( 10 ) );
 		$this->assertTrue( Comp\isGreaterThan( 99.99 )( 98 ) );
 		$this->assertFalse( Comp\isGreaterThan( 99.99 )( 100 ) );
 		$this->assertFalse( Comp\isGreaterThan( 1 )( 1.0000001 ) );
 	}
 
-	public function testCanDoLessThan() {
+	public function testCanDoLessThan(): void {
 		$this->assertFalse( Comp\isLessThan( 12 )( 10 ) );
 		$this->assertFalse( Comp\isLessThan( 99.99 )( 98 ) );
 		$this->assertTrue( Comp\isLessThan( 99.99 )( 100 ) );
 		$this->assertTrue( Comp\isLessThan( 1 )( 1.0000001 ) );
 	}
 
-	public function testCanCompareScalarTypeGroup() {
+	public function testCanCompareScalarTypeGroup(): void {
 		foreach ( ComparissonCases::scalarComparisons( 'pass' )  as $condition ) {
 			$this->assertTrue(
 				call_user_func_array(
@@ -136,7 +137,7 @@ class ComparissonFunctionTest extends TestCase {
 	}
 
 
-	public function testIsScala() {
+	public function testIsScala(): void {
 		foreach ( array(
 			'integer' => 12,
 			'double'  => 12.5,
@@ -156,7 +157,7 @@ class ComparissonFunctionTest extends TestCase {
 
 	/** OR */
 
-	public function testCanFindEqualToOrString() {
+	public function testCanFindEqualToOrString(): void {
 		foreach ( ComparissonCases::equalToOrComparisson( 'pass' )  as $condition ) {
 			$this->assertTrue(
 				Comp\isEqualIn( $condition['needles'] )( $condition['haystack'] )
@@ -172,7 +173,7 @@ class ComparissonFunctionTest extends TestCase {
 
 	/** AND */
 
-	public function testCanGroupAndConditionalsWithArrays() {
+	public function testCanGroupAndConditionalsWithArrays(): void {
 
 		foreach ( ComparissonCases::groupSingleAndComparisonsArrays( 'pass' )  as $condition ) {
 			$this->assertEquals(
@@ -189,7 +190,7 @@ class ComparissonFunctionTest extends TestCase {
 		}
 	}
 
-	public function testCanGroupAndConditionalsWithString() {
+	public function testCanGroupAndConditionalsWithString(): void {
 
 		foreach ( ComparissonCases::groupSingleAndComparisonsStrings( 'pass' )  as $condition ) {
 			foreach ( $condition['value'] as $value ) {
@@ -219,7 +220,7 @@ class ComparissonFunctionTest extends TestCase {
 		}
 	}
 
-	public function testCanMatchBooleans() {
+	public function testCanMatchBooleans(): void {
 		$this->assertTrue( Comp\allTrue( true, true, 1 == 1, 4 === ( 3 + 1 ) ) ); // t
 		$this->assertFalse( Comp\allTrue( true, true, 1 == 3, 4 === ( 3 + 1 ) ) ); // f
 		$this->assertTrue( Comp\someTrue( true, true, 1 == 3, 4 === ( 3 + 1 ) ) ); //t

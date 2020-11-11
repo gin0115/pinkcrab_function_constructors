@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+require_once dirname( __FILE__, 2 ) . '/FunctionsLoader.php';
 
 /**
  * Tests for the Array functions class.
@@ -16,8 +17,7 @@ use PinkCrab\FunctionConstructors\GeneralFunctions as Func;
  */
 class ArrayFunctionTests extends TestCase {
 
-	public function setup() {
-		include_once dirname( __FILE__, 2 ) . '/FunctionsLoader.php';
+	public function setup(): void {
 		FunctionsLoader::include();
 	}
 
@@ -51,7 +51,7 @@ class ArrayFunctionTests extends TestCase {
 		$this->assertEquals( 5, $curried[4] );
 	}
 
-	public function testCanCompileArray() {
+	public function testCanCompileArray(): void {
 		$arrayCompiler = Arr\arrayCompiler();
 		$arrayCompiler = $arrayCompiler( 'Oh fuck' );
 		$arrayCompiler = $arrayCompiler( 'ERROR' );
@@ -68,7 +68,7 @@ class ArrayFunctionTests extends TestCase {
 		$this->assertTrue( is_array( $arrayCompiler() ) );
 	}
 
-	public function testCanMapArrayKeys() {
+	public function testCanMapArrayKeys(): void {
 		$origArray = array(
 			'a' => 'aa',
 			'b' => 'bb',
@@ -84,7 +84,7 @@ class ArrayFunctionTests extends TestCase {
 		$this->assertArrayNotHasKey( 'A', $origArray );
 	}
 
-	public function testCanMapWithData() {
+	public function testCanMapWithData(): void {
 		$array         = range( 1, 10 );
 		$mapWithCheese = Arr\mapWith(
 			function( $e, $cheese ) {
@@ -108,7 +108,7 @@ class ArrayFunctionTests extends TestCase {
 		$this->assertEquals( '9 loves CHEESE!!!!!.......YOU HEAR ME!', $mapWithMORECheese( $array )[8] );
 	}
 
-	public function testCanMapArray() {
+	public function testCanMapArray(): void {
 		$origArray = array(
 			'a' => 'aa',
 			'b' => 'bb',
@@ -159,7 +159,7 @@ class ArrayFunctionTests extends TestCase {
 		$this->assertEquals( 'Fay', $chunkedNames[1][3] );
 	}
 
-	public function testCanFilterFirst() {
+	public function testCanFilterFirst(): void {
 		$firstEven = Arr\filterFirst(
 			function( $e ) {
 				return $e % 2 === 0;
@@ -170,7 +170,7 @@ class ArrayFunctionTests extends TestCase {
 		$this->assertNull( $firstEven( array( 1, 3, 3 ) ) );
 	}
 
-	public function testCanFilterLast() {
+	public function testCanFilterLast(): void {
 		$lastEven = Arr\filterLast(
 			function( $e ) {
 				return $e % 2 === 0;
@@ -181,7 +181,7 @@ class ArrayFunctionTests extends TestCase {
 		$this->assertNull( $lastEven( array( 1, 3, 3 ) ) );
 	}
 
-	public function testCanUseColumn() {
+	public function testCanUseColumn(): void {
 		$data = array(
 			array(
 				'id'   => 41,
@@ -239,7 +239,7 @@ class ArrayFunctionTests extends TestCase {
 		$this->assertArrayHasKey( 'Bazza', $getUsersRandoms( $data ) );
 	}
 
-	public function testCanFlattenOneLayer() {
+	public function testCanFlattenOneLayer(): void {
 		$array = array(
 			1,
 			2,
@@ -270,7 +270,7 @@ class ArrayFunctionTests extends TestCase {
 		$this->assertEquals( 13, Arr\flattenByN()( $array )[12] );
 	}
 
-	public function testCanUseFlatMap() {
+	public function testCanUseFlatMap(): void {
 		$array = array(
 			0,
 			1,
@@ -303,7 +303,7 @@ class ArrayFunctionTests extends TestCase {
 
 	}
 
-	public function testCanUseReplace() {
+	public function testCanUseReplace(): void {
 		$base = array(
 			'citrus'  => array( 'orange' ),
 			'berries' => array( 'blackberry', 'raspberry' ),
@@ -323,7 +323,7 @@ class ArrayFunctionTests extends TestCase {
 		$this->assertEquals( 'raspberry', $replaceItems( $base )['berries'][1] );
 	}
 
-	public function testCanSortArray() {
+	public function testCanSortArray(): void {
 		$array         = array( 'b', 'c', 'a', 'f', 'd', 'z', 'g' );
 		$sortAsStrings = Arr\sort( SORT_STRING );
 
@@ -339,7 +339,7 @@ class ArrayFunctionTests extends TestCase {
 
 	}
 
-	public function testCanDoUasortOnArray() {
+	public function testCanDoUasortOnArray(): void {
 		$array = array(
 			'a' => 4,
 			'b' => 8,
@@ -374,7 +374,7 @@ class ArrayFunctionTests extends TestCase {
 	}
 
 
-	public function testCanDoUsortOnArray() {
+	public function testCanDoUsortOnArray(): void {
 		$array = array( 3, 2, 5, 6, 1 );
 
 		$lowestFirstCallback = function ( $a, $b ) {
