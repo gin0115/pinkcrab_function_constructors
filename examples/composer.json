@@ -1,0 +1,23 @@
+{
+    "name": "pinkcrab/function-constructors-examples",
+    "repositories": [{
+        "type": "package",
+        "package": {
+            "name": "pinkcrab/function-constructors",
+            "version": "0.1.1",
+            "type": "library",
+            "source": {
+                "url": "https://gin0115@bitbucket.org/pinkcrab/function_constructors.git",
+                "type": "git",
+                "reference": "master"
+            }
+        }
+    }],
+    "require": {
+        "pinkcrab/function-constructors": "^0.1.1",
+        "composer/installers": "^1"
+    },
+    "config": {
+        "preferred-install": "source"
+    }
+}
