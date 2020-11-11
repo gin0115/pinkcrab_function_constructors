@@ -4,7 +4,7 @@
         "type": "package",
         "package": {
             "name": "pinkcrab/function-constructors",
-            "version": "0.1.0",
+            "version": "0.1.1",
             "type": "library",
             "source": {
                 "url": "https://gin0115@bitbucket.org/pinkcrab/function_constructors.git",
@@ -14,7 +14,10 @@
         }
     }],
     "require": {
-        "pinkcrab/function-constructors": "^0.1.0",
+        "pinkcrab/function-constructors": "^0.1.1",
         "composer/installers": "^1"
+    },
+    "config": {
+        "preferred-install": "source"
     }
 }
