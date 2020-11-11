@@ -12,5 +12,12 @@ use PinkCrab\FunctionConstructors\GeneralFunctions as F;
 // 	Str\startsWith( 'HI' )
 // );
 
-var_dump( Str\contains( 'john' )( 'john' ) );
+var_dump( Str\contains( 'john' )( 'johnd' ) );
 var_dump( Str\contains( 'john' )( 'bill' ) );
+var_dump( Str\startsWith( 'HI' )( 'HIhjkhkhkj' ) );
+$hmmm = array_filter( array( 'HIjohn', 'HIbill' ), Str\startsWith( 'HI' ) );
+var_dump( $hmmm );
+$hmmm = array_filter( array( 'HIjohn', 'HIbill' ), Str\contains( 'HI' ) );
+var_dump( $hmmm );
+
+

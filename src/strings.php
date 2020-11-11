@@ -163,7 +163,7 @@ function endsWith( string $find ): callable {
  */
 if ( ! function_exists( 'str_contains' ) ) {
 	function str_contains( $haystack, $needle ): bool {
-		return strpos( $needle, $haystack ) !== false;
+		return strpos( $haystack, $needle ) !== false;
 	}
 }
 
