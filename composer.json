@@ -18,9 +18,9 @@
         "role": "Developer"
     }],
     "autoload": {
-        "classmap": [
-            "src/"
-        ],
+        "psr-4": {
+            "PinkCrab\\FunctionConstructors\\": "src"
+        },
         "files": [
             "src/arrays.php",
             "src/comparisons.php",
