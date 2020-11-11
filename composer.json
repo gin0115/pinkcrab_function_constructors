@@ -21,9 +21,9 @@
     "autoload": {
         "files": [
             "src/arrays.php",
-            "src/comparissons.php",
+            "src/comparisons.php",
             "src/general.php",
-            "strings.php"
+            "src/strings.php"
         ]
     },
     "require-dev": {

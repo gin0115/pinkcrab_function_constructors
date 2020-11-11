@@ -17,6 +17,7 @@ use PinkCrab\FunctionConstructors\GeneralFunctions as Func;
 class ArrayFunctionTests extends TestCase {
 
 	public function setup() {
+		include_once dirname( __FILE__, 2 ) . '/FunctionsLoader.php';
 		FunctionsLoader::include();
 	}
 

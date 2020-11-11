@@ -2,7 +2,7 @@
 <phpunit colors="true" bootstrap="vendor/autoload.php">
     <testsuites>
         <testsuite name="function-constructors">
-            <directory>./tests/</directory>
+            <directory prefix="test-" suffix=".php">./tests/</directory>
         </testsuite>
     </testsuites>
 </phpunit>

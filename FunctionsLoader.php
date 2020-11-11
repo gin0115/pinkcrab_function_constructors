@@ -14,12 +14,10 @@ class FunctionsLoader {
 	 * @since 0.1.0
 	 */
 	public static function include(): void {
-		require_once( 'src/constants.php' );
 		require_once( 'src/comparisons.php' );
 		require_once( 'src/general.php' );
 		require_once( 'src/arrays.php' );
 		require_once( 'src/strings.php' );
-		require_once( 'src/files.php' );
 	}
 
 }
