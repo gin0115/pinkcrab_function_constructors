@@ -19,6 +19,9 @@
     }],
     "minimum-stability": "stable",
     "autoload": {
+        "psr-4": {
+            "PinkCrab\\FunctionConstructors\\": "src"
+        },
         "files": [
             "src/arrays.php",
             "src/comparisons.php",
