@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @author GLynn Quelch <glynn.quelch@gmail.com>
  */
 
-require_once dirname( __FILE__, 2 ) . '/FunctionsLoader.php';
+require_once dirname(__FILE__, 2) . '/FunctionsLoader.php';
 
 use PHPUnit\Framework\TestCase;
 use PinkCrab\FunctionConstructors\Strings as Str;
@@ -20,66 +20,71 @@ use PinkCrab\FunctionConstructors\GeneralFunctions as Func;
 /**
  * StringFunction class.
  */
-class GeneralFunctionTest extends TestCase {
+class GeneralFunctionTest extends TestCase
+{
 
-	public function setup(): void {
-		FunctionsLoader::include();
-	}
+    public function setup(): void
+    {
+        FunctionsLoader::include();
+    }
 
-	public function testFunctionCompose(): void {
-		$function = Func\compose(
-			Str\replaceWith( '1122', '*\/*' ),
-			Str\replaceWith( '6677', '=/\=' ),
-			Str\prepend( '00' ),
-			Str\append( '99' )
-		);
+    public function testFunctionCompose(): void
+    {
+        $function = Func\compose(
+            Str\replaceWith('1122', '*\/*'),
+            Str\replaceWith('6677', '=/\='),
+            Str\prepend('00'),
+            Str\append('99')
+        );
 
-		$this->assertEquals(
-			'00*\/*334455=/\=8899',
-			$function( '1122334455667788' )
-		);
+        $this->assertEquals(
+            '00*\/*334455=/\=8899',
+            $function('1122334455667788')
+        );
 
-		$function = Func\composeSafe(
-			Str\replaceWith( '3344', '*\/*' ),
-			Str\replaceWith( '5566', '=/\=' ),
-			Str\prepend( '00' ),
-			Str\append( '99' )
-		);
+        $function = Func\composeSafe(
+            Str\replaceWith('3344', '*\/*'),
+            Str\replaceWith('5566', '=/\='),
+            Str\prepend('00'),
+            Str\append('99')
+        );
 
-		$this->assertEquals(
-			'001122*\/*=/\=778899',
-			$function( '1122334455667788' )
-		);
-	}
+        $this->assertEquals(
+            '001122*\/*=/\=778899',
+            $function('1122334455667788')
+        );
+    }
 
-	public function testFunctionCompseSafeHandlesNull(): void {
+    public function testFunctionCompseSafeHandlesNull(): void
+    {
 
-		$reutrnsNull = function( $e ) {
-			return null;
-		};
+        $reutrnsNull = function ($e) {
+            return null;
+        };
 
-		$function = Func\composeSafe(
-			Str\replaceWith( '3344', '*\/*' ),
-			Str\replaceWith( '5566', '=/\=' ),
-			$reutrnsNull,
-			Str\prepend( '00' ),
-			Str\append( '99' )
-		);
-		$this->assertNull( $function( '1122334455667788' ) );
-	}
+        $function = Func\composeSafe(
+            Str\replaceWith('3344', '*\/*'),
+            Str\replaceWith('5566', '=/\='),
+            $reutrnsNull,
+            Str\prepend('00'),
+            Str\append('99')
+        );
+        $this->assertNull($function('1122334455667788'));
+    }
 
-	public function testTypeSafeFunctionalComposer(): void {
-		$function = Func\composeTypeSafe(
-			'is_string',
-			Str\replaceWith( '3344', '*\/*' ),
-			Str\replaceWith( '5566', '=/\=' ),
-			Str\prepend( '00' ),
-			Str\append( '99' )
-		);
+    public function testTypeSafeFunctionalComposer(): void
+    {
+        $function = Func\composeTypeSafe(
+            'is_string',
+            Str\replaceWith('3344', '*\/*'),
+            Str\replaceWith('5566', '=/\='),
+            Str\prepend('00'),
+            Str\append('99')
+        );
 
-		$this->assertEquals(
-			'001122*\/*=/\=778899',
-			$function( '1122334455667788' )
-		);
-	}
+        $this->assertEquals(
+            '001122*\/*=/\=778899',
+            $function('1122334455667788')
+        );
+    }
 }

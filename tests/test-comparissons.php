@@ -222,7 +222,7 @@ class ComparissonFunctionTest extends TestCase
         }
     }
 
-    public function testCanGroupGroupsOfConditionalsComparisonsMixed(Type $var = null)
+    public function testCanGroupGroupsOfConditionalsComparisonsMixed()
     {
 
         foreach (ComparissonCases::groupedAndOrComparissonMixed('pass') as $condition) {

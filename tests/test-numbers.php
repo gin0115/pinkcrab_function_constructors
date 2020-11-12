@@ -19,22 +19,6 @@ class NumberFunctionTest extends TestCase
         FunctionsLoader::include();
     }
 
-    // public function testA(Type $var = null)
-    // {
-    //     $example = [
-    //     [1],[2,3],[[4]],[5,6,[7,[[[8]]],[9]]]
-    //     ];
-
-    //     $depth1 = Arr\flattenByN(1);
-    //     $depth2 = Arr\flattenByN(2);
-    //     $depth3 = Arr\flattenByN(3);
-    //     $depthN = Arr\flattenByN();
-    //     print_r($depth1($example));
-    //     print_r($depth2($example));
-    //     print_r($depth3($example));
-    //     print_r($depthN($example));
-    // }
-
     public function testCanAccumulateInteger(): void
     {
         $acc = Num\accumulatorInt(0);
