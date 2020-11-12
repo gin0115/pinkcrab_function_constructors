@@ -25,7 +25,8 @@
             "src/arrays.php",
             "src/comparisons.php",
             "src/general.php",
-            "src/strings.php"
+            "src/strings.php",
+            "src/numbers.php"
         ]
     },
     "require-dev": {
