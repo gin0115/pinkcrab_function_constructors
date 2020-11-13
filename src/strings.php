@@ -24,7 +24,8 @@ declare(strict_types=1);
 
 namespace PinkCrab\FunctionConstructors\Strings;
 
-use PinkCrab\FunctionConstructors\GeneralFunctions as Func;
+use PinkCrab\FunctionConstructors\Comparisons as C;
+use PinkCrab\FunctionConstructors\GeneralFunctions as F;
 
 /**
  * Creates a callable for wrapping a string.
@@ -307,6 +308,23 @@ function addCSlashes(string $charList): callable
 }
 
 /**
+ * Returns a callable for splitting a string by a set amount.
+ *
+ * @param int $length The length to split the sring up with.
+ * @return array The parts.
+ */
+function split(int $length): callable
+{
+    /**
+     * @param string $string The stirng to be split
+     * @return string
+     */
+    return function (string $string) use ($length): array {
+        return \str_split($string, $length);
+    };
+}
+
+/**
  * Returns a callback for splitting a string into chunks.
  *
  * @param init $length The legenth of each chunk.
@@ -460,16 +478,74 @@ function repeat(int $count): callable
 }
 
 /**
+ * Returns a callback for creating a word counter, with set format and char list.
+ *
+ * @param int $format can use WORD_COUNT_NUMBER_OF_WORDS | WORD_COUNT_ARRAY | WORD_COUNT_ASSOCIATIVE_ARRAY
+ * @param string|null $charList The char list of option values considered words.
+ * @annoation : ( Int -> String|null ) -> ( String -> Int|Array )
+ */
+function wordCount(int $format = WORD_COUNT_NUMBER_OF_WORDS, ?string $charList = null): callable
+{
+    /**
+     * @param string $string The string to pad out.
+     * @return int|array
+     */
+    return function (string $string) use ($format, $charList) {
+        return $charList
+            ? \str_word_count($string, $format, $charList)
+            : \str_word_count($string, $format);
+    };
+}
+
+/**
+ * Creates a function for stripping tags with a defined set of allowed tags.
+ *
+ * @param string|null $allowedTags The allowed tags, pass null or leave blank for all.
+ * @return callable
+ * @annoation : ( String|null ) -> ( String -> String )
+ */
+function stripTags(?string $allowedTags = null): callable
+{
+    /**
+     * @param string $string The string to strip tags from.
+     * @return string
+     */
+    return function (string $string) use ($allowedTags): string {
+        return $allowedTags
+            ? \strip_tags($string, $allowedTags)
+            : \strip_tags($string);
+    };
+}
+
+/**
+ * Returns a callable for finding the first postition of a defined value in any string.
+ *
+ * @param string $needle The value to look for.
+ * @param int  $offset The offset to start
+ */
+function fistPosistion(string $needle, int $offset = 0): callable
+{
+    /**
+     * @param string $haystack The haystack to look throuh.
+     * @return int|null
+     */
+    return function (string $haystack) use ($needle, $offset): ?int {
+        $pos = stripos($haystack, $needle, $offset);
+        return ! C\isFalse($pos) ? $pos : null;
+    };
+}
+
+/**
  * Creates a callable for a string safe function compose.
  *
- * @uses Func\composeTypeSafe
+ * @uses F\composeTypeSafe
  * @param callable ...$callables
  * @return callable
  * @annotaion: (...(a -> b)) -> ( a -> b )
  */
 function composeSafeStringFunc(callable ...$callables): callable
 {
-    return Func\composeTypeSafe('is_string', ...$callables);
+    return F\composeTypeSafe('is_string', ...$callables);
 }
 
 /**
