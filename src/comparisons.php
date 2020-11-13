@@ -87,6 +87,11 @@ function isLessThan($a): callable
     };
 }
 
+/**	
+ * Checks if a value is in an array of values.
+ * 
+ * @param array $a
+ */
 function isEqualIn(array $a): callable
 {
     /**
