@@ -22,13 +22,6 @@ declare(strict_types=1);
  * @package PinkCrab\FunctionConstructors
  */
 
-/**
-     * Checks if a string contains a sub string
-     *
-     * @param string $haysack The string to search within.
-     * @param string $needle The sub string to look for.
-     * @return bool
-     */
 if (! function_exists('str_contains')) {
     /**
      * Checks if a string contains a sub string
