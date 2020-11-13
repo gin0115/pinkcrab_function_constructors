@@ -88,5 +88,5 @@ $squareRootOf100ToThePowerOf = doMathsAsString($squareRootToPower(100));
 print $squareRootOf144ToThePowerOf(3); // 1000
 print $squareRootOf144ToThePowerOf(4); // 10000
 
-// Not only that, becuase we have use partial application on all step, we can use these functions when contsructing more complex ones. And we have only created 1 named function (doMathsAsString()), all the rest can be created as needed.
 ```
+**Not only that, becuase we have use partial application on all step, we can use these functions when contsructing more complex ones. And we have only created 1 named function (doMathsAsString()), all the rest can be created as needed.**
