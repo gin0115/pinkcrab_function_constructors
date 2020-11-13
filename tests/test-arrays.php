@@ -11,10 +11,12 @@ require_once dirname(__FILE__, 2) . '/FunctionsLoader.php';
  * @author GLynn Quelch <glynn.quelch@gmail.com>
  */
 use PHPUnit\Framework\TestCase;
+use function PHPUnit\Framework\throwException;
 use PinkCrab\FunctionConstructors\Arrays as Arr;
 use PinkCrab\FunctionConstructors\Numbers as Num;
 use PinkCrab\FunctionConstructors\Strings as Str;
 use PinkCrab\FunctionConstructors\FunctionsLoader;
+
 use PinkCrab\FunctionConstructors\GeneralFunctions as Func;
 
 /**
@@ -22,6 +24,19 @@ use PinkCrab\FunctionConstructors\GeneralFunctions as Func;
  */
 class ArrayFunctionTests extends TestCase
 {
+
+    /**
+     * Random pollyfills
+     */
+    public function __call($method, $params)
+    {
+        switch ($method) {
+            case 'assertIsArray':
+                $this->assertTrue(is_array($params));
+                break;
+        }
+    }
+
 
     public function setup(): void
     {
@@ -294,17 +309,7 @@ class ArrayFunctionTests extends TestCase
         $this->assertEquals(215.00, $costSum($data));
     }
 
-    public function __call($method, $params)
-    {
-        switch ($method) {
-            case 'assertIsArray':
-                $this->assertTrue(is_array($params));
-                break;
-        }
-    }
-
-
-
+    
 
     public function testCanSortArray(): void
     {
