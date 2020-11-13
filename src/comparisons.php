@@ -90,7 +90,7 @@ function isLessThan($a): callable
 function isEqualIn(array $a): callable
 {
     /**
-     * @param array $haystack The array of values which it could be
+     * @param array $b The array of values which it could be
      * @return bool
      */
     return function ($b) use ($a): ?bool {
