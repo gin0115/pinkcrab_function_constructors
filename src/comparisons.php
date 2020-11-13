@@ -116,6 +116,18 @@ function isEqualIn(array $target): callable
     };
 }
 
+/**	
+ * Simple named function for ! empty()
+ * Allows to be used in function composition.
+ * 
+ * @param mixed $value The value
+ * @return bool
+ */
+function notEmpty($value): bool
+{
+    return ! empty($value);
+}
+
 /**
  * Groups callbacks and checks they all return true.
  *

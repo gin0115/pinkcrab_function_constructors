@@ -30,6 +30,7 @@ class GeneralFunctionTest extends TestCase
 
     public function testFunctionCompose(): void
     {
+        
         $function = Func\compose(
             Str\replaceWith('1122', '*\/*'),
             Str\replaceWith('6677', '=/\='),
@@ -86,5 +87,16 @@ class GeneralFunctionTest extends TestCase
             '001122*\/*=/\=778899',
             $function('1122334455667788')
         );
+    }
+
+    public function testAlwaysReturns()
+    {
+        $alwaysHappy = Func\always('Happy');
+        
+        $this->assertEquals('Happy', $alwaysHappy('No'));
+        $this->assertEquals('Happy', $alwaysHappy(false));
+        $this->assertEquals('Happy', $alwaysHappy(null));
+        $this->assertEquals('Happy', $alwaysHappy(new DateTime()));
+        $this->assertNull(Func\always(null)('NOT NULL'));
     }
 }

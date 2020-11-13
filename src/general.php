@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Mixture of general functions, including compose, pipe, invoke and property 
+ * Mixture of general functions, including compose, pipe, invoke and property
  * accessors.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
@@ -31,9 +31,14 @@ namespace PinkCrab\FunctionConstructors\GeneralFunctions;
  *
  * @param callable ...$callables
  * @return callable
+ * @annotaion: (...(a -> b)) -> ( a -> b )
  */
 function compose(callable ...$callables): callable
 {
+    /**
+     * @param mixed The value passed into the functions
+     * @return mixed The final result.
+     */
     return function ($e) use ($callables) {
         foreach ($callables as $callable) {
             $e = $callable($e);
@@ -42,8 +47,20 @@ function compose(callable ...$callables): callable
     };
 }
 
+/**
+ * Compose a function which is escaped if the value returns as null.
+ * This allows for safer composition.
+ *
+ * @param callable ...$callables
+ * @return callable
+ * @annotaion: ( ...( a -> a ) ) -> ( a -> a )
+ */
 function composeSafe(callable ...$callables): callable
 {
+    /**
+     * @param mixed The value passed into the functions
+     * @return mixed|null The final result or null.
+     */
     return function ($e) use ($callables) {
         foreach ($callables as $callable) {
             if (! is_null($e)) {
@@ -55,25 +72,21 @@ function composeSafe(callable ...$callables): callable
 }
 
 /**
- * Acts an alias for composeSafe()
+ * Creates a strictly pure function.
+ * Every return from every class, must pass a validation function
+ * If any fail validation, null is returned.
  *
- * @param callables ...$callables
+ * @param callable $validator The validation function (b -> bool)
+ * @param callable ...$callables The functions to execute (a -> a)
  * @return callable
+ * @annotaion: ( ( b -> bool ) -> ...( a -> a ) ) -> ( a -> a )
  */
-function pipe(callable ...$callables): callable
-{
-    return function ($e) use ($callables) {
-        foreach ($callables as $callable) {
-            if (! is_null($e)) {
-                $e = $callable($e);
-            }
-        }
-        return $e;
-    };
-}
-
 function composeTypeSafe(callable $validator, callable ...$callables): callable
 {
+    /**
+     * @param mixed $e The value being passed through the functions.
+     * @return mixed The final result.
+     */
     return function ($e) use ($validator, $callables) {
         foreach ($callables as $callable) {
             // Only do this passes validator
@@ -86,6 +99,22 @@ function composeTypeSafe(callable $validator, callable ...$callables): callable
         return $e;
     };
 }
+
+/**
+ * Alias for composeSafe()
+ *
+ * @param callable ...$callables
+ * @return callable
+ * @annotaion: ( ...( a -> a ) ) -> ( a -> a )
+ */
+function pipe(callable ...$callables): callable
+{
+    return composeSafe(...$callables);
+}
+
+
+
+
 
 /**
  * Returns a callback for getting a property or element from an array/object.
@@ -153,6 +182,20 @@ function propertyEquals(string $property, $value): callable
 function invoke(callable $fn, ...$args)
 {
     return $fn(...$args);
+}
+
+/**
+ * Returns a function which always returns the value you created it with
+ *
+ * @param mixed $value The value you always want to return.
+ * @return callable
+ * @annotaion: ( a ) -> ( ...b -> a )
+ */
+function always($value): callable
+{
+    return function (...$ignored) use ($value) {
+        return $value;
+    };
 }
 
 
