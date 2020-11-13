@@ -49,9 +49,6 @@ You will notice a lot of the functions have annotaions like this
 
 What we have here is a funtion that takes a function as a parmeter and returns another function. The function we pass in must take a single Int and return an Int, the function we get back will then take and Int and return a string.
 
-
-## Power of Composition
-
 ```php 
 
 <?php
