@@ -12,6 +12,7 @@ require_once dirname(__FILE__, 2) . '/FunctionsLoader.php';
  */
 use PHPUnit\Framework\TestCase;
 use PinkCrab\FunctionConstructors\Arrays as Arr;
+use PinkCrab\FunctionConstructors\Numbers as Num;
 use PinkCrab\FunctionConstructors\Strings as Str;
 use PinkCrab\FunctionConstructors\FunctionsLoader;
 use PinkCrab\FunctionConstructors\GeneralFunctions as Func;
@@ -29,7 +30,17 @@ class ArrayFunctionTests extends TestCase
 
     public function testCanPushToHead(): void
     {
-       
+        $someMaths = Func\composeTypeSafe(
+            'is_int',
+            Num\sumInt(12), // Add 12
+            Num\multiplyInt(4), // Times 4
+            Num\subtractInt(7) // Subtract 7
+        );
+
+// We can then use this function like so.
+        print $someMaths(7.5); // null
+
+
         $pushToHead = Arr\pushHead(array( 3, 4, 5, 6 ));
         $added2     = $pushToHead(2);
         $this->assertEquals(2, $added2[0]);

@@ -12,6 +12,7 @@ declare(strict_types=1);
 require_once dirname(__FILE__, 2) . '/FunctionsLoader.php';
 
 use PHPUnit\Framework\TestCase;
+use PinkCrab\FunctionConstructors\Numbers as Num;
 use PinkCrab\FunctionConstructors\Strings as Str;
 use PinkCrab\FunctionConstructors\FunctionsLoader;
 use PinkCrab\FunctionConstructors\GeneralFunctions as Func;
@@ -98,5 +99,15 @@ class GeneralFunctionTest extends TestCase
         $this->assertEquals('Happy', $alwaysHappy(null));
         $this->assertEquals('Happy', $alwaysHappy(new DateTime()));
         $this->assertNull(Func\always(null)('NOT NULL'));
+    }
+
+    public function testCanUsePipe()
+    {
+        $results = Func\pipe(
+            Num\sumInt(12),
+            Num\multiplyInt(4), 
+            Num\subtractInt(7) 
+        )(7);
+        $this->assertEquals(69, $results);
     }
 }
