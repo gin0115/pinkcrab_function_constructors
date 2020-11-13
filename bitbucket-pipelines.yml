@@ -3,7 +3,7 @@ pipelines:
   default:
     - step:
         script:
-          - apt-get update && apt-get install -y unzip php-mbstring
+          - apt-get update && apt-get install -y unzip php7.0-mbstring
           - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
           - composer require phpunit/phpunit ^6 -W
           - composer require yoast/phpunit-polyfills -W
