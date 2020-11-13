@@ -38,7 +38,7 @@ function addFive(int $num):int {...}
 // This denotes a function, that takes another function and returns a string.
 // The function passed in takes an Int and returns an Int
 function add(callable $function): string {
-    return to_string($function(2));
+    return strval($function(2));
 }
 add( fn(int $a): int => $a + 1 ); // 3
 ```
@@ -85,8 +85,8 @@ function squareRootOf144ToThePowerOf($powerOf): string{
 
 // The exmaple above may look longer and more complex, But it is much more flexible.
 $squareRootOf100ToThePowerOf = doMathsAsString($squareRootToPower(100));
-print $squareRootOf144ToThePowerOf(3); // 1000
-print $squareRootOf144ToThePowerOf(4); // 10000
+print $squareRootOf100ToThePowerOf(3); // 1000
+print $squareRootOf100ToThePowerOf(4); // 10000
 
 ```
 **Not only that, becuase we have use partial application on all step, we can use these functions when contsructing more complex ones. And we have only created 1 named function (doMathsAsString()), all the rest can be created as needed.**
