@@ -165,4 +165,117 @@ class StringFunctionTest extends TestCase
         $this->assertEquals('001b399', $results[1]);
         $this->assertEquals('001-t-499', $results[2]);
     }
+
+    public function testCanAddCSlashes()
+    {
+        $slashA = Str\addCSlashes('a');
+        $this->assertEquals('h\appy d\ays', $slashA('happy days'));
+
+        $slashAD = Str\addCSlashes('ad');
+        $this->assertEquals('h\appy \d\ays', $slashAD('happy days'));
+    }
+
+    public function testCanSplitString()
+    {
+        $splitIntoFours = Str\split(4);
+
+        $split = $splitIntoFours('AAAABBBBCCCCDDDD');
+        $this->assertEquals('AAAA', $split[0]);
+        $this->assertEquals('BBBB', $split[1]);
+        $this->assertEquals('CCCC', $split[2]);
+        $this->assertEquals('DDDD', $split[3]);
+    }
+
+    public function testCanSplitChunkString()
+    {
+        $in5s = Str\chunkSplit(5, '-');
+        $this->assertEquals('aaaaa-bbbbb-ccccc-', $in5s('aaaaabbbbbccccc'));
+    }
+
+    public function testCanCountCharsInString()
+    {
+        $getOccurances = Str\countChars();
+        $this->assertCount(4, $getOccurances('Hello'));
+        $this->assertCount(1, $getOccurances('a'));
+        $this->assertCount(8, $getOccurances('asfetwafgh'));
+    }
+
+    public function testCanDoTrim()
+    {
+        $trimAB = Str\lTrim("AB");
+        $this->assertEquals('STD', $trimAB("ABSTD"));
+        $this->assertEquals('HFJKGHDJKGHFJKFGJKFGJK', $trimAB("ABHFJKGHDJKGHFJKFGJKFGJK"));
+
+        $trimYZ = Str\rTrim("YZ");
+        $this->assertEquals('STD', $trimYZ("STDYZ"));
+        $this->assertEquals('ABHFJKGHDJKGHFJKFGJKFGJK', $trimYZ("ABHFJKGHDJKGHFJKFGJKFGJKYZ"));
+    }
+
+    public function testCanDoSimilarTextAsBase()
+    {
+        $compareTheBaseAsChars = Str\similarTextAsBase("THE BASE");
+        $compareTheBaseAsPC = Str\similarTextAsBase("THE BASE", true);
+        $this->assertEquals(4, $compareTheBaseAsChars('BASE'));
+        $this->assertEquals((6 / 9) * 100, $compareTheBaseAsPC('BASE'));
+    }
+
+    public function testCanDoSimilarTextAsComparisson()
+    {
+        $compareTheBaseAsChars = Str\similarTextAsComparisson("BASE");
+        $compareTheBaseAsPC = Str\similarTextAsComparisson("BASE", true);
+        $this->assertEquals(4, $compareTheBaseAsChars('THE BASE'));
+        $this->assertEquals((6 / 9) * 100, $compareTheBaseAsPC('THE BASE'));
+    }
+
+    public function testCanPadStrings()
+    {
+        $padLeft10 = Str\pad(10, '.', STR_PAD_LEFT);
+        $padRight10 = Str\pad(10, '_', STR_PAD_RIGHT);
+        $padBoth10 = Str\pad(10, '\'', STR_PAD_BOTH);
+
+        $this->assertEquals('........HI', $padLeft10('HI'));
+        $this->assertEquals('HI________', $padRight10('HI'));
+        $this->assertEquals("''''HI''''", $padBoth10('HI'));
+    }
+
+    public function testCanRepeatString()
+    {
+        $sayItTrice = Str\repeat(3);
+        $this->assertEquals('HIHIHI', $sayItTrice('HI'));
+    }
+
+    public function testCanDoWordCounts()
+    {
+        // Check can count words and reutrn count.
+        $WordCount = Str\wordCount(WORD_COUNT_NUMBER_OF_WORDS);
+        $this->assertEquals(3, $WordCount('HI HI HI'));
+
+        // Test can return array of word counts.
+        $wordList = Str\wordCount(WORD_COUNT_ARRAY)('HI BYE MAYBE');
+        $this->assertEquals('HI', $wordList[0]);
+        $this->assertEquals('BYE', $wordList[1]);
+        $this->assertEquals('MAYBE', $wordList[2]);
+
+        // Test can return ass array of word counts with positions.
+        $wordListPositions = Str\wordCount(WORD_COUNT_ASSOCIATIVE_ARRAY)('HI BYE MAYBE');
+        $this->assertEquals('HI', $wordListPositions[0]);
+        $this->assertEquals('BYE', $wordListPositions[3]);
+        $this->assertEquals('MAYBE', $wordListPositions[7]);
+    }
+
+    public function testCanStripTags()
+    {
+        $allTags = Str\stripTags();
+        $allowPTags = Str\stripTags('<p><a>');
+
+        $this->assertEquals('1Stuff', $allTags('1<p>Stuff</p>'));
+        $this->assertEquals('1<p>Stuff</p>', $allowPTags('1<p>Stuff</p>'));
+    }
+
+    public function testCanFindFirstPosition()
+    {
+        $findApple = Str\fistPosistion('Apple');
+        $this->assertEquals(0, $findApple('Apple are tasty'));
+        $this->assertEquals(19, $findApple('I really dont like Apples'));
+    }
 }

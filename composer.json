@@ -22,6 +22,7 @@
             "PinkCrab\\FunctionConstructors\\": "src"
         },
         "files": [
+            "src/constants.php",
             "src/procedural.php",
             "src/arrays.php",
             "src/comparisons.php",

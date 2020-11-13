@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Static loader for all files.
+ * Collection of constants that can be used on specific functions.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -22,25 +22,16 @@ declare(strict_types=1);
  * @package PinkCrab\FunctionConstructors
  */
 
-namespace PinkCrab\FunctionConstructors;
-
-class FunctionsLoader
-{
-
-    /**
-     * Loads all supplimentry function files.
-     *
-     * @author Glynn Quelch <glynn.quelch@gmail.com>
-     * @since 0.1.0
-     */
-    public static function include(): void
-    {
-        require_once('src/constants.php');
-        require_once('src/procedural.php');
-        require_once('src/comparisons.php');
-        require_once('src/general.php');
-        require_once('src/arrays.php');
-        require_once('src/strings.php');
-        require_once('src/numbers.php');
-    }
+/**
+ * Constants used for Str\wordCount() => str_word_count()
+ * https://www.php.net/manual/en/function.str-word-count.php
+ */
+if (!defined('WORD_COUNT_NUMBER_OF_WORDS')) {
+    define('WORD_COUNT_NUMBER_OF_WORDS', 0);
+}
+if (!defined('WORD_COUNT_ARRAY')) {
+    define('WORD_COUNT_ARRAY', 1);
+}
+if (!defined('WORD_COUNT_ASSOCIATIVE_ARRAY')) {
+    define('WORD_COUNT_ASSOCIATIVE_ARRAY', 2);
 }
