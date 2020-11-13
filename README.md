@@ -4,7 +4,7 @@ This libary provides a small selection of functions for making functional progra
 
 To include this packge please add the following to your composer.json
 
-> REQUIRES PHP VERSION 7.2 MINIMUM!
+> REQUIRES PHP VERSION 7.1 MINIMUM!
 
 ```json
 {
@@ -22,6 +22,8 @@ To include this packge please add the following to your composer.json
 }
 
 ```
+
+> For more details, please read the [wiki](https://bitbucket.org/pinkcrab/function_constructors/wiki/Home)
 
 ## Annotaions
 Throughout the docs and the codebase we use elm style annotaions. These should hopefully make it easier for you to see how the functions can all fit together.
