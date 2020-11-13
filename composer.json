@@ -33,6 +33,6 @@
         "phpunit/phpunit": "^9.4"
     },
     "require": {
-        "php": ">=7.1.*"
+        "php": "7.*"
     }
 }
