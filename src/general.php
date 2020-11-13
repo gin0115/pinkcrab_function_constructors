@@ -101,7 +101,7 @@ function composeTypeSafe(callable $validator, callable ...$callables): callable
 }
 
 /**
- * Alias for composeSafe()
+ * Alias for compose()
  *
  * @param callable ...$callables
  * @return callable
@@ -109,18 +109,28 @@ function composeTypeSafe(callable $validator, callable ...$callables): callable
  */
 function pipe(callable ...$callables): callable
 {
-    return composeSafe(...$callables);
+    return compose(...$callables);
 }
 
-
-
-
+/**
+ * The reverse of the functions passed into compose() (pipe())).
+ * To give a more functional feel to some piped calls.
+ *
+ * @param callable ...$callables
+ * @return callable
+ * @annotaion: ( ...( a -> a ) ) -> ( a -> a )
+ */
+function pipeR(callable ...$callables): callable
+{
+    return compose(...\array_reverse($callables));
+}
 
 /**
  * Returns a callback for getting a property or element from an array/object.
  *
  * @param string $property
  * @return callable
+ * @annotaion: ( string ) -> ( a -> b )
  */
 function getProperty(string $property): callable
 {
@@ -139,6 +149,14 @@ function getProperty(string $property): callable
     };
 }
 
+/**
+ * Returns a callable for a checking if a property exists.
+ * Works for both arrays and objects (with public properties).
+ *
+ * @param string $property
+ * @return callable
+ * @annotaion: ( string ) -> ( a -> bool )
+ */
 function hasProperty(string $property): callable
 {
     /**
@@ -156,6 +174,14 @@ function hasProperty(string $property): callable
     };
 }
 
+/**
+ * Returns a callable for a checking if a property exists and matches the passed value
+ * Works for both arrays and objects (with public properties).
+ *
+ * @param string $property
+ * @return callable
+ * @annotaion: ( string -> a ) -> ( b -> bool )
+ */
 function propertyEquals(string $property, $value): callable
 {
     /**
@@ -170,14 +196,13 @@ function propertyEquals(string $property, $value): callable
     };
 }
 
-
-
 /**
  * Used to invoke a callback.
  *
  * @param callable $fn
  * @param mixed ...$args
  * @return void
+ * @annotaion: ( a -> b ) -> ...a -> b 
  */
 function invoke(callable $fn, ...$args)
 {

@@ -336,6 +336,24 @@ function mapWith(callable $func, ...$data): callable
     };
 }
 
+/**
+ * Returns a callback for doing array_map with multiple source arrays.
+ *
+ * @param callable $function
+ * @return callable
+ * @annotation : ( a -> b ) -> ( ...array -> array )
+ */
+function mapMany(callable $function): callable
+{
+    /**
+     * @param ...array $arrays
+     * @return array
+     */
+    return function (array ...$arrays) use ($function): array {
+        return array_map($function, ...$arrays);
+    };
+}
+
 
 /**
  * Returns a callback for flattening and mapping an array
