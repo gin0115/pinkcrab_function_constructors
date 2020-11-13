@@ -105,8 +105,18 @@ class GeneralFunctionTest extends TestCase
     {
         $results = Func\pipe(
             Num\sumInt(12),
-            Num\multiplyInt(4), 
-            Num\subtractInt(7) 
+            Num\multiplyInt(4),
+            Num\subtractInt(7)
+        )(7);
+        $this->assertEquals(69, $results);
+    }
+
+    public function testCanUsePipeR()
+    {
+        $results = Func\pipeR(
+            Num\subtractInt(7),
+            Num\multiplyInt(4),
+            Num\sumInt(12)
         )(7);
         $this->assertEquals(69, $results);
     }

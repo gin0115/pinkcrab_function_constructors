@@ -202,7 +202,7 @@ function propertyEquals(string $property, $value): callable
  * @param callable $fn
  * @param mixed ...$args
  * @return void
- * @annotaion: ( a -> b ) -> ...a -> b 
+ * @annotaion: ( a -> b ) -> ...a -> b
  */
 function invoke(callable $fn, ...$args)
 {
@@ -221,18 +221,4 @@ function always($value): callable
     return function (...$ignored) use ($value) {
         return $value;
     };
-}
-
-
-function mapMany(callable $function): callable
-{
-    return function (array ...$arrays) use ($function): array {
-        return array_map($function, ...$arrays);
-    };
-}
-
-
-function get_max_length_from_arrays(array ...$arrays): int
-{
-    return max(array_map('count', $arrays));
 }
