@@ -28,33 +28,33 @@ namespace PinkCrab\FunctionConstructors\Comparisons;
  * Returns a callback for checkining is a value is equal.
  * Works with String, Ints, Floats, Array, Objects & Bools
  *
- * @param mixed $source The value to compare against.
+ * @param mixed $a The value to compare against.
  * @return callable
  */
-function isEqualTo($source): callable
+function isEqualTo($a): callable
 {
     /**
-     * @param mixed $target The values to comapre with
+     * @param mixed $b The values to comapre with
      * @return bool
      */
-    return function ($target) use ($source): bool {
+    return function ($b) use ($a): bool {
 
-        if (! sameScalar($target, $source)) {
+        if (! sameScalar($b, $a)) {
             return false;
         }
 
-        switch (gettype($target)) {
+        switch (gettype($b)) {
             case 'string':
             case 'integer':
             case 'double':
             case 'boolean':
-                $equal = $source === $target;
+                $equal = $a === $b;
                 break;
             case 'object':
-                $equal = count(get_object_vars($source)) === count(array_intersect_assoc((array) $source, (array) $target));
+                $equal = count(get_object_vars($a)) === count(array_intersect_assoc((array) $a, (array) $b));
                 break;
             case 'array':
-                $equal = count($source) === count(array_intersect_assoc($source, $target));
+                $equal = count($a) === count(array_intersect_assoc($a, $b));
                 break;
             default:
                 $equal = false;
@@ -64,49 +64,49 @@ function isEqualTo($source): callable
     };
 }
 
-function isNotEqualTo($source): callable
+function isNotEqualTo($a): callable
 {
-    return function ($target) use ($source): bool {
-        return ! isEqualTo($source)($target);
+    return function ($b) use ($a): bool {
+        return ! isEqualTo($a)($b);
     };
 }
 
-function isGreaterThan($source): callable
+function isGreaterThan($a): callable
 {
-    return function ($target) use ($source): bool {
-        return isEqualIn(array( 'integer', 'double' ))(gettype($target)) ?
-        $source > $target : false;
+    return function ($b) use ($a): bool {
+        return isEqualIn(array( 'integer', 'double' ))(gettype($b))
+        ? $a > $b : false;
     };
 }
 
-function isLessThan($source): callable
+function isLessThan($a): callable
 {
-    return function ($target) use ($source): bool {
-        return isEqualIn(array( 'integer', 'double' ))(gettype($target)) ?
-        $source < $target : false;
+    return function ($b) use ($a): bool {
+        return isEqualIn(array( 'integer', 'double' ))(gettype($b))
+        ? $a < $b : false;
     };
 }
 
-function isEqualIn(array $target): callable
+function isEqualIn(array $a): callable
 {
-    /**    @TODO SWITCH THIS ROUND, ITS NOT RIGHT!
+    /**
      * @param array $haystack The array of values which it could be
      * @return bool
      */
-    return function ($source) use ($target): ?bool {
+    return function ($b) use ($a): ?bool {
         if (
-            is_numeric($source) || is_bool($source) ||
-            is_string($source) || is_array($source)
+            is_numeric($b) || is_bool($b) ||
+            is_string($b) || is_array($b)
         ) {
-            return in_array($source, $target, true);
-        } elseif (is_object($source)) {
+            return in_array($b, $a, true);
+        } elseif (is_object($b)) {
             return in_array(
-                (array) $source,
+                (array) $b,
                 array_map(
-                    function (object $e): array {
+                    function ($e): array {
                         return  (array) $e;
                     },
-                    $target
+                    $a
                 ),
                 true
             );
@@ -114,6 +114,18 @@ function isEqualIn(array $target): callable
             return null;
         }
     };
+}
+
+/**
+ * Simple named function for ! empty()
+ * Allows to be used in function composition.
+ *
+ * @param mixed $value The value
+ * @return bool
+ */
+function notEmpty($value): bool
+{
+    return ! empty($value);
 }
 
 /**
@@ -220,7 +232,7 @@ function someTrue(bool ...$var): bool
  */
 function isFalse($value): bool
 {
-    return  is_bool($value) && $value === false;
+    return is_bool($value) && $value === false;
 }
 
 /**

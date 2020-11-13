@@ -265,6 +265,14 @@ class ComparissonFunctionTest extends TestCase
         $this->assertFalse(Comp\isFalse(0));
         $this->assertFalse(Comp\isFalse([0]));
     }
+
+    public function testNotEmpty()
+    {
+        $this->assertTrue(Comp\notEmpty([false, 1,2]));
+        $this->assertTrue(Comp\notEmpty("Hello"));
+        $this->assertFalse(Comp\notEmpty(''));
+        $this->assertFalse(Comp\notEmpty([]));
+    }
 }
 
 

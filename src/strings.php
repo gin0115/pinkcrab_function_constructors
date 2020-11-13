@@ -243,12 +243,12 @@ function asUrl(string $url, ?string $target = null): callable
                 "<a href='%s' target='%s'>%s</a>",
                 $url,
                 $target ?? '_blank',
-                $string,
+                $string
             ) :
             sprintf(
                 "<a href='%s'>%s</a>",
                 $url,
-                $string,
+                $string
             );
     };
 }
