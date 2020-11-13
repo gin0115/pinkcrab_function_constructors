@@ -1,4 +1,4 @@
-image: php:7.0.0
+image: php:7.1.0
 pipelines:
   default:
     - step:
