@@ -103,7 +103,7 @@ function isEqualIn(array $target): callable
             return in_array(
                 (array) $source,
                 array_map(
-                    function (object $e): array {
+                    function ( $e): array {
                         return  (array) $e;
                     },
                     $target
