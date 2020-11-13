@@ -294,6 +294,15 @@ class ArrayFunctionTests extends TestCase
         $this->assertEquals(215.00, $costSum($data));
     }
 
+    public function __call($method, $params)
+    {
+        switch ($method) {
+            case 'assertIsArray':
+                $this->assertTrue(is_array($params));
+                break;
+        }
+    }
+
 
 
 
