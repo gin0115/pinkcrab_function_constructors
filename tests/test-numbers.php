@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+
 use PHPUnit\Framework\TestCase;
 use PinkCrab\FunctionConstructors\Arrays as Arr;
 use PinkCrab\FunctionConstructors\Numbers as Num;
@@ -35,6 +36,7 @@ class NumberFunctionTest extends TestCase
      */
     public function testAccumlatorIntThrowsErrorForNoneIntTypes()
     {
+        $this->expectException(TypeError::class);
         $acc = Num\accumulatorInt(0);
         $acc = $acc('11');
     }
@@ -55,6 +57,7 @@ class NumberFunctionTest extends TestCase
      */
     public function testAccumlatorFloatThrowsErrorForNoneFloatTypes()
     {
+        $this->expectException(TypeError::class);
         $acc = Num\accumulatorFloat(0);
         $acc = $acc([1,2,3,4,5,6]);
         // Throws TypeError.
