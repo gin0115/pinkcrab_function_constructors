@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Static loader for all files.
+ * Procedural wrappers for various functions.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -22,24 +22,23 @@ declare(strict_types=1);
  * @package PinkCrab\FunctionConstructors
  */
 
-namespace PinkCrab\FunctionConstructors;
-
-class FunctionsLoader
-{
-
-    /**
-     * Loads all supplimentry function files.
+/**
+     * Checks if a string contains a sub string
      *
-     * @author Glynn Quelch <glynn.quelch@gmail.com>
-     * @since 0.1.0
+     * @param string $haysack The string to search within.
+     * @param string $needle The sub string to look for.
+     * @return bool
      */
-    public static function include(): void
+if (! function_exists('str_contains')) {
+    /**
+     * Checks if a string contains a sub string
+     *
+     * @param string $haysack The string to search within.
+     * @param string $needle The sub string to look for.
+     * @return bool
+     */
+    function str_contains(string $haystack, string $needle): bool
     {
-        require_once('src/procedural.php');
-        require_once('src/comparisons.php');
-        require_once('src/general.php');
-        require_once('src/arrays.php');
-        require_once('src/strings.php');
-        require_once('src/numbers.php');
+        return strpos($haystack, $needle) !== false;
     }
 }

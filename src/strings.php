@@ -67,9 +67,39 @@ function tagWrap(string $openingTag, ?string $closingTag = null): callable
 }
 
 /**
+ * Creates a callable for turning a string into a url.
+ *
+ * @param string $url
+ * @param string|null $target
+ * @return callable
+ * @annotation : ( string -> string|null ) -> ( string -> string )
+ */
+function asUrl(string $url, ?string $target = null): callable
+{
+    /**
+     * @param string $string
+     * @return string
+     */
+    return function (string $string) use ($url, $target): string {
+        return $target ?
+            sprintf(
+                "<a href='%s' target='%s'>%s</a>",
+                $url,
+                $target ?? '_blank',
+                $string
+            ) :
+            sprintf(
+                "<a href='%s'>%s</a>",
+                $url,
+                $string
+            );
+    };
+}
+
+/**
  * Creates a callable for preppedning to a string.
  *
- * @param string $append
+ * @param string $prepend
  * @return callable
  * @annotation : ( string ) -> ( string -> string )
  */
@@ -184,15 +214,7 @@ function endsWith(string $find): callable
     };
 }
 
-/**
- * str_contains pollyfill.
- */
-if (! function_exists('str_contains')) {
-    function str_contains($haystack, $needle): bool
-    {
-        return strpos($haystack, $needle) !== false;
-    }
-}
+
 
 /**
  * Creates a callable for checking if a string contains. using str_contains
@@ -231,32 +253,40 @@ function containPattern(string $pattern): callable
 }
 
 /**
- * Creates a callable for turning a string into a url.
+ * Splits a string with a pattern
  *
- * @param string $url
- * @param string|null $target
+ * @param string $pattern
  * @return callable
- * @annotation : ( string -> string|null ) -> ( string -> string )
+ * @annoation : ( string ) -> ( string -> array|null )
  */
-function asUrl(string $url, ?string $target = null): callable
+function splitPattern(string $pattern): callable
 {
     /**
-     * @param string $string
-     * @return string
+     * @param stirng $name
+     * @return array
      */
-    return function (string $string) use ($url, $target): string {
-        return $target ?
-            sprintf(
-                "<a href='%s' target='%s'>%s</a>",
-                $url,
-                $target ?? '_blank',
-                $string
-            ) :
-            sprintf(
-                "<a href='%s'>%s</a>",
-                $url,
-                $string
-            );
+    return function (string $string) use ($pattern): ?array {
+        return preg_split($pattern, $string);
+    };
+}
+
+/**
+ * Converts a number (loose type) to a string representation of a float.
+ *
+ * @param string $precission Number of decimal places
+ * @param string $point The deciaml seperator
+ * @param string $thousands The thousand seperator.
+ * @return callable
+ * @annoation : ( int -> string ->string ) -> ( string|int|float -> string )
+ */
+function decimialNumber(int $precission = 2, $point = '.', $thousands = ''): callable
+{
+    /**
+     * @param stirng|int|float $number
+     * @return string|null
+     */
+    return function ($number) use ($precission, $point, $thousands): ?string {
+        return number_format((float) $number, $precission, $point, $thousands);
     };
 }
 
@@ -292,43 +322,5 @@ function stringCompiler(string $initial = ''): callable
             $initial .= $value;
         }
         return $value ? stringCompiler($initial) : $initial;
-    };
-}
-
-/**
- * Splits a string with a pattern
- *
- * @param string $pattern
- * @return callable
- * @annoation : ( string ) -> ( string -> array|null )
- */
-function splitPattern(string $pattern): callable
-{
-    /**
-     * @param stirng $name
-     * @return array
-     */
-    return function (string $string) use ($pattern): ?array {
-        return preg_split($pattern, $string);
-    };
-}
-
-/**
- * Converts a number (loose type) to a string representation of a float.
- *
- * @param string $precission Number of decimal places
- * @param string $point The deciaml seperator
- * @param string $thousands The thousand seperator.
- * @return callable
- * @annoation : ( int -> string ->string ) -> ( string|int|float -> string )
- */
-function decimialNumber(int $precission = 2, $point = '.', $thousands = ''): callable
-{
-    /**
-     * @param stirng|int|float $number
-     * @return string|null
-     */
-    return function ($number) use ($precission, $point, $thousands): ?string {
-        return number_format((float) $number, $precission, $point, $thousands);
     };
 }
