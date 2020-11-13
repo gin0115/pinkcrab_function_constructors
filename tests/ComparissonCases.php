@@ -637,7 +637,7 @@ class ComparissonCases
         );
         $numbersInString = Comp\groupAnd(
             Str\contains('666'),
-            Str\contains('333'),
+            Str\contains('333')
         );
         if ($type === 'pass') {
             return array(
@@ -699,21 +699,21 @@ class ComparissonCases
         $orAndOr1  = Comp\groupAnd(
             Comp\groupOr(
                 Str\contains('666'),
-                Str\contains('333'),
+                Str\contains('333')
             ),
             Comp\groupOr(
                 Str\startsWith('dg'),
-                Str\startsWith('ff'),
+                Str\startsWith('ff')
             )
         );
         $andOrAnd1 = Comp\groupOr(
             Comp\groupAnd(
                 Str\startsWith('dg'),
-                Str\contains('666'),
+                Str\contains('666')
             ),
             Comp\groupAnd(
                 Str\contains('333'),
-                Str\startsWith('ff'),
+                Str\startsWith('ff')
             )
         );
 
