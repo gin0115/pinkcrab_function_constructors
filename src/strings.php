@@ -42,7 +42,7 @@ function wrap(string $opening, ?string $closing = null): callable
      * @return string
      */
     return function (string $string) use ($opening, $closing): string {
-        return sprintf('%s%s%s', $opening, $string, $closing ?? $opening);
+        return \sprintf('%s%s%s', $opening, $string, $closing ?? $opening);
     };
 }
 
@@ -62,7 +62,7 @@ function tagWrap(string $openingTag, ?string $closingTag = null): callable
      * @return string
      */
     return function (string $string) use ($openingTag, $closingTag): string {
-        return sprintf('<%s>%s</%s>', $openingTag, $string, $closingTag ?? $openingTag);
+        return \sprintf('<%s>%s</%s>', $openingTag, $string, $closingTag ?? $openingTag);
     };
 }
 
@@ -82,13 +82,13 @@ function asUrl(string $url, ?string $target = null): callable
      */
     return function (string $string) use ($url, $target): string {
         return $target ?
-            sprintf(
+            \sprintf(
                 "<a href='%s' target='%s'>%s</a>",
                 $url,
                 $target ?? '_blank',
                 $string
             ) :
-            sprintf(
+            \sprintf(
                 "<a href='%s'>%s</a>",
                 $url,
                 $string
@@ -110,7 +110,7 @@ function prepend(string $prepend): callable
      * @return string
      */
     return function (string $string) use ($prepend): string {
-        return sprintf('%s%s', $prepend, $string);
+        return \sprintf('%s%s', $prepend, $string);
     };
 }
 
@@ -128,7 +128,7 @@ function append(string $append): callable
      * @return string
      */
     return function (string $string) use ($append): string {
-        return sprintf('%s%s', $string, $append);
+        return \sprintf('%s%s', $string, $append);
     };
 }
 
@@ -151,7 +151,7 @@ function findToReplace(string $find): callable
          * @return string
          */
         return function ($subject) use ($find, $replace): string {
-            return str_replace($find, $replace, $subject);
+            return \str_replace($find, $replace, $subject);
         };
     };
 }
@@ -171,7 +171,7 @@ function replaceWith(string $find, string $replace): callable
      * @return string
      */
     return function ($source) use ($find, $replace): string {
-        return str_replace($find, $replace, $source);
+        return \str_replace($find, $replace, $source);
     };
 }
 
@@ -189,7 +189,7 @@ function startsWith(string $find): callable
      * @return bool
      */
     return function (string $source) use ($find): bool {
-        return ( substr($source, 0, strlen($find)) === $find );
+        return ( \substr($source, 0, \strlen($find)) === $find );
     };
 }
 
@@ -207,10 +207,10 @@ function endsWith(string $find): callable
      * @return bool
      */
     return function (string $source) use ($find): bool {
-        if (strlen($find) === 0) {
+        if (\strlen($find) === 0) {
             return true;
         }
-        return ( substr($source, -strlen($find)) === $find );
+        return ( \substr($source, - \strlen($find)) === $find );
     };
 }
 
@@ -228,7 +228,7 @@ function contains(string $needle): callable
      * @return bool
      */
     return function (string $haystack) use ($needle): bool {
-        return str_contains($haystack, $needle);
+        return \str_contains($haystack, $needle);
     };
 }
 
@@ -246,7 +246,7 @@ function containPattern(string $pattern): callable
      * @return bool
      */
     return function (string $source) use ($pattern): bool {
-        return (bool) preg_match($pattern, $source);
+        return (bool) \preg_match($pattern, $source);
     };
 }
 
@@ -264,7 +264,7 @@ function splitPattern(string $pattern): callable
      * @return array
      */
     return function (string $string) use ($pattern): ?array {
-        return preg_split($pattern, $string);
+        return \preg_split($pattern, $string);
     };
 }
 
@@ -284,7 +284,178 @@ function decimialNumber(int $precission = 2, $point = '.', $thousands = ''): cal
      * @return string|null
      */
     return function ($number) use ($precission, $point, $thousands): ?string {
-        return number_format((float) $number, $precission, $point, $thousands);
+        return \number_format((float) $number, $precission, $point, $thousands);
+    };
+}
+
+/**
+ * Returns a callable for adding C slashes to a string based on a defined pattern.
+ *
+ * @param string $charList The Char list to add slashes too.
+ * @return callable
+ * @annoation : ( string ) -> ( string -> string )
+ */
+function addCSlashes(string $charList): callable
+{
+    /**
+     * @param string $string The stirng to have char, slash escaped.
+     * @return string
+     */
+    return function (string $string) use ($charList): string {
+        return \addcslashes($string, $charList);
+    };
+}
+
+/**
+ * Returns a callback for splitting a string into chunks.
+ *
+ * @param init $length The legenth of each chunk.
+ * @param string $end The string to use at the end.
+ * @return callable
+ * @annoation : ( Int -> String ) -> ( String -> String )
+ */
+function chunkSplit(int $length, string $end = '\r\n'): callable
+{
+     /**
+     * @param string $string The stirng to be chunked
+     * @return string
+     */
+    return function (string $string) use ($length, $end): string {
+        return \chunk_split($string, $length, $end);
+    };
+}
+
+/**
+ * Returns a callback for counting the number of occurances of each char in a string.
+ *
+ * @link https://www.php.net/manual/en/function.count-chars.php
+ * @param int $mode See the PHP docs for details.
+ * @return callable
+ * @annoation : ( Int ) -> ( String -> Array )
+ */
+function countChars(int $mode = 1): callable
+{
+    /**
+     * @param string $string The string to have its char counted.
+     * @return array
+     */
+    return function (string $string) use ($mode): array {
+        return \count_chars($string, $mode);
+    };
+}
+
+/**
+ * Returns a callable for doing repeated ltrim.
+ *
+ * @param string $mask
+ * @return callable
+ * @annoation : ( String ) -> ( String -> String )
+ */
+function lTrim(string $mask = ''): callable
+{
+     /**
+     * @param string $string The string to be trimmed
+     * @return array
+     */
+    return function (string $string) use ($mask): string {
+        return \ltrim($string, $mask);
+    };
+}
+
+/**
+ * Returns a callable for doing repeated rtrim.
+ *
+ * @param string $mask
+ * @return callable
+ * @annoation : ( String ) -> ( String -> String )
+ */
+function rTrim(string $mask = ''): callable
+{
+     /**
+     * @param string $string The string to be trimmed
+     * @return array
+     */
+    return function (string $string) use ($mask): string {
+        return \rtrim($string, $mask);
+    };
+}
+
+/**
+ * Returns a callable for finding the similarities between 2 string.
+ * This sets the defined value as the base (similar_text as first)
+ *
+ * @param string $base The stirng to act as the base.
+ * @param bool $asPc If set to true will reutrn the percentage match, rather than char count.
+ * @annoation : ( String -> Bool ) -> ( String -> Int|Float )
+ */
+function similarTextAsBase(string $base, bool $asPc = false): callable
+{
+    /**
+     * @param string $comparissonString The string to compare against base.
+     * @return int|float
+     */
+    return function (string $comparissonString) use ($base, $asPc) {
+        $pc = 0.00;
+        $matching = similar_text($base, $comparissonString, $pc);
+        return $asPc ? $pc : $matching;
+    };
+}
+
+/**
+ * Returns a callable for finding the similarities between 2 string.
+ * This sets the defined value as the comparissonString (similar_text as second)
+ *
+ * @param string $comparissonString The string to compare against base.
+ * @param bool $asPc If set to true will reutrn the percentage match, rather than char count.
+ * @annoation : ( String -> Bool ) -> ( String -> Int|Float )
+ */
+function similarTextAsComparisson(string $comparissonString, bool $asPc = false): callable
+{
+    /**
+     * @param string $comparissonString The stirng to act as the base.
+     * @return int|float
+     */
+    return function (string $base) use ($comparissonString, $asPc) {
+        $pc = 0.00;
+        $matching = similar_text($base, $comparissonString, $pc);
+        return $asPc ? $pc : $matching;
+    };
+}
+
+/**
+ * Reutrns a callable for padding out a string.
+ *
+ * @param int $length Max length to make string.
+ * @param string $padContent The value to padd the stirng with (defulats to ' ')
+ * @param int $type How to pad, please use these constants. STR_PAD_RIGHT|STR_PAD_LEFT|STR_PAD_BOTH
+ * @annoation : ( Int -> Stirng -> Int ) -> ( String -> String )
+ */
+function pad(int $length, string $padContent = ' ', int $type = STR_PAD_RIGHT): callable
+{
+    /**
+     * @param string $string The string to pad out.
+     * @return int|float
+     */
+    return function (string $string) use ($length, $padContent, $type) {
+        return \str_pad($string, $length, $padContent, $type);
+    };
+}
+
+/**
+ * Returns a callable for repeating a string by a defined number of times.
+ *
+ * @param int $count Number of times to repeat string.
+ * @return callable
+ * @annoation : ( Int ) -> ( String -> String )
+ */
+function repeat(int $count): callable
+{
+    /**
+     * @param string $string The string to repeat
+     * @return int|float
+     */
+    return function (string $string) use ($count) {
+        return \str_repeat($string, $count);
     };
 }
 
