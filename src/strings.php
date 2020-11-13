@@ -214,8 +214,6 @@ function endsWith(string $find): callable
     };
 }
 
-
-
 /**
  * Creates a callable for checking if a string contains. using str_contains
  *
