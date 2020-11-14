@@ -31,7 +31,7 @@ namespace PinkCrab\FunctionConstructors\GeneralFunctions;
  *
  * @param callable ...$callables
  * @return callable
- * @annotaion: (...(a -> b)) -> ( a -> b )
+ * @annotation (...(a -> b)) -> ( a -> b )
  */
 function compose(callable ...$callables): callable
 {
@@ -53,7 +53,7 @@ function compose(callable ...$callables): callable
  *
  * @param callable ...$callables
  * @return callable
- * @annotaion: ( ...( a -> a ) ) -> ( a -> a )
+ * @annotation ( ...( a -> a ) ) -> ( a -> a )
  */
 function composeSafe(callable ...$callables): callable
 {
@@ -79,7 +79,7 @@ function composeSafe(callable ...$callables): callable
  * @param callable $validator The validation function (b -> bool)
  * @param callable ...$callables The functions to execute (a -> a)
  * @return callable
- * @annotaion: ( ( b -> bool ) -> ...( a -> a ) ) -> ( a -> a )
+ * @annotation ( ( b -> bool ) -> ...( a -> a ) ) -> ( a -> a )
  */
 function composeTypeSafe(callable $validator, callable ...$callables): callable
 {
@@ -105,7 +105,7 @@ function composeTypeSafe(callable $validator, callable ...$callables): callable
  *
  * @param callable ...$callables
  * @return callable
- * @annotaion: ( ...( a -> a ) ) -> ( a -> a )
+ * @annotation ( ...( a -> a ) ) -> ( a -> a )
  */
 function pipe(callable ...$callables): callable
 {
@@ -118,7 +118,7 @@ function pipe(callable ...$callables): callable
  *
  * @param callable ...$callables
  * @return callable
- * @annotaion: ( ...( a -> a ) ) -> ( a -> a )
+ * @annotation ( ...( a -> a ) ) -> ( a -> a )
  */
 function pipeR(callable ...$callables): callable
 {
@@ -130,7 +130,7 @@ function pipeR(callable ...$callables): callable
  *
  * @param string $property
  * @return callable
- * @annotaion: ( string ) -> ( a -> b )
+ * @annotation ( string ) -> ( a -> b )
  */
 function getProperty(string $property): callable
 {
@@ -155,7 +155,7 @@ function getProperty(string $property): callable
  *
  * @param string $property
  * @return callable
- * @annotaion: ( string ) -> ( a -> bool )
+ * @annotation ( string ) -> ( a -> bool )
  */
 function hasProperty(string $property): callable
 {
@@ -180,7 +180,7 @@ function hasProperty(string $property): callable
  *
  * @param string $property
  * @return callable
- * @annotaion: ( string -> a ) -> ( b -> bool )
+ * @annotation ( string -> a ) -> ( b -> bool )
  */
 function propertyEquals(string $property, $value): callable
 {
@@ -202,7 +202,7 @@ function propertyEquals(string $property, $value): callable
  * @param callable $fn
  * @param mixed ...$args
  * @return void
- * @annotaion: ( a -> b ) -> ...a -> b
+ * @annotation ( a -> b ) -> ...a -> b
  */
 function invoke(callable $fn, ...$args)
 {
@@ -214,7 +214,7 @@ function invoke(callable $fn, ...$args)
  *
  * @param mixed $value The value you always want to return.
  * @return callable
- * @annotaion: ( a ) -> ( ...b -> a )
+ * @annotation ( a ) -> ( ...b -> a )
  */
 function always($value): callable
 {

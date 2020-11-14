@@ -35,3 +35,17 @@ if (!defined('WORD_COUNT_ARRAY')) {
 if (!defined('WORD_COUNT_ASSOCIATIVE_ARRAY')) {
     define('WORD_COUNT_ASSOCIATIVE_ARRAY', 2);
 }
+
+// String function flags
+if (!defined('STRINGS_CASE_INSENSITIVE')) {
+    define('STRINGS_CASE_INSENSITIVE', 0x1);
+}
+if (!defined('STRINGS_CASE_SENSITIVE')) {
+    define('STRINGS_CASE_SENSITIVE', 0x2);
+}
+if (!defined('STRINGS_BEFORE_NEEDLE')) {
+    define('STRINGS_BEFORE_NEEDLE', 0x4);
+}
+if (!defined('STRINGS_AFTER_NEEDLE')) {
+    define('STRINGS_AFTER_NEEDLE', 0x8);
+}

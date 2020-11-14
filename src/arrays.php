@@ -31,7 +31,7 @@ use PinkCrab\FunctionConstructors\Comparisons as Comp;
  *
  * @param array $array
  * @return callable
- * @annotaion: array[a] -> ( b -> array[b,a] )
+ * @annotation array[a] -> ( b -> array[b,a] )
  */
 function pushHead(array $array): callable
 {
@@ -50,7 +50,7 @@ function pushHead(array $array): callable
  *
  * @param array $array
  * @return callable
- * @annotaion: array[a] -> ( b -> array[a,b] )
+ * @annotation array[a] -> ( b -> array[a,b] )
  */
 function pushTail(array $array): callable
 {
@@ -69,7 +69,7 @@ function pushTail(array $array): callable
  *
  * @param array $array The array.
  * @return mixed Will return the first value is array is not empty, else null.
- * @annotaion: array -> a
+ * @annotation array -> a
  */
 function head(array $array)
 {
@@ -81,7 +81,7 @@ function head(array $array)
  *
  * @param array $array
  * @return mixed Will return the last value is array is not empty, else null.
- * @annotaion: array -> a
+ * @annotation array -> a
  */
 function tail(array $array)
 {

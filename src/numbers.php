@@ -30,7 +30,7 @@ namespace PinkCrab\FunctionConstructors\Numbers;
  * @param int $initial
  * @return callable
  * @throws TypeError If not int or null passed.
- * @annoation : ( int -> ( int ) ) -> ( int )|int
+ * @annotation ( int -> ( int ) ) -> ( int )|int
  */
 function accumulatorInt(int $initial = 0): callable
 {
@@ -52,7 +52,7 @@ function accumulatorInt(int $initial = 0): callable
  * @param float $initial
  * @return callable
  * @throws TypeError If not float or null passed.
- * @annoation : ( float -> ( float ) ) -> ( float )|float
+ * @annotation ( float -> ( float ) ) -> ( float )|float
  */
 function accumulatorFloat(float $initial = 0): callable
 {
@@ -73,7 +73,7 @@ function accumulatorFloat(float $initial = 0): callable
  * (INT only)
  *
  * @param int $intial Defualts to 0
- * @annoation : ( int ) -> ( int -> int )
+ * @annotation ( int ) -> ( int -> int )
  */
 function sumInt(int $initial = 0): callable
 {
@@ -91,7 +91,7 @@ function sumInt(int $initial = 0): callable
  * (FLOAT only)
  *
  * @param float $intial Defualts to 0
- * @annoation : ( float ) -> ( float -> float )
+ * @annotation ( float ) -> ( float -> float )
  */
 function sumFloat(float $initial = 0.00): callable
 {
@@ -109,7 +109,7 @@ function sumFloat(float $initial = 0.00): callable
  * (INT only)
  *
  * @param int $intial Defualts to 0
- * @annoation : ( int ) -> ( int -> int )
+ * @annotation ( int ) -> ( int -> int )
  */
 function subtractInt(int $initial = 0): callable
 {
@@ -127,7 +127,7 @@ function subtractInt(int $initial = 0): callable
  * (FLOAT only)
  *
  * @param float $intial Defualts to 0
- * @annoation : ( float ) -> ( float -> float )
+ * @annotation ( float ) -> ( float -> float )
  */
 function subtractFloat(float $initial = 0.00): callable
 {
@@ -145,7 +145,7 @@ function subtractFloat(float $initial = 0.00): callable
  * (INT only)
  *
  * @param int $intial Defualts to 1
- * @annoation : ( int ) -> ( int -> int )
+ * @annotation ( int ) -> ( int -> int )
  */
 function multiplyInt(int $initial = 1): callable
 {
@@ -163,7 +163,7 @@ function multiplyInt(int $initial = 1): callable
  * (FLOAT only)
  *
  * @param float $intial Defualts to 1
- * @annoation : ( float ) -> ( float -> float )
+ * @annotation ( float ) -> ( float -> float )
  */
 function multiplyFloat(float $initial = 1): callable
 {
@@ -182,7 +182,7 @@ function multiplyFloat(float $initial = 1): callable
  *
  * @param float $divisor The value to divide the passed value by
  * @return callable
- * @annoation : ( int|float ) -> ( int|float -> float )
+ * @annotation ( int|float ) -> ( int|float -> float )
  */
 function divideBy($divisor = 1): callable
 {
@@ -200,7 +200,7 @@ function divideBy($divisor = 1): callable
  *
  * @param float $dividend The value to divide the passed value by
  * @return callable
- * @annoation : ( int|float ) -> ( int|float -> float )
+ * @annotation ( int|float ) -> ( int|float -> float )
  */
 function divideInto($dividend = 1): callable
 {
@@ -218,7 +218,7 @@ function divideInto($dividend = 1): callable
  *
  * @param float $divisor
  * @return callable
- * @annoation : ( int|float ) -> ( int|float -> float )
+ * @annotation ( int|float ) -> ( int|float -> float )
  */
 function remainderBy($divisor = 1): callable
 {
@@ -236,7 +236,7 @@ function remainderBy($divisor = 1): callable
  *
  * @param float $dividend
  * @return callable
- * @annoation : ( int|float ) -> ( int|float -> float )
+ * @annotation ( int|float ) -> ( int|float -> float )
  */
 function remainderInto($dividend = 1): callable
 {

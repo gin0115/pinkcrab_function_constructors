@@ -103,6 +103,19 @@ class StringFunctionTest extends TestCase
         $this->assertEquals('ha ha ha', $replaceGlynnWithHa('glynn glynn glynn'));
     }
 
+    public function testCanReplaceSubStrings()
+    {
+        $atStart = Str\replaceSubString('PHP', 0, 0);
+        $startAt10 = Str\replaceSubString('PHP', 10, 0);
+        $startAt10For5 = Str\replaceSubString('PHP', 10, 5);
+
+        $string = "abcdefghijklmnopqrstuvwxyz";
+
+        $this->assertEquals('PHP', $atStart($string));
+        $this->assertEquals('abcdefghijPHP', $startAt10($string));
+        $this->assertEquals('abcdefghijPHPpqrstuvwxyz', $startAt10For5($string));
+    }
+
     public function testStringContains(): void
     {
         $contains = Str\contains('--');
@@ -200,11 +213,31 @@ class StringFunctionTest extends TestCase
         $this->assertCount(8, $getOccurances('asfetwafgh'));
     }
 
+    public function testCancharWrap()
+    {
+        $loose10 = Str\charWrap(10, '--');
+        $tight5 = Str\charWrap(5, '--', true);
+
+        $string = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        $this->assertEquals('ABCDEFGHIJKLMNOPQRSTUVWXYZ', $loose10($string));
+        $this->assertEquals('ABCDE--FGHIJ--KLMNO--PQRST--UVWXY--Z', $tight5($string));
+
+        $string = "ABCDEF GHIJK LMN OPQ RST UV WX YZ";
+        $this->assertEquals('ABCDEF--GHIJK LMN--OPQ RST UV--WX YZ', $loose10($string));
+        $this->assertEquals('ABCDE--F--GHIJK--LMN--OPQ--RST--UV WX--YZ', $tight5($string));
+    }
+
     public function testCanDoTrim()
     {
         $trimAB = Str\lTrim("AB");
         $this->assertEquals('STD', $trimAB("ABSTD"));
         $this->assertEquals('HFJKGHDJKGHFJKFGJKFGJK', $trimAB("ABHFJKGHDJKGHFJKFGJKFGJK"));
+
+        $trimIU = Str\trim("IU");
+        $this->assertEquals('RESSTD', $trimIU("IURESSTDIU"));
+        $this->assertEquals('TREHFJKGHDJKGHFJKFGJKFGJK', $trimIU("IUIUIUTREHFJKGHDJKGHFJKFGJKFGJKIUIUIUIUIUIUIUIUIUIU"));
+
+        $this->assertEquals('CLEAR', Str\trim()("\t\nCLEAR\r\0"));
 
         $trimYZ = Str\rTrim("YZ");
         $this->assertEquals('STD', $trimYZ("STDYZ"));
@@ -263,6 +296,25 @@ class StringFunctionTest extends TestCase
         $this->assertEquals('MAYBE', $wordListPositions[7]);
     }
 
+    public function testCanCountSubStrings()
+    {
+        $findNemoAll = Str\countSubString('Nemo');
+        $findNemoAllAfter20 = Str\countSubString('Nemo', 20);
+        $findNemoAllAfter20OnlyFor40More = Str\countSubString('Nemo', 20, 40);
+
+        $haystack1 = str_repeat('Nemo is a fish.', 11); // 15 chars
+        $haystack2 = str_repeat('Nemo = Fish |', 14); // 13 chars
+
+        $this->assertEquals(11, $findNemoAll($haystack1));
+        $this->assertEquals(14, $findNemoAll($haystack2));
+
+        $this->assertEquals(9, $findNemoAllAfter20($haystack1));
+        $this->assertEquals(12, $findNemoAllAfter20($haystack2));
+
+        $this->assertEquals(2, $findNemoAllAfter20OnlyFor40More($haystack1));
+        $this->assertEquals(3, $findNemoAllAfter20OnlyFor40More($haystack2));
+    }
+
     public function testCanStripTags()
     {
         $allTags = Str\stripTags();
@@ -274,8 +326,81 @@ class StringFunctionTest extends TestCase
 
     public function testCanFindFirstPosition()
     {
-        $findApple = Str\fistPosistion('Apple');
-        $this->assertEquals(0, $findApple('Apple are tasty'));
-        $this->assertEquals(19, $findApple('I really dont like Apples'));
+        $findAppleCaseSense = Str\firstPosistion('Apple');
+        $this->assertEquals(0, $findAppleCaseSense('Apple are tasty'));
+        $this->assertEquals(19, $findAppleCaseSense('I really dont like Apples'));
+        $this->assertNull($findAppleCaseSense('APPLES ARE TASTY'));
+
+        $findAppleCaseInsense = Str\firstPosistion('ApPle', 0, STRINGS_CASE_INSENSITIVE);
+        $this->assertEquals(0, $findAppleCaseInsense('APPLES are tasty'));
+        $this->assertEquals(19, $findAppleCaseInsense('I really dont like APplE Tree'));
+    }
+
+    public function testCanFindLastPosition()
+    {
+        $findLastAppleCaseSense = Str\lastPosistion('Apple');
+        $this->assertEquals(13, $findLastAppleCaseSense('Apple a day, Apple are tasty'));
+        $this->assertEquals(47, $findLastAppleCaseSense('I really dont like Apples but i do really like Apple skin'));
+        $this->assertNull($findLastAppleCaseSense('APPLES ARE TASTY'));
+
+        $findAppleCaseInsense = Str\lastPosistion('ApPle', 0, STRINGS_CASE_INSENSITIVE);
+        $this->assertEquals(25, $findAppleCaseInsense('APPLES are tasty, I like ApPleS'));
+        $this->assertEquals(41, $findAppleCaseInsense('I really dont like APplE Tree, they grow ApPLES'));
+    }
+
+    public function testCanFindSubStrings()
+    {
+        $caseSenseBefore = Str\firstSubString('abc', STRINGS_BEFORE_NEEDLE);
+        $caseSenseAfter = Str\firstSubString('abc');
+        $caseInsenseBefore = Str\firstSubString('aBc', STRINGS_BEFORE_NEEDLE | STRINGS_CASE_INSENSITIVE);
+        $caseInsenseAfter = Str\firstSubString('abC', STRINGS_CASE_INSENSITIVE);
+
+        $this->assertEquals('abcefg', $caseSenseAfter('qwertabcefg'));
+        $this->assertEquals('qwert', $caseSenseBefore('qwertabcefg'));
+        
+        $this->assertNull($caseSenseAfter('rutoiuerot')); // No match
+        $this->assertNull($caseSenseAfter('QWERTABCEFG')); // Uppercase
+
+
+        $this->assertEquals('ABCEFG', $caseInsenseAfter('QWERTABCEFG'));
+        $this->assertEquals('QWERT', $caseInsenseBefore('QWERTABCEFG'));
+        $this->assertEquals('abcefg', $caseInsenseAfter('qwertabcefg'));
+        $this->assertEquals('qwert', $caseInsenseBefore('qwertabcefg'));
+    }
+
+    public function testCanFindFirstCharInString()
+    {
+        $findAorB = Str\firstCharInString('aAbB');
+        $this->assertEquals('banana', $findAorB('qweiuioubanana'));
+        $this->assertEquals('a12345', $findAorB('eruweyriwyriwa12345'));
+    }
+
+    public function testCanFindLastCharInString()
+    {
+        $findAorB = Str\lastCharInString('a');
+        $this->assertEquals('a6', $findAorB('a1a2a3a4a5a6'));
+        $this->assertEquals('abc', $findAorB('eruweyriwyriwa12345abc'));
+    }
+
+    public function testCanTranslateSubString()
+    {
+        $rosStone = Str\translateSubStrings([
+            'Hi' => 'Hello',
+            'Yeah' => 'Yes',
+            'Sod' => 'XXX',
+        ]);
+
+        $this->assertEquals('Hello you', $rosStone('Hi you'));
+        $this->assertEquals('Hello Hello', $rosStone('Hi Hi'));
+
+        $this->assertEquals('Yes we can do that', $rosStone('Yeah we can do that'));
+
+        $this->assertEquals('XXX off', $rosStone('Sod off'));
+    }
+
+    public function testCanUseVSprintf()
+    {
+        $formatter = Str\vSprintf(['alpha', '12', '12.5']);
+        $this->assertEquals('12alpha34-12-12.5-f', $formatter('12%s34-%s-%s-f'));
     }
 }
