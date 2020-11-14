@@ -105,8 +105,8 @@ class StringFunctionTest extends TestCase
 
     public function testCanReplaceSubStrings()
     {
-        $atStart = Str\replaceSubString('PHP', 0, 0);
-        $startAt10 = Str\replaceSubString('PHP', 10, 0);
+        $atStart = Str\replaceSubString('PHP');
+        $startAt10 = Str\replaceSubString('PHP', 10);
         $startAt10For5 = Str\replaceSubString('PHP', 10, 5);
 
         $string = "abcdefghijklmnopqrstuvwxyz";
@@ -135,6 +135,17 @@ class StringFunctionTest extends TestCase
         $endsWith = Str\endsWith('--');
         $this->assertTrue($endsWith('--True--'));
         $this->assertFalse($endsWith('++False++'));
+    }
+
+    public function testCanDoContainsPattern()
+    {
+        $hasFooWithoutPreceedingBar = Str\containsPattern('/(?!.*bar)(?=.*foo)^(\w+)$/');
+        
+        $this->assertTrue($hasFooWithoutPreceedingBar('blahfooblah'));
+        $this->assertTrue($hasFooWithoutPreceedingBar('somethingfoo'));
+        $this->assertFalse($hasFooWithoutPreceedingBar('blahfooblahbarfail'));
+        $this->assertFalse($hasFooWithoutPreceedingBar('shouldbarfooshouldfail'));
+        $this->assertFalse($hasFooWithoutPreceedingBar('barfoofail'));
     }
 
     public function testCanComposeWithSafeStrings(): void

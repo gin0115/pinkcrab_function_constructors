@@ -296,7 +296,7 @@ function contains(string $needle): callable
  * @param string $pattern
  * @return void
  */
-function containPattern(string $pattern): callable
+function containsPattern(string $pattern): callable
 {
     /**
      * @param string $source String to look in.
