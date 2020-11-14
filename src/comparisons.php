@@ -233,7 +233,7 @@ function someTrue(bool ...$var): bool
  *
  * @param mixed $value
  * @return bool
- * @annotaion: mixed -> bool
+ * @annotation mixed -> bool
  */
 function isFalse($value): bool
 {
@@ -245,7 +245,7 @@ function isFalse($value): bool
  *
  * @param mixed $value
  * @return bool
- * @annotaion: mixed -> bool
+ * @annotation mixed -> bool
  */
 function isTrue($value): bool
 {
