@@ -73,7 +73,7 @@ function pushTail(array $array): callable
  */
 function head(array $array)
 {
-    return ! empty($array) ? array_values($array)[0] : null;
+    return !empty($array) ? array_values($array)[0] : null;
 }
 
 /**
@@ -85,9 +85,29 @@ function head(array $array)
  */
 function tail(array $array)
 {
-    return ! empty($array) ? array_reverse($array, false)[0] : null;
+    return !empty($array) ? array_reverse($array, false)[0] : null;
 }
 
+
+/**
+ * Creates a function for counting an the result of passing an 
+ * array through an array  filter
+ * 
+ * ( A -> Bool ) -> ( Array[A] -> Int )
+ *
+ * @param callable $function
+ * @return callable
+ */
+function countWith(callable $function): callable
+{
+    /**
+     * @param array $array
+     * @return int Count
+     */
+    return function (array $array) use ($function) {
+        return count(array_filter($array, $function));
+    };
+}
 
 /*
  *                                ********************
@@ -114,7 +134,7 @@ function arrayCompiler(array $inital = []): callable
         if ($value) {
             $inital[] = $value;
         }
-        return ! is_null($value) ? arrayCompiler($inital) : $inital;
+        return !is_null($value) ? arrayCompiler($inital) : $inital;
     };
 }
 
@@ -133,16 +153,16 @@ function arrayCompilerTyped(callable $validator, array $inital = []): callable
 {
     // Ensure all is validated from initial.
     $inital = array_filter($inital, $validator);
-    
+
     /**
      * @param mixed $value
      * @return callable|array
      */
     return function ($value = null) use ($validator, $inital) {
-        if (! is_null($value) && $validator($value)) {
+        if (!is_null($value) && $validator($value)) {
             $inital[] = $value;
         }
-        return ! is_null($value) ? arrayCompilerTyped($validator, $inital) : $inital;
+        return !is_null($value) ? arrayCompilerTyped($validator, $inital) : $inital;
     };
 }
 
@@ -309,7 +329,7 @@ function mapKey(callable $func): callable
         return array_reduce(
             array_keys($array),
             function ($carry, $key) use ($func, $array) {
-                $carry[ $func($key) ] = $array[ $key ];
+                $carry[$func($key)] = $array[$key];
                 return $carry;
             },
             []
@@ -369,7 +389,7 @@ function flatMap(callable $function, ?int $n = null): callable
         return array_reduce(
             $array,
             function (array $carry, $element) use ($n, $function) {
-                if (is_array($element) && ( is_null($n) || $n > 0 )) {
+                if (is_array($element) && (is_null($n) || $n > 0)) {
                     $carry = array_merge($carry, flatMap($function, $n ? $n - 1 : null)($element));
                 } else {
                     $carry[] = is_array($element) ? $element : $function($element);
@@ -405,7 +425,7 @@ function groupBy(callable $function): callable
         return array_reduce(
             $array,
             function ($carry, $item) use ($function) {
-                $carry[ call_user_func($function, $item) ][] = $item;
+                $carry[call_user_func($function, $item)][] = $item;
                 return $carry;
             },
             []
@@ -473,7 +493,7 @@ function flattenByN(?int $n = null): callable
                     return $carry;
                 }
                 // If the element is an array and we are still flattening, call again
-                if (is_array($element) && ( is_null($n) || $n > 0 )) {
+                if (is_array($element) && (is_null($n) || $n > 0)) {
                     $carry = array_merge($carry, flattenByN($n ? $n - 1 : null)($element));
                 } else {
                     // Else just add the elememnt.
@@ -513,7 +533,7 @@ function replaceRecursive(array ...$with): callable
  */
 function replace(array ...$with): callable
 {
-     /**
+    /**
      * @param array $array The array to have elements replaced from.
      * @return array Array with replacements.
      */
