@@ -89,26 +89,6 @@ function tail(array $array)
 }
 
 
-/**
- * Creates a function for counting an the result of passing an 
- * array through an array  filter
- * 
- * ( A -> Bool ) -> ( Array[A] -> Int )
- *
- * @param callable $function
- * @return callable
- */
-function countWith(callable $function): callable
-{
-    /**
-     * @param array $array
-     * @return int Count
-     */
-    return function (array $array) use ($function) {
-        return count(array_filter($array, $function));
-    };
-}
-
 /*
  *                                ********************
  *                                * Filter Compilers *
@@ -286,6 +266,53 @@ function filterMap(callable $filter, callable $map): callable
         return array_map($map, array_filter($array, $filter));
     };
 }
+
+/**
+ * Runs an array through a filters, returns the total count of true
+ * 
+ * ( A -> Bool ) -> ( Array[A] -> Int )
+ *
+ * @param callable $function
+ * @return callable
+ */
+function filterCount(callable $function): callable
+{
+    /**
+     * @param array $array
+     * @return int Count
+     */
+    return function (array $array) use ($function) {
+        return count(array_filter($array, $function));
+    };
+}
+
+/**
+ * Returns a callback for partitioning an array based
+ * on the results of a filter type function.
+ * Callable will be cast to a bool, if truthy will be listed under 1 key, else 0 for falsey
+ * 
+ * ( A|B -> Bool ) -> ( Array[A|B] -> Array[Array[A][B]] )
+ *
+ * @param callable $function
+ * @return callable
+ */
+function partition(callable $function): callable
+{
+    return function (array $array) use ($function): array {
+        return array_reduce(
+            $array,
+            function ($carry, $element) use ($function): array {
+                $key = (bool)$function($element) ? 1 : 0;
+                $carry[$key][] = $element;
+                return $carry;
+            },
+            []
+        );
+    };
+}
+
+
+
 
 
 /*

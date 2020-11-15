@@ -10,6 +10,7 @@ require_once dirname(__FILE__, 2) . '/FunctionsLoader.php';
  * @since 1.0.0
  * @author GLynn Quelch <glynn.quelch@gmail.com>
  */
+
 use PHPUnit\Framework\TestCase;
 use function PHPUnit\Framework\throwException;
 use PinkCrab\FunctionConstructors\Arrays as Arr;
@@ -45,8 +46,8 @@ class ArrayFunctionTests extends TestCase
 
     public function testCanPushToHead(): void
     {
-        
-        $pushToHead = Arr\pushHead(array( 3, 4, 5, 6 ));
+
+        $pushToHead = Arr\pushHead(array(3, 4, 5, 6));
         $added2     = $pushToHead(2);
         $this->assertEquals(2, $added2[0]);
 
@@ -55,14 +56,14 @@ class ArrayFunctionTests extends TestCase
         $this->assertEquals(1, $added1[0]);
 
         // As curried.
-        $curried = Arr\pushHead(array( 3, 4, 5, 6 ))(2);
+        $curried = Arr\pushHead(array(3, 4, 5, 6))(2);
         $this->assertEquals(2, $curried[0]);
     }
 
     public function testCanPushToTail(): void
     {
 
-        $pushToTail = Arr\pushTail(array( 1, 2, 3, 4 ));
+        $pushToTail = Arr\pushTail(array(1, 2, 3, 4));
         $added2     = $pushToTail(5);
         $this->assertEquals(5, $added2[4]);
 
@@ -71,7 +72,7 @@ class ArrayFunctionTests extends TestCase
         $this->assertEquals(6, $added1[5]);
 
         // As curried.
-        $curried = Arr\pushTail(array( 1, 2, 3, 4 ))(5);
+        $curried = Arr\pushTail(array(1, 2, 3, 4))(5);
         $this->assertEquals(5, $curried[4]);
     }
 
@@ -90,7 +91,7 @@ class ArrayFunctionTests extends TestCase
         // Check returns null if empty.
         $this->assertNull(Arr\head([]));
     }
-    
+
     public function testCanCompileArray(): void
     {
         $arrayCompiler = Arr\arrayCompiler();
@@ -126,7 +127,7 @@ class ArrayFunctionTests extends TestCase
 
         $groupByPerfectNumbers = Arr\groupBy(
             function ($e) {
-                return in_array($e, array( 1, 2, 3, 6, 12 )) ? 'Perfect' : 'Not Perfect';
+                return in_array($e, array(1, 2, 3, 6, 12)) ? 'Perfect' : 'Not Perfect';
             }
         );
 
@@ -152,7 +153,7 @@ class ArrayFunctionTests extends TestCase
 
         // Check that keys are retained.
         $chunkInPairs = Arr\chunk(2, true);
-        $chunkedNames = $chunkInPairs(array( 'Jim', 'Bob', 'Gem', 'Fay' ));
+        $chunkedNames = $chunkInPairs(array('Jim', 'Bob', 'Gem', 'Fay'));
         $this->assertCount(2, $chunkedNames);
         $this->assertEquals('Bob', $chunkedNames[0][1]);
         $this->assertEquals('Fay', $chunkedNames[1][3]);
@@ -222,7 +223,7 @@ class ArrayFunctionTests extends TestCase
         $array = array(
             1,
             2,
-            array( 3, 4 ),
+            array(3, 4),
             array(
                 5,
                 6,
@@ -231,7 +232,7 @@ class ArrayFunctionTests extends TestCase
                 array(
                     9,
                     10,
-                    array( 11, 12, 13 ),
+                    array(11, 12, 13),
                 ),
             ),
         );
@@ -256,7 +257,7 @@ class ArrayFunctionTests extends TestCase
         $replacements2 = array(0 => "grape");
 
         $replaceItems = Arr\replace($replacements, $replacements2);
-        
+
         $this->assertIsArray($replaceItems($base));
         $this->assertEquals('grape', $replaceItems($base)[0]);
         $this->assertEquals('banana', $replaceItems($base)[1]);
@@ -267,13 +268,13 @@ class ArrayFunctionTests extends TestCase
     public function testCanUseReplaceRecursive(): void
     {
         $base = array(
-            'citrus'  => array( 'orange' ),
-            'berries' => array( 'apple', 'raspberry' ),
+            'citrus'  => array('orange'),
+            'berries' => array('apple', 'raspberry'),
         );
 
         $replacements = array(
-            'citrus'  => array( 'pineapple' ),
-            'berries' => array( 'blueberry' ),
+            'citrus'  => array('pineapple'),
+            'berries' => array('blueberry'),
         );
 
         $replaceItems = Arr\replaceRecursive($replacements);
@@ -289,17 +290,21 @@ class ArrayFunctionTests extends TestCase
     public function testCanUseSumWhere()
     {
         $data = [
-            (object)['id' => 1,
-            'cost' => 12.55
+            (object)[
+                'id' => 1,
+                'cost' => 12.55
             ],
-            (object)['id' => 3,
-            'cost' => 2.45
+            (object)[
+                'id' => 3,
+                'cost' => 2.45
             ],
-            (object)['id' => 34,
-            'cost' => 99.99
+            (object)[
+                'id' => 34,
+                'cost' => 99.99
             ],
-            (object)['id' => 12,
-            'cost' => 100.01
+            (object)[
+                'id' => 12,
+                'cost' => 100.01
             ],
         ];
 
@@ -310,11 +315,11 @@ class ArrayFunctionTests extends TestCase
         $this->assertEquals(215.00, $costSum($data));
     }
 
-    
+
 
     public function testCanSortArray(): void
     {
-        $array         = array( 'b', 'c', 'a', 'f', 'd', 'z', 'g' );
+        $array         = array('b', 'c', 'a', 'f', 'd', 'z', 'g');
         $sortAsStrings = Arr\sort(SORT_STRING);
 
         $sortedArray = $sortAsStrings($array);
@@ -345,7 +350,7 @@ class ArrayFunctionTests extends TestCase
             if ($a == $b) {
                 return 0;
             }
-            return ( $a < $b ) ? -1 : 1;
+            return ($a < $b) ? -1 : 1;
         };
 
         $sortByLowest = Arr\uasort($lowestFirstCallback);
@@ -366,13 +371,13 @@ class ArrayFunctionTests extends TestCase
 
     public function testCanDoUsortOnArray(): void
     {
-        $array = array( 3, 2, 5, 6, 1 );
+        $array = array(3, 2, 5, 6, 1);
 
         $lowestFirstCallback = function ($a, $b) {
             if ($a == $b) {
                 return 0;
             }
-            return ( $a < $b ) ? -1 : 1;
+            return ($a < $b) ? -1 : 1;
         };
 
         $sortByLowest = Arr\usort($lowestFirstCallback);
@@ -384,5 +389,26 @@ class ArrayFunctionTests extends TestCase
         $this->assertEquals(2, $sortedArray[1]);
         $this->assertEquals(5, $sortedArray[3]);
         $this->assertEquals(6, $sortedArray[4]);
+    }
+
+    public function testCanPartitionTable()
+    {
+        $isEven = function ($e) {
+            return $e % 2 === 0;
+        };
+
+        $sortByOddEven = Arr\partition($isEven);
+
+        $data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+        $sorted = $sortByOddEven($data);
+        $this->assertCount(5, $sorted[0]);
+        $this->assertCount(5, $sorted[1]);
+
+        $this->assertContains(2, $sorted[1]);
+        $this->assertContains(4, $sorted[1]);
+        $this->assertContains(8, $sorted[1]);
+        $this->assertContains(3, $sorted[0]);
+        $this->assertContains(7, $sorted[0]);
     }
 }
