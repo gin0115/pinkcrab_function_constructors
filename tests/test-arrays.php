@@ -45,6 +45,7 @@ class ArrayFunctionTests extends TestCase
 
     public function testCanPushToHead(): void
     {
+        
         $pushToHead = Arr\pushHead(array( 3, 4, 5, 6 ));
         $added2     = $pushToHead(2);
         $this->assertEquals(2, $added2[0]);
