@@ -540,7 +540,7 @@ function rTrim(string $mask = "\t\n\r\0\x0B"): callable
  * @param string $base The stirng to act as the base.
  * @param bool $asPc If set to true will reutrn the percentage match, rather than char count.
  */
-function similarTextAsBase(string $base, bool $asPc = false): callable
+function similarAsBase(string $base, bool $asPc = false): callable
 {
     /**
      * @param string $comparissonString The string to compare against base.
@@ -562,7 +562,7 @@ function similarTextAsBase(string $base, bool $asPc = false): callable
  * @param string $comparissonString The string to compare against base.
  * @param bool $asPc If set to true will reutrn the percentage match, rather than char count.
  */
-function similarTextAsComparisson(string $comparissonString, bool $asPc = false): callable
+function similarAsComparisson(string $comparissonString, bool $asPc = false): callable
 {
     /**
      * @param string $comparissonString The stirng to act as the base.
@@ -588,9 +588,9 @@ function pad(int $length, string $padContent = ' ', int $type = STR_PAD_RIGHT): 
 {
     /**
      * @param string $string The string to pad out.
-     * @return int|float
+     * @return string
      */
-    return function (string $string) use ($length, $padContent, $type) {
+    return function (string $string) use ($length, $padContent, $type): string {
         return \str_pad($string, $length, $padContent, $type);
     };
 }
@@ -640,7 +640,7 @@ function wordCount(int $format = WORD_COUNT_NUMBER_OF_WORDS, ?string $charList =
  *
  * String|Null -> ( String -> String )
  *
- * @param string|null $allowedTags The allowed tags, pass null or leave blank for all.
+ * @param string|null $allowedTags The allowed tags, pass null or leave blank for none.
  * @return callable
  */
 function stripTags(?string $allowedTags = null): callable
@@ -721,7 +721,7 @@ function lastPosistion(
  * When found can return all after or before the needle (sub string)
  * Can be done as case sensitive (strstr()) or insenstive (stristr())
  *
- * String -> Bool -> Bool -> ( String -> String|null )
+ * String -> Int -> ( String -> String|null )
  *
  * @param string $needle The substring to look for.
  * @param int $flags Possible STRINGS_CASE_INSENSITIVE | STRINGS_CASE_SENSITIVE | STRINGS_AFTER_NEEDLE | STRINGS_BEFORE_NEEDLE
@@ -757,7 +757,7 @@ function firstSubString(
  * @param string $chars All chars to check with.
  * @return callable
  */
-function firstCharInString(string $chars): callable
+function firstChar(string $chars): callable
 {
     /**
      * @param string $haystack
@@ -778,7 +778,7 @@ function firstCharInString(string $chars): callable
  * @param string $char
  * @return callable
  */
-function lastCharInString(string $char): callable
+function lastChar(string $char): callable
 {
     /**
      * @param string $haystack
@@ -799,7 +799,7 @@ function lastCharInString(string $char): callable
  * @param array $dictionary
  * @return callable
  */
-function translateSubStrings(array $dictionary): callable
+function translateWith(array $dictionary): callable
 {
     /**
      * @param string $haystack

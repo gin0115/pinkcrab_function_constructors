@@ -179,7 +179,6 @@ class StringFunctionTest extends TestCase
         // With thousand seperator
         $withPipe = Str\decimialNumber(2, '.', '|');
         $this->assertEquals('123|456|789.12', $withPipe(123456789.123456));
-
     }
 
     public function testCanStripCSlashes()
@@ -263,7 +262,6 @@ class StringFunctionTest extends TestCase
         $this->assertCount(4, $getOccurances('Hello'));
         $this->assertCount(1, $getOccurances('a'));
         $this->assertCount(8, $getOccurances('asfetwafgh'));
-
     }
 
     public function testCanwordWrap()
@@ -282,6 +280,10 @@ class StringFunctionTest extends TestCase
 
     public function testCanDoTrim()
     {
+        $trimZ = Str\trim("zZ");
+        $this->assertEquals('44455', $trimZ("zzzz44455ZZZZZZZZZ"));
+        
+        
         $trimAB = Str\lTrim("AB");
         $this->assertEquals('STD', $trimAB("ABSTD"));
         $this->assertEquals('HFJKGHDJKGHFJKFGJKFGJK', $trimAB("ABHFJKGHDJKGHFJKFGJKFGJK"));
@@ -297,20 +299,22 @@ class StringFunctionTest extends TestCase
         $this->assertEquals('ABHFJKGHDJKGHFJKFGJKFGJK', $trimYZ("ABHFJKGHDJKGHFJKFGJKFGJKYZ"));
     }
 
-    public function testCanDoSimilarTextAsBase()
+    public function testCanDosimilarAsBase()
     {
-        $compareTheBaseAsChars = Str\similarTextAsBase("THE BASE");
-        $compareTheBaseAsPC = Str\similarTextAsBase("THE BASE", true);
+        $compareTheBaseAsChars = Str\similarAsBase("THE BASE");
+        $compareTheBaseAsPC = Str\similarAsBase("THE BASE", true);
         $this->assertEquals(4, $compareTheBaseAsChars('BASE'));
         $this->assertEquals((6 / 9) * 100, $compareTheBaseAsPC('BASE'));
     }
 
-    public function testCanDoSimilarTextAsComparisson()
+    public function testCanDosimilarAsComparisson()
     {
-        $compareTheBaseAsChars = Str\similarTextAsComparisson("BASE");
-        $compareTheBaseAsPC = Str\similarTextAsComparisson("BASE", true);
+        $compareTheBaseAsChars = Str\similarAsComparisson("BASE");
+        $compareTheBaseAsPC = Str\similarAsComparisson("BASE", true);
         $this->assertEquals(4, $compareTheBaseAsChars('THE BASE'));
-        $this->assertEquals((6 / 9) * 100, $compareTheBaseAsPC('THE BASE'));
+        
+        // This is not the calc done in the fucntion, but give the desired answer simpler!
+        $this->assertEquals(66.66666666666667, $compareTheBaseAsPC('THE BASE'));
     }
 
     public function testCanPadStrings()
@@ -366,7 +370,6 @@ class StringFunctionTest extends TestCase
 
         $this->assertEquals(2, $findNemoAllAfter20OnlyFor40More($haystack1));
         $this->assertEquals(3, $findNemoAllAfter20OnlyFor40More($haystack2));
-        
     }
 
     public function testCanStripTags()
@@ -385,8 +388,8 @@ class StringFunctionTest extends TestCase
         $this->assertEquals(19, $findAppleCaseSense('I really dont like Apples'));
         $this->assertNull($findAppleCaseSense('APPLES ARE TASTY'));
 
-        $findAppleCaseInsense = Str\firstPosistion('ApPle', 0, STRINGS_CASE_INSENSITIVE);
-        $this->assertEquals(0, $findAppleCaseInsense('APPLES are tasty'));
+        $findAppleCaseInsense = Str\firstPosistion('ApPle', 10, STRINGS_CASE_INSENSITIVE);
+        $this->assertNull($findAppleCaseInsense('Hmm yes, APPLES are really tasty'));
         $this->assertEquals(19, $findAppleCaseInsense('I really dont like APplE Tree'));
     }
 
@@ -422,23 +425,23 @@ class StringFunctionTest extends TestCase
         $this->assertEquals('qwert', $caseInsenseBefore('qwertabcefg'));
     }
 
-    public function testCanFindFirstCharInString()
+    public function testCanFindfirstChar()
     {
-        $findAorB = Str\firstCharInString('aAbB');
+        $findAorB = Str\firstChar('aAbB');
         $this->assertEquals('banana', $findAorB('qweiuioubanana'));
         $this->assertEquals('a12345', $findAorB('eruweyriwyriwa12345'));
     }
 
-    public function testCanFindLastCharInString()
+    public function testCanFindlastChar()
     {
-        $findAorB = Str\lastCharInString('a');
+        $findAorB = Str\lastChar('a');
         $this->assertEquals('a6', $findAorB('a1a2a3a4a5a6'));
         $this->assertEquals('abc', $findAorB('eruweyriwyriwa12345abc'));
     }
 
     public function testCanTranslateSubString()
     {
-        $rosStone = Str\translateSubStrings([
+        $rosStone = Str\translateWith([
             'Hi' => 'Hello',
             'Yeah' => 'Yes',
             'Sod' => 'XXX',
