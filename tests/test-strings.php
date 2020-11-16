@@ -105,8 +105,8 @@ class StringFunctionTest extends TestCase
 
     public function testCanReplaceSubStrings()
     {
-        $atStart = Str\replaceSubString('PHP', 0, 0);
-        $startAt10 = Str\replaceSubString('PHP', 10, 0);
+        $atStart = Str\replaceSubString('PHP');
+        $startAt10 = Str\replaceSubString('PHP', 10);
         $startAt10For5 = Str\replaceSubString('PHP', 10, 5);
 
         $string = "abcdefghijklmnopqrstuvwxyz";
@@ -135,6 +135,57 @@ class StringFunctionTest extends TestCase
         $endsWith = Str\endsWith('--');
         $this->assertTrue($endsWith('--True--'));
         $this->assertFalse($endsWith('++False++'));
+    }
+
+    public function testCanDoContainsPattern()
+    {
+        $hasFooWithoutPreceedingBar = Str\containsPattern('/(?!.*bar)(?=.*foo)^(\w+)$/');
+
+        $this->assertTrue($hasFooWithoutPreceedingBar('blahfooblah'));
+        $this->assertTrue($hasFooWithoutPreceedingBar('somethingfoo'));
+        $this->assertFalse($hasFooWithoutPreceedingBar('blahfooblahbarfail'));
+        $this->assertFalse($hasFooWithoutPreceedingBar('shouldbarfooshouldfail'));
+        $this->assertFalse($hasFooWithoutPreceedingBar('barfoofail'));
+    }
+
+    public function testCanSplitStringWithPattern()
+    {
+        $splitter = Str\splitPattern("/-/");
+        $date1 = "1970-01-01";
+        $date2 = "2020-11-11";
+        $dateFail = "RETURNED1";
+
+        $this->assertEquals('1970', $splitter($date1)[0]);
+        $this->assertEquals('01', $splitter($date1)[1]);
+        $this->assertEquals('01', $splitter($date1)[2]);
+
+        $this->assertEquals('2020', $splitter($date2)[0]);
+        $this->assertEquals('11', $splitter($date2)[1]);
+        $this->assertEquals('11', $splitter($date2)[2]);
+
+        $this->assertEquals('RETURNED1', $splitter($dateFail)[0]);
+    }
+
+    public function testCanFormatDecimalNumber()
+    {
+        $eightDecimalPlaces = Str\decimialNumber(8);
+        $tenDecimalPlaces = Str\decimialNumber(10);
+        $doubleDecimalPlaces = Str\decimialNumber(2);
+
+        $this->assertEquals('3.50000000', $eightDecimalPlaces(3.5));
+        $this->assertEquals('2.6580000000', $tenDecimalPlaces("2.658"));
+        $this->assertEquals('3.14', $doubleDecimalPlaces(M_PI));
+
+        // With thousand seperator
+        $withPipe = Str\decimialNumber(2, '.', '|');
+        $this->assertEquals('123|456|789.12', $withPipe(123456789.123456));
+    }
+
+    public function testCanStripCSlashes()
+    {
+        $escA_C_U = Str\addSlashes('ACU');
+
+        $this->assertEquals('\Abcd\Cfjruuuu\U', $escA_C_U('AbcdCfjruuuuU'));
     }
 
     public function testCanComposeWithSafeStrings(): void
@@ -173,18 +224,18 @@ class StringFunctionTest extends TestCase
             Str\append('99')
         );
 
-        $results = array_map($function, array( '1a2', '1b3', '1t4' ));
+        $results = array_map($function, array('1a2', '1b3', '1t4'));
         $this->assertEquals('001_a_299', $results[0]);
         $this->assertEquals('001b399', $results[1]);
         $this->assertEquals('001-t-499', $results[2]);
     }
 
-    public function testCanAddCSlashes()
+    public function testCanAddSlashes()
     {
-        $slashA = Str\addCSlashes('a');
+        $slashA = Str\addSlashes('a');
         $this->assertEquals('h\appy d\ays', $slashA('happy days'));
 
-        $slashAD = Str\addCSlashes('ad');
+        $slashAD = Str\addSlashes('ad');
         $this->assertEquals('h\appy \d\ays', $slashAD('happy days'));
     }
 
@@ -201,7 +252,7 @@ class StringFunctionTest extends TestCase
 
     public function testCanSplitChunkString()
     {
-        $in5s = Str\chunkSplit(5, '-');
+        $in5s = Str\chunk(5, '-');
         $this->assertEquals('aaaaa-bbbbb-ccccc-', $in5s('aaaaabbbbbccccc'));
     }
 
@@ -213,10 +264,10 @@ class StringFunctionTest extends TestCase
         $this->assertCount(8, $getOccurances('asfetwafgh'));
     }
 
-    public function testCancharWrap()
+    public function testCanwordWrap()
     {
-        $loose10 = Str\charWrap(10, '--');
-        $tight5 = Str\charWrap(5, '--', true);
+        $loose10 = Str\wordWrap(10, '--');
+        $tight5 = Str\wordWrap(5, '--', true);
 
         $string = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         $this->assertEquals('ABCDEFGHIJKLMNOPQRSTUVWXYZ', $loose10($string));
@@ -229,6 +280,10 @@ class StringFunctionTest extends TestCase
 
     public function testCanDoTrim()
     {
+        $trimZ = Str\trim("zZ");
+        $this->assertEquals('44455', $trimZ("zzzz44455ZZZZZZZZZ"));
+        
+        
         $trimAB = Str\lTrim("AB");
         $this->assertEquals('STD', $trimAB("ABSTD"));
         $this->assertEquals('HFJKGHDJKGHFJKFGJKFGJK', $trimAB("ABHFJKGHDJKGHFJKFGJKFGJK"));
@@ -244,20 +299,22 @@ class StringFunctionTest extends TestCase
         $this->assertEquals('ABHFJKGHDJKGHFJKFGJKFGJK', $trimYZ("ABHFJKGHDJKGHFJKFGJKFGJKYZ"));
     }
 
-    public function testCanDoSimilarTextAsBase()
+    public function testCanDosimilarAsBase()
     {
-        $compareTheBaseAsChars = Str\similarTextAsBase("THE BASE");
-        $compareTheBaseAsPC = Str\similarTextAsBase("THE BASE", true);
+        $compareTheBaseAsChars = Str\similarAsBase("THE BASE");
+        $compareTheBaseAsPC = Str\similarAsBase("THE BASE", true);
         $this->assertEquals(4, $compareTheBaseAsChars('BASE'));
         $this->assertEquals((6 / 9) * 100, $compareTheBaseAsPC('BASE'));
     }
 
-    public function testCanDoSimilarTextAsComparisson()
+    public function testCanDosimilarAsComparisson()
     {
-        $compareTheBaseAsChars = Str\similarTextAsComparisson("BASE");
-        $compareTheBaseAsPC = Str\similarTextAsComparisson("BASE", true);
+        $compareTheBaseAsChars = Str\similarAsComparisson("BASE");
+        $compareTheBaseAsPC = Str\similarAsComparisson("BASE", true);
         $this->assertEquals(4, $compareTheBaseAsChars('THE BASE'));
-        $this->assertEquals((6 / 9) * 100, $compareTheBaseAsPC('THE BASE'));
+        
+        // This is not the calc done in the fucntion, but give the desired answer simpler!
+        $this->assertEquals(66.66666666666667, $compareTheBaseAsPC('THE BASE'));
     }
 
     public function testCanPadStrings()
@@ -331,8 +388,8 @@ class StringFunctionTest extends TestCase
         $this->assertEquals(19, $findAppleCaseSense('I really dont like Apples'));
         $this->assertNull($findAppleCaseSense('APPLES ARE TASTY'));
 
-        $findAppleCaseInsense = Str\firstPosistion('ApPle', 0, STRINGS_CASE_INSENSITIVE);
-        $this->assertEquals(0, $findAppleCaseInsense('APPLES are tasty'));
+        $findAppleCaseInsense = Str\firstPosistion('ApPle', 10, STRINGS_CASE_INSENSITIVE);
+        $this->assertNull($findAppleCaseInsense('Hmm yes, APPLES are really tasty'));
         $this->assertEquals(19, $findAppleCaseInsense('I really dont like APplE Tree'));
     }
 
@@ -357,7 +414,7 @@ class StringFunctionTest extends TestCase
 
         $this->assertEquals('abcefg', $caseSenseAfter('qwertabcefg'));
         $this->assertEquals('qwert', $caseSenseBefore('qwertabcefg'));
-        
+
         $this->assertNull($caseSenseAfter('rutoiuerot')); // No match
         $this->assertNull($caseSenseAfter('QWERTABCEFG')); // Uppercase
 
@@ -368,23 +425,23 @@ class StringFunctionTest extends TestCase
         $this->assertEquals('qwert', $caseInsenseBefore('qwertabcefg'));
     }
 
-    public function testCanFindFirstCharInString()
+    public function testCanFindfirstChar()
     {
-        $findAorB = Str\firstCharInString('aAbB');
+        $findAorB = Str\firstChar('aAbB');
         $this->assertEquals('banana', $findAorB('qweiuioubanana'));
         $this->assertEquals('a12345', $findAorB('eruweyriwyriwa12345'));
     }
 
-    public function testCanFindLastCharInString()
+    public function testCanFindlastChar()
     {
-        $findAorB = Str\lastCharInString('a');
+        $findAorB = Str\lastChar('a');
         $this->assertEquals('a6', $findAorB('a1a2a3a4a5a6'));
         $this->assertEquals('abc', $findAorB('eruweyriwyriwa12345abc'));
     }
 
     public function testCanTranslateSubString()
     {
-        $rosStone = Str\translateSubStrings([
+        $rosStone = Str\translateWith([
             'Hi' => 'Hello',
             'Yeah' => 'Yes',
             'Sod' => 'XXX',

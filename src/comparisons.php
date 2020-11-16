@@ -39,7 +39,7 @@ function isEqualTo($a): callable
      */
     return function ($b) use ($a): bool {
 
-        if (! sameScalar($b, $a)) {
+        if (!sameScalar($b, $a)) {
             return false;
         }
 
@@ -67,23 +67,23 @@ function isEqualTo($a): callable
 function isNotEqualTo($a): callable
 {
     return function ($b) use ($a): bool {
-        return ! isEqualTo($a)($b);
+        return !isEqualTo($a)($b);
     };
 }
 
 function isGreaterThan($a): callable
 {
     return function ($b) use ($a): bool {
-        return isEqualIn(array( 'integer', 'double' ))(gettype($b))
-        ? $a > $b : false;
+        return isEqualIn(array('integer', 'double'))(gettype($b))
+            ? $a > $b : false;
     };
 }
 
 function isLessThan($a): callable
 {
     return function ($b) use ($a): bool {
-        return isEqualIn(array( 'integer', 'double' ))(gettype($b))
-        ? $a < $b : false;
+        return isEqualIn(array('integer', 'double'))(gettype($b))
+            ? $a < $b : false;
     };
 }
 
@@ -130,7 +130,7 @@ function isEqualIn(array $a): callable
  */
 function notEmpty($value): bool
 {
-    return ! empty($value);
+    return !empty($value);
 }
 
 /**
@@ -148,7 +148,7 @@ function groupAnd(callable ...$callables): callable
         return (bool) array_reduce(
             $callables,
             function ($result, $callable) use ($source) {
-                return ( is_bool($result) && $result === false ) ? false : $callable($source);
+                return (is_bool($result) && $result === false) ? false : $callable($source);
             },
             null
         );
@@ -170,7 +170,7 @@ function groupOr(callable ...$callables): callable
         return (bool) array_reduce(
             $callables,
             function ($result, $callable) use ($source) {
-                return ( is_bool($result) && $result === true ) ? true : $callable($source);
+                return (is_bool($result) && $result === true) ? true : $callable($source);
             },
             null
         );
@@ -217,7 +217,7 @@ function sameScalar(...$variables): bool
 function allTrue(bool ...$var): bool
 {
     $var = array_map('boolval', $var);
-    return ! in_array(false, $var, true) && in_array(true, $var, true);
+    return !in_array(false, $var, true) && in_array(true, $var, true);
 }
 
 /**
@@ -243,13 +243,27 @@ function isFalse($value): bool
 /**
  * Checks if the passed value is a boolean and true
  *
+ * A -> Bool
+ * 
  * @param mixed $value
  * @return bool
- * @annotation mixed -> bool
  */
 function isTrue($value): bool
 {
     return  is_bool($value) && $value === true;
+}
+
+/**
+ * Checks if the passed value is a float or int.
+ *
+ * A -> Bool
+ * 
+ * @param mixed $value
+ * @return boolean
+ */
+function isNumber($value): bool
+{
+    return is_float($value) || is_int($value);
 }
 
 /**
