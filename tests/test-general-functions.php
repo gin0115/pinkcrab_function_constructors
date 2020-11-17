@@ -120,4 +120,76 @@ class GeneralFunctionTest extends TestCase
         )(7);
         $this->assertEquals(69, $results);
     }
+
+    public function testCanUsePluckProperty()
+    {
+        $data = (object)[
+            'alpha' => [
+                'bravo' => (object)[
+                    'charlie' => [
+                        'delta' => 'SPOONS'
+                    ]
+                ]
+            ]
+        ];
+
+        $getSpoons = Func\pluckProperty('alpha', 'bravo', 'charlie', 'delta');
+        $getDelta = Func\pluckProperty('alpha', 'bravo', 'charlie');
+        $this->assertEquals('SPOONS', $getSpoons($data));
+        $this->assertArrayHasKey('delta', $getDelta($data));
+        $this->assertContains('SPOONS', $getDelta($data));
+
+
+        // $encoder = Func\setProperty((object)['tree' => 42]);
+        // $return = $encoder('test', 1);
+        // var_dump($return->test);
+        // $encoder = Func\setProperty($return);
+        // $return = $encoder('ddddd', 1789789);
+        // var_dump($return->ddddd);
+
+
+        // $recordEncoder = Func\recordEncoder(new ArrayObject());
+        // $return = $recordEncoder(
+        //     Func\encodeProperty('one', Func\pluckProperty('alpha', 'bravo', 'charlie', 'delta')($data)),
+        //     Func\encodeProperty('two', Func\pluckProperty('alpha', 'bravo')($data)),
+        //     Func\encodeProperty('three', 3),
+        // );
+
+
+
+        $arrayEndoder = Func\recordEncoder((object)['tree' => 'OLD']);
+        
+        
+        $res = $arrayEndoder(
+            Func\encodeProperty('one', Func\pluckProperty('alpha', 'bravo', 'charlie', 'delta')),
+            Func\encodeProperty('two', Func\pluckProperty('alpha', 'bravo')),
+            Func\encodeProperty('three', Func\always(45456465)),
+        );
+
+        $res2 = $arrayEndoder(
+            Func\encodeProperty('one', Func\always('ONE')),
+            Func\encodeProperty('two', Func\pluckProperty('alpha', 'bravo')),
+            Func\encodeProperty('three', Func\always(45456465)),
+        );
+
+        // var_dump($res($data)->one);
+        // var_dump($res2($data)->tree);
+
+        $arrayEndoder = Func\recordEncoder((object)['tree' => 'OLD'])(
+            Func\encodeProperty('one', Func\pluckProperty('alpha', 'bravo', 'charlie', 'delta')),
+            Func\encodeProperty('two', Func\getProperty('alpha')),
+            Func\encodeProperty('three', Func\always(45456465)),
+        );
+        // var_dump($arrayEndoder($data)->two);
+
+        var_dump(
+            Func\pipe(
+                Func\recordEncoder((object)['tree' => 'SPPON'])(
+                    Func\encodeProperty('one', Func\always('ONE')),
+                    Func\encodeProperty('two', Func\pluckProperty('alpha', 'bravo')),
+                    Func\encodeProperty('three', Func\always(45456465))
+                )
+            )($data)
+        );
+    }
 }
