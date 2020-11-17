@@ -721,7 +721,7 @@ function lastPosistion(
  * When found can return all after or before the needle (sub string)
  * Can be done as case sensitive (strstr()) or insenstive (stristr())
  *
- * String -> Int -> ( String -> String|null )
+ * String -> Int -> ( String -> String )
  *
  * @param string $needle The substring to look for.
  * @param int $flags Possible STRINGS_CASE_INSENSITIVE | STRINGS_CASE_SENSITIVE | STRINGS_AFTER_NEEDLE | STRINGS_BEFORE_NEEDLE
@@ -738,13 +738,13 @@ function firstSubString(
 
     /**
      * @param string $haystack The haystack to look through.
-     * @return int|null
+     * @return string
      */
-    return function (string $haystack) use ($needle, $beforeNeedle, $caseSensitive): ?string {
+    return function (string $haystack) use ($needle, $beforeNeedle, $caseSensitive): string {
         $result = $caseSensitive
             ? strstr($haystack, $needle, $beforeNeedle)
             : stristr($haystack, $needle, $beforeNeedle);
-        return !C\isFalse($result) ? $result : null;
+        return !C\isFalse($result) ? $result : '';
     };
 }
 
@@ -752,7 +752,7 @@ function firstSubString(
  * Returns a callable for creating a fucntion which finds the first occurance of
  * any character (from a list) in a defined string.
  *
- * String -> ( String -> String|null )
+ * String -> ( String -> String )
  *
  * @param string $chars All chars to check with.
  * @return callable
@@ -761,11 +761,11 @@ function firstChar(string $chars): callable
 {
     /**
      * @param string $haystack
-     * @return string|null
+     * @return string
      */
-    return function (string $haystack) use ($chars): ?string {
+    return function (string $haystack) use ($chars): string {
         $result = strpbrk($haystack, $chars);
-        return !C\isFalse($result) ? $result : null;
+        return !C\isFalse($result) ? $result : '';
     };
 }
 
@@ -773,7 +773,7 @@ function firstChar(string $chars): callable
  * Returns a function that finds the last char in a string and returns the following text.
  * Matches the first char passed, if more than 1 char passed, the rest are ignored.
  *
- * String -> ( String -> String|null )
+ * String -> ( String -> String )
  *
  * @param string $char
  * @return callable
@@ -782,11 +782,11 @@ function lastChar(string $char): callable
 {
     /**
      * @param string $haystack
-     * @return string|null
+     * @return string
      */
-    return function (string $haystack) use ($char): ?string {
+    return function (string $haystack) use ($char): string {
         $result = strrchr($haystack, $char);
-        return !C\isFalse($result) ? $result : null;
+        return !C\isFalse($result) ? $result : '';
     };
 }
 

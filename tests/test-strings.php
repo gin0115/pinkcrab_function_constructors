@@ -415,8 +415,10 @@ class StringFunctionTest extends TestCase
         $this->assertEquals('abcefg', $caseSenseAfter('qwertabcefg'));
         $this->assertEquals('qwert', $caseSenseBefore('qwertabcefg'));
 
-        $this->assertNull($caseSenseAfter('rutoiuerot')); // No match
-        $this->assertNull($caseSenseAfter('QWERTABCEFG')); // Uppercase
+        $this->assertNotNull($caseSenseAfter('rutoiuerot')); // No match
+        $this->assertNotNull($caseSenseAfter('QWERTABCEFG')); // Uppercase
+        $this->assertEquals('', $caseSenseAfter('rutoiuerot'));// No match
+        $this->assertEquals('', $caseSenseAfter('QWERTABCEFG'));// Uppercase
 
 
         $this->assertEquals('ABCEFG', $caseInsenseAfter('QWERTABCEFG'));
@@ -430,6 +432,7 @@ class StringFunctionTest extends TestCase
         $findAorB = Str\firstChar('aAbB');
         $this->assertEquals('banana', $findAorB('qweiuioubanana'));
         $this->assertEquals('a12345', $findAorB('eruweyriwyriwa12345'));
+        $this->assertEquals('', $findAorB('zzzzzzzzzzzzzzzzzzz'));
     }
 
     public function testCanFindlastChar()
@@ -437,6 +440,7 @@ class StringFunctionTest extends TestCase
         $findAorB = Str\lastChar('a');
         $this->assertEquals('a6', $findAorB('a1a2a3a4a5a6'));
         $this->assertEquals('abc', $findAorB('eruweyriwyriwa12345abc'));
+        $this->assertEquals('', $findAorB('zzzzzzzzzzzzzzzz'));
     }
 
     public function testCanTranslateSubString()

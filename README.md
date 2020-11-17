@@ -14,7 +14,8 @@ If you wish to use this libary within WordPress or other PHP codebases where you
 <?php
 
 require_once('path/to/cloned/repo/FunctionsLoader.php');
-FunctionsLoader::include(); // This will then just include all functions files and you can use them.
+FunctionsLoader::include(); 
+// This will then just include all functions files and you can use them.
 
 ```
 
