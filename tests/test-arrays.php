@@ -7,8 +7,8 @@ require_once dirname(__FILE__, 2) . '/FunctionsLoader.php';
 /**
  * Tests for the Array functions class.
  *
- * @since 1.0.0
- * @author GLynn Quelch <glynn.quelch@gmail.com>
+ * @since 0.1.0
+ * @author Glynn Quelch <glynn.quelch@gmail.com>
  */
 
 use PHPUnit\Framework\TestCase;
