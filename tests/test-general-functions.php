@@ -5,8 +5,8 @@ declare(strict_types=1);
 /**
  * Tests for the StrictMap class.
  *
- * @since 1.0.0
- * @author GLynn Quelch <glynn.quelch@gmail.com>
+ * @since 0.1.0
+ * @author Glynn Quelch <glynn.quelch@gmail.com>
  */
 
 require_once dirname(__FILE__, 2) . '/FunctionsLoader.php';
@@ -119,5 +119,111 @@ class GeneralFunctionTest extends TestCase
             Num\sum(12)
         )(7);
         $this->assertEquals(69, $results);
+    }
+
+    public function testCanUsePluckProperty()
+    {
+        $data = (object)[
+            'alpha' => [
+                'bravo' => (object)[
+                    'charlie' => [
+                        'delta' => 'SPOONS'
+                    ]
+                ]
+            ]
+        ];
+
+        $getSpoons = Func\pluckProperty('alpha', 'bravo', 'charlie', 'delta');
+        $getDelta = Func\pluckProperty('alpha', 'bravo', 'charlie');
+        $this->assertEquals('SPOONS', $getSpoons($data));
+        $this->assertArrayHasKey('delta', $getDelta($data));
+        $this->assertContains('SPOONS', $getDelta($data));
+    }
+
+    public function testCanUseRecordEncoder()
+    {
+        $data = (object)[
+            'post' => (object)[
+                'id' => 123,
+                'title' => 'Lorem ipsum dolor',
+                'content' => 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique iste voluptatum sequi. Officia dignissimos minus ipsum odit, facilis voluptatibus veniam enim molestiae ipsam quae temporibus porro necessitatibus quia non mollitia!',
+                'date' => (new DateTime())->format('d/m/yy H:m'),
+                'author' => (object)[
+                    'userName' => 'someUser12',
+                    'displayName' => 'Sam Smith'
+                ],
+                'url' => 'https://www.url.tld/post/123/lorem-ipsum-dolor'
+            ],
+            'comments' => [
+                (object)[
+                    'post' => 123,
+                    'author' => (object)[
+                    'userName' => 'someUser2',
+                    'displayName' => 'Jane Jameson',
+                    'comment' => 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Hic, illo tempore repudiandae quos vero, vitae aut ullam tenetur officiis accusantium dolor animi ipsa omnis impedit, saepe est harum quisquam sit.',
+                    'date' => (new DateTime('yesterday'))->format('d/m/yy H:m'),
+                    ]
+                ],
+                (object)[
+                    'post' => 123,
+                    'author' => (object)[
+                    'userName' => 'someUser22',
+                    'displayName' => 'Barry Burton',
+                    'comment' => 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Hic, illo tempore repudiandae quos vero, vitae aut ullam tenetur officiis accusantium dolor animi ipsa omnis impedit, saepe est harum quisquam sit.',
+                    'date' => (new DateTime('yesterday'))->format('d/m/yy H:m'),
+                    ]
+                ]
+            ],
+            'shares' => [
+                'facebook' => 125,
+                'twitter' => 1458,
+                'instagram' => 8
+            ]
+        ];
+
+        // Simplified post encoder
+        $encoder = array(
+            Func\encodeProperty('id', Func\pluckProperty('post', 'id')),
+            Func\encodeProperty('title', Func\pluckProperty('post', 'title')),
+            Func\encodeProperty('url', Func\pluckProperty('post', 'url')),
+            Func\encodeProperty('author', Func\pluckProperty('post', 'author', 'displayName')),
+            Func\encodeProperty('comments', Func\pipeR('count', Func\getProperty('comments'))),
+            Func\encodeProperty('totalShares', Func\pipeR('array_sum', Func\getProperty('shares'))),
+            Func\encodeProperty('fakeValue', Func\pluckProperty('i', 'do', 'not', 'exist')),
+        );
+
+        // Create a generic stdClass encoder.
+        $objectBuilder = Func\recordEncoder(new stdClass());
+        $arrayBuilder = Func\recordEncoder([]);
+
+
+        // Populte builders with the encoder.
+        $simplePostCreatorObject = $objectBuilder(...$encoder);
+        $simplePostCreatorArray = $arrayBuilder(...$encoder);
+
+        // Build the final array/object
+        $simpleObject = $simplePostCreatorObject($data);
+        $simpleArray = $simplePostCreatorArray($data);
+
+        $this->assertEquals(123, $simpleObject->id);
+        $this->assertEquals(123, $simpleArray['id']);
+
+        $this->assertEquals('Lorem ipsum dolor', $simpleObject->title);
+        $this->assertEquals('Lorem ipsum dolor', $simpleArray['title']);
+
+        $this->assertEquals('https://www.url.tld/post/123/lorem-ipsum-dolor', $simpleObject->url);
+        $this->assertEquals('https://www.url.tld/post/123/lorem-ipsum-dolor', $simpleArray['url']);
+
+        $this->assertEquals('Sam Smith', $simpleObject->author);
+        $this->assertEquals('Sam Smith', $simpleArray['author']);
+
+        $this->assertEquals(2, $simpleObject->comments);
+        $this->assertEquals(2, $simpleArray['comments']);
+
+        $this->assertEquals(1591, $simpleObject->totalShares);
+        $this->assertEquals(1591, $simpleArray['totalShares']);
+
+        $this->assertNull($simpleObject->fakeValue);
+        $this->assertNull($simpleArray['fakeValue']);
     }
 }

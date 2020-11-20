@@ -25,6 +25,8 @@ declare(strict_types=1);
 
 namespace PinkCrab\FunctionConstructors\GeneralFunctions;
 
+use TypeError;
+
 /**
  * Composes a function based on a set of callbacks.
  * All functions passed should have matching parameters.
@@ -89,13 +91,19 @@ function composeTypeSafe(callable $validator, callable ...$callables): callable
      */
     return function ($e) use ($validator, $callables) {
         foreach ($callables as $callable) {
-            // Only do this passes validator
-            if ($validator($e)) {
-                $e = $callable($e);
+            // If invalid, abort and return null
+            if (! $validator($e)) {
+                return null;
             }
-            // If the result passes the validator, set else as null.
-            $e = $validator($e) ? $e : null;
+            // Run through callable.
+            $e = $callable($e);
+
+            // Check results and bail if invlaid type.
+            if (! $validator($e)) {
+                return null;
+            }
         }
+        // Return the final result.
         return $e;
     };
 }
@@ -128,9 +136,10 @@ function pipeR(callable ...$callables): callable
 /**
  * Returns a callback for getting a property or element from an array/object.
  *
+ * ( String ) -> ( A -> B|Null )
+ *
  * @param string $property
  * @return callable
- * @annotation ( string ) -> ( a -> b )
  */
 function getProperty(string $property): callable
 {
@@ -146,6 +155,30 @@ function getProperty(string $property): callable
         } else {
             return null;
         }
+    };
+}
+
+/**
+ * Walks an array or object tree based on the nodes passed.
+ * Will return whatever value at final node passed.
+ * If any level returns null, process aborts.
+ *
+ * ( ...String ) -> ( A -> B|Null )
+ *
+ * @param string ...$nodes
+ * @return callable
+ */
+function pluckProperty(string ...$nodes): callable
+{
+    return function ($data) use ($nodes) {
+        foreach ($nodes as $node) {
+            $data = getProperty($node)($data);
+
+            if (is_null($data)) {
+                return $data;
+            }
+        }
+        return $data;
     };
 }
 
@@ -189,7 +222,7 @@ function propertyEquals(string $property, $value): callable
      * @return bool
      */
     return function ($data) use ($property, $value): bool {
-        return compose(
+        return pipe(
             getProperty($property),
             \PinkCrab\FunctionConstructors\Comparisons\isEqualTo($value)
         )($data);
@@ -197,12 +230,104 @@ function propertyEquals(string $property, $value): callable
 }
 
 /**
+ * Sets a property in an object or array.
+ *
+ * ( Array|Object ) -> ( String -> Mixed -> Array\Object )
+ *
+ * All object properties are passed as $object->{$property} = $value.
+ * So no methods can be called using set property.
+ * Will throw error is the property is protect or private.
+ * Only works for public or dynamic properties.
+ *
+ * @param array|object $store
+ * @return callable|null
+ */
+function setProperty($store): ?callable
+{
+    $isArray = is_array($store)
+        || (get_class($store) === 'ArrayObject' && $store->getFlags() === 2);
+
+    if (!$isArray && !is_object($store)) {
+        throw new TypeError("Only objects or arrays can be constructed using setProperty.");
+    }
+    
+    /**
+     * @param string $property The property key.
+     * @param mixed $value The value to set to keu.
+     * @return array|object The datastore.
+     */
+    return function (string $property, $value) use ($store, $isArray) {
+        if ($isArray) {
+            $store[$property] = $value;
+        } else {
+            $store->{$property} = $value;
+        }
+        
+        return $store;
+    };
+}
+
+/**
+ * Returns a callable for created an array with a set key
+ * sets the value as the result of a callable being passed some data.
+ *
+ * ( String -> ( A -> B ) ) -> ( A -> Array[B] )
+ *
+ * @param string $key
+ * @param callable $value
+ * @return callable
+ */
+function encodeProperty(string $key, callable $value): callable
+{
+    /**
+     * @param mixed $data The data to pass through the callable
+     * @return array
+     */
+    return function ($data) use ($key, $value): array {
+        return [$key => $value($data)];
+    };
+}
+
+/**
+ * Creates a callable for encoding an arry or object,
+ * from an array of encodeProperty functions.
+ *
+ * ( Array|Object ) ->  ( ...( String -> ( A -> B ) ) ) -> ( A -> Object|Array[B] )
+ *
+ * @param  array|object $dataType
+ * @return callable
+ */
+function recordEncoder($dataType): callable
+{
+    /**
+     * @param callable ...$encoders encodeProperty() functions.
+     * @return callable
+     */
+    return function (...$encoders) use ($dataType): callable {
+        /**
+         * @param mixed $data The data to pass through the encoders.
+         * @return array|object The encoded object/array.
+         */
+        return function ($data) use ($dataType, $encoders) {
+            foreach ($encoders as $encoder) {
+                $dataType = setProperty($dataType)(
+                    array_keys($encoder($data))[0],
+                    array_values($encoder($data))[0]
+                );
+            }
+            return $dataType;
+        };
+    };
+}
+
+
+/**
  * Used to invoke a callback.
  *
  * @param callable $fn
  * @param mixed ...$args
  * @return void
- * @annotation ( a -> b ) -> ...a -> b
+ * @annotation ( a -> b ) -> ...a -> bq
  */
 function invoke(callable $fn, ...$args)
 {

@@ -29,9 +29,10 @@ use PinkCrab\FunctionConstructors\Comparisons as Comp;
 /**
  * Returns a callback for pushing a value to the head of an array
  *
+ * array[a] -> ( b -> array[b,a] )
+ * 
  * @param array $array
  * @return callable
- * @annotation array[a] -> ( b -> array[b,a] )
  */
 function pushHead(array $array): callable
 {
@@ -48,9 +49,10 @@ function pushHead(array $array): callable
 /**
  * Returns a callback for pushing a value to the head of an array
  *
+ * array[a] -> ( b -> array[a,b] )
+ * 
  * @param array $array
  * @return callable
- * @annotation array[a] -> ( b -> array[a,b] )
  */
 function pushTail(array $array): callable
 {
@@ -67,9 +69,10 @@ function pushTail(array $array): callable
 /**
  * Gets the first value from an array.
  *
+ * array -> a
+ * 
  * @param array $array The array.
  * @return mixed Will return the first value is array is not empty, else null.
- * @annotation array -> a
  */
 function head(array $array)
 {
@@ -79,9 +82,10 @@ function head(array $array)
 /**
  * Gets the last value from an array.
  *
+ * array -> a
+ * 
  * @param array $array
  * @return mixed Will return the last value is array is not empty, else null.
- * @annotation array -> a
  */
 function tail(array $array)
 {
@@ -100,9 +104,10 @@ function tail(array $array)
  * Compiles an array if a value is passed.
  * Reutrns the array if nothing passed.
  *
+ * ( array -> ( a|null ) ) -> ( a|null )|array[a]
+ * 
  * @param array $inital Sets up the inner value.
  * @return callable
- * @annotation : ( array -> ( a|null ) ) -> ( a|null )|array[a]
  */
 function arrayCompiler(array $inital = []): callable
 {
@@ -124,10 +129,11 @@ function arrayCompiler(array $inital = []): callable
  *
  * Validates the intial array passed also.
  *
+ * ( ( a -> bool ) -> array -> ( a|null ) ) -> ( a|null )|array[a]
+ * 
  * @param callable $validator (mixed->bool)
  * @param array $inital The intial data to start with
  * @return callable
- * @annotation : ( ( a -> bool ) -> array -> ( a|null ) ) -> ( a|null )|array[a]
  */
 function arrayCompilerTyped(callable $validator, array $inital = []): callable
 {
@@ -177,9 +183,10 @@ function filter(callable $callable): callable
  * Creates a callback for running an array through various callbacks for all true response.
  * Wrapper for creating a AND group of callbacks and running through array filter.
  *
+ * ( ...(a -> bool) ) -> ( array[ab] -> array[a|empty] )
+ * 
  * @param callable ...$callables
  * @return callable
- * @annotation : ( ...(a -> bool) ) -> ( array[ab] -> array[a|empty] )
  */
 function filterAnd(callable ...$callables): callable
 {
@@ -196,9 +203,10 @@ function filterAnd(callable ...$callables): callable
  * Creates a callback for running an array through various callbacks for any true response.
  * Wrapper for creating a OR group of callbacks and running through array filter.
  *
+ * ( ...(a -> bool) ) -> ( array[ab] -> array[a|empty] )
+ * 
  * @param callable ...$callables
  * @return callable
- * @annotation : ( ...(a -> bool) ) -> ( array[ab] -> array[a|empty] )
  */
 function filterOr(callable ...$callables): callable
 {
@@ -214,9 +222,10 @@ function filterOr(callable ...$callables): callable
 /**
  * Returns a callable for running array filter and getting the first value.
  *
+ * (a -> bool) -> ( array[ab] -> a|null )
+ * 
  * @param callable $func
  * @return callable
- * @annotation : (a -> bool) -> ( array[ab] -> a|null )
  */
 function filterFirst(callable $func): callable
 {
@@ -232,9 +241,10 @@ function filterFirst(callable $func): callable
 /**
  * Returns a callable for running array filter and getting the last value.
  *
+ * (a -> bool) -> ( array[ab]  -> a|null )
+ * 
  * @param callable $func
  * @return callable
- * @annotation : (a -> bool) -> ( array[ab]  -> a|null )
  */
 function filterLast(callable $func): callable
 {
@@ -251,10 +261,11 @@ function filterLast(callable $func): callable
  * Returns a callable which takes an array, applies a filter, then maps the
  * results of the map.
  *
+ * ( a -> bool ) -> ( a -> b ) -> ( array[a|b] -> array[b|null] )
+ * 
  * @param callable $filter Function to of filter contents
  * @param callable $map Function to map results of filter funciton.
  * @return callable
- * @annotation : ( a -> bool ) -> ( a -> b ) -> ( array[a|b] -> array[b|null] )
  */
 function filterMap(callable $filter, callable $map): callable
 {
@@ -269,7 +280,7 @@ function filterMap(callable $filter, callable $map): callable
 
 /**
  * Runs an array through a filters, returns the total count of true
- * 
+ *
  * ( A -> Bool ) -> ( Array[A] -> Int )
  *
  * @param callable $function
@@ -290,7 +301,7 @@ function filterCount(callable $function): callable
  * Returns a callback for partitioning an array based
  * on the results of a filter type function.
  * Callable will be cast to a bool, if truthy will be listed under 1 key, else 0 for falsey
- * 
+ *
  * ( A|B -> Bool ) -> ( Array[A|B] -> Array[Array[A][B]] )
  *
  * @param callable $function
@@ -346,9 +357,10 @@ function map(callable $func): callable
  *
  * Setting the key to an existing index will overwerite the current value at same index.
  *
+ * ( a -> b ) -> ( array -> array )
+ * 
  * @param callable $func
  * @return callable{
- * @annotation : ( a -> b ) -> ( array -> array )
  */
 function mapKey(callable $func): callable
 {
@@ -367,9 +379,10 @@ function mapKey(callable $func): callable
 /**
  * Returns a callback for mapping an array with additonal data.
  *
+ *  ( (a -> b) -> ...c ) -> ( array -> array )
+ * 
  * @param callable $func
  * @return callable
- * @annotation : ( (a -> b) -> ...c ) -> ( array -> array )
  */
 function mapWith(callable $func, ...$data): callable
 {
@@ -384,31 +397,13 @@ function mapWith(callable $func, ...$data): callable
 }
 
 /**
- * Returns a callback for doing array_map with multiple source arrays.
- *
- * @param callable $function
- * @return callable
- * @annotation : ( a -> b ) -> ( ...array -> array )
- */
-function mapMany(callable $function): callable
-{
-    /**
-     * @param ...array $arrays
-     * @return array
-     */
-    return function (array ...$arrays) use ($function): array {
-        return array_map($function, ...$arrays);
-    };
-}
-
-
-/**
  * Returns a callback for flattening and mapping an array
+ *
+ * ( ( Array -> Array ) -> Int|Null ) -> ( Array -> Array )
  *
  * @param callable $function The function to map the element. (Will no be called if resolves to array)
  * @param int|null $n Depth of nodes to flatten. If null will flatten to n
  * @return callable{
- * @annotation : ( (array -> array) -> int|null ) -> ( array -> array )
  */
 function flatMap(callable $function, ?int $n = null): callable
 {

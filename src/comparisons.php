@@ -87,9 +87,9 @@ function isLessThan($a): callable
     };
 }
 
-/**	
+/**
  * Checks if a value is in an array of values.
- * 
+ *
  * @param array $a
  */
 function isEqualIn(array $a): callable
@@ -244,7 +244,7 @@ function isFalse($value): bool
  * Checks if the passed value is a boolean and true
  *
  * A -> Bool
- * 
+ *
  * @param mixed $value
  * @return bool
  */
@@ -257,7 +257,7 @@ function isTrue($value): bool
  * Checks if the passed value is a float or int.
  *
  * A -> Bool
- * 
+ *
  * @param mixed $value
  * @return boolean
  */
