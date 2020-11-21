@@ -30,7 +30,7 @@ use PinkCrab\FunctionConstructors\Comparisons as Comp;
  * Returns a callback for pushing a value to the head of an array
  *
  * array[a] -> ( b -> array[b,a] )
- * 
+ *
  * @param array $array
  * @return callable
  */
@@ -50,7 +50,7 @@ function pushHead(array $array): callable
  * Returns a callback for pushing a value to the head of an array
  *
  * array[a] -> ( b -> array[a,b] )
- * 
+ *
  * @param array $array
  * @return callable
  */
@@ -70,7 +70,7 @@ function pushTail(array $array): callable
  * Gets the first value from an array.
  *
  * array -> a
- * 
+ *
  * @param array $array The array.
  * @return mixed Will return the first value is array is not empty, else null.
  */
@@ -83,7 +83,7 @@ function head(array $array)
  * Gets the last value from an array.
  *
  * array -> a
- * 
+ *
  * @param array $array
  * @return mixed Will return the last value is array is not empty, else null.
  */
@@ -105,7 +105,7 @@ function tail(array $array)
  * Reutrns the array if nothing passed.
  *
  * ( array -> ( a|null ) ) -> ( a|null )|array[a]
- * 
+ *
  * @param array $inital Sets up the inner value.
  * @return callable
  */
@@ -130,7 +130,7 @@ function arrayCompiler(array $inital = []): callable
  * Validates the intial array passed also.
  *
  * ( ( a -> bool ) -> array -> ( a|null ) ) -> ( a|null )|array[a]
- * 
+ *
  * @param callable $validator (mixed->bool)
  * @param array $inital The intial data to start with
  * @return callable
@@ -184,7 +184,7 @@ function filter(callable $callable): callable
  * Wrapper for creating a AND group of callbacks and running through array filter.
  *
  * ( ...(a -> bool) ) -> ( array[ab] -> array[a|empty] )
- * 
+ *
  * @param callable ...$callables
  * @return callable
  */
@@ -204,7 +204,7 @@ function filterAnd(callable ...$callables): callable
  * Wrapper for creating a OR group of callbacks and running through array filter.
  *
  * ( ...(a -> bool) ) -> ( array[ab] -> array[a|empty] )
- * 
+ *
  * @param callable ...$callables
  * @return callable
  */
@@ -223,7 +223,7 @@ function filterOr(callable ...$callables): callable
  * Returns a callable for running array filter and getting the first value.
  *
  * (a -> bool) -> ( array[ab] -> a|null )
- * 
+ *
  * @param callable $func
  * @return callable
  */
@@ -242,7 +242,7 @@ function filterFirst(callable $func): callable
  * Returns a callable for running array filter and getting the last value.
  *
  * (a -> bool) -> ( array[ab]  -> a|null )
- * 
+ *
  * @param callable $func
  * @return callable
  */
@@ -262,7 +262,7 @@ function filterLast(callable $func): callable
  * results of the map.
  *
  * ( a -> bool ) -> ( a -> b ) -> ( array[a|b] -> array[b|null] )
- * 
+ *
  * @param callable $filter Function to of filter contents
  * @param callable $map Function to map results of filter funciton.
  * @return callable
@@ -358,7 +358,7 @@ function map(callable $func): callable
  * Setting the key to an existing index will overwerite the current value at same index.
  *
  * ( a -> b ) -> ( array -> array )
- * 
+ *
  * @param callable $func
  * @return callable{
  */
@@ -380,7 +380,7 @@ function mapKey(callable $func): callable
  * Returns a callback for mapping an array with additonal data.
  *
  *  ( (a -> b) -> ...c ) -> ( array -> array )
- * 
+ *
  * @param callable $func
  * @return callable
  */
@@ -579,6 +579,17 @@ function sumWhere(callable $function): callable
      */
     return function (array $array) use ($function) {
         return array_sum(array_map($function, $array) ?? []);
+    };
+}
+
+function join(?string $glue = null): callable
+{
+    /**
+     * @param array $array Array join
+     * @return string.
+     */
+    return function (array $array) use ($glue): string {
+        return \join($glue, $array);
     };
 }
 
