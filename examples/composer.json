@@ -1,7 +1,0 @@
-{
-    "name": "pinkcrab/function-constructors-examples",
-    "require": {
-        "pinkcrab/function-constructors": "dev-master"
-    },
-    "minimum-stability": "dev"
-}
