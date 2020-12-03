@@ -1,5 +1,7 @@
 # The PinkCrab FunctionConstructors library.
 
+![Unit Tests](https://github.com/gin0115/pinkcrab_function_constructors/workflows/PHP%20Composer/badge.svg?branch=develop)
+
 This libary provides a small selection of functions for making functional programming a little cleaner and easier in php.
 
 To include this packge please add the following to your composer.json
@@ -30,7 +32,7 @@ use PinkCrab\FunctionConstructors\Strings as Str;
 use PinkCrab\FunctionConstructors\Arrays as Arr;
 
 // Allowing for
-Arr\Map() or Str\append('foo') or F\pipe(...)
+Arr\Map('esc_html') or Str\append('foo') or F\pipe(...)
 
 ```
 

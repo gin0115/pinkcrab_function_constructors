@@ -2,7 +2,7 @@ name: PHP Composer
 
 on:
   push:
-    branches: [ develop ]
+    # branches: [ develop ]
   pull_request:
     branches: [ develop ]
 
@@ -33,5 +33,3 @@ jobs:
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
     # Docs: https://getcomposer.org/doc/articles/scripts.md
 
-    - name: Run test suite
-      run: vendor/bin/phpunit
