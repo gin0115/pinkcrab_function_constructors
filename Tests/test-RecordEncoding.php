@@ -24,7 +24,7 @@ class RecordEncoderTests extends TestCase
             F\encodeProperty('date', F\always('Always now!')),
             F\encodeProperty('active', F\pluckProperty('active')),
             F\encodeProperty('name', F\pipeR(
-                Arr\join(' '),
+                Arr\toString(' '),
                 F\toArray(),
                 F\pluckProperty('name')
             )),
@@ -50,6 +50,5 @@ class RecordEncoderTests extends TestCase
         $this->assertEquals($expected['values']['name'], $userBob->name);
         $this->assertEquals($expected['values']['brokenContent'], $userBob->brokenContent);
         $this->assertEquals($expected['values']['recordCount'], $userBob->recordCount);
-
     }
 }

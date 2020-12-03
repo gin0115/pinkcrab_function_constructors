@@ -32,9 +32,10 @@ use TypeError;
  * Composes a function based on a set of callbacks.
  * All functions passed should have matching parameters.
  *
+ * (...(A -> B)) -> ( A -> B )
+ *
  * @param callable ...$callables
  * @return callable
- * @annotation (...(a -> b)) -> ( a -> b )
  */
 function compose(callable ...$callables): callable
 {
