@@ -7,9 +7,10 @@ require_once dirname(__FILE__, 2) . '/FunctionsLoader.php';
 /**
  * Tests for the Array functions class.
  *
- * @since 1.0.0
- * @author GLynn Quelch <glynn.quelch@gmail.com>
+ * @since 0.1.0
+ * @author Glynn Quelch <glynn.quelch@gmail.com>
  */
+
 use PHPUnit\Framework\TestCase;
 use function PHPUnit\Framework\throwException;
 use PinkCrab\FunctionConstructors\Arrays as Arr;
@@ -25,6 +26,7 @@ use PinkCrab\FunctionConstructors\GeneralFunctions as Func;
 class ArrayFunctionTests extends TestCase
 {
 
+
     /**
      * Random pollyfills
      */
@@ -37,7 +39,6 @@ class ArrayFunctionTests extends TestCase
         }
     }
 
-
     public function setup(): void
     {
         FunctionsLoader::include();
@@ -45,6 +46,7 @@ class ArrayFunctionTests extends TestCase
 
     public function testCanPushToHead(): void
     {
+
         $pushToHead = Arr\pushHead(array( 3, 4, 5, 6 ));
         $added2     = $pushToHead(2);
         $this->assertEquals(2, $added2[0]);
@@ -76,20 +78,20 @@ class ArrayFunctionTests extends TestCase
 
     public function testCanUseTail()
     {
-        $names = ["Sam Smith", "Barry Smith", "Sam Power", "Rebecca Smith"];
+        $names = array( 'Sam Smith', 'Barry Smith', 'Sam Power', 'Rebecca Smith' );
         $this->assertEquals('Rebecca Smith', Arr\tail($names));
         // Check returns null if empty.
-        $this->assertNull(Arr\tail([]));
+        $this->assertNull(Arr\tail(array()));
     }
 
     public function testCanUseHead()
     {
-        $names = ["Sam Smith", "Barry Smith", "Sam Power", "Rebecca Smith"];
+        $names = array( 'Sam Smith', 'Barry Smith', 'Sam Power', 'Rebecca Smith' );
         $this->assertEquals('Sam Smith', Arr\head($names));
         // Check returns null if empty.
-        $this->assertNull(Arr\head([]));
+        $this->assertNull(Arr\head(array()));
     }
-    
+
     public function testCanCompileArray(): void
     {
         $arrayCompiler = Arr\arrayCompiler();
@@ -113,10 +115,10 @@ class ArrayFunctionTests extends TestCase
         $arrayCompiler = Arr\arrayCompilerTyped('is_string');
         $arrayCompiler = $arrayCompiler('Hello');
         $arrayCompiler = $arrayCompiler('ERROR');
-        $arrayCompiler = $arrayCompiler(['ERROR']);
+        $arrayCompiler = $arrayCompiler(array( 'ERROR' ));
         $this->assertCount(2, $arrayCompiler());
 
-        $arrayCompiler = $arrayCompiler('Hello')(1)(NAN)("so 4?");
+        $arrayCompiler = $arrayCompiler('Hello')(1)(NAN)('so 4?');
         $this->assertCount(4, $arrayCompiler());
     }
 
@@ -250,12 +252,15 @@ class ArrayFunctionTests extends TestCase
 
     public function testCanUseReplace()
     {
-        $base = array("orange", "banana", "apple", "raspberry");
-        $replacements = array(0 => "pineapple", 4 => "cherry");
-        $replacements2 = array(0 => "grape");
+        $base          = array( 'orange', 'banana', 'apple', 'raspberry' );
+        $replacements  = array(
+            0 => 'pineapple',
+            4 => 'cherry',
+        );
+        $replacements2 = array( 0 => 'grape' );
 
         $replaceItems = Arr\replace($replacements, $replacements2);
-        
+
         $this->assertIsArray($replaceItems($base));
         $this->assertEquals('grape', $replaceItems($base)[0]);
         $this->assertEquals('banana', $replaceItems($base)[1]);
@@ -277,7 +282,6 @@ class ArrayFunctionTests extends TestCase
 
         $replaceItems = Arr\replaceRecursive($replacements);
 
-
         $this->assertIsArray($replaceItems($base));
         $this->assertArrayHasKey('citrus', $replaceItems($base));
         $this->assertArrayHasKey('berries', $replaceItems($base));
@@ -287,29 +291,35 @@ class ArrayFunctionTests extends TestCase
 
     public function testCanUseSumWhere()
     {
-        $data = [
-            (object)['id' => 1,
-            'cost' => 12.55
-            ],
-            (object)['id' => 3,
-            'cost' => 2.45
-            ],
-            (object)['id' => 34,
-            'cost' => 99.99
-            ],
-            (object)['id' => 12,
-            'cost' => 100.01
-            ],
-        ];
+        $data = array(
+            (object) array(
+                'id'   => 1,
+                'cost' => 12.55,
+            ),
+            (object) array(
+                'id'   => 3,
+                'cost' => 2.45,
+            ),
+            (object) array(
+                'id'   => 34,
+                'cost' => 99.99,
+            ),
+            (object) array(
+                'id'   => 12,
+                'cost' => 100.01,
+            ),
+        );
 
-        $costSum = Arr\sumWhere(function ($e) {
-            return $e->cost;
-        });
+        $costSum = Arr\sumWhere(
+            function ($e) {
+                return $e->cost;
+            }
+        );
 
         $this->assertEquals(215.00, $costSum($data));
     }
 
-    
+
 
     public function testCanSortArray(): void
     {
@@ -383,5 +393,47 @@ class ArrayFunctionTests extends TestCase
         $this->assertEquals(2, $sortedArray[1]);
         $this->assertEquals(5, $sortedArray[3]);
         $this->assertEquals(6, $sortedArray[4]);
+    }
+
+    public function testCanPartitionTable()
+    {
+        $isEven = function ($e) {
+            return $e % 2 === 0;
+        };
+
+        $sortByOddEven = Arr\partition($isEven);
+
+        $data = array( 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 );
+
+        $sorted = $sortByOddEven($data);
+        $this->assertCount(5, $sorted[0]);
+        $this->assertCount(5, $sorted[1]);
+
+        $this->assertContains(2, $sorted[1]);
+        $this->assertContains(4, $sorted[1]);
+        $this->assertContains(8, $sorted[1]);
+        $this->assertContains(3, $sorted[0]);
+        $this->assertContains(7, $sorted[0]);
+    }
+
+    public function testCanDoToString(): void
+    {
+        $source = array(
+            'hi',
+            'there',
+            'how',
+            'are',
+            'you',
+            3,
+            12.7,
+            true,
+            null,
+        );
+
+        $noSpacing   = Arr\toString();
+        $withSpacing = Arr\toString(' ');
+
+        $this->assertEquals('hitherehowareyou312.71', $noSpacing($source));
+        $this->assertEquals('hi there how are you 3 12.7 1 ', $withSpacing($source));
     }
 }

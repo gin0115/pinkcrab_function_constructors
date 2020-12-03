@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Static loader for all files.
+ * Collection of constants that can be used on specific functions.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -22,25 +22,30 @@ declare(strict_types=1);
  * @package PinkCrab\FunctionConstructors
  */
 
-namespace PinkCrab\FunctionConstructors;
+/**
+ * Constants used for Str\wordCount() => str_word_count()
+ * https://www.php.net/manual/en/function.str-word-count.php
+ */
+if (!defined('WORD_COUNT_NUMBER_OF_WORDS')) {
+    define('WORD_COUNT_NUMBER_OF_WORDS', 0);
+}
+if (!defined('WORD_COUNT_ARRAY')) {
+    define('WORD_COUNT_ARRAY', 1);
+}
+if (!defined('WORD_COUNT_ASSOCIATIVE_ARRAY')) {
+    define('WORD_COUNT_ASSOCIATIVE_ARRAY', 2);
+}
 
-class FunctionsLoader
-{
-
-    /**
-     * Loads all supplimentry function files.
-     *
-     * @author Glynn Quelch <glynn.quelch@gmail.com>
-     * @since 0.1.0
-     */
-    public static function include(): void
-    {
-        require_once('src/constants.php');
-        require_once('src/procedural.php');
-        require_once('src/comparisons.php');
-        require_once('src/general.php');
-        require_once('src/arrays.php');
-        require_once('src/strings.php');
-        require_once('src/numbers.php');
-    }
+// String function flags
+if (!defined('STRINGS_CASE_INSENSITIVE')) {
+    define('STRINGS_CASE_INSENSITIVE', 0x1);
+}
+if (!defined('STRINGS_CASE_SENSITIVE')) {
+    define('STRINGS_CASE_SENSITIVE', 0x2);
+}
+if (!defined('STRINGS_BEFORE_NEEDLE')) {
+    define('STRINGS_BEFORE_NEEDLE', 0x4);
+}
+if (!defined('STRINGS_AFTER_NEEDLE')) {
+    define('STRINGS_AFTER_NEEDLE', 0x8);
 }

@@ -28,6 +28,8 @@ namespace PinkCrab\FunctionConstructors\Comparisons;
  * Returns a callback for checkining is a value is equal.
  * Works with String, Ints, Floats, Array, Objects & Bools
  *
+ * A -> ( A|B -> Bool )
+ *
  * @param mixed $a The value to compare against.
  * @return callable
  */
@@ -39,7 +41,7 @@ function isEqualTo($a): callable
      */
     return function ($b) use ($a): bool {
 
-        if (! sameScalar($b, $a)) {
+        if (!sameScalar($b, $a)) {
             return false;
         }
 
@@ -64,33 +66,74 @@ function isEqualTo($a): callable
     };
 }
 
+/**
+ * Returns a callable for checking if a value is not the same as the base ($a).
+ *
+ * A -> ( A|B -> Bool )
+ *
+ * @param mixed $a
+ * @return callable
+ */
 function isNotEqualTo($a): callable
 {
+    /**
+     * @param mixed $b The values to comapre with
+     * @return bool
+     */
     return function ($b) use ($a): bool {
-        return ! isEqualTo($a)($b);
+        return !isEqualTo($a)($b);
     };
 }
 
+/**
+ * Returns a callable for checking the base is larger than comparisson.
+ * If the comparisson value is not a int or float, will return false.
+ *
+ * A -> ( A|B -> Bool )
+ *
+ * @param int|float $a
+ * @return callable
+ */
 function isGreaterThan($a): callable
 {
+    /**
+     * @param mixed $b
+     * @return bool
+     */
     return function ($b) use ($a): bool {
-        return isEqualIn(array( 'integer', 'double' ))(gettype($b))
-        ? $a > $b : false;
+        return isEqualIn(array('integer', 'double'))(gettype($b))
+            ? $a > $b : false;
     };
 }
 
+/**
+ * Returns a callable for checking the base is smnaller than comparisson.
+ * If the comparisson value is not a int or float, will return false.
+ *
+ * A -> ( A|B -> Bool )
+ *
+ * @param int|float $a
+ * @return callable
+ */
 function isLessThan($a): callable
 {
+    /**
+     * @param mixed $b
+     * @return bool
+     */
     return function ($b) use ($a): bool {
-        return isEqualIn(array( 'integer', 'double' ))(gettype($b))
-        ? $a < $b : false;
+        return isEqualIn(array('integer', 'double'))(gettype($b))
+            ? $a < $b : false;
     };
 }
 
-/**	
+/**
  * Checks if a value is in an array of values.
- * 
+ *
+ * Array -> ( A -> Bool )
+ *
  * @param array $a
+ * @return callable
  */
 function isEqualIn(array $a): callable
 {
@@ -125,30 +168,35 @@ function isEqualIn(array $a): callable
  * Simple named function for ! empty()
  * Allows to be used in function composition.
  *
+ * A -> Bool
+ *
  * @param mixed $value The value
  * @return bool
  */
 function notEmpty($value): bool
 {
-    return ! empty($value);
+    return !empty($value);
 }
 
 /**
  * Groups callbacks and checks they all return true.
  *
+ * ...(A -> Bool) -> ( B -> Bool )
+ *
  * @param callable ...$callables
- * @return callable{
- *      @param mixed $source
- *      @return bool
- * }
+ * @return callable
  */
 function groupAnd(callable ...$callables): callable
 {
-    return function ($source) use ($callables): bool {
+    /**
+     * @param mixed $value
+     * @return bool
+     */
+    return function ($value) use ($callables): bool {
         return (bool) array_reduce(
             $callables,
-            function ($result, $callable) use ($source) {
-                return ( is_bool($result) && $result === false ) ? false : $callable($source);
+            function ($result, $callable) use ($value) {
+                return (is_bool($result) && $result === false) ? false : $callable($value);
             },
             null
         );
@@ -158,19 +206,22 @@ function groupAnd(callable ...$callables): callable
 /**
  * Groups callbacks and checks they any return true.
  *
+ * ...(A -> Bool) -> ( B -> Bool )
+ *
  * @param callable ...$callables
- * @return callable{
- *      @param mixed $source
- *      @return bool
- * }
+ * @return callable
  */
 function groupOr(callable ...$callables): callable
 {
-    return function ($source) use ($callables): bool {
+    /**
+     * @param mixed $value
+     * @return bool
+     */
+    return function ($value) use ($callables): bool {
         return (bool) array_reduce(
             $callables,
-            function ($result, $callable) use ($source) {
-                return ( is_bool($result) && $result === true ) ? true : $callable($source);
+            function ($result, $callable) use ($value) {
+                return (is_bool($result) && $result === true) ? true : $callable($value);
             },
             null
         );
@@ -180,26 +231,30 @@ function groupOr(callable ...$callables): callable
 /**
  * Creates a callback for checking if a value has the desired scalar type.
  *
- * @param string $source Type to compare with
- * @return callable{
- *      @param mixed $target The value to chech if type of source
- *      @return bool
- * }
+ * A -> ( B -> Bool )
+ *
+ * @param string $source Type to compare with (bool, boolean, integer, object)
+ * @return callable
  */
 function isScalar(string $source): callable
 {
-    return function ($target) use ($source) {
-        return gettype($target) === $source;
+    /**
+     * @param mixed $value
+     * @return bool
+     */
+    return function ($value) use ($source) {
+        return gettype($value) === $source;
     };
 }
 
 
 
 /**
- * Checks if all passed have the same scala
+ * Checks if all passed have the same scalar
  *
- * @param [type] $a
- * @param [type] $b
+ * ...A -> Bool
+ *
+ * @param mixed ...$variables
  * @return bool
  */
 function sameScalar(...$variables): bool
@@ -212,28 +267,48 @@ function sameScalar(...$variables): bool
 }
 
 /**
- * Checks if all values passed are true.
+ * Checks if all the values passed are true.
+ *
+ * ...Bool -> Bool
+ *
+ * @param bool ...$variables
+ * @return bool
  */
-function allTrue(bool ...$var): bool
+function allTrue(bool ...$variables): bool
 {
-    $var = array_map('boolval', $var);
-    return ! in_array(false, $var, true) && in_array(true, $var, true);
+    foreach ($variables as $value) {
+        if (! is_bool($value) || $value !== true) {
+            return false;
+        }
+    }
+    return true;
 }
 
 /**
- * Checks if any passed are true.
+ * Checks if all the values passed are true.
+ *
+ * ...Bool -> Bool
+ *
+ * @param bool ...$variables
+ * @return bool
  */
-function someTrue(bool ...$var): bool
+function anyTrue(bool ...$variables): bool
 {
-    return in_array(true, array_map('boolval', $var), true);
+    foreach ($variables as $value) {
+        if (is_bool($value) && $value === true) {
+            return true;
+        }
+    }
+    return false;
 }
 
 /**
  * Checks if the passed value is a boolean and false
  *
+ * ...A -> Bool
+ *
  * @param mixed $value
  * @return bool
- * @annotaion: mixed -> bool
  */
 function isFalse($value): bool
 {
@@ -243,13 +318,27 @@ function isFalse($value): bool
 /**
  * Checks if the passed value is a boolean and true
  *
+ * A -> Bool
+ *
  * @param mixed $value
  * @return bool
- * @annotaion: mixed -> bool
  */
 function isTrue($value): bool
 {
     return  is_bool($value) && $value === true;
+}
+
+/**
+ * Checks if the passed value is a float or int.
+ *
+ * A -> Bool
+ *
+ * @param mixed $value
+ * @return boolean
+ */
+function isNumber($value): bool
+{
+    return is_float($value) || is_int($value);
 }
 
 /**
@@ -266,4 +355,23 @@ function any(...$callables): callable
 function all(...$callables): callable
 {
     return groupAnd(...$callables);
+}
+
+/**
+ * Returns a callable for giving the reverse boolean response.
+ *
+ * ( A -> Bool ) -> ( A -> Bool )
+ *
+ * @param callable $callable
+ * @return callable
+ */
+function not(callable $callable): callable
+{
+    /**
+     * @param mixed $value
+     * @return bool
+     */
+    return function ($value) use ($callable): bool {
+        return ! (bool) $callable($value);
+    };
 }

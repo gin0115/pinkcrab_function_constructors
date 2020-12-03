@@ -35,3 +35,68 @@ if (! function_exists('str_contains')) {
         return strpos($haystack, $needle) !== false;
     }
 }
+
+if (! function_exists('array_flatten')) {
+    /**
+     * Flattens an array to desired depth.
+     * Doesnt preserve keys
+     *
+     * @param array $array The array to flatten
+     * @param int|null $n The depth to flatten the array, if null will flatten all arrays.
+     * @return bool
+     */
+    function arrayFlatten(array $array, ?int $n = null): array
+    {
+        return array_reduce(
+            $array,
+            function (array $carry, $element) use ($n): array {
+                // Remnove empty arrays.
+                if (is_array($element) && empty($element)) {
+                    return $carry;
+                }
+                // If the element is an array and we are still flattening, call again
+                if (is_array($element) && (is_null($n) || $n > 0)) {
+                    $carry = array_merge($carry, arrayFlatten($element, $n ? $n - 1 : null));
+                } else {
+                    // Else just add the elememnt.
+                    $carry[] = $element;
+                }
+                return $carry;
+            },
+            []
+        );
+    }
+}
+
+if (! function_exists('toObject')) {
+    /**
+     * Simple mapper for turning arrays into stdClass objects.
+     *
+     * @param array $array
+     * @return stdClass
+     */
+    function toObject(array $array): object
+    {
+        $object = new stdClass();
+        foreach ($array as $key => $value) {
+            $key = is_string($key) ? $key : (string) $key;
+            $object->{$key} = $value;
+        }
+        return $object;
+    }
+
+}
+
+if (! function_exists('invokeCallable')) {
+    /**
+     * Used to invoke a callable.
+     *
+     * @param callable $fn
+     * @param mixed ...$args
+     * @return void
+     */
+    function invokeCallable(callable $fn, ...$args)
+    {
+        return $fn(...$args);
+    }
+}

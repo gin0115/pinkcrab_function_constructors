@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 use PHPUnit\Framework\TestCase;
 use PinkCrab\FunctionConstructors\Arrays as Arr;
 use PinkCrab\FunctionConstructors\Numbers as Num;
@@ -41,7 +40,7 @@ class NumberFunctionTest extends TestCase
         $acc = $acc('11');
     }
 
-    public function testCanAccumulateFloat(): void
+    public function testCanAccumulate(): void
     {
         $acc = Num\accumulatorFloat(0);
         $acc = $acc(0.5);
@@ -63,10 +62,10 @@ class NumberFunctionTest extends TestCase
         // Throws TypeError.
     }
 
-    public function testCanSumIntFloats()
+    public function testCanSum()
     {
-        $addsFive = Num\sumInt(5);
-        $addsTwoAndAHalf = Num\sumFloat(2.5);
+        $addsFive = Num\sum(5);
+        $addsTwoAndAHalf = Num\sum(2.5);
         
         $a = 0;
         $b = 1.00;
@@ -81,10 +80,20 @@ class NumberFunctionTest extends TestCase
         $this->assertEquals(6, $addsTwoAndAHalf($b));
     }
 
-    public function testCanSubIntFloats()
+    /**
+     * @expectedException TypeError
+     */
+    public function testSumThrowsNoneNumError()
     {
-        $subsFive = Num\subtractInt(5);
-        $subsTwoAndAHalf = Num\subtractFloat(2.5);
+        $this->expectException(TypeError::class);
+        $acc = Num\sum('0');
+        // Throws TypeError.
+    }
+
+    public function testCanSub()
+    {
+        $subsFive = Num\subtract(5);
+        $subsTwoAndAHalf = Num\subtract(2.5);
         
         $a = 10;
         $b = 7.5;
@@ -99,10 +108,20 @@ class NumberFunctionTest extends TestCase
         $this->assertEquals(2.5, $subsTwoAndAHalf($b));
     }
 
-    public function testCanMultiplyIntFloats()
+    /**
+     * @expectedException TypeError
+     */
+    public function testSubThrowsNoneNumError()
     {
-        $subsFive = Num\multiplyInt(5);
-        $subsTwoAndAHalf = Num\multiplyFloat(2.5);
+        $this->expectException(TypeError::class);
+        $acc = Num\subtract('0');
+        // Throws TypeError.
+    }
+
+    public function testCanMultiply()
+    {
+        $subsFive = Num\multiply(5);
+        $subsTwoAndAHalf = Num\multiply(2.5);
         
         $a = 1;
         $b = 1;
@@ -115,6 +134,16 @@ class NumberFunctionTest extends TestCase
 
         $this->assertEquals(25, $subsFive($a));
         $this->assertEquals(6.25, $subsTwoAndAHalf($b));
+    }
+
+     /**
+     * @expectedException TypeError
+     */
+    public function testMultiplyThrowsNoneNumError()
+    {
+        $this->expectException(TypeError::class);
+        $acc = Num\multiply([['0'], false]);
+        // Throws TypeError.
     }
 
     public function testCanDivideByAndInto()
@@ -136,14 +165,48 @@ class NumberFunctionTest extends TestCase
         $this->assertEquals(10, $divideInto2($b));
     }
 
+
+
     public function testCanRemainderByAndInto()
     {
         $remainderBy2 = Num\remainderBy(2);
-        $this->assertEquals(0, $remainderBy2(10)); // 10 / 2 = 5 
+        $this->assertEquals(0, $remainderBy2(10)); // 10 / 2 = 5
         $this->assertEquals(1, $remainderBy2(9)); // 9 / 2 = 4.5
 
 
         $remainderInto2 = Num\remainderInto(2);
         $this->assertEquals(2, $remainderInto2(10)); // 2 / 10 = 0.2
+    }
+
+    public function testCanRoundFloatsAndInts()
+    {
+        $twoDecimalPlaces = Num\round(2);
+        $eightDecimalPlaces = Num\round(8);
+
+        $this->assertEquals(8.12, $twoDecimalPlaces(8.123456));
+        $this->assertEquals(8.12345678, $eightDecimalPlaces(8.123456781));
+        $this->assertEquals(50, $eightDecimalPlaces(50));
+        $this->assertEquals(1, $twoDecimalPlaces(1));
+    }
+
+      /**
+     * @expectedException TypeError
+     */
+    public function testRoundThrowsNoneNumErrorA()
+    {
+        $this->expectException(TypeError::class);
+        $rounder = Num\round(['HELLO', 'NOT A NUMBER']);
+        // Throws TypeError.
+    }
+
+        /**
+     * @expectedException TypeError
+     */
+    public function testRoundThrowsNoneNumErrorB()
+    {
+        $this->expectException(TypeError::class);
+        $rounder = Num\round(5);
+        $rounder('STRINGS');
+        // Throws TypeError.
     }
 }

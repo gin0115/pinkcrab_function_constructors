@@ -24,14 +24,16 @@ declare(strict_types=1);
 
 namespace PinkCrab\FunctionConstructors\Arrays;
 
+use stdClass;
 use PinkCrab\FunctionConstructors\Comparisons as Comp;
 
 /**
  * Returns a callback for pushing a value to the head of an array
  *
+ * Array[A] -> ( B -> Array[B,A] )
+ *
  * @param array $array
  * @return callable
- * @annotaion: array[a] -> ( b -> array[b,a] )
  */
 function pushHead(array $array): callable
 {
@@ -48,9 +50,10 @@ function pushHead(array $array): callable
 /**
  * Returns a callback for pushing a value to the head of an array
  *
+ * Array[A] -> ( B -> Array[B,A] )
+ *
  * @param array $array
  * @return callable
- * @annotaion: array[a] -> ( b -> array[a,b] )
  */
 function pushTail(array $array): callable
 {
@@ -67,25 +70,48 @@ function pushTail(array $array): callable
 /**
  * Gets the first value from an array.
  *
+ * Array -> A
+ *
  * @param array $array The array.
  * @return mixed Will return the first value is array is not empty, else null.
- * @annotaion: array -> a
  */
 function head(array $array)
 {
-    return ! empty($array) ? array_values($array)[0] : null;
+    return !empty($array) ? array_values($array)[0] : null;
 }
 
 /**
  * Gets the last value from an array.
  *
+ * Array -> A
+ *
  * @param array $array
  * @return mixed Will return the last value is array is not empty, else null.
- * @annotaion: array -> a
  */
 function tail(array $array)
 {
-    return ! empty($array) ? array_reverse($array, false)[0] : null;
+    return !empty($array) ? array_reverse($array, false)[0] : null;
+}
+
+
+/**
+ * Returns a callable for concatinatiing arrays with a defined glue.
+ *
+ * String|Null -> ( Array[String] -> String )
+ *
+ * @param string|null $glue The string to join each element. If null, will be no seperation between elements.
+ * @return callable
+ *
+ */
+function toString(?string $glue = null): callable
+{
+    /**
+     * @param array $array Array join
+     * @return string.
+     */
+    return function (array $array) use ($glue): string {
+        return $glue ? \join($glue, $array) : \join($array) ;
+    };
 }
 
 
@@ -100,9 +126,10 @@ function tail(array $array)
  * Compiles an array if a value is passed.
  * Reutrns the array if nothing passed.
  *
+ * Array -> ( A|Null ) -> ( A|Null )|Array[A]
+ *
  * @param array $inital Sets up the inner value.
  * @return callable
- * @annotation : ( array -> ( a|null ) ) -> ( a|null )|array[a]
  */
 function arrayCompiler(array $inital = []): callable
 {
@@ -114,7 +141,7 @@ function arrayCompiler(array $inital = []): callable
         if ($value) {
             $inital[] = $value;
         }
-        return ! is_null($value) ? arrayCompiler($inital) : $inital;
+        return !is_null($value) ? arrayCompiler($inital) : $inital;
     };
 }
 
@@ -124,25 +151,26 @@ function arrayCompiler(array $inital = []): callable
  *
  * Validates the intial array passed also.
  *
+ * ( A -> Bool ) -> Array ->  ( A|Null ) ->  ( A|Null )|Array[A]
+ *
  * @param callable $validator (mixed->bool)
  * @param array $inital The intial data to start with
  * @return callable
- * @annotation : ( ( a -> bool ) -> array -> ( a|null ) ) -> ( a|null )|array[a]
  */
 function arrayCompilerTyped(callable $validator, array $inital = []): callable
 {
     // Ensure all is validated from initial.
     $inital = array_filter($inital, $validator);
-    
+
     /**
      * @param mixed $value
      * @return callable|array
      */
     return function ($value = null) use ($validator, $inital) {
-        if (! is_null($value) && $validator($value)) {
+        if (!is_null($value) && $validator($value)) {
             $inital[] = $value;
         }
-        return ! is_null($value) ? arrayCompilerTyped($validator, $inital) : $inital;
+        return !is_null($value) ? arrayCompilerTyped($validator, $inital) : $inital;
     };
 }
 
@@ -160,7 +188,7 @@ function arrayCompilerTyped(callable $validator, array $inital = []): callable
  *
  * @param callable $callable The function to apply to the array.
  * @return callable
- * @annotation : ( a -> bool ) -> ( array[ab] -> array[a|empty] )
+ * @annotation : ( A -> Bool ) -> ( Array[AB] -> Array[A|Empty] )
  */
 function filter(callable $callable): callable
 {
@@ -177,9 +205,10 @@ function filter(callable $callable): callable
  * Creates a callback for running an array through various callbacks for all true response.
  * Wrapper for creating a AND group of callbacks and running through array filter.
  *
+ * ...( A -> Bool ) -> ( Array[AB] -> Array[A|Empty] )
+ *
  * @param callable ...$callables
  * @return callable
- * @annotation : ( ...(a -> bool) ) -> ( array[ab] -> array[a|empty] )
  */
 function filterAnd(callable ...$callables): callable
 {
@@ -196,9 +225,10 @@ function filterAnd(callable ...$callables): callable
  * Creates a callback for running an array through various callbacks for any true response.
  * Wrapper for creating a OR group of callbacks and running through array filter.
  *
+ *  ...( A -> Bool ) -> ( Array[AB] -> Array[A|Empty] )
+ *
  * @param callable ...$callables
  * @return callable
- * @annotation : ( ...(a -> bool) ) -> ( array[ab] -> array[a|empty] )
  */
 function filterOr(callable ...$callables): callable
 {
@@ -214,9 +244,10 @@ function filterOr(callable ...$callables): callable
 /**
  * Returns a callable for running array filter and getting the first value.
  *
+ * ( A -> Bool ) -> ( Array[AB] -> A|Null )
+ *
  * @param callable $func
  * @return callable
- * @annotation : (a -> bool) -> ( array[ab] -> a|null )
  */
 function filterFirst(callable $func): callable
 {
@@ -232,9 +263,10 @@ function filterFirst(callable $func): callable
 /**
  * Returns a callable for running array filter and getting the last value.
  *
+ * ( A -> Bool ) -> ( Array[AB]  -> A|Null )
+ *
  * @param callable $func
  * @return callable
- * @annotation : (a -> bool) -> ( array[ab]  -> a|null )
  */
 function filterLast(callable $func): callable
 {
@@ -251,10 +283,11 @@ function filterLast(callable $func): callable
  * Returns a callable which takes an array, applies a filter, then maps the
  * results of the map.
  *
+ * ( A -> Bool ) -> ( a -> b ) -> ( Array[A|b] -> array[b|null] )
+ *
  * @param callable $filter Function to of filter contents
  * @param callable $map Function to map results of filter funciton.
  * @return callable
- * @annotation : ( a -> bool ) -> ( a -> b ) -> ( array[a|b] -> array[b|null] )
  */
 function filterMap(callable $filter, callable $map): callable
 {
@@ -266,6 +299,53 @@ function filterMap(callable $filter, callable $map): callable
         return array_map($map, array_filter($array, $filter));
     };
 }
+
+/**
+ * Runs an array through a filters, returns the total count of true
+ *
+ * ( A -> Bool ) -> ( Array[A] -> Int )
+ *
+ * @param callable $function
+ * @return callable
+ */
+function filterCount(callable $function): callable
+{
+    /**
+     * @param array $array
+     * @return int Count
+     */
+    return function (array $array) use ($function) {
+        return count(array_filter($array, $function));
+    };
+}
+
+/**
+ * Returns a callback for partitioning an array based
+ * on the results of a filter type function.
+ * Callable will be cast to a bool, if truthy will be listed under 1 key, else 0 for falsey
+ *
+ * ( A|B -> Bool ) -> ( Array[A|B] -> Array[Array[A][B]] )
+ *
+ * @param callable $function
+ * @return callable
+ */
+function partition(callable $function): callable
+{
+    return function (array $array) use ($function): array {
+        return array_reduce(
+            $array,
+            function ($carry, $element) use ($function): array {
+                $key = (bool)$function($element) ? 1 : 0;
+                $carry[$key][] = $element;
+                return $carry;
+            },
+            []
+        );
+    };
+}
+
+
+
 
 
 /*
@@ -281,7 +361,7 @@ function filterMap(callable $filter, callable $map): callable
  *
  * @param callable $func Callback to apply to each element in array.
  * @return callable
- * @annotation : ( a -> b ) -> ( array[a] -> array[b] )
+ * @annotation : ( a -> b ) -> ( Array[A] -> array[b] )
  */
 function map(callable $func): callable
 {
@@ -299,9 +379,10 @@ function map(callable $func): callable
  *
  * Setting the key to an existing index will overwerite the current value at same index.
  *
+ * ( a -> b ) -> ( array -> array )
+ *
  * @param callable $func
  * @return callable{
- * @annotation : ( a -> b ) -> ( array -> array )
  */
 function mapKey(callable $func): callable
 {
@@ -309,7 +390,7 @@ function mapKey(callable $func): callable
         return array_reduce(
             array_keys($array),
             function ($carry, $key) use ($func, $array) {
-                $carry[ $func($key) ] = $array[ $key ];
+                $carry[$func($key)] = $array[$key];
                 return $carry;
             },
             []
@@ -320,9 +401,10 @@ function mapKey(callable $func): callable
 /**
  * Returns a callback for mapping an array with additonal data.
  *
+ *  ( A -> Array[B] ) -> ...B  -> ( Array[A] -> Array[AB] )
+ *
  * @param callable $func
  * @return callable
- * @annotation : ( (a -> b) -> ...c ) -> ( array -> array )
  */
 function mapWith(callable $func, ...$data): callable
 {
@@ -337,39 +419,25 @@ function mapWith(callable $func, ...$data): callable
 }
 
 /**
- * Returns a callback for doing array_map with multiple source arrays.
- *
- * @param callable $function
- * @return callable
- * @annotation : ( a -> b ) -> ( ...array -> array )
- */
-function mapMany(callable $function): callable
-{
-    /**
-     * @param ...array $arrays
-     * @return array
-     */
-    return function (array ...$arrays) use ($function): array {
-        return array_map($function, ...$arrays);
-    };
-}
-
-
-/**
  * Returns a callback for flattening and mapping an array
+ *
+ * ( A -> B ) -> Int|Null  -> ( Array[][A] -> Array[B] )
  *
  * @param callable $function The function to map the element. (Will no be called if resolves to array)
  * @param int|null $n Depth of nodes to flatten. If null will flatten to n
  * @return callable{
- * @annotation : ( (array -> array) -> int|null ) -> ( array -> array )
  */
 function flatMap(callable $function, ?int $n = null): callable
 {
+    /**
+     * @param array $array
+     * @return array
+     */
     return function (array $array) use ($n, $function): array {
         return array_reduce(
             $array,
             function (array $carry, $element) use ($n, $function) {
-                if (is_array($element) && ( is_null($n) || $n > 0 )) {
+                if (is_array($element) && (is_null($n) || $n > 0)) {
                     $carry = array_merge($carry, flatMap($function, $n ? $n - 1 : null)($element));
                 } else {
                     $carry[] = is_array($element) ? $element : $function($element);
@@ -405,7 +473,7 @@ function groupBy(callable $function): callable
         return array_reduce(
             $array,
             function ($carry, $item) use ($function) {
-                $carry[ call_user_func($function, $item) ][] = $item;
+                $carry[call_user_func($function, $item)][] = $item;
                 return $carry;
             },
             []
@@ -416,10 +484,11 @@ function groupBy(callable $function): callable
 /**
  * Creates a callback for chunking an array to set a limit.
  *
+ * Int -> Bool  -> ( Array[A] -> Array[][A] )
+ *
  * @param int $count The max size of each chunk.
  * @param bool $preserveKeys Should inital keys be kept. Default false.
  * @return callable
- * @annotation : ( int -> bool ) -> ( array -> array )
  */
 function chunk(int $count, bool $preserveKeys = false): callable
 {
@@ -473,7 +542,7 @@ function flattenByN(?int $n = null): callable
                     return $carry;
                 }
                 // If the element is an array and we are still flattening, call again
-                if (is_array($element) && ( is_null($n) || $n > 0 )) {
+                if (is_array($element) && (is_null($n) || $n > 0)) {
                     $carry = array_merge($carry, flattenByN($n ? $n - 1 : null)($element));
                 } else {
                     // Else just add the elememnt.
@@ -491,7 +560,7 @@ function flattenByN(?int $n = null): callable
  *
  * @param array ...$with The array values to replace with
  * @return callable
- * @annotation :  ( ...array[b] ) -> ( array[a] -> array[a|b] )
+ * @annotation :  ( ...array[b] ) -> ( Array[A] -> Array[A|b] )
  */
 function replaceRecursive(array ...$with): callable
 {
@@ -509,11 +578,11 @@ function replaceRecursive(array ...$with): callable
  *
  * @param array ...$with Array with values to replace with, must have matching key with base array.
  * @return callable
- * @annotation :  ( ...array[b] ) -> ( array[a] -> array[a|b] )
+ * @annotation :  ( ...array[b] ) -> ( Array[A] -> Array[A|b] )
  */
 function replace(array ...$with): callable
 {
-     /**
+    /**
      * @param array $array The array to have elements replaced from.
      * @return array Array with replacements.
      */
@@ -537,6 +606,54 @@ function sumWhere(callable $function): callable
      */
     return function (array $array) use ($function) {
         return array_sum(array_map($function, $array) ?? []);
+    };
+}
+
+/**
+ * Creates a callable for casting an arry to an object.
+ * Assumed all properties are public
+ * None existing properties will be set as dynamic properties.
+ *
+ * A -> ( Array[B] -> AB )
+ *
+ * @param object $object The object to cast to, defualts to stdClass
+ * @return callable
+ */
+function toObject(?object $object = null): callable
+{
+    $object = $object ?? new stdClass();
+    
+    /**
+     * @param array $array
+     * @return object
+     */
+    return function (array $array) use ($object): object {
+        foreach ($array as $key => $value) {
+            $key = is_string($key) ? $key : (string) $key;
+            $object->{$key} = $value;
+        }
+        return $object;
+    };
+}
+
+/**
+ * Creates a callable for encoding json with defined flags/depth
+ *
+ * Int -> Int -> ( A -> String )
+ *
+ * @param int $flags json_encode flags (defualt = 0)
+ * @param int $depth Nodes deep to encode (defualt = 512)
+ * @return callable
+ * @constants JSON_FORCE_OBJECT, JSON_HEX_QUOT, JSON_HEX_TAG, JSON_HEX_AMP, JSON_HEX_APOS, JSON_INVALID_UTF8_IGNORE, JSON_INVALID_UTF8_SUBSTITUTE, JSON_NUMERIC_CHECK, JSON_PARTIAL_OUTPUT_ON_ERROR, JSON_PRESERVE_ZERO_FRACTION, JSON_PRETTY_PRINT, JSON_UNESCAPED_LINE_TERMINATORS, JSON_UNESCAPED_SLASHES, JSON_UNESCAPED_UNICODE, JSON_THROW_ON_ERROR
+ */
+function toJson(int $flags = 0, int $depth = 512): callable
+{
+    /**
+     * @param mixed $array
+     * @return string|null
+     */
+    return function ($array) use ($flags, $depth): ?string {
+        return \json_decode($array, $flags, $depth);
     };
 }
 

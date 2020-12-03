@@ -24,13 +24,16 @@ declare(strict_types=1);
 
 namespace PinkCrab\FunctionConstructors\Numbers;
 
+use PinkCrab\FunctionConstructors\Comparisons as C;
+
 /**
  * Used to accumulate integers
  *
+ * Int|Float -> ( Int|Float -> Int|Float )
+ * 
  * @param int $initial
  * @return callable
  * @throws TypeError If not int or null passed.
- * @annoation : ( int -> ( int ) ) -> ( int )|int
  */
 function accumulatorInt(int $initial = 0): callable
 {
@@ -49,10 +52,11 @@ function accumulatorInt(int $initial = 0): callable
 /**
  * Used to accumulate floats
  *
+ * Int|Float -> ( Int|Float -> Int|Float )
+ * 
  * @param float $initial
  * @return callable
  * @throws TypeError If not float or null passed.
- * @annoation : ( float -> ( float ) ) -> ( float )|float
  */
 function accumulatorFloat(float $initial = 0): callable
 {
@@ -70,122 +74,94 @@ function accumulatorFloat(float $initial = 0): callable
 
 /**
  * Returns a function for adding a fixed amount.
- * (INT only)
  *
- * @param int $intial Defualts to 0
- * @annoation : ( int ) -> ( int -> int )
+ * Int|Float -> ( Int|Float -> Int|Float )
+ *
+ * @param int|float $intial Defualts to 0
+ * @return callable
+ * @throws TypeError If neither int or float passed.
  */
-function sumInt(int $initial = 0): callable
+function sum($initial = 0): callable
 {
+    if (! C\isNumber($initial)) {
+        throw new \TypeError(__FUNCTION__ . "only accepts a Number (Float or Int)");
+    }
+    
     /**
-     * @param int $value
-     * @return int
+     * @param int|float $value
+     * @return int|float
      */
-    return function (int $value) use ($initial): int {
+    return function ($value) use ($initial) {
         return $initial + $value;
     };
 }
 
-/**
- * Returns a function for adding a fixed amount.
- * (FLOAT only)
- *
- * @param float $intial Defualts to 0
- * @annoation : ( float ) -> ( float -> float )
- */
-function sumFloat(float $initial = 0.00): callable
-{
-    /**
-     * @param float $value
-     * @return float
-     */
-    return function (float $value) use ($initial): float {
-        return $initial + $value;
-    };
-}
 
 /**
  * Returns a function for adding a fixed amount.
- * (INT only)
+ *
+ * Int|Float -> ( Int|Float -> Int|Float )
  *
  * @param int $intial Defualts to 0
- * @annoation : ( int ) -> ( int -> int )
+ * @return callable
+ * @throws TypeError If neither int or float passed.
  */
-function subtractInt(int $initial = 0): callable
+function subtract($initial = 0): callable
 {
+    if (! C\isNumber($initial)) {
+        throw new \TypeError(__FUNCTION__ . "only accepts a Number (Float or Int)");
+    }
+    
     /**
-     * @param int $value
-     * @return int
+     * @param int|float $value
+     * @return int|float
      */
-    return function (int $value) use ($initial): int {
+    return function ($value) use ($initial) {
         return $value - $initial;
     };
 }
 
-/**
- * Returns a function for adding a fixed amount.
- * (FLOAT only)
- *
- * @param float $intial Defualts to 0
- * @annoation : ( float ) -> ( float -> float )
- */
-function subtractFloat(float $initial = 0.00): callable
-{
-    /**
-     * @param float $value
-     * @return float
-     */
-    return function (float $value) use ($initial): float {
-        return $value - $initial;
-    };
-}
 
 /**
  * Returns a function for multiplying a fixed amount.
- * (INT only)
  *
- * @param int $intial Defualts to 1
- * @annoation : ( int ) -> ( int -> int )
+ * Int|Float -> ( Int|Float -> Int|Float )
+ *
+ * @param int|float $intial Defualts to 1
  */
-function multiplyInt(int $initial = 1): callable
+function multiply($initial = 1): callable
 {
+    if (! C\isNumber($initial)) {
+        throw new \TypeError(__FUNCTION__ . "only accepts a Number (Float or Int)");
+    }
+    
     /**
-     * @param int $value
-     * @return int
+     * @param int|float $value
+     * @return int|float
      */
-    return function (int $value) use ($initial): int {
+    return function ($value) use ($initial) {
         return $value * $initial;
     };
 }
 
-/**
- * Returns a function for multiplying a fixed amount.
- * (FLOAT only)
- *
- * @param float $intial Defualts to 1
- * @annoation : ( float ) -> ( float -> float )
- */
-function multiplyFloat(float $initial = 1): callable
-{
-    /**
-     * @param float $value
-     * @return float
-     */
-    return function (float $value) use ($initial): float {
-        return $value * $initial;
-    };
-}
 
 
 /**
  * Returns a function for divideBy a fixed amount.
  *
+ * Int|Float -> ( Int|Float -> Int|Float )
+ * 
  * @param float $divisor The value to divide the passed value by
  * @return callable
- * @annoation : ( int|float ) -> ( int|float -> float )
+ * @annotation ( int|float ) -> ( int|float -> float )
  */
 function divideBy($divisor = 1): callable
 {
+    
+    if (! C\isNumber($divisor)) {
+        throw new \TypeError(__FUNCTION__ . "only accepts a Number (Float or Int)");
+    }
+    
     /**
      * @param float $value
      * @return float
@@ -198,12 +174,17 @@ function divideBy($divisor = 1): callable
 /**
  * Returns a function for divideInto a fixed amount.
  *
+ * Int|Float -> ( Int|Float -> Int|Float )
+ * 
  * @param float $dividend The value to divide the passed value by
  * @return callable
- * @annoation : ( int|float ) -> ( int|float -> float )
  */
 function divideInto($dividend = 1): callable
 {
+    if (! C\isNumber($dividend)) {
+        throw new \TypeError(__FUNCTION__ . "only accepts a Number (Float or Int)");
+    }
+    
     /**
      * @param float $value
      * @return float
@@ -215,13 +196,18 @@ function divideInto($dividend = 1): callable
 
 /**
  * Returns a function for getting the remainder with a fixed divisor.
+ * 
+ * Int|Float -> ( Int|Float -> Int|Float )
  *
  * @param float $divisor
  * @return callable
- * @annoation : ( int|float ) -> ( int|float -> float )
  */
 function remainderBy($divisor = 1): callable
 {
+    if (! C\isNumber($divisor)) {
+        throw new \TypeError(__FUNCTION__ . "only accepts a Number (Float or Int)");
+    }
+    
     /**
      * @param float $value
      * @return float
@@ -233,18 +219,49 @@ function remainderBy($divisor = 1): callable
 
 /**
  * Returns a function for getting the remainder with a fixed dividend.
+ * 
+ * Int|Float -> ( Int|Float -> Int|Float )
  *
  * @param float $dividend
  * @return callable
- * @annoation : ( int|float ) -> ( int|float -> float )
  */
 function remainderInto($dividend = 1): callable
 {
+    if (! C\isNumber($dividend)) {
+        throw new \TypeError(__FUNCTION__ . "only accepts a Number (Float or Int)");
+    }
+    
     /**
      * @param float $value
      * @return float
      */
     return function ($value) use ($dividend): float {
         return $dividend % $value;
+    };
+}
+
+/**
+ * Returns a function for getting the remainder with a fixed dividend.
+ *
+ * Int|Float -> ( Int|Float -> Float )
+ *
+ * @param int $precission Number of decimal places.
+ * @return callable
+ */
+function round($precission = 1): callable
+{
+    if (! C\isNumber($precission)) {
+        throw new \TypeError(__FUNCTION__ . "only accepts a Number (Float or Int)");
+    }
+    
+    /**
+     * @param int|float $value
+     * @return float
+     */
+    return function ($value) use ($precission): float {
+        if (! C\isNumber($value)) {
+            throw new \TypeError("Num\\round() only accepts a valid Number ( Int|Float -> Float )");
+        }
+        return \round(\floatval($value), $precission);
     };
 }

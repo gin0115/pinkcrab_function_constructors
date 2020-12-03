@@ -1,9 +1,5 @@
 {
     "name": "pinkcrab/function-constructors-examples",
-    "repositories": [{
-        "type": "vcs",
-        "url": "https://gin0115@bitbucket.org/pinkcrab/function_constructors.git"
-    }],
     "require": {
         "pinkcrab/function-constructors": "dev-master"
     },
