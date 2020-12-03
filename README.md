@@ -32,7 +32,7 @@ use PinkCrab\FunctionConstructors\Strings as Str;
 use PinkCrab\FunctionConstructors\Arrays as Arr;
 
 // Allowing for
-Arr\Map() or Str\append('foo') or F\pipe(...)
+Arr\Map('esc_html') or Str\append('foo') or F\pipe(...)
 
 ```
 
