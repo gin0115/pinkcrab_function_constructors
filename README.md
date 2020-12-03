@@ -36,5 +36,5 @@ Arr\Map('esc_html') or Str\append('foo') or F\pipe(...)
 
 ```
 
-> For more details, please read the [wiki](https://bitbucket.org/pinkcrab/function_constructors/wiki/Home)
+> For more details, please read the [wiki](https://github.com/gin0115/pinkcrab_function_constructors/wiki)
 
