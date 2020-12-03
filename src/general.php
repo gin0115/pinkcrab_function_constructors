@@ -357,6 +357,7 @@ function toArray(): callable
      * @return array
      */
     return function ($object): array {
+        
         // If not object, return empty array.
         if (! is_object($object)) {
             return [];
