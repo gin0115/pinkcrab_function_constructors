@@ -17,6 +17,13 @@ use PinkCrab\FunctionConstructors\Strings as Str;
 use PinkCrab\FunctionConstructors\FunctionsLoader;
 use PinkCrab\FunctionConstructors\GeneralFunctions as Func;
 
+class ToArrayFixtureClass
+{
+    private $propA = 1;
+    protected $propB = 2;
+    public $propC = 3;
+}
+
 
 /**
  * StringFunction class.
@@ -225,5 +232,51 @@ class GeneralFunctionTest extends TestCase
 
         $this->assertNull($simpleObject->fakeValue);
         $this->assertNull($simpleArray['fakeValue']);
+    }
+
+    /**
+     * Test that the invoker can be called.
+     *
+     * @return void
+     */
+    public function testCanInvokeCallables()
+    {
+        $doubleAnyNumber = Func\invoker(Func\pipe(
+            Num\sum(12),
+            Num\multiply(4),
+            Num\subtract(7)
+        ));
+
+        $this->assertEquals(69, $doubleAnyNumber(7));
+    }
+
+    public function testCanUseToArrayForObjects()
+    {
+        // Create the simple to array wrapper.
+        $toArrray = Func\toArray();
+
+        // Test with valid stdClass.
+        $obj = new stdClass();
+        $obj->propA = 1;
+        $obj->propB = 2;
+        $this->assertArrayHasKey('propA', $toArrray($obj));
+        $this->assertEquals(1, $toArrray($obj)['propA']);
+        $this->assertArrayHasKey('propB', $toArrray($obj));
+        $this->assertEquals(2, $toArrray($obj)['propB']);
+
+        // Test only valid public properties.
+        $obj = new ToArrayFixtureClass();
+        $this->assertArrayNotHasKey('propA', $toArrray($obj));
+        $this->assertArrayNotHasKey('propB', $toArrray($obj));
+        $this->assertArrayHasKey('propC', $toArrray($obj));
+        $this->assertEquals(3, $toArrray($obj)['propC']);
+
+        // Check it returns blank array if any other value passed.
+        $this->assertEmpty($toArrray(false));
+        $this->assertEmpty($toArrray(null));
+        $this->assertEmpty($toArrray([1,2,3,4]));
+        $this->assertEmpty($toArrray(1));
+        $this->assertEmpty($toArrray(2.5));
+        $this->assertEmpty($toArrray('STRING'));
     }
 }

@@ -10,12 +10,14 @@ declare(strict_types=1);
  */
 
 require_once dirname(__FILE__, 2) . '/FunctionsLoader.php';
+require_once dirname(__FILE__) . '/Providers/ObjectFactory.php';
 
 use PHPUnit\Framework\TestCase;
 use PinkCrab\FunctionConstructors\Numbers as Num;
 use PinkCrab\FunctionConstructors\Strings as Str;
 use PinkCrab\FunctionConstructors\FunctionsLoader;
 use PinkCrab\FunctionConstructors\GeneralFunctions as Func;
+use PinkCrab\FunctionConstructors\Tests\Providers\ObjectFactory;
 
 
 class ProceduralFunctionsTest extends TestCase
@@ -57,4 +59,5 @@ class ProceduralFunctionsTest extends TestCase
         $this->assertTrue(str_contains('--True', '--'));
         $this->assertFalse(str_contains('++False', '--'));
     }
+
 }
