@@ -67,3 +67,36 @@ if (! function_exists('array_flatten')) {
         );
     }
 }
+
+if (! function_exists('toObject')) {
+    /**
+     * Simple mapper for turning arrays into stdClass objects.
+     *
+     * @param array $array
+     * @return stdClass
+     */
+    function toObject(array $array): object
+    {
+        $object = new stdClass();
+        foreach ($array as $key => $value) {
+            $key = is_string($key) ? $key : (string) $key;
+            $object->{$key} = $value;
+        }
+        return $object;
+    }
+
+}
+
+if (! function_exists('invokeCallable')) {
+    /**
+     * Used to invoke a callable.
+     *
+     * @param callable $fn
+     * @param mixed ...$args
+     * @return void
+     */
+    function invokeCallable(callable $fn, ...$args)
+    {
+        return $fn(...$args);
+    }
+}

@@ -242,10 +242,10 @@ class ComparissonFunctionTest extends TestCase
     {
         $this->assertTrue(Comp\allTrue(true, true, 1 == 1, 4 === ( 3 + 1 ))); // t
         $this->assertFalse(Comp\allTrue(true, true, 1 == 3, 4 === ( 3 + 1 ))); // f
-        $this->assertTrue(Comp\someTrue(true, true, 1 == 3, 4 === ( 3 + 1 ))); //t
+        $this->assertTrue(Comp\anyTrue(true, true, 1 == 3, 4 === ( 3 + 1 ))); //t
         $this->assertTrue(! Comp\allTrue(false, false, 1 == 3, 4 === ( 3 * 1 ))); //t
         $this->assertFalse(Comp\allTrue(false, false, 1 == 3, 4 === ( 3 * 1 ))); //t
-        $this->assertFalse(Comp\someTrue(false, false, 1 == 3, 4 === ( 3 * 1 ))); //f
+        $this->assertFalse(Comp\anyTrue(false, false, 1 == 3, 4 === ( 3 * 1 ))); //f
     }
 
     public function testCanCheckIsTrue(): void
@@ -273,8 +273,18 @@ class ComparissonFunctionTest extends TestCase
         $this->assertFalse(Comp\notEmpty(''));
         $this->assertFalse(Comp\notEmpty([]));
     }
+
+    public function testCanUseNot()
+    {
+        $function = function ($a) {
+            return $a === 1;
+        };
+        
+        $this->assertTrue(Comp\not($function)(2));
+        $this->assertFalse(Comp\not($function)(1));
+
+        $notEquals1 = Comp\not($function);
+        $this->assertTrue($notEquals1(2));
+        $this->assertFalse($notEquals1(1));
+    }
 }
-
-
-
-// ZZAT00109661

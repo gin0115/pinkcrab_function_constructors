@@ -32,7 +32,7 @@ use TypeError;
  * Composes a function based on a set of callbacks.
  * All functions passed should have matching parameters.
  *
- * (...(A -> B)) -> ( A -> B )
+ * ...( A -> B ) -> ( A -> B )
  *
  * @param callable ...$callables
  * @return callable
@@ -55,9 +55,10 @@ function compose(callable ...$callables): callable
  * Compose a function which is escaped if the value returns as null.
  * This allows for safer composition.
  *
+ * ...( A -> A ) -> ( A -> A|Null )
+ *
  * @param callable ...$callables
  * @return callable
- * @annotation ( ...( a -> a ) ) -> ( a -> a )
  */
 function composeSafe(callable ...$callables): callable
 {
@@ -80,6 +81,8 @@ function composeSafe(callable ...$callables): callable
  * Every return from every class, must pass a validation function
  * If any fail validation, null is returned.
  *
+ * ( A -> Bool ) -> ...( A -> A ) -> ( A -> A|Null )
+ * 
  * @param callable $validator The validation function (b -> bool)
  * @param callable ...$callables The functions to execute (a -> a)
  * @return callable
@@ -113,9 +116,10 @@ function composeTypeSafe(callable $validator, callable ...$callables): callable
 /**
  * Alias for compose()
  *
+ * ...( A -> B ) -> ( A -> B )
+ *
  * @param callable ...$callables
  * @return callable
- * @annotation ( ...( a -> a ) ) -> ( a -> a )
  */
 function pipe(callable ...$callables): callable
 {
@@ -126,9 +130,10 @@ function pipe(callable ...$callables): callable
  * The reverse of the functions passed into compose() (pipe())).
  * To give a more functional feel to some piped calls.
  *
+ * ...( A -> B ) -> ( A -> B )
+ *
  * @param callable ...$callables
  * @return callable
- * @annotation ( ...( a -> a ) ) -> ( a -> a )
  */
 function pipeR(callable ...$callables): callable
 {
@@ -138,7 +143,7 @@ function pipeR(callable ...$callables): callable
 /**
  * Returns a callback for getting a property or element from an array/object.
  *
- * ( String ) -> ( A -> B|Null )
+ * String -> ( A -> B|Null )
  *
  * @param string $property
  * @return callable
@@ -165,7 +170,7 @@ function getProperty(string $property): callable
  * Will return whatever value at final node passed.
  * If any level returns null, process aborts.
  *
- * ( ...String ) -> ( A -> B|Null )
+ * ..String -> ( A -> B|Null )
  *
  * @param string ...$nodes
  * @return callable
@@ -188,9 +193,10 @@ function pluckProperty(string ...$nodes): callable
  * Returns a callable for a checking if a property exists.
  * Works for both arrays and objects (with public properties).
  *
+ * String -> ( Array|Object -> Bool )
+ *
  * @param string $property
  * @return callable
- * @annotation ( string ) -> ( a -> bool )
  */
 function hasProperty(string $property): callable
 {
@@ -213,9 +219,10 @@ function hasProperty(string $property): callable
  * Returns a callable for a checking if a property exists and matches the passed value
  * Works for both arrays and objects (with public properties).
  *
+ * String -> A -> ( Array|Object -> Bool )
+ *
  * @param string $property
  * @return callable
- * @annotation ( string -> a ) -> ( b -> bool )
  */
 function propertyEquals(string $property, $value): callable
 {
@@ -234,7 +241,7 @@ function propertyEquals(string $property, $value): callable
 /**
  * Sets a property in an object or array.
  *
- * ( Array|Object ) -> ( String -> Mixed -> Array\Object )
+ * Array|Object -> ( String -> Mixed -> Array\Object )
  *
  * All object properties are passed as $object->{$property} = $value.
  * So no methods can be called using set property.
@@ -273,7 +280,7 @@ function setProperty($store): ?callable
  * Returns a callable for created an array with a set key
  * sets the value as the result of a callable being passed some data.
  *
- * ( String -> ( A -> B ) ) -> ( A -> Array[B] )
+ * String -> ( A -> B ) -> ( A -> Array[B] )
  *
  * @param string $key
  * @param callable $value
@@ -294,7 +301,7 @@ function encodeProperty(string $key, callable $value): callable
  * Creates a callable for encoding an arry or object,
  * from an array of encodeProperty functions.
  *
- * ( Array|Object ) ->  ( ...( String -> ( A -> B ) ) ) -> ( A -> Object|Array[B] )
+ * Array|Object ->  ( ...( String -> ( A -> B ) ) ) -> ( A -> Object|Array[B] )
  *
  * @param  array|object $dataType
  * @return callable
@@ -322,37 +329,66 @@ function recordEncoder($dataType): callable
     };
 }
 
-
 /**
- * Used to invoke a callback.
+ * Partially applied callable invoker.
+ *
+ * ( A -> B ) -> ( ...A -> AB )
  *
  * @param callable $fn
- * @param mixed ...$args
- * @return void
- * @annotation ( a -> b ) -> ...a -> bq
+ * @return callable
  */
-function invoke(callable $fn, ...$args)
+function invoker(callable $fn): callable
 {
-    return $fn(...$args);
+    /**
+     * @param mixed ...$args
+     * @return mixed
+     */
+    return function (...$args) use ($fn) {
+        return $fn(...$args);
+    };
 }
 
 /**
  * Returns a function which always returns the value you created it with
  *
+ * A -> (  ...B -> A  )
+ *
  * @param mixed $value The value you always want to return.
  * @return callable
- * @annotation ( a ) -> ( ...b -> a )
  */
 function always($value): callable
 {
+    /**
+     * @param mixed $ignored Any values can be passed and ignored.
+     * @return mixed
+     */
     return function (...$ignored) use ($value) {
         return $value;
     };
 }
 
+/**
+ * Returns a function for turning objects into aarrays.
+ * Only takes public properties.
+ *
+ * () -> ( Object -> Array )
+ *
+ * @return callable
+ */
 function toArray(): callable
 {
-    return function (object $object): array {
+    /**
+     * @var object $object
+     * @return array
+     */
+    return function ($object): array {
+        
+        // If not object, return empty array.
+        // Pollyfill for php7.1 lacking object type hint.
+        if (! is_object($object)) {
+            return [];
+        }
+
         $objectVars = get_object_vars($object);
         return array_reduce(
             array_keys($objectVars),
@@ -363,14 +399,4 @@ function toArray(): callable
             []
         );
     };
-}
-
-function toObject(array $array): object
-{
-    $object = new stdClass();
-    foreach ($array as $key => $value) {
-        $key = is_string($key) ? $key : (string) $key;
-        $object->{$key} = $value;
-    }
-    return $object;
 }

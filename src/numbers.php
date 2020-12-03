@@ -29,10 +29,11 @@ use PinkCrab\FunctionConstructors\Comparisons as C;
 /**
  * Used to accumulate integers
  *
+ * Int|Float -> ( Int|Float -> Int|Float )
+ * 
  * @param int $initial
  * @return callable
  * @throws TypeError If not int or null passed.
- * @annotation ( int -> ( int ) ) -> ( int )|int
  */
 function accumulatorInt(int $initial = 0): callable
 {
@@ -51,10 +52,11 @@ function accumulatorInt(int $initial = 0): callable
 /**
  * Used to accumulate floats
  *
+ * Int|Float -> ( Int|Float -> Int|Float )
+ * 
  * @param float $initial
  * @return callable
  * @throws TypeError If not float or null passed.
- * @annotation ( float -> ( float ) ) -> ( float )|float
  */
 function accumulatorFloat(float $initial = 0): callable
 {
@@ -73,7 +75,7 @@ function accumulatorFloat(float $initial = 0): callable
 /**
  * Returns a function for adding a fixed amount.
  *
- * ( Int|Float ) -> ( Int|Float -> Int|Float )
+ * Int|Float -> ( Int|Float -> Int|Float )
  *
  * @param int|float $intial Defualts to 0
  * @return callable
@@ -98,7 +100,7 @@ function sum($initial = 0): callable
 /**
  * Returns a function for adding a fixed amount.
  *
- * ( Int|Float ) -> ( Int|Float -> Int|Float )
+ * Int|Float -> ( Int|Float -> Int|Float )
  *
  * @param int $intial Defualts to 0
  * @return callable
@@ -123,7 +125,7 @@ function subtract($initial = 0): callable
 /**
  * Returns a function for multiplying a fixed amount.
  *
- * ( Int|Float ) -> ( Int|Float -> Int|Float )
+ * Int|Float -> ( Int|Float -> Int|Float )
  *
  * @param int|float $intial Defualts to 1
  */
@@ -147,6 +149,8 @@ function multiply($initial = 1): callable
 /**
  * Returns a function for divideBy a fixed amount.
  *
+ * Int|Float -> ( Int|Float -> Int|Float )
+ * 
  * @param float $divisor The value to divide the passed value by
  * @return callable
  * @annotation ( int|float ) -> ( int|float -> float )
@@ -170,9 +174,10 @@ function divideBy($divisor = 1): callable
 /**
  * Returns a function for divideInto a fixed amount.
  *
+ * Int|Float -> ( Int|Float -> Int|Float )
+ * 
  * @param float $dividend The value to divide the passed value by
  * @return callable
- * @annotation ( int|float ) -> ( int|float -> float )
  */
 function divideInto($dividend = 1): callable
 {
@@ -191,10 +196,11 @@ function divideInto($dividend = 1): callable
 
 /**
  * Returns a function for getting the remainder with a fixed divisor.
+ * 
+ * Int|Float -> ( Int|Float -> Int|Float )
  *
  * @param float $divisor
  * @return callable
- * @annotation ( int|float ) -> ( int|float -> float )
  */
 function remainderBy($divisor = 1): callable
 {
@@ -213,10 +219,11 @@ function remainderBy($divisor = 1): callable
 
 /**
  * Returns a function for getting the remainder with a fixed dividend.
+ * 
+ * Int|Float -> ( Int|Float -> Int|Float )
  *
  * @param float $dividend
  * @return callable
- * @annotation ( int|float ) -> ( int|float -> float )
  */
 function remainderInto($dividend = 1): callable
 {
@@ -236,7 +243,7 @@ function remainderInto($dividend = 1): callable
 /**
  * Returns a function for getting the remainder with a fixed dividend.
  *
- * Int -> ( Int|Float -> Float )
+ * Int|Float -> ( Int|Float -> Float )
  *
  * @param int $precission Number of decimal places.
  * @return callable
