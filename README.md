@@ -1,5 +1,7 @@
 # The PinkCrab FunctionConstructors library.
 
+![PHP Composer](https://github.com/gin0115/pinkcrab_function_constructors/workflows/PHP%20Composer/badge.svg?branch=develop)
+
 This libary provides a small selection of functions for making functional programming a little cleaner and easier in php.
 
 To include this packge please add the following to your composer.json
