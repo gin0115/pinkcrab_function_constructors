@@ -3,3 +3,4 @@ composer.lock
 sandbox/
 wiki/
 *.code-workspace
+.phpunit.result.cache
