@@ -410,7 +410,19 @@ class ArrayFunctionTests extends TestCase
         $this->assertContains(8, $sorted[1]);
         $this->assertContains(3, $sorted[0]);
         $this->assertContains(7, $sorted[0]);
+    }
 
+    public function testCanDoToString(): void
+    {
+        $source = [
+            'hi', 'there', 'how', 'are', 'you', 3, 12.7, true, null
+        ];
+
+        $noSpacing = Arr\toString();
+        $withSpacing = Arr\toString(' ');
+
+        $this->assertEquals('hitherehowareyou312.71', $noSpacing($source));
+        $this->assertEquals('hi there how are you 3 12.7 1 ', $withSpacing($source));
 
     }
 }

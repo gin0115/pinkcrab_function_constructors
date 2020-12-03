@@ -25,15 +25,17 @@ declare(strict_types=1);
 
 namespace PinkCrab\FunctionConstructors\GeneralFunctions;
 
+use stdClass;
 use TypeError;
 
 /**
  * Composes a function based on a set of callbacks.
  * All functions passed should have matching parameters.
  *
+ * (...(A -> B)) -> ( A -> B )
+ *
  * @param callable ...$callables
  * @return callable
- * @annotation (...(a -> b)) -> ( a -> b )
  */
 function compose(callable ...$callables): callable
 {
@@ -346,4 +348,29 @@ function always($value): callable
     return function (...$ignored) use ($value) {
         return $value;
     };
+}
+
+function toArray(): callable
+{
+    return function (object $object): array {
+        $objectVars = get_object_vars($object);
+        return array_reduce(
+            array_keys($objectVars),
+            function (array $array, $key) use ($objectVars): array {
+                $array[ltrim((string)$key, '_')] = $objectVars[$key];
+                return $array;
+            },
+            []
+        );
+    };
+}
+
+function toObject(array $array): object
+{
+    $object = new stdClass();
+    foreach ($array as $key => $value) {
+        $key = is_string($key) ? $key : (string) $key;
+        $object->{$key} = $value;
+    }
+    return $object;
 }

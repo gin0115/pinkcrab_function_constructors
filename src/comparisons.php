@@ -281,3 +281,10 @@ function all(...$callables): callable
 {
     return groupAnd(...$callables);
 }
+
+function not(callable $callable): callable
+{
+    return function ($value) use ($callable): bool {
+        return ! (bool) $callable($value);
+    };
+}

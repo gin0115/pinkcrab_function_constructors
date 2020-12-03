@@ -100,6 +100,28 @@ function asUrl(string $url, ?string $target = null): callable
     };
 }
 
+
+/**
+ * Creates a callable for slicinig a string
+ * 
+ * Uses substr()
+ *
+ * Int -> Int|Null -> ( String -> String )
+ *
+ * @param int $start start poition
+ * @param int|null $start end poition
+ * @return callable
+ */
+function slice(int $start, ?int $finish = null): callable
+{
+    
+    return function (string $string) use ($start, $finish): string {
+        return ! $finish
+            ? substr($string, $start)
+            : substr($string, $start, $finish);
+    };
+}
+
 /**
  * Creates a callable for preppedning to a string.
  *
