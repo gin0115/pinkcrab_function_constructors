@@ -49,7 +49,7 @@ class ArrayFunctionTests extends TestCase
 
         $pushToHead = Arr\pushHead(array( 3, 4, 5, 6 ));
         $added2     = $pushToHead(2);
-        $this->assertEquals(3, $added2[0]);
+        $this->assertEquals(2, $added2[0]);
 
         $pushToHead = Arr\pushHead($added2);
         $added1     = $pushToHead(1);
