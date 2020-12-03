@@ -28,7 +28,7 @@ jobs:
         run: php -v
 
       - name: Clear existing composer
-        run: rm -rf vendor && rm -rf composer.lock
+        run: rm -rf vendor && rm -rf composer.lockg
 
       - name: Validate composer.json and composer.lock
         run: composer validate
@@ -45,4 +45,7 @@ jobs:
       - name: Install dependencies
         if: steps.composer-cache.outputs.cache-hit != 'true'
         run: composer install --prefer-dist --no-suggest
+
+      - name: Run Tests
+        run: composer test
 
