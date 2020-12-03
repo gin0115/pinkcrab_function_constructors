@@ -352,7 +352,17 @@ function always($value): callable
 
 function toArray(): callable
 {
-    return function (object $object): array {
+    /**
+     * @var object $object
+     * @return array
+     */
+    return function ($object): array {
+        // If not object, return empty array.
+        if (! is_object($object)) {
+            return [];
+        }
+
+
         $objectVars = get_object_vars($object);
         return array_reduce(
             array_keys($objectVars),
