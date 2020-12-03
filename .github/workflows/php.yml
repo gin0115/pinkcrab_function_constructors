@@ -27,6 +27,9 @@ jobs:
       - name: Check PHP Version
         run: php -v
 
+      - name: Clear existing composer
+        run: rm -rf vendor && rm -rf composer.lock
+
       - name: Validate composer.json and composer.lock
         run: composer validate
 
