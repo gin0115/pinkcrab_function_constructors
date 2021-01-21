@@ -32,7 +32,7 @@ use PinkCrab\FunctionConstructors\Comparisons as Comp;
  *
  * Array[A] -> ( B -> Array[B,A] )
  *
- * @param array $array
+ * @param array<int|string, mixed> $array
  * @return callable
  */
 function pushHead(array $array): callable
@@ -52,7 +52,7 @@ function pushHead(array $array): callable
  *
  * Array[A] -> ( B -> Array[B,A] )
  *
- * @param array $array
+ * @param array<int|string, mixed> $array
  * @return callable
  */
 function pushTail(array $array): callable
@@ -72,7 +72,7 @@ function pushTail(array $array): callable
  *
  * Array -> A
  *
- * @param array $array The array.
+ * @param array<int|string, mixed> $array The array.
  * @return mixed Will return the first value is array is not empty, else null.
  */
 function head(array $array)
@@ -85,7 +85,7 @@ function head(array $array)
  *
  * Array -> A
  *
- * @param array $array
+ * @param array<int|string, mixed> $array
  * @return mixed Will return the last value is array is not empty, else null.
  */
 function tail(array $array)
@@ -106,7 +106,7 @@ function tail(array $array)
 function toString(?string $glue = null): callable
 {
     /**
-     * @param array $array Array join
+     * @param array<int|string, mixed> $array Array join
      * @return string.
      */
     return function (array $array) use ($glue): string {
@@ -128,7 +128,7 @@ function toString(?string $glue = null): callable
  *
  * Array -> ( A|Null ) -> ( A|Null )|Array[A]
  *
- * @param array $inital Sets up the inner value.
+ * @param array<int|string, mixed> $inital Sets up the inner value.
  * @return callable
  */
 function arrayCompiler(array $inital = []): callable
@@ -154,7 +154,7 @@ function arrayCompiler(array $inital = []): callable
  * ( A -> Bool ) -> Array ->  ( A|Null ) ->  ( A|Null )|Array[A]
  *
  * @param callable $validator (mixed->bool)
- * @param array $inital The intial data to start with
+ * @param array<int|string, mixed> $inital The intial data to start with
  * @return callable
  */
 function arrayCompilerTyped(callable $validator, array $inital = []): callable
@@ -193,7 +193,7 @@ function arrayCompilerTyped(callable $validator, array $inital = []): callable
 function filter(callable $callable): callable
 {
     /**
-     * @param array $source Array to filter
+     * @param array<int|string, mixed> $source Array to filter
      * @return array Filtered array.
      */
     return function (array $source) use ($callable): array {
@@ -213,7 +213,7 @@ function filter(callable $callable): callable
 function filterAnd(callable ...$callables): callable
 {
     /**
-     * @param array $source Array to filter
+     * @param array<int|string, mixed> $source Array to filter
      * @return array Filtered array.
      */
     return function (array $source) use ($callables): array {
@@ -233,7 +233,7 @@ function filterAnd(callable ...$callables): callable
 function filterOr(callable ...$callables): callable
 {
     /**
-     * @param array $source Array to filter
+     * @param array<int|string, mixed> $source Array to filter
      * @return array Filtered array.
      */
     return function (array $source) use ($callables): array {
@@ -252,7 +252,7 @@ function filterOr(callable ...$callables): callable
 function filterFirst(callable $func): callable
 {
     /**
-     * @param array $array The array to filter
+     * @param array<int|string, mixed> $array The array to filter
      * @return mixed|null The first element from the filtered array or null if filter returns empty
      */
     return function (array $array) use ($func) {
@@ -271,7 +271,7 @@ function filterFirst(callable $func): callable
 function filterLast(callable $func): callable
 {
     /**
-     * @param array $array The array to filter
+     * @param array<int|string, mixed> $array The array to filter
      * @return mixed|null The last element from the filtered array.
      */
     return function (array $array) use ($func) {
@@ -292,7 +292,7 @@ function filterLast(callable $func): callable
 function filterMap(callable $filter, callable $map): callable
 {
     /**
-     * @param array $array The arry to filter then map.
+     * @param array<int|string, mixed> $array The arry to filter then map.
      * @return array
      */
     return function (array $array) use ($filter, $map): array {
@@ -311,7 +311,7 @@ function filterMap(callable $filter, callable $map): callable
 function filterCount(callable $function): callable
 {
     /**
-     * @param array $array
+     * @param array<int|string, mixed> $array
      * @return int Count
      */
     return function (array $array) use ($function) {
@@ -366,7 +366,7 @@ function partition(callable $function): callable
 function map(callable $func): callable
 {
     /**
-     * @param array $array The array to map
+     * @param array<int|string, mixed> $array The array to map
      * @return array
      */
     return function (array $array) use ($func): array {
@@ -404,6 +404,7 @@ function mapKey(callable $func): callable
  *  ( A -> Array[B] ) -> ...B  -> ( Array[A] -> Array[AB] )
  *
  * @param callable $func
+ * @param mixed ...$data
  * @return callable
  */
 function mapWith(callable $func, ...$data): callable
@@ -430,7 +431,7 @@ function mapWith(callable $func, ...$data): callable
 function flatMap(callable $function, ?int $n = null): callable
 {
     /**
-     * @param array $array
+     * @param array<int|string, mixed> $array
      * @return array
      */
     return function (array $array) use ($n, $function): array {
@@ -466,7 +467,7 @@ function flatMap(callable $function, ?int $n = null): callable
 function groupBy(callable $function): callable
 {
     /**
-     * @param array $array The array to be grouped
+     * @param array<int|string, mixed> $array The array to be grouped
      * @return array Grouped array.
      */
     return function (array $array) use ($function): array {
@@ -493,7 +494,7 @@ function groupBy(callable $function): callable
 function chunk(int $count, bool $preserveKeys = false): callable
 {
     /**
-     * @param array $array Array to chunk
+     * @param array<int|string, mixed> $array Array to chunk
      * @return array
      */
     return function (array $array) use ($count, $preserveKeys): array {
@@ -512,7 +513,7 @@ function chunk(int $count, bool $preserveKeys = false): callable
 function column(string $column, ?string $key = null): callable
 {
     /**
-     * @param array $array
+     * @param array<int|string, mixed> $array
      * @return array
      */
     return function (array $array) use ($column, $key): array {
@@ -530,7 +531,7 @@ function column(string $column, ?string $key = null): callable
 function flattenByN(?int $n = null): callable
 {
     /**
-     * @param array $array Array to flatten
+     * @param array<int|string, mixed> $array Array to flatten
      * @return array
      */
     return function (array $array) use ($n): array {
@@ -558,14 +559,14 @@ function flattenByN(?int $n = null): callable
 /**
  * Returns a callaback for recursivly channging values in an array.
  *
- * @param array ...$with The array values to replace with
+ * @param array<int|string, mixed> ...$with The array values to replace with
  * @return callable
  * @annotation :  ( ...array[b] ) -> ( Array[A] -> Array[A|b] )
  */
 function replaceRecursive(array ...$with): callable
 {
     /**
-     * @param array $array The array to have elements replaced from.
+     * @param array<int|string, mixed> $array The array to have elements replaced from.
      * @return array Array with replacements.
      */
     return function (array $array) use ($with): array {
@@ -576,14 +577,14 @@ function replaceRecursive(array ...$with): callable
 /**
  * Returns a callaback for chaning all values in a flat array, based on key.
  *
- * @param array ...$with Array with values to replace with, must have matching key with base array.
+ * @param array<int|string, mixed> ...$with Array with values to replace with, must have matching key with base array.
  * @return callable
- * @annotation :  ( ...array[b] ) -> ( Array[A] -> Array[A|b] )
+ * @annotation :  ( array[b] ) -> ( Array[A] -> Array[A|b] )
  */
 function replace(array ...$with): callable
 {
     /**
-     * @param array $array The array to have elements replaced from.
+     * @param array<int|string, mixed> $array The array to have elements replaced from.
      * @return array Array with replacements.
      */
     return function (array $array) use ($with) {
@@ -601,11 +602,11 @@ function replace(array ...$with): callable
 function sumWhere(callable $function): callable
 {
     /**
-     * @param array $array Array to do sum() on.
+     * @param array<int|string, mixed> $array Array to do sum() on.
      * @return int|float The total.
      */
     return function (array $array) use ($function) {
-        return array_sum(array_map($function, $array) ?? []);
+        return array_sum(array_map($function, $array));
     };
 }
 
@@ -624,7 +625,7 @@ function toObject(?object $object = null): callable
     $object = $object ?? new stdClass();
     
     /**
-     * @param array $array
+     * @param array<int|string, mixed> $array
      * @return object
      */
     return function (array $array) use ($object): object {
@@ -644,7 +645,12 @@ function toObject(?object $object = null): callable
  * @param int $flags json_encode flags (defualt = 0)
  * @param int $depth Nodes deep to encode (defualt = 512)
  * @return callable
- * @constants JSON_FORCE_OBJECT, JSON_HEX_QUOT, JSON_HEX_TAG, JSON_HEX_AMP, JSON_HEX_APOS, JSON_INVALID_UTF8_IGNORE, JSON_INVALID_UTF8_SUBSTITUTE, JSON_NUMERIC_CHECK, JSON_PARTIAL_OUTPUT_ON_ERROR, JSON_PRESERVE_ZERO_FRACTION, JSON_PRETTY_PRINT, JSON_UNESCAPED_LINE_TERMINATORS, JSON_UNESCAPED_SLASHES, JSON_UNESCAPED_UNICODE, JSON_THROW_ON_ERROR
+ * @constants JSON_FORCE_OBJECT, JSON_HEX_QUOT, JSON_HEX_TAG, JSON_HEX_AMP,
+ *            JSON_HEX_APOS, JSON_INVALID_UTF8_IGNORE,
+ *            JSON_INVALID_UTF8_SUBSTITUTE, JSON_NUMERIC_CHECK,
+ *            JSON_PARTIAL_OUTPUT_ON_ERROR, JSON_PRESERVE_ZERO_FRACTION,
+ *            JSON_PRETTY_PRINT, JSON_UNESCAPED_LINE_TERMINATORS,
+ *            JSON_UNESCAPED_SLASHES, JSON_UNESCAPED_UNICODE, JSON_THROW_ON_ERROR
  */
 function toJson(int $flags = 0, int $depth = 512): callable
 {
@@ -653,14 +659,14 @@ function toJson(int $flags = 0, int $depth = 512): callable
      * @return string|null
      */
     return function ($array) use ($flags, $depth): ?string {
-        return \json_decode($array, $flags, $depth);
+        return \json_encode($array, $flags, $depth) ?: null;
     };
 }
 
 
 /*
  *                         ****************
- *                         * Array Search *
+ *                         *  Array Sort  *
  *                         ****************
  */
 
@@ -668,54 +674,75 @@ function toJson(int $flags = 0, int $depth = 512): callable
 /**
  * Returns a callback for doing regular SORT again an array.
  *
- * @param int|null $flag Uses php stock sort constants or numerical values.
- * @return callable{
- *      @param array $array The array to sort
- *      @return array The sorted array (new array)
- * }
+ * @param int $flag Uses php stock sort constants or numerical values.
+ * @return callable
  */
-function sort(int $flag = null): callable
+function sort(int $flag = SORT_REGULAR): callable
 {
+    /**
+     *  @param array<int|string, mixed> $array The array to sort
+     *  @return array The sorted array (new array)
+     */
     return function (array $array) use ($flag) {
         \sort($array, $flag);
         return $array;
     };
 }
 
-function rsort(int $flag = null): callable
+function rsort(int $flag = SORT_REGULAR): callable
 {
+    /**
+     *  @param array<int|string, mixed> $array The array to sort
+     *  @return array The sorted array (new array)
+     */
     return function (array $array) use ($flag) {
         \rsort($array, $flag);
         return $array;
     };
 }
 
-function asort(int $flag = null): callable
+function asort(int $flag = SORT_REGULAR): callable
 {
+    /**
+     *  @param array<int|string, mixed> $array The array to sort
+     *  @return array The sorted array (new array)
+     */
     return function (array $array) use ($flag) {
         \asort($array, $flag);
         return $array;
     };
 }
 
-function krsort(int $flag = null): callable
+function krsort(int $flag = SORT_REGULAR): callable
 {
+    /**
+     *  @param array<int|string, mixed> $array The array to sort
+     *  @return array The sorted array (new array)
+     */
     return function (array $array) use ($flag) {
         \krsort($array, $flag);
         return $array;
     };
 }
 
-function ksort(int $flag = null): callable
+function ksort(int $flag = SORT_REGULAR): callable
 {
+    /**
+     *  @param array<int|string, mixed> $array The array to sort
+     *  @return array The sorted array (new array)
+     */
     return function (array $array) use ($flag) {
         \ksort($array, $flag);
         return $array;
     };
 }
 
-function arsort(int $flag = null): callable
+function arsort(int $flag = SORT_REGULAR): callable
 {
+    /**
+     *  @param array<int|string, mixed> $array The array to sort
+     *  @return array The sorted array (new array)
+     */
     return function (array $array) use ($flag) {
         \arsort($array, $flag);
         return $array;
@@ -724,6 +751,10 @@ function arsort(int $flag = null): callable
 
 function natsort(): callable
 {
+    /**
+     *  @param array<int|string, mixed> $array The array to sort
+     *  @return array The sorted array (new array)
+     */
     return function (array $array) {
         \natsort($array);
         return $array;
@@ -732,6 +763,10 @@ function natsort(): callable
 
 function natcasesort(): callable
 {
+    /**
+     *  @param array<int|string, mixed> $array The array to sort
+     *  @return array The sorted array (new array)
+     */
     return function (array $array) {
         \natcasesort($array);
         return $array;
@@ -740,6 +775,10 @@ function natcasesort(): callable
 
 function uksort(callable $function): callable
 {
+    /**
+     *  @param array<int|string, mixed> $array The array to sort
+     *  @return array The sorted array (new array)
+     */
     return function (array $array) use ($function) {
         \uksort($array, $function);
         return $array;
@@ -748,6 +787,10 @@ function uksort(callable $function): callable
 
 function uasort(callable $function): callable
 {
+    /**
+     *  @param array<int|string, mixed> $array The array to sort
+     *  @return array The sorted array (new array)
+     */
     return function (array $array) use ($function) {
         \uasort($array, $function);
         return $array;
@@ -756,6 +799,10 @@ function uasort(callable $function): callable
 
 function usort(callable $function): callable
 {
+    /**
+     *  @param array<int|string, mixed> $array The array to sort
+     *  @return array The sorted array (new array)
+     */
     return function (array $array) use ($function) {
         \usort($array, $function);
         return $array;

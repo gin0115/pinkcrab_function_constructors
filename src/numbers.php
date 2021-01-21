@@ -30,7 +30,7 @@ use PinkCrab\FunctionConstructors\Comparisons as C;
  * Used to accumulate integers
  *
  * Int|Float -> ( Int|Float -> Int|Float )
- * 
+ *
  * @param int $initial
  * @return callable
  * @throws TypeError If not int or null passed.
@@ -53,7 +53,7 @@ function accumulatorInt(int $initial = 0): callable
  * Used to accumulate floats
  *
  * Int|Float -> ( Int|Float -> Int|Float )
- * 
+ *
  * @param float $initial
  * @return callable
  * @throws TypeError If not float or null passed.
@@ -150,7 +150,7 @@ function multiply($initial = 1): callable
  * Returns a function for divideBy a fixed amount.
  *
  * Int|Float -> ( Int|Float -> Int|Float )
- * 
+ *
  * @param float $divisor The value to divide the passed value by
  * @return callable
  * @annotation ( int|float ) -> ( int|float -> float )
@@ -175,7 +175,7 @@ function divideBy($divisor = 1): callable
  * Returns a function for divideInto a fixed amount.
  *
  * Int|Float -> ( Int|Float -> Int|Float )
- * 
+ *
  * @param float $dividend The value to divide the passed value by
  * @return callable
  */
@@ -196,7 +196,7 @@ function divideInto($dividend = 1): callable
 
 /**
  * Returns a function for getting the remainder with a fixed divisor.
- * 
+ *
  * Int|Float -> ( Int|Float -> Int|Float )
  *
  * @param float $divisor
@@ -219,7 +219,7 @@ function remainderBy($divisor = 1): callable
 
 /**
  * Returns a function for getting the remainder with a fixed dividend.
- * 
+ *
  * Int|Float -> ( Int|Float -> Int|Float )
  *
  * @param float $dividend

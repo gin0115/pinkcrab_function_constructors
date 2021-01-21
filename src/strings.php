@@ -103,7 +103,7 @@ function asUrl(string $url, ?string $target = null): callable
 
 /**
  * Creates a callable for slicinig a string
- * 
+ *
  * Uses substr()
  *
  * Int -> Int|Null -> ( String -> String )
@@ -114,7 +114,7 @@ function asUrl(string $url, ?string $target = null): callable
  */
 function slice(int $start, ?int $finish = null): callable
 {
-    
+
     return function (string $string) use ($start, $finish): string {
         return ! $finish
             ? substr($string, $start)
@@ -168,7 +168,7 @@ function append(string $append): callable
  * @param array $args
  * @return callable
  */
-function vSprintf(array $args = []): callable
+function vSprintf(array $args = array()): callable
 {
     /**
      * @param string $string
@@ -176,7 +176,7 @@ function vSprintf(array $args = []): callable
      */
     return function (string $string) use ($args): ?string {
         $result = \vsprintf($string, $args);
-        return !C\isFalse($result) ? $result : $string;
+        return ! C\isFalse($result) ? $result : $string;
     };
 }
 
@@ -265,7 +265,7 @@ function startsWith(string $find): callable
      * @return bool
      */
     return function (string $source) use ($find): bool {
-        return (\substr($source, 0, \strlen($find)) === $find);
+        return ( \substr($source, 0, \strlen($find)) === $find );
     };
 }
 
@@ -287,12 +287,12 @@ function endsWith(string $find): callable
         if (\strlen($find) === 0) {
             return true;
         }
-        return (\substr($source, -\strlen($find)) === $find);
+        return ( \substr($source, -\strlen($find)) === $find );
     };
 }
 
 /**
- * Creates a callable for checking if a string contains. using str_contains
+ * Creates a callable for checking if a string contains. using stringContains
  *
  * String -> ( String -> bool )
  *
@@ -306,7 +306,7 @@ function contains(string $needle): callable
      * @return bool
      */
     return function (string $haystack) use ($needle): bool {
-        return \str_contains($haystack, $needle);
+        return \stringContains($haystack, $needle);
     };
 }
 
@@ -345,7 +345,7 @@ function splitPattern(string $pattern): callable
      */
     return function (string $string) use ($pattern): ?array {
         $parts = \preg_split($pattern, $string);
-        return !C\isFalse($parts) ? $parts : null;
+        return ! C\isFalse($parts) ? $parts : null;
     };
 }
 
@@ -569,7 +569,7 @@ function similarAsBase(string $base, bool $asPc = false): callable
      * @return int|float
      */
     return function (string $comparissonString) use ($base, $asPc) {
-        $pc = 0.00;
+        $pc       = 0.00;
         $matching = similar_text($base, $comparissonString, $pc);
         return $asPc ? $pc : $matching;
     };
@@ -591,7 +591,7 @@ function similarAsComparisson(string $comparissonString, bool $asPc = false): ca
      * @return int|float
      */
     return function (string $base) use ($comparissonString, $asPc) {
-        $pc = 0.00;
+        $pc       = 0.00;
         $matching = similar_text($base, $comparissonString, $pc);
         return $asPc ? $pc : $matching;
     };
@@ -694,7 +694,7 @@ function firstPosistion(
     int $flags = STRINGS_CASE_SENSITIVE
 ): callable {
 
-    $caseSensitive = !(bool) ($flags & STRINGS_CASE_INSENSITIVE); // Assumes true unless INSESNITVE passed
+    $caseSensitive = ! (bool) ( $flags & STRINGS_CASE_INSENSITIVE ); // Assumes true unless INSESNITVE passed
 
     /**
      * @param string $haystack The haystack to look throuh.
@@ -704,7 +704,7 @@ function firstPosistion(
         $pos = $caseSensitive
             ? strpos($haystack, $needle, $offset)
             : stripos($haystack, $needle, $offset);
-        return !C\isFalse($pos) ? $pos : null;
+        return ! C\isFalse($pos) ? $pos : null;
     };
 }
 
@@ -724,7 +724,7 @@ function lastPosistion(
     int $flags = STRINGS_CASE_SENSITIVE
 ): callable {
 
-    $caseSensitive = !(bool) ($flags & STRINGS_CASE_INSENSITIVE); // Assumes true unless INSESNITVE passed
+    $caseSensitive = ! (bool) ( $flags & STRINGS_CASE_INSENSITIVE ); // Assumes true unless INSESNITVE passed
 
     /**
      * @param string $haystack The haystack to look throuh.
@@ -734,7 +734,7 @@ function lastPosistion(
         $pos = $caseSensitive
             ? strrpos($haystack, $needle, $offset)
             : strripos($haystack, $needle, $offset);
-        return !C\isFalse($pos) ? $pos : null;
+        return ! C\isFalse($pos) ? $pos : null;
     };
 }
 
@@ -755,8 +755,8 @@ function firstSubString(
 ): callable {
 
     // Deocde flags, only look for none defaults.
-    $beforeNeedle = (bool) ($flags & STRINGS_BEFORE_NEEDLE);
-    $caseSensitive = !(bool) ($flags & STRINGS_CASE_INSENSITIVE); // Assumes true unless INSESNITVE passed
+    $beforeNeedle  = (bool) ( $flags & STRINGS_BEFORE_NEEDLE );
+    $caseSensitive = ! (bool) ( $flags & STRINGS_CASE_INSENSITIVE ); // Assumes true unless INSESNITVE passed
 
     /**
      * @param string $haystack The haystack to look through.
@@ -766,7 +766,7 @@ function firstSubString(
         $result = $caseSensitive
             ? strstr($haystack, $needle, $beforeNeedle)
             : stristr($haystack, $needle, $beforeNeedle);
-        return !C\isFalse($result) ? $result : '';
+        return ! C\isFalse($result) ? $result : '';
     };
 }
 
@@ -787,7 +787,7 @@ function firstChar(string $chars): callable
      */
     return function (string $haystack) use ($chars): string {
         $result = strpbrk($haystack, $chars);
-        return !C\isFalse($result) ? $result : '';
+        return ! C\isFalse($result) ? $result : '';
     };
 }
 
@@ -808,7 +808,7 @@ function lastChar(string $char): callable
      */
     return function (string $haystack) use ($char): string {
         $result = strrchr($haystack, $char);
-        return !C\isFalse($result) ? $result : '';
+        return ! C\isFalse($result) ? $result : '';
     };
 }
 
