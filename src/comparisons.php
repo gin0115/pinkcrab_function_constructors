@@ -132,7 +132,7 @@ function isLessThan($a): callable
  *
  * Array -> ( A -> Bool )
  *
- * @param array $a
+ * @param array<mixed> $a
  * @return callable
  */
 function isEqualIn(array $a): callable
@@ -343,16 +343,26 @@ function isNumber($value): bool
 
 /**
  * Alias for groupOr
+ *
+ * ...(A > Bool) -> (B > Boll)
+ *
+ * @param callable ...$callables
+ * @return callable
  */
-function any(...$callables): callable
+function any(callable ...$callables): callable
 {
     return groupOr(...$callables);
 }
 
 /**
  * Alias for groupAnd
+ *
+ * ...(A > Bool) -> (B > Boll)
+ *
+ * @param callable ...$callables
+ * @return callable
  */
-function all(...$callables): callable
+function all(callable ...$callables): callable
 {
     return groupAnd(...$callables);
 }

@@ -22,7 +22,7 @@ declare(strict_types=1);
  * @package PinkCrab\FunctionConstructors
  */
 
-if (! function_exists('str_contains')) {
+if (! function_exists('stringContains')) {
     /**
      * Checks if a string contains a sub string
      *
@@ -30,7 +30,7 @@ if (! function_exists('str_contains')) {
      * @param string $needle The sub string to look for.
      * @return bool
      */
-    function str_contains(string $haystack, string $needle): bool
+    function stringContains(string $haystack, string $needle): bool
     {
         return strpos($haystack, $needle) !== false;
     }
@@ -55,7 +55,7 @@ if (! function_exists('array_flatten')) {
                     return $carry;
                 }
                 // If the element is an array and we are still flattening, call again
-                if (is_array($element) && (is_null($n) || $n > 0)) {
+                if (is_array($element) && ( is_null($n) || $n > 0 )) {
                     $carry = array_merge($carry, arrayFlatten($element, $n ? $n - 1 : null));
                 } else {
                     // Else just add the elememnt.
@@ -63,7 +63,7 @@ if (! function_exists('array_flatten')) {
                 }
                 return $carry;
             },
-            []
+            array()
         );
     }
 }
@@ -79,12 +79,11 @@ if (! function_exists('toObject')) {
     {
         $object = new stdClass();
         foreach ($array as $key => $value) {
-            $key = is_string($key) ? $key : (string) $key;
+            $key            = is_string($key) ? $key : (string) $key;
             $object->{$key} = $value;
         }
         return $object;
     }
-
 }
 
 if (! function_exists('invokeCallable')) {

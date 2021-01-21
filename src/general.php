@@ -27,6 +27,7 @@ namespace PinkCrab\FunctionConstructors\GeneralFunctions;
 
 use stdClass;
 use TypeError;
+use ArrayObject;
 
 /**
  * Composes a function based on a set of callbacks.
@@ -82,7 +83,7 @@ function composeSafe(callable ...$callables): callable
  * If any fail validation, null is returned.
  *
  * ( A -> Bool ) -> ...( A -> A ) -> ( A -> A|Null )
- * 
+ *
  * @param callable $validator The validation function (b -> bool)
  * @param callable ...$callables The functions to execute (a -> a)
  * @return callable
@@ -222,6 +223,7 @@ function hasProperty(string $property): callable
  * String -> A -> ( Array|Object -> Bool )
  *
  * @param string $property
+ * @param mixed $value
  * @return callable
  */
 function propertyEquals(string $property, $value): callable
@@ -248,14 +250,17 @@ function propertyEquals(string $property, $value): callable
  * Will throw error is the property is protect or private.
  * Only works for public or dynamic properties.
  *
- * @param array|object $store
- * @return callable|null
+ * @param array<mixed>|ArrayObject<mixed>|object $store
+ * @return callable
  */
-function setProperty($store): ?callable
+function setProperty($store): callable
 {
-    $isArray = is_array($store)
-        || (get_class($store) === 'ArrayObject' && $store->getFlags() === 2);
-
+    $isIndexArrayObject = function ($store): bool {
+        return (get_class($store) === ArrayObject::class && $store->getFlags() === 2);
+    };
+    
+    $isArray = is_array($store) || $isIndexArrayObject($store) ;
+    
     if (!$isArray && !is_object($store)) {
         throw new TypeError("Only objects or arrays can be constructed using setProperty.");
     }
