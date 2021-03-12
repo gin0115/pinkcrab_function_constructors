@@ -42,5 +42,6 @@ class FunctionsLoader
         require_once('src/arrays.php');
         require_once('src/strings.php');
         require_once('src/numbers.php');
+        require_once('src/iterables.php');
     }
 }
