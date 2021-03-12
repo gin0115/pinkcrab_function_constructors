@@ -26,7 +26,7 @@ if (! function_exists('stringContains')) {
     /**
      * Checks if a string contains a sub string
      *
-     * @param string $haysack The string to search within.
+     * @param string $haystack The string to search within.
      * @param string $needle The sub string to look for.
      * @return bool
      */
@@ -41,9 +41,9 @@ if (! function_exists('array_flatten')) {
      * Flattens an array to desired depth.
      * Doesnt preserve keys
      *
-     * @param array $array The array to flatten
+     * @param array<mixed> $array The array to flatten
      * @param int|null $n The depth to flatten the array, if null will flatten all arrays.
-     * @return bool
+     * @return array<mixed>
      */
     function arrayFlatten(array $array, ?int $n = null): array
     {
@@ -72,7 +72,7 @@ if (! function_exists('toObject')) {
     /**
      * Simple mapper for turning arrays into stdClass objects.
      *
-     * @param array $array
+     * @param array<mixed> $array
      * @return stdClass
      */
     function toObject(array $array): object
@@ -94,8 +94,26 @@ if (! function_exists('invokeCallable')) {
      * @param mixed ...$args
      * @return void
      */
-    function invokeCallable(callable $fn, ...$args)
+    function invokeCallable(callable $fn, ...$args): void
     {
-        return $fn(...$args);
+        $fn(...$args);
+    }
+}
+
+if (! function_exists('isArrayAccess')) {
+    /**
+     * Checks if an array or an object which has array like access.
+     *
+     * @source https://stackoverflow.com/questions/12346479/how-to-check-for-arrayness-in-php
+     * @param mixed $var
+     * @return bool
+     */
+    function isArrayAccess($var)
+    {
+        return is_array($var) ||
+           ($var instanceof \ArrayAccess  &&
+            $var instanceof \Traversable  &&
+            $var instanceof \Serializable &&
+            $var instanceof \Countable);
     }
 }
