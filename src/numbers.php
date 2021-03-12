@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace PinkCrab\FunctionConstructors\Numbers;
 
+use InvalidArgumentException;
 use PinkCrab\FunctionConstructors\Comparisons as C;
 
 /**
@@ -33,7 +34,6 @@ use PinkCrab\FunctionConstructors\Comparisons as C;
  *
  * @param int $initial
  * @return callable
- * @throws TypeError If not int or null passed.
  */
 function accumulatorInt(int $initial = 0): callable
 {
@@ -56,7 +56,6 @@ function accumulatorInt(int $initial = 0): callable
  *
  * @param float $initial
  * @return callable
- * @throws TypeError If not float or null passed.
  */
 function accumulatorFloat(float $initial = 0): callable
 {
@@ -77,14 +76,14 @@ function accumulatorFloat(float $initial = 0): callable
  *
  * Int|Float -> ( Int|Float -> Int|Float )
  *
- * @param int|float $intial Defualts to 0
+ * @param int|float $initial Defualts to 0
  * @return callable
- * @throws TypeError If neither int or float passed.
+ * @throws InvalidArgumentException If neither int or float passed.
  */
 function sum($initial = 0): callable
 {
     if (! C\isNumber($initial)) {
-        throw new \TypeError(__FUNCTION__ . "only accepts a Number (Float or Int)");
+        throw new InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
     }
     
     /**
@@ -102,14 +101,14 @@ function sum($initial = 0): callable
  *
  * Int|Float -> ( Int|Float -> Int|Float )
  *
- * @param int $intial Defualts to 0
+ * @param int $initial Defualts to 0
  * @return callable
- * @throws TypeError If neither int or float passed.
+ * @throws InvalidArgumentException If neither int or float passed.
  */
 function subtract($initial = 0): callable
 {
     if (! C\isNumber($initial)) {
-        throw new \TypeError(__FUNCTION__ . "only accepts a Number (Float or Int)");
+        throw new InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
     }
     
     /**
@@ -127,12 +126,14 @@ function subtract($initial = 0): callable
  *
  * Int|Float -> ( Int|Float -> Int|Float )
  *
- * @param int|float $intial Defualts to 1
+ * @param int|float $initial Defualts to 1
+ * @return callable
+ * @throws InvalidArgumentException
  */
 function multiply($initial = 1): callable
 {
     if (! C\isNumber($initial)) {
-        throw new \TypeError(__FUNCTION__ . "only accepts a Number (Float or Int)");
+        throw new InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
     }
     
     /**
