@@ -1,16 +1,19 @@
 <?php
 
+/**
+ * Tests for all number types
+ *
+ * @author Glynn Quelch <glynn.quelch@gmail.com>
+ * @since 0.1.0
+ */
+
 declare(strict_types=1);
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use PinkCrab\FunctionConstructors\Arrays as Arr;
 use PinkCrab\FunctionConstructors\Numbers as Num;
-use PinkCrab\FunctionConstructors\Strings as Str;
 use PinkCrab\FunctionConstructors\FunctionsLoader;
 
-/**
- * NumberFunction class.
- */
 class NumberFunctionTest extends TestCase
 {
 
@@ -59,7 +62,7 @@ class NumberFunctionTest extends TestCase
         $this->expectException(TypeError::class);
         $acc = Num\accumulatorFloat(0);
         $acc = $acc([1,2,3,4,5,6]);
-        // Throws TypeError.
+        // Throws InvalidArgumentException.
     }
 
     public function testCanSum()
@@ -81,13 +84,13 @@ class NumberFunctionTest extends TestCase
     }
 
     /**
-     * @expectedException TypeError
+     * @expectedException InvalidArgumentException
      */
     public function testSumThrowsNoneNumError()
     {
-        $this->expectException(TypeError::class);
+        $this->expectException(InvalidArgumentException::class);
         $acc = Num\sum('0');
-        // Throws TypeError.
+        // Throws InvalidArgumentException.
     }
 
     public function testCanSub()
@@ -109,13 +112,13 @@ class NumberFunctionTest extends TestCase
     }
 
     /**
-     * @expectedException TypeError
+     * @expectedException InvalidArgumentException
      */
     public function testSubThrowsNoneNumError()
     {
-        $this->expectException(TypeError::class);
+        $this->expectException(InvalidArgumentException::class);
         $acc = Num\subtract('0');
-        // Throws TypeError.
+        // Throws InvalidArgumentException.
     }
 
     public function testCanMultiply()
@@ -137,13 +140,13 @@ class NumberFunctionTest extends TestCase
     }
 
      /**
-     * @expectedException TypeError
+     * @expectedException InvalidArgumentException
      */
     public function testMultiplyThrowsNoneNumError()
     {
-        $this->expectException(TypeError::class);
+        $this->expectException(InvalidArgumentException::class);
         $acc = Num\multiply([['0'], false]);
-        // Throws TypeError.
+        // Throws InvalidArgumentException.
     }
 
     public function testCanDivideByAndInto()
@@ -190,23 +193,23 @@ class NumberFunctionTest extends TestCase
     }
 
       /**
-     * @expectedException TypeError
+     * @expectedException InvalidArgumentException
      */
     public function testRoundThrowsNoneNumErrorA()
     {
-        $this->expectException(TypeError::class);
+        $this->expectException(InvalidArgumentException::class);
         $rounder = Num\round(['HELLO', 'NOT A NUMBER']);
-        // Throws TypeError.
+        // Throws InvalidArgumentException.
     }
 
         /**
-     * @expectedException TypeError
+     * @expectedException InvalidArgumentException
      */
     public function testRoundThrowsNoneNumErrorB()
     {
-        $this->expectException(TypeError::class);
+        $this->expectException(InvalidArgumentException::class);
         $rounder = Num\round(5);
         $rounder('STRINGS');
-        // Throws TypeError.
+        // Throws InvalidArgumentException.
     }
 }

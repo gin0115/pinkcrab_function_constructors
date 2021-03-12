@@ -160,7 +160,7 @@ function divideBy($divisor = 1): callable
 {
     
     if (! C\isNumber($divisor)) {
-        throw new \TypeError(__FUNCTION__ . "only accepts a Number (Float or Int)");
+        throw new \InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
     }
     
     /**
@@ -183,7 +183,7 @@ function divideBy($divisor = 1): callable
 function divideInto($dividend = 1): callable
 {
     if (! C\isNumber($dividend)) {
-        throw new \TypeError(__FUNCTION__ . "only accepts a Number (Float or Int)");
+        throw new \InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
     }
     
     /**
@@ -206,7 +206,7 @@ function divideInto($dividend = 1): callable
 function remainderBy($divisor = 1): callable
 {
     if (! C\isNumber($divisor)) {
-        throw new \TypeError(__FUNCTION__ . "only accepts a Number (Float or Int)");
+        throw new \InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
     }
     
     /**
@@ -229,7 +229,7 @@ function remainderBy($divisor = 1): callable
 function remainderInto($dividend = 1): callable
 {
     if (! C\isNumber($dividend)) {
-        throw new \TypeError(__FUNCTION__ . "only accepts a Number (Float or Int)");
+        throw new \InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
     }
     
     /**
@@ -252,7 +252,7 @@ function remainderInto($dividend = 1): callable
 function round($precission = 1): callable
 {
     if (! C\isNumber($precission)) {
-        throw new \TypeError(__FUNCTION__ . "only accepts a Number (Float or Int)");
+        throw new \InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
     }
     
     /**
@@ -261,7 +261,7 @@ function round($precission = 1): callable
      */
     return function ($value) use ($precission): float {
         if (! C\isNumber($value)) {
-            throw new \TypeError("Num\\round() only accepts a valid Number ( Int|Float -> Float )");
+            throw new \InvalidArgumentException("Num\\round() only accepts a valid Number ( Int|Float -> Float )");
         }
         return \round(\floatval($value), $precission);
     };
