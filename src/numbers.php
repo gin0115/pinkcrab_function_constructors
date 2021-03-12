@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace PinkCrab\FunctionConstructors\Numbers;
 
+use InvalidArgumentException;
 use PinkCrab\FunctionConstructors\Comparisons as C;
 
 /**
@@ -33,7 +34,6 @@ use PinkCrab\FunctionConstructors\Comparisons as C;
  *
  * @param int $initial
  * @return callable
- * @throws TypeError If not int or null passed.
  */
 function accumulatorInt(int $initial = 0): callable
 {
@@ -56,7 +56,6 @@ function accumulatorInt(int $initial = 0): callable
  *
  * @param float $initial
  * @return callable
- * @throws TypeError If not float or null passed.
  */
 function accumulatorFloat(float $initial = 0): callable
 {
@@ -77,14 +76,14 @@ function accumulatorFloat(float $initial = 0): callable
  *
  * Int|Float -> ( Int|Float -> Int|Float )
  *
- * @param int|float $intial Defualts to 0
+ * @param int|float $initial Defualts to 0
  * @return callable
- * @throws TypeError If neither int or float passed.
+ * @throws InvalidArgumentException If neither int or float passed.
  */
 function sum($initial = 0): callable
 {
     if (! C\isNumber($initial)) {
-        throw new \TypeError(__FUNCTION__ . "only accepts a Number (Float or Int)");
+        throw new InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
     }
     
     /**
@@ -102,14 +101,14 @@ function sum($initial = 0): callable
  *
  * Int|Float -> ( Int|Float -> Int|Float )
  *
- * @param int $intial Defualts to 0
+ * @param int $initial Defualts to 0
  * @return callable
- * @throws TypeError If neither int or float passed.
+ * @throws InvalidArgumentException If neither int or float passed.
  */
 function subtract($initial = 0): callable
 {
     if (! C\isNumber($initial)) {
-        throw new \TypeError(__FUNCTION__ . "only accepts a Number (Float or Int)");
+        throw new InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
     }
     
     /**
@@ -127,12 +126,14 @@ function subtract($initial = 0): callable
  *
  * Int|Float -> ( Int|Float -> Int|Float )
  *
- * @param int|float $intial Defualts to 1
+ * @param int|float $initial Defualts to 1
+ * @return callable
+ * @throws InvalidArgumentException
  */
 function multiply($initial = 1): callable
 {
     if (! C\isNumber($initial)) {
-        throw new \TypeError(__FUNCTION__ . "only accepts a Number (Float or Int)");
+        throw new InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
     }
     
     /**
@@ -159,7 +160,7 @@ function divideBy($divisor = 1): callable
 {
     
     if (! C\isNumber($divisor)) {
-        throw new \TypeError(__FUNCTION__ . "only accepts a Number (Float or Int)");
+        throw new \InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
     }
     
     /**
@@ -182,7 +183,7 @@ function divideBy($divisor = 1): callable
 function divideInto($dividend = 1): callable
 {
     if (! C\isNumber($dividend)) {
-        throw new \TypeError(__FUNCTION__ . "only accepts a Number (Float or Int)");
+        throw new \InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
     }
     
     /**
@@ -205,7 +206,7 @@ function divideInto($dividend = 1): callable
 function remainderBy($divisor = 1): callable
 {
     if (! C\isNumber($divisor)) {
-        throw new \TypeError(__FUNCTION__ . "only accepts a Number (Float or Int)");
+        throw new \InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
     }
     
     /**
@@ -228,7 +229,7 @@ function remainderBy($divisor = 1): callable
 function remainderInto($dividend = 1): callable
 {
     if (! C\isNumber($dividend)) {
-        throw new \TypeError(__FUNCTION__ . "only accepts a Number (Float or Int)");
+        throw new \InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
     }
     
     /**
@@ -251,7 +252,7 @@ function remainderInto($dividend = 1): callable
 function round($precission = 1): callable
 {
     if (! C\isNumber($precission)) {
-        throw new \TypeError(__FUNCTION__ . "only accepts a Number (Float or Int)");
+        throw new \InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
     }
     
     /**
@@ -260,7 +261,7 @@ function round($precission = 1): callable
      */
     return function ($value) use ($precission): float {
         if (! C\isNumber($value)) {
-            throw new \TypeError("Num\\round() only accepts a valid Number ( Int|Float -> Float )");
+            throw new \InvalidArgumentException("Num\\round() only accepts a valid Number ( Int|Float -> Float )");
         }
         return \round(\floatval($value), $precission);
     };
