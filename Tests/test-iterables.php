@@ -12,13 +12,15 @@ require_once dirname(__FILE__, 2) . '/FunctionsLoader.php';
  */
 
 use PHPUnit\Framework\TestCase;
-use function PHPUnit\Framework\throwException;
-use PinkCrab\FunctionConstructors\Arrays as Arr;
-use PinkCrab\FunctionConstructors\Numbers as Num;
-use PinkCrab\FunctionConstructors\Strings as Str;
-use PinkCrab\FunctionConstructors\FunctionsLoader;
-use PinkCrab\FunctionConstructors\Iterable as Itr;
-use PinkCrab\FunctionConstructors\GeneralFunctions as Func;
+use PinkCrab\FunctionConstructors\{
+    Comparisons as Com,
+    Numbers as Num,
+    Arrays as Arr,
+    Strings as Str,
+    FunctionsLoader,
+    Iterables as Itr,
+    GeneralFunctions as Func
+};
 
 /**
  * IterableFunction class.
@@ -122,5 +124,55 @@ class IterableFunctionTests extends TestCase
         $this->assertCount(1, $results);
         $this->assertContains('qe__yu', $results);
         $this->assertArrayHasKey('key3', $results);
+    }
+
+	/** @testdox Can use filterOr using either generator or array. */
+    public function test_iterable_filter_or(): void
+    {
+        $generatorWithOutKeys = function (): Generator {
+            yield  'ab__cd';
+            yield  'ab__ef';
+            yield  'gh__ij';
+            yield  'kl__cd';
+        };
+        $generatorWithKeys = function (): Generator {
+            yield 'key1' => 'ab__cd';
+            yield 'key2' => 'ab__ef';
+            yield 'key3' => 'gh__ij';
+            yield 'key4' => 'kl__cd';
+        };
+
+        /** ITERATOR WITHOUT KEYS */
+        $startWith_ab_endsWith_cd = Itr\filterOr(Str\startsWith('ab'), Str\endsWith('cd'));
+        $results = $startWith_ab_endsWith_cd($generatorWithOutKeys());
+        $asArray = iterator_to_array($results);
+
+        $this->assertIsIterable($results);
+        $this->assertNotEmpty($asArray);
+        $this->assertCount(3, $asArray);
+        $this->assertContains('ab__cd', $asArray);
+        $this->assertContains('ab__ef', $asArray);
+        $this->assertContains('kl__cd', $asArray);
+
+        /** ITERATOR WITH KEYS */
+        $startWith_kl_endsWith_ij = Itr\filterOr(Str\startsWith('kl'), Str\endsWith('ij'));
+        $results = $startWith_kl_endsWith_ij($generatorWithKeys());
+        $asArray = iterator_to_array($results);
+
+        $this->assertIsIterable($results);
+        $this->assertNotEmpty($asArray);
+        $this->assertCount(2, $asArray);
+        $this->assertContains('kl__cd', $asArray);
+        $this->assertContains('gh__ij', $asArray);
+
+        /** USING ARRAY */
+        $startWith_gh_endsWith_ef = Itr\filterOr(Str\startsWith('gh'), Str\endsWith('ef'));
+        $results = $startWith_gh_endsWith_ef(iterator_to_array($generatorWithKeys()));
+
+        $this->assertIsIterable($results);
+        $this->assertNotEmpty($results);
+        $this->assertCount(2, $results);
+        $this->assertContains('gh__ij', $results);
+        $this->assertContains('ab__ef', $results);
     }
 }

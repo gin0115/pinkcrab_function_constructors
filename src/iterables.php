@@ -22,10 +22,17 @@ declare(strict_types=1);
  * @package PinkCrab\FunctionConstructors
  */
 
-namespace PinkCrab\FunctionConstructors\Iterable;
+namespace PinkCrab\FunctionConstructors\Iterables;
 
 use CallbackFilterIterator;
-use PinkCrab\FunctionConstructors\Comparisons as Comp;
+use PinkCrab\FunctionConstructors\{
+    Comparisons as C,
+    Numbers as Num,
+    Arrays as Arr,
+    Strings as Str,
+    Iterables as Itr,
+    GeneralFunctions as F
+};
 
 /*
  * Use array_filter as a patial.
@@ -67,9 +74,33 @@ function filterAnd(callable ...$callables): callable
      */
     return function (iterable $source) use ($callables): iterable {
         return is_array($source)
-            ? array_filter($source, Comp\groupAnd(...$callables))
+            ? array_filter($source, C\groupAnd(...$callables))
             : new CallbackFilterIterator($source, function ($current, $key, $iterator) use ($callables): bool {
-                return Comp\groupAnd(...$callables)($current);
+                return C\groupAnd(...$callables)($current);
+            });
+    };
+}
+
+/**
+ * Creates a callback for running an array through various callbacks for any true response.
+ * Wrapper for creating a OR group of callbacks and running through array filter.
+ *
+ *  ...( A -> Bool ) -> ( Iterable[AB] -> Iterable[A|Empty] )
+ *
+* @param callable(mixed):bool ...$callables
+ * @return callable
+ */
+function filterOr(callable ...$callables): callable
+{
+    /**
+     * @param iterable<mixed, mixed> $source Iterable to filter
+     * @return iterable<mixed, mixed> Filtered Iterable.
+     */
+    return function (iterable $source) use ($callables): iterable {
+        return is_array($source)
+            ? array_filter($source, C\groupOr(...$callables))
+            : new CallbackFilterIterator($source, function ($current, $key, $iterator) use ($callables): bool {
+                return C\groupOr(...$callables)($current);
             });
     };
 }

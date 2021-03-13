@@ -16,7 +16,7 @@ If you wish to use this libary within WordPress or other PHP codebases where you
 <?php
 
 require_once('path/to/cloned/repo/FunctionsLoader.php');
-FunctionsLoader::include(); 
+\PinkCrab\FunctionConstructors\FunctionsLoader::include(); 
 // This will then just include all functions files and you can use them.
 
 ```
@@ -25,11 +25,14 @@ All of our functions are namespaced as **PinkCrab\FunctionConstructors\\{lib}**.
 
 ```php
 <?php
-use PinkCrab\FunctionConstructors\GeneralFunctions as F;
-use PinkCrab\FunctionConstructors\Comparisons as C;
-use PinkCrab\FunctionConstructors\Numbers as Num;
-use PinkCrab\FunctionConstructors\Strings as Str;
-use PinkCrab\FunctionConstructors\Arrays as Arr;
+use PinkCrab\FunctionConstructors\{
+    Comparisons as C,
+    Numbers as Num,
+    Arrays as Arr,
+    Strings as Str,
+    Iterables as Itr,
+    GeneralFunctions as F
+};
 
 // Allowing for
 Arr\Map('esc_html') or Str\append('foo') or F\pipe(...)
