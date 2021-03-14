@@ -250,28 +250,25 @@ function propertyEquals(string $property, $value): callable
  * Will throw error is the property is protect or private.
  * Only works for public or dynamic properties.
  *
- * @param array<mixed>|ArrayObject<mixed>|object $store
+ * @param array<string,mixed>|ArrayObject<string,mixed>|object $store
  * @return callable
  */
 function setProperty($store): callable
 {
-    $isIndexArrayObject = function ($store): bool {
-        return (get_class($store) === ArrayObject::class && $store->getFlags() === 2);
-    };
-    
-    $isArray = is_array($store) || $isIndexArrayObject($store) ;
-    
-    if (!$isArray && !is_object($store)) {
+   
+    // If passed store is not an array or object, throw exception.
+    if (! isArrayAccess($store) && !is_object($store)) {
         throw new TypeError("Only objects or arrays can be constructed using setProperty.");
     }
     
     /**
      * @param string $property The property key.
      * @param mixed $value The value to set to keu.
-     * @return array|object The datastore.
+     * @return array<string, mixed>|object The datastore.
      */
-    return function (string $property, $value) use ($store, $isArray) {
-        if ($isArray) {
+    return function (string $property, $value) use ($store) {
+        if (isArrayAccess($store)) {
+            /** @phpstan-ignore-next-line */
             $store[$property] = $value;
         } else {
             $store->{$property} = $value;
@@ -303,12 +300,12 @@ function encodeProperty(string $key, callable $value): callable
 }
 
 /**
- * Creates a callable for encoding an arry or object,
+ * Creates a callable for encoding an array or object,
  * from an array of encodeProperty functions.
  *
  * Array|Object ->  ( ...( String -> ( A -> B ) ) ) -> ( A -> Object|Array[B] )
  *
- * @param  array|object $dataType
+ * @param  array<string, mixed>|object $dataType
  * @return callable
  */
 function recordEncoder($dataType): callable
@@ -383,7 +380,7 @@ function always($value): callable
 function toArray(): callable
 {
     /**
-     * @var object $object
+     * @param object $object
      * @return array
      */
     return function ($object): array {

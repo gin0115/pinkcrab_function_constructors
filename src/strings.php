@@ -89,7 +89,7 @@ function asUrl(string $url, ?string $target = null): callable
             \sprintf(
                 "<a href='%s' target='%s'>%s</a>",
                 $url,
-                $target ?? '_blank',
+                $target,
                 $string
             ) :
             \sprintf(
@@ -109,12 +109,15 @@ function asUrl(string $url, ?string $target = null): callable
  * Int -> Int|Null -> ( String -> String )
  *
  * @param int $start start poition
- * @param int|null $start end poition
+ * @param int|null $finish end poition
  * @return callable
  */
 function slice(int $start, ?int $finish = null): callable
 {
-
+    /**
+     * @param string $string
+     * @return string
+     */
     return function (string $string) use ($start, $finish): string {
         return ! $finish
             ? substr($string, $start)
@@ -165,7 +168,7 @@ function append(string $append): callable
  *
  * Array[String] -> ( String -> String )
  *
- * @param array $args
+ * @param array<string, mixed> $args
  * @return callable
  */
 function vSprintf(array $args = array()): callable
@@ -174,7 +177,7 @@ function vSprintf(array $args = array()): callable
      * @param string $string
      * @return string Will return orginial string if false.
      */
-    return function (string $string) use ($args): ?string {
+    return function (string $string) use ($args): string {
         $result = \vsprintf($string, $args);
         return ! C\isFalse($result) ? $result : $string;
     };
@@ -183,16 +186,16 @@ function vSprintf(array $args = array()): callable
 /**
  * Creates a double curried find to replace.
  *
- * String -> ( string ) -> ( String -> stirng )
+ * String -> ( String ) -> ( String -> String )
  *
- * @param stirng  $find Value to look for
- * @return callable
+ * @param string $find Value to look for
+ * @return callable(string):callable
  */
 function findToReplace(string $find): callable
 {
     /**
      * @param string $replace value to replace with
-     * @return callable
+     * @return callable(string): string
      */
     return function (string $replace) use ($find): callable {
         /**
@@ -210,8 +213,8 @@ function findToReplace(string $find): callable
  *
  * String -> String -> ( String -> stirng )
  *
- * @param stirng  $find
- * @param stirng  $replace
+ * @param string  $find
+ * @param string  $replace
  * @return callable
  */
 function replaceWith(string $find, string $replace): callable
@@ -316,7 +319,7 @@ function contains(string $needle): callable
  * String -> ( String -> bool )
  *
  * @param string $pattern
- * @return void
+ * @return callable(string): bool
  */
 function containsPattern(string $pattern): callable
 {
@@ -344,8 +347,7 @@ function splitPattern(string $pattern): callable
      * @return array
      */
     return function (string $string) use ($pattern): ?array {
-        $parts = \preg_split($pattern, $string);
-        return ! C\isFalse($parts) ? $parts : null;
+        return \preg_split($pattern, $string) ?: null;
     };
 }
 
@@ -354,20 +356,21 @@ function splitPattern(string $pattern): callable
  *
  * Int -> String -> String -> ( String|Int|Float -> String )
  *
- * @param string $precission Number of decimal places
+ * @param string|int|float $precission Number of decimal places
  * @param string $point The deciaml seperator
  * @param string $thousands The thousand seperator.
  * @return callable
  */
-function decimialNumber(int $precission = 2, $point = '.', $thousands = ''): callable
+function decimialNumber($precission = 2, $point = '.', $thousands = ''): callable
 {
+
     /**
      * @param string|int|float $number
      * @return string
      */
     return function ($number) use ($precission, $point, $thousands): string {
         return \is_numeric($number)
-            ? \number_format((float) $number, $precission, $point, $thousands)
+            ? \number_format((float) $number, (int) $precission, $point, $thousands)
             : '';
     };
 }
@@ -397,16 +400,16 @@ function addSlashes(string $charList): callable
  * Int -> ( String -> Array[String] )
  *
  * @param int $length The length to split the sring up with.
- * @return array The parts.
+ * @return callable(string):array<string> The parts.
  */
 function split(int $length): callable
 {
     /**
      * @param string $string The stirng to be split
-     * @return string
+     * @return array<int, string>
      */
     return function (string $string) use ($length): array {
-        return \str_split($string, $length);
+        return \str_split($string, $length) ?: [];
     };
 }
 
@@ -415,7 +418,7 @@ function split(int $length): callable
  *
  * Int -> String -> ( String -> String )
  *
- * @param ini $length The legenth of each chunk.
+ * @param int $length The legenth of each chunk.
  * @param string $end The string to use at the end.
  * @return callable
  */
@@ -704,7 +707,7 @@ function firstPosistion(
         $pos = $caseSensitive
             ? strpos($haystack, $needle, $offset)
             : stripos($haystack, $needle, $offset);
-        return ! C\isFalse($pos) ? $pos : null;
+        return is_int($pos) ? (int) $pos : null;
     };
 }
 
@@ -734,7 +737,7 @@ function lastPosistion(
         $pos = $caseSensitive
             ? strrpos($haystack, $needle, $offset)
             : strripos($haystack, $needle, $offset);
-        return ! C\isFalse($pos) ? $pos : null;
+        return is_int($pos) ? (int) $pos : null;
     };
 }
 
@@ -766,7 +769,7 @@ function firstSubString(
         $result = $caseSensitive
             ? strstr($haystack, $needle, $beforeNeedle)
             : stristr($haystack, $needle, $beforeNeedle);
-        return ! C\isFalse($result) ? $result : '';
+        return is_string($result) ? $result : '';
     };
 }
 
@@ -787,7 +790,7 @@ function firstChar(string $chars): callable
      */
     return function (string $haystack) use ($chars): string {
         $result = strpbrk($haystack, $chars);
-        return ! C\isFalse($result) ? $result : '';
+        return is_string($result) ? $result : '';
     };
 }
 
@@ -808,7 +811,7 @@ function lastChar(string $char): callable
      */
     return function (string $haystack) use ($char): string {
         $result = strrchr($haystack, $char);
-        return ! C\isFalse($result) ? $result : '';
+        return is_string($result) ? $result : '';
     };
 }
 
@@ -818,18 +821,18 @@ function lastChar(string $char): callable
  *
  * Array[String] -> ( String -> String )
  *
- * @param array $dictionary
+ * @param array<string, mixed> $dictionary
  * @return callable
  */
 function translateWith(array $dictionary): callable
 {
     /**
      * @param string $haystack
-     * @return string|null
+     * @return string
      */
-    return function (string $haystack) use ($dictionary): ?string {
+    return function (string $haystack) use ($dictionary): string {
         $result = strtr($haystack, $dictionary);
-        return C\isFalse($result) ? null : $result;
+        return $result;
     };
 }
 
@@ -854,7 +857,6 @@ function composeSafeStringFunc(callable ...$callables): callable
  *
  * @param string $initial
  * @return callable
- * @throws TypeError If not string or null passed.
  */
 function stringCompiler(string $initial = ''): callable
 {

@@ -47,7 +47,7 @@ class ArrayFunctionTests extends TestCase
     public function testCanPushToHead(): void
     {
 
-        $pushToHead = Arr\pushHead(array( 3, 4, 5, 6 ));
+        $pushToHead = Arr\pushHead(array(3, 4, 5, 6));
         $added2     = $pushToHead(2);
         $this->assertEquals(2, $added2[0]);
 
@@ -56,14 +56,14 @@ class ArrayFunctionTests extends TestCase
         $this->assertEquals(1, $added1[0]);
 
         // As curried.
-        $curried = Arr\pushHead(array( 3, 4, 5, 6 ))(2);
+        $curried = Arr\pushHead(array(3, 4, 5, 6))(2);
         $this->assertEquals(2, $curried[0]);
     }
 
     public function testCanPushToTail(): void
     {
 
-        $pushToTail = Arr\pushTail(array( 1, 2, 3, 4 ));
+        $pushToTail = Arr\pushTail(array(1, 2, 3, 4));
         $added2     = $pushToTail(5);
         $this->assertEquals(5, $added2[4]);
 
@@ -72,13 +72,13 @@ class ArrayFunctionTests extends TestCase
         $this->assertEquals(6, $added1[5]);
 
         // As curried.
-        $curried = Arr\pushTail(array( 1, 2, 3, 4 ))(5);
+        $curried = Arr\pushTail(array(1, 2, 3, 4))(5);
         $this->assertEquals(5, $curried[4]);
     }
 
     public function testCanUseTail()
     {
-        $names = array( 'Sam Smith', 'Barry Smith', 'Sam Power', 'Rebecca Smith' );
+        $names = array('Sam Smith', 'Barry Smith', 'Sam Power', 'Rebecca Smith');
         $this->assertEquals('Rebecca Smith', Arr\tail($names));
         // Check returns null if empty.
         $this->assertNull(Arr\tail(array()));
@@ -86,7 +86,7 @@ class ArrayFunctionTests extends TestCase
 
     public function testCanUseHead()
     {
-        $names = array( 'Sam Smith', 'Barry Smith', 'Sam Power', 'Rebecca Smith' );
+        $names = array('Sam Smith', 'Barry Smith', 'Sam Power', 'Rebecca Smith');
         $this->assertEquals('Sam Smith', Arr\head($names));
         // Check returns null if empty.
         $this->assertNull(Arr\head(array()));
@@ -115,7 +115,7 @@ class ArrayFunctionTests extends TestCase
         $arrayCompiler = Arr\arrayCompilerTyped('is_string');
         $arrayCompiler = $arrayCompiler('Hello');
         $arrayCompiler = $arrayCompiler('ERROR');
-        $arrayCompiler = $arrayCompiler(array( 'ERROR' ));
+        $arrayCompiler = $arrayCompiler(array('ERROR'));
         $this->assertCount(2, $arrayCompiler());
 
         $arrayCompiler = $arrayCompiler('Hello')(1)(NAN)('so 4?');
@@ -127,7 +127,7 @@ class ArrayFunctionTests extends TestCase
 
         $groupByPerfectNumbers = Arr\groupBy(
             function ($e) {
-                return in_array($e, array( 1, 2, 3, 6, 12 )) ? 'Perfect' : 'Not Perfect';
+                return in_array($e, array(1, 2, 3, 6, 12)) ? 'Perfect' : 'Not Perfect';
             }
         );
 
@@ -153,10 +153,27 @@ class ArrayFunctionTests extends TestCase
 
         // Check that keys are retained.
         $chunkInPairs = Arr\chunk(2, true);
-        $chunkedNames = $chunkInPairs(array( 'Jim', 'Bob', 'Gem', 'Fay' ));
+        $chunkedNames = $chunkInPairs(array('Jim', 'Bob', 'Gem', 'Fay'));
         $this->assertCount(2, $chunkedNames);
         $this->assertEquals('Bob', $chunkedNames[0][1]);
         $this->assertEquals('Fay', $chunkedNames[1][3]);
+    }
+
+    public function testCanUseZip()
+    {
+        $array = ['a', 'b', 'c'];
+
+        // Missing Key.
+        $arrayMissing = ['A', 'B'];
+        $expectedMissing = [['a', 'A'], ['b', 'B'], ['c', 'FALLBACK']];
+        $resultMissing = Arr\zip($arrayMissing, 'FALLBACK')($array);
+        $this->assertSame($resultMissing, $expectedMissing);
+
+        // Matching length.
+        $arrayFull = ['A', 'B', 'C'];
+        $expectedFull = [['a', 'A'], ['b', 'B'], ['c', 'C']];
+        $resultFull = Arr\zip($arrayFull, 'FALLBACK')($array);
+        $this->assertSame($resultFull, $expectedFull);
     }
 
     public function testCanUseColumn(): void
@@ -223,7 +240,7 @@ class ArrayFunctionTests extends TestCase
         $array = array(
             1,
             2,
-            array( 3, 4 ),
+            array(3, 4),
             array(
                 5,
                 6,
@@ -232,7 +249,7 @@ class ArrayFunctionTests extends TestCase
                 array(
                     9,
                     10,
-                    array( 11, 12, 13 ),
+                    array(11, 12, 13),
                 ),
             ),
         );
@@ -252,12 +269,12 @@ class ArrayFunctionTests extends TestCase
 
     public function testCanUseReplace()
     {
-        $base          = array( 'orange', 'banana', 'apple', 'raspberry' );
+        $base          = array('orange', 'banana', 'apple', 'raspberry');
         $replacements  = array(
             0 => 'pineapple',
             4 => 'cherry',
         );
-        $replacements2 = array( 0 => 'grape' );
+        $replacements2 = array(0 => 'grape');
 
         $replaceItems = Arr\replace($replacements, $replacements2);
 
@@ -271,13 +288,13 @@ class ArrayFunctionTests extends TestCase
     public function testCanUseReplaceRecursive(): void
     {
         $base = array(
-            'citrus'  => array( 'orange' ),
-            'berries' => array( 'apple', 'raspberry' ),
+            'citrus'  => array('orange'),
+            'berries' => array('apple', 'raspberry'),
         );
 
         $replacements = array(
-            'citrus'  => array( 'pineapple' ),
-            'berries' => array( 'blueberry' ),
+            'citrus'  => array('pineapple'),
+            'berries' => array('blueberry'),
         );
 
         $replaceItems = Arr\replaceRecursive($replacements);
@@ -323,7 +340,7 @@ class ArrayFunctionTests extends TestCase
 
     public function testCanSortArray(): void
     {
-        $array         = array( 'b', 'c', 'a', 'f', 'd', 'z', 'g' );
+        $array         = array('b', 'c', 'a', 'f', 'd', 'z', 'g');
         $sortAsStrings = Arr\sort(SORT_STRING);
 
         $sortedArray = $sortAsStrings($array);
@@ -354,7 +371,7 @@ class ArrayFunctionTests extends TestCase
             if ($a == $b) {
                 return 0;
             }
-            return ( $a < $b ) ? -1 : 1;
+            return ($a < $b) ? -1 : 1;
         };
 
         $sortByLowest = Arr\uasort($lowestFirstCallback);
@@ -375,13 +392,13 @@ class ArrayFunctionTests extends TestCase
 
     public function testCanDoUsortOnArray(): void
     {
-        $array = array( 3, 2, 5, 6, 1 );
+        $array = array(3, 2, 5, 6, 1);
 
         $lowestFirstCallback = function ($a, $b) {
             if ($a == $b) {
                 return 0;
             }
-            return ( $a < $b ) ? -1 : 1;
+            return ($a < $b) ? -1 : 1;
         };
 
         $sortByLowest = Arr\usort($lowestFirstCallback);
@@ -403,7 +420,7 @@ class ArrayFunctionTests extends TestCase
 
         $sortByOddEven = Arr\partition($isEven);
 
-        $data = array( 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 );
+        $data = array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
         $sorted = $sortByOddEven($data);
         $this->assertCount(5, $sorted[0]);
