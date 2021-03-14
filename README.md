@@ -2,6 +2,8 @@
 
 ![Unit Tests](https://github.com/gin0115/pinkcrab_function_constructors/workflows/PHP%20Composer/badge.svg?branch=develop)
 
+**Version 0.1.2**
+
 This libary provides a small selection of functions for making functional programming a little cleaner and easier in php.
 
 To include this packge please add the following to your composer.json
@@ -37,4 +39,7 @@ Arr\Map('esc_html') or Str\append('foo') or F\pipe(...)
 ```
 
 > For more details, please read the [wiki](https://github.com/gin0115/pinkcrab_function_constructors/wiki)
+
+## Changes
+* 0.1.2 - Added Arrays\zip() 
 
