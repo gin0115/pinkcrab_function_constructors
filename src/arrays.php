@@ -202,6 +202,25 @@ function filter(callable $callable): callable
 }
 
 /**
+ * Use array_filter as keys as a patial.
+ *
+ * @param callable $callable The function to apply to the array.
+ * @return callable
+ * @annotation : ( A -> Bool ) -> ( Array[AB] -> Array[A|Empty] )
+ */
+function filterKey(callable $callable): callable
+{
+    /**
+     * @param array<int|string, mixed> $source Array to filter
+     * @return array Filtered array.
+     */
+    return function (array $source) use ($callable): array {
+        return array_filter($source, $callable, \ARRAY_FILTER_USE_KEY);
+    };
+}
+
+
+/**
  * Creates a callback for running an array through various callbacks for all true response.
  * Wrapper for creating a AND group of callbacks and running through array filter.
  *
