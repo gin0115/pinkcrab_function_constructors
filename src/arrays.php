@@ -114,30 +114,31 @@ function toString(?string $glue = null): callable
     };
 }
 
-/** 
+/**
  * Returns a callable for zipping 2 arrays.
- * 
+ *
  * Array -> Mixed -> ( Array -> Array )
- * 
+ *
  * @param array<mixed> $additional Values with the same key will be paried.
  * @param mixed $default The fallback value if the addtional array doesnt have the same length
  * @return callable(array<mixed>):array<array{mixed, mixed}>
- * 
+ *
  */
 function zip(array $additional, $default = null): callable
 {
     $additional = array_values($additional);
-    return function(array $array) use ($additional, $default){
+    return function (array $array) use ($additional, $default) {
         $array = array_values($array);
         return array_reduce(
             array_keys($array),
-            function($carry, $key) use ($array, $additional, $default): array{
+            function ($carry, $key) use ($array, $additional, $default): array {
                 $carry[] = [
                     $array[$key],
                     array_key_exists($key, $additional) ? $additional[$key] : $default
                 ];
                 return $carry;
-            }, []
+            },
+            []
         );
     };
 }
