@@ -114,30 +114,31 @@ function toString(?string $glue = null): callable
     };
 }
 
-/** 
+/**
  * Returns a callable for zipping 2 arrays.
- * 
+ *
  * Array -> Mixed -> ( Array -> Array )
- * 
+ *
  * @param array<mixed> $additional Values with the same key will be paried.
  * @param mixed $default The fallback value if the addtional array doesnt have the same length
  * @return callable(array<mixed>):array<array{mixed, mixed}>
- * 
+ *
  */
 function zip(array $additional, $default = null): callable
 {
     $additional = array_values($additional);
-    return function(array $array) use ($additional, $default){
+    return function (array $array) use ($additional, $default) {
         $array = array_values($array);
         return array_reduce(
             array_keys($array),
-            function($carry, $key) use ($array, $additional, $default): array{
+            function ($carry, $key) use ($array, $additional, $default): array {
                 $carry[] = [
                     $array[$key],
                     array_key_exists($key, $additional) ? $additional[$key] : $default
                 ];
                 return $carry;
-            }, []
+            },
+            []
         );
     };
 }
@@ -228,6 +229,25 @@ function filter(callable $callable): callable
         return array_filter($source, $callable);
     };
 }
+
+/**
+ * Use array_filter as keys as a patial.
+ *
+ * @param callable $callable The function to apply to the array.
+ * @return callable
+ * @annotation : ( A -> Bool ) -> ( Array[AB] -> Array[A|Empty] )
+ */
+function filterKey(callable $callable): callable
+{
+    /**
+     * @param array<int|string, mixed> $source Array to filter
+     * @return array Filtered array.
+     */
+    return function (array $source) use ($callable): array {
+        return array_filter($source, $callable, \ARRAY_FILTER_USE_KEY);
+    };
+}
+
 
 /**
  * Creates a callback for running an array through various callbacks for all true response.

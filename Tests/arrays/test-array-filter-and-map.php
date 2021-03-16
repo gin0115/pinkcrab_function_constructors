@@ -38,6 +38,18 @@ class ArrayFilterAndMapTests extends TestCase
         $this->assertNotContains("Betty Jones", $isASmith($names));
         $this->assertNotContains("Sam Power", $isASmith($names));
     }
+
+    public function testCanUseFilterKey()
+    {
+        $names = ['name10' => "James Smith", 'name20' => "Betty Jones", 'name21' => "Sam Power", 'name38' => "Rebecca Smith"];
+        
+        $isASmith = Arr\filterKey(Str\contains('name2'));
+
+        $this->assertNotContains("James Smith", $isASmith($names));
+        $this->assertNotContains("Rebecca Smith", $isASmith($names));
+        $this->assertContains("Betty Jones", $isASmith($names));
+        $this->assertContains("Sam Power", $isASmith($names));
+    }
     
     public function testCanFilterOr()
     {
