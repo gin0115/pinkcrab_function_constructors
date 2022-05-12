@@ -409,7 +409,7 @@ function split(int $length): callable
      * @return array<int, string>
      */
     return function (string $string) use ($length): array {
-        return \str_split($string, max(1, $length)) ?: [];
+        return \str_split($string, max(1, $length));
     };
 }
 
@@ -466,7 +466,7 @@ function wordWrap(int $width, string $break = "\n", bool $cut = false): callable
 function countChars(int $mode = 1): callable
 {
     // Throw an exception if the mode is not supported.
-    if (! in_array($mode, [0,1,2,3,4], true)) {
+    if (! in_array($mode, array( 0, 1, 2, 3, 4 ), true)) {
         throw new \InvalidArgumentException('Invalid mode');
     }
 
