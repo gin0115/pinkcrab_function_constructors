@@ -1,16 +1,16 @@
-# Strings
+# wrap( string $opening, ?string $closing = null ): Closure
 
-## Setup
-
-## wrap( string $opening, ?string $closing = null ): Closure
-> @param string $opening The opening item to wrap with  
-> @param string $closing The closing item to wrap with, opening used if null  is passed
-> @return Closure(string $string): string Returns a closure that wraps the passed string  
+Creates a closure that can be used to wrap a string with a definable opening and closing val
+ues.  
+> `@param string $opening The opening item to wrap wit`h`  
+> `@param string $closing The closing item to wrap with, opening used if null is passed`  
+> `@return Closure(string $string): string Returns a closure that wraps the passed string`    
 
 ```php
 // Create function to wrap any string with ## 
 $wrapper = Str\wrap('##');
 
+// Wrap a single string
 $string = $wrapper('I am a string');
 echo $string; // ##I am a string##
 
