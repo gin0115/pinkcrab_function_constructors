@@ -17,4 +17,4 @@ echo $string; // ##I am a string##
 // Wrap all in array of strings.
 $string = array_map($wrapper, ['string1', 'string2','string3']);
 var_dump($string); // ['##string1##', '##string2##','##string3##']
-
+```
