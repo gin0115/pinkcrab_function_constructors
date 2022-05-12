@@ -535,18 +535,19 @@ function groupBy(callable $function): callable
  *
  * Int -> Bool  -> ( Array[A] -> Array[][A] )
  *
- * @param int $count The max size of each chunk.
+ * @param int $count The max size of each chunk. Must not be less than 1!
  * @param bool $preserveKeys Should inital keys be kept. Default false.
  * @return callable
  */
 function chunk(int $count, bool $preserveKeys = false): callable
 {
+
     /**
      * @param array<int|string, mixed> $array Array to chunk
      * @return array
      */
     return function (array $array) use ($count, $preserveKeys): array {
-        return array_chunk($array, $count, $preserveKeys);
+        return array_chunk($array, max(1, $count), $preserveKeys);
     };
 }
 
@@ -554,7 +555,7 @@ function chunk(int $count, bool $preserveKeys = false): callable
  * Create callback for extracting a single column from an array.
  *
  * @param string $column Column to retirve.
- * @param string $key Use column for assigning as the index. Defualts to numeric keys if null.
+ * @param string $key Use column for assigning as the index. defaults to numeric keys if null.
  * @return callable
  * @annotation : ( string -> string|null ) -> ( array -> array )
  */
@@ -573,25 +574,30 @@ function column(string $column, ?string $key = null): callable
  * Returns a callback for flattening an array to a defined depth
  *
  * @param int|null $n Depth of nodes to flatten. If null will flatten to n
- * @return callable
+ * @return callable(array<int|string, mixed|array> $var): array<int|string, mixed|array>
  * @annotation : ( int|null ) -> ( array -> array )
  */
 function flattenByN(?int $n = null): callable
 {
     /**
-     * @param array<int|string, mixed> $array Array to flatten
+     * @param array<int|string, mixed|array> $array Array to flatten
      * @return array
      */
     return function (array $array) use ($n): array {
         return array_reduce(
             $array,
+            /**
+             * @param array<int|string, mixed> $carry
+             * @param mixed|mixed[] $element
+             * @return array<int|string, mixed>
+             */
             function (array $carry, $element) use ($n): array {
-                // Remnove empty arrays.
+                // Remove empty arrays.
                 if (is_array($element) && empty($element)) {
                     return $carry;
                 }
                 // If the element is an array and we are still flattening, call again
-                if (is_array($element) && (is_null($n) || $n > 0)) {
+                if (is_array($element) && (is_null($n) || $n > 0)) { // @phpstan-ignore-line
                     $carry = array_merge($carry, flattenByN($n ? $n - 1 : null)($element));
                 } else {
                     // Else just add the elememnt.
@@ -659,19 +665,19 @@ function sumWhere(callable $function): callable
 }
 
 /**
- * Creates a callable for casting an arry to an object.
+ * Creates a closure for casting an arry to an object.
  * Assumed all properties are public
  * None existing properties will be set as dynamic properties.
  *
  * A -> ( Array[B] -> AB )
  *
- * @param object $object The object to cast to, defualts to stdClass
+ * @param object $object The object to cast to, defaults to stdClass
  * @return callable
  */
 function toObject(?object $object = null): callable
 {
     $object = $object ?? new stdClass();
-    
+
     /**
      * @param array<int|string, mixed> $array
      * @return object
@@ -686,13 +692,13 @@ function toObject(?object $object = null): callable
 }
 
 /**
- * Creates a callable for encoding json with defined flags/depth
+ * Creates a closure for encoding json with defined flags/depth
  *
  * Int -> Int -> ( A -> String )
  *
- * @param int $flags json_encode flags (defualt = 0)
- * @param int $depth Nodes deep to encode (defualt = 512)
- * @return callable
+ * @param int $flags json_encode flags (default = 0)
+ * @param int $depth Nodes deep to encode (default = 512)
+ * @return \Closure(mixed):?string
  * @constants JSON_FORCE_OBJECT, JSON_HEX_QUOT, JSON_HEX_TAG, JSON_HEX_AMP,
  *            JSON_HEX_APOS, JSON_INVALID_UTF8_IGNORE,
  *            JSON_INVALID_UTF8_SUBSTITUTE, JSON_NUMERIC_CHECK,
@@ -703,11 +709,11 @@ function toObject(?object $object = null): callable
 function toJson(int $flags = 0, int $depth = 512): callable
 {
     /**
-     * @param mixed $array
+     * @param mixed $data
      * @return string|null
      */
-    return function ($array) use ($flags, $depth): ?string {
-        return \json_encode($array, $flags, $depth) ?: null;
+    return function ($data) use ($flags, $depth): ?string {
+        return \json_encode($data, $flags, max(1, $depth)) ?: null;
     };
 }
 

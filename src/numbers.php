@@ -85,7 +85,7 @@ function sum($initial = 0): callable
     if (! C\isNumber($initial)) {
         throw new InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
     }
-    
+
     /**
      * @param int|float $value
      * @return int|float
@@ -110,7 +110,7 @@ function subtract($initial = 0): callable
     if (! C\isNumber($initial)) {
         throw new InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
     }
-    
+
     /**
      * @param int|float $value
      * @return int|float
@@ -135,7 +135,7 @@ function multiply($initial = 1): callable
     if (! C\isNumber($initial)) {
         throw new InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
     }
-    
+
     /**
      * @param int|float $value
      * @return int|float
@@ -158,11 +158,10 @@ function multiply($initial = 1): callable
  */
 function divideBy($divisor = 1): callable
 {
-    
     if (! C\isNumber($divisor)) {
         throw new \InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
     }
-    
+
     /**
      * @param float $value
      * @return float
@@ -185,7 +184,7 @@ function divideInto($dividend = 1): callable
     if (! C\isNumber($dividend)) {
         throw new \InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
     }
-    
+
     /**
      * @param float $value
      * @return float
@@ -208,7 +207,7 @@ function remainderBy($divisor = 1): callable
     if (! C\isNumber($divisor)) {
         throw new \InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
     }
-    
+
     /**
      * @param float $value
      * @return float
@@ -231,7 +230,7 @@ function remainderInto($dividend = 1): callable
     if (! C\isNumber($dividend)) {
         throw new \InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
     }
-    
+
     /**
      * @param float $value
      * @return float
@@ -254,7 +253,7 @@ function round($precission = 1): callable
     if (! C\isNumber($precission)) {
         throw new \InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
     }
-    
+
     /**
      * @param int|float $value
      * @return float

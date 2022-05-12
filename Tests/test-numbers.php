@@ -9,7 +9,6 @@
 
 declare(strict_types=1);
 
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use PinkCrab\FunctionConstructors\Numbers as Num;
 use PinkCrab\FunctionConstructors\FunctionsLoader;
@@ -33,9 +32,6 @@ class NumberFunctionTest extends TestCase
         $this->assertEquals(66, $acc());
     }
 
-    /**
-     * @expectedException TypeError
-     */
     public function testAccumlatorIntThrowsErrorForNoneIntTypes()
     {
         $this->expectException(TypeError::class);
@@ -54,9 +50,6 @@ class NumberFunctionTest extends TestCase
         $this->assertEquals(30, $acc());
     }
 
-    /**
-     * @expectedException TypeError
-     */
     public function testAccumlatorFloatThrowsErrorForNoneFloatTypes()
     {
         $this->expectException(TypeError::class);
@@ -69,10 +62,10 @@ class NumberFunctionTest extends TestCase
     {
         $addsFive = Num\sum(5);
         $addsTwoAndAHalf = Num\sum(2.5);
-        
+
         $a = 0;
         $b = 1.00;
-        
+
         $a = $addsFive($a);
         $b = $addsTwoAndAHalf($b);
 
@@ -83,9 +76,6 @@ class NumberFunctionTest extends TestCase
         $this->assertEquals(6, $addsTwoAndAHalf($b));
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     */
     public function testSumThrowsNoneNumError()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -97,10 +87,10 @@ class NumberFunctionTest extends TestCase
     {
         $subsFive = Num\subtract(5);
         $subsTwoAndAHalf = Num\subtract(2.5);
-        
+
         $a = 10;
         $b = 7.5;
-        
+
         $a = $subsFive($a);
         $b = $subsTwoAndAHalf($b);
 
@@ -111,9 +101,6 @@ class NumberFunctionTest extends TestCase
         $this->assertEquals(2.5, $subsTwoAndAHalf($b));
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     */
     public function testSubThrowsNoneNumError()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -125,10 +112,10 @@ class NumberFunctionTest extends TestCase
     {
         $subsFive = Num\multiply(5);
         $subsTwoAndAHalf = Num\multiply(2.5);
-        
+
         $a = 1;
         $b = 1;
-        
+
         $a = $subsFive($a);
         $b = $subsTwoAndAHalf($b);
 
@@ -139,9 +126,7 @@ class NumberFunctionTest extends TestCase
         $this->assertEquals(6.25, $subsTwoAndAHalf($b));
     }
 
-     /**
-     * @expectedException InvalidArgumentException
-     */
+
     public function testMultiplyThrowsNoneNumError()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -154,10 +139,10 @@ class NumberFunctionTest extends TestCase
         $divideBy2 = Num\divideBy(2);
         $divideInto2 = Num\divideInto(2);
 
-        
+
         $a = 10;
         $b = 10;
-        
+
         $a = $divideBy2($a);
         $b = $divideInto2($b);
 
@@ -192,9 +177,7 @@ class NumberFunctionTest extends TestCase
         $this->assertEquals(1, $twoDecimalPlaces(1));
     }
 
-      /**
-     * @expectedException InvalidArgumentException
-     */
+
     public function testRoundThrowsNoneNumErrorA()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -202,9 +185,7 @@ class NumberFunctionTest extends TestCase
         // Throws InvalidArgumentException.
     }
 
-        /**
-     * @expectedException InvalidArgumentException
-     */
+
     public function testRoundThrowsNoneNumErrorB()
     {
         $this->expectException(InvalidArgumentException::class);
