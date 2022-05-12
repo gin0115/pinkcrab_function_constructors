@@ -2,6 +2,7 @@
   
 Creates a closure that can be used to wrap a string with a definable opening and closing val
 ues.  
+
 ```php
 /*
  * @param string $opening The opening item to wrap with 
@@ -9,8 +10,11 @@ ues.
  * @return Closure(string $string): string Returns a closure that wraps the passed string    
  */
  function wrap( string $opening, ?string $closing = null ): Closure {}
-```
+```  
+
 __Examples__
+
+
 ```php
 // Create function to wrap any string with ## 
 $wrapper = Str\wrap('##');
