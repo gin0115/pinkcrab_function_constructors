@@ -7,8 +7,8 @@ ues.
  * @param string $opening The opening item to wrap with 
  * @param string $closing The closing item to wrap with, opening used if null is passed 
  * @return Closure(string $string): string Returns a closure that wraps the passed string    
- * function wrap( string $opening, ?string $closing = null ): Closure {}
  */
+ function wrap( string $opening, ?string $closing = null ): Closure {}
 ```
 __Examples__
 ```php
