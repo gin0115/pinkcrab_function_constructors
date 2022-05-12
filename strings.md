@@ -1,12 +1,12 @@
-# wrap( string $opening, ?string $closing = null ): Closure
-
+# Strings\wrap()  
+  
 Creates a closure that can be used to wrap a string with a definable opening and closing val
 ues.  
    
 > `@param string $opening The opening item to wrap with`   
 > `@param string $closing The closing item to wrap with, opening used if null is passed`   
 > `@return Closure(string $string): string Returns a closure that wraps the passed string`      
-   
+> `wrap( string $opening, ?string $closing = null ): Closure`  
 ```php
 // Create function to wrap any string with ## 
 $wrapper = Str\wrap('##');
@@ -22,13 +22,14 @@ var_dump($string); // ['##string1##', '##string2##','##string3##']
 
 ***
 
-# tagWrap( string $openingTag, ?string $closing = null ): Closure
+# Strings\tagWrap()  
 
 Creates a closure that can be used to wrap a string with a definable opening and closing tag.
    
 > `@param string $openingTag The opening tag token to wrap with`   
 > `@param string $closing The closing tag token to wrap with, opening used if null is passed`   
 > `@return Closure(string $string): string Returns a closure that wraps the passed string`      
+> `tagWrap( string $openingTag, ?string $closing = null ): Closure`  
    
 ```php
 // Create function to wrap any string with ## 
