@@ -4,7 +4,7 @@
 
 **Version 0.1.3**
 
-This libary provides a small selection of functions for making functional programming a little cleaner and easier in php.
+This library provides a small selection of functions for making functional programming a little cleaner and easier in php.
 
 To include this packge please add the following to your composer.json
 
@@ -12,7 +12,7 @@ To include this packge please add the following to your composer.json
 
 To install using composer use **composer require pinkcrab/function-constructors**
 
-If you wish to use this libary within WordPress or other PHP codebases where you do not or cannot use composer, you can use the **FunctionsLoader** class. Just clone the repo into your codebase and do the following.
+If you wish to use this library within WordPress or other PHP codebase where you do not or cannot use composer, you can use the **FunctionsLoader** class. Just clone the repo into your codebase and do the following.
 
 ```php
 <?php

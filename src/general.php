@@ -255,12 +255,12 @@ function propertyEquals(string $property, $value): callable
  */
 function setProperty($store): callable
 {
-   
+
     // If passed store is not an array or object, throw exception.
     if (! isArrayAccess($store) && !is_object($store)) {
         throw new TypeError("Only objects or arrays can be constructed using setProperty.");
     }
-    
+
     /**
      * @param string $property The property key.
      * @param mixed $value The value to set to keu.
@@ -273,7 +273,7 @@ function setProperty($store): callable
         } else {
             $store->{$property} = $value;
         }
-        
+
         return $store;
     };
 }
@@ -384,7 +384,7 @@ function toArray(): callable
      * @return array
      */
     return function ($object): array {
-        
+
         // If not object, return empty array.
         // Pollyfill for php7.1 lacking object type hint.
         if (! is_object($object)) {

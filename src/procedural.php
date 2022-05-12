@@ -55,7 +55,7 @@ if (! function_exists('array_flatten')) {
                     return $carry;
                 }
                 // If the element is an array and we are still flattening, call again
-                if (is_array($element) && ( is_null($n) || $n > 0 )) {
+                if (is_array($element) && (is_null($n) || $n > 0)) { // @phpstan-ignore-line
                     $carry = array_merge($carry, arrayFlatten($element, $n ? $n - 1 : null));
                 } else {
                     // Else just add the elememnt.

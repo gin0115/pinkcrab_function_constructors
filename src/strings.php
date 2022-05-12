@@ -211,7 +211,7 @@ function findToReplace(string $find): callable
 /**
  * Creates a callbale to find and replace within a string.
  *
- * String -> String -> ( String -> stirng )
+ * String -> String -> ( String -> string )
  *
  * @param string  $find
  * @param string  $replace
@@ -268,7 +268,7 @@ function startsWith(string $find): callable
      * @return bool
      */
     return function (string $source) use ($find): bool {
-        return ( \substr($source, 0, \strlen($find)) === $find );
+        return (\substr($source, 0, \strlen($find)) === $find);
     };
 }
 
@@ -290,7 +290,7 @@ function endsWith(string $find): callable
         if (\strlen($find) === 0) {
             return true;
         }
-        return ( \substr($source, -\strlen($find)) === $find );
+        return (\substr($source, -\strlen($find)) === $find);
     };
 }
 
@@ -343,7 +343,7 @@ function containsPattern(string $pattern): callable
 function splitPattern(string $pattern): callable
 {
     /**
-     * @param stirng $name
+     * @param string $name
      * @return array
      */
     return function (string $string) use ($pattern): ?array {
@@ -356,21 +356,21 @@ function splitPattern(string $pattern): callable
  *
  * Int -> String -> String -> ( String|Int|Float -> String )
  *
- * @param string|int|float $precission Number of decimal places
- * @param string $point The deciaml seperator
- * @param string $thousands The thousand seperator.
+ * @param string|int|float $precision Number of decimal places
+ * @param string $point The decimal separator
+ * @param string $thousands The thousand separator.
  * @return callable
  */
-function decimialNumber($precission = 2, $point = '.', $thousands = ''): callable
+function decimialNumber($precision = 2, $point = '.', $thousands = ''): callable
 {
 
     /**
      * @param string|int|float $number
      * @return string
      */
-    return function ($number) use ($precission, $point, $thousands): string {
+    return function ($number) use ($precision, $point, $thousands): string {
         return \is_numeric($number)
-            ? \number_format((float) $number, (int) $precission, $point, $thousands)
+            ? \number_format((float) $number, (int) $precision, $point, $thousands)
             : '';
     };
 }
@@ -386,7 +386,7 @@ function decimialNumber($precission = 2, $point = '.', $thousands = ''): callabl
 function addSlashes(string $charList): callable
 {
     /**
-     * @param string $string The stirng to have char, slash escaped.
+     * @param string $string The string to have char, slash escaped.
      * @return string
      */
     return function (string $string) use ($charList): string {
@@ -399,17 +399,17 @@ function addSlashes(string $charList): callable
  *
  * Int -> ( String -> Array[String] )
  *
- * @param int $length The length to split the sring up with.
+ * @param int $length The length to split the string up with.
  * @return callable(string):array<string> The parts.
  */
 function split(int $length): callable
 {
     /**
-     * @param string $string The stirng to be split
+     * @param string $string The string to be split
      * @return array<int, string>
      */
     return function (string $string) use ($length): array {
-        return \str_split($string, $length) ?: [];
+        return \str_split($string, max(1, $length)) ?: [];
     };
 }
 
@@ -418,18 +418,18 @@ function split(int $length): callable
  *
  * Int -> String -> ( String -> String )
  *
- * @param int $length The legenth of each chunk.
+ * @param int $length The length of each chunk.
  * @param string $end The string to use at the end.
  * @return callable
  */
 function chunk(int $length, string $end = "\r\n"): callable
 {
     /**
-     * @param string $string The stirng to be chunked
+     * @param string $string The string to be chunked
      * @return string
      */
     return function (string $string) use ($length, $end): string {
-        return \chunk_split($string, $length, $end);
+        return \chunk_split($string, max(1, $length), $end);
     };
 }
 
@@ -439,14 +439,14 @@ function chunk(int $length, string $end = "\r\n"): callable
  * Int -> String -> Bool -> ( String -> String )
  *
  * @param int $width Max width for each "line"
- * @param string $break The stirng to use to denote the end of line.
+ * @param string $break The string to use to denote the end of line.
  * @param bool $cut If set to true, words are cut at $width, else overflow.
  * @return callable
  */
 function wordWrap(int $width, string $break = "\n", bool $cut = false): callable
 {
     /**
-     * @param string $string The stirng to be wrapped
+     * @param string $string The string to be wrapped
      * @return string
      */
     return function (string $string) use ($width, $break, $cut): string {
@@ -455,7 +455,7 @@ function wordWrap(int $width, string $break = "\n", bool $cut = false): callable
 }
 
 /**
- * Returns a callback for counting the number of occurances of each char in a string.
+ * Returns a callback for counting the number of occurrences of each char in a string.
  *
  * Int -> ( String -> Array )
  *
@@ -465,6 +465,11 @@ function wordWrap(int $width, string $break = "\n", bool $cut = false): callable
  */
 function countChars(int $mode = 1): callable
 {
+    // Throw an exception if the mode is not supported.
+    if (! in_array($mode, [0,1,2,3,4], true)) {
+        throw new \InvalidArgumentException('Invalid mode');
+    }
+
     /**
      * @param string $string The string to have its char counted.
      * @return array
@@ -479,7 +484,7 @@ function countChars(int $mode = 1): callable
  *
  * String -> Int -> Int|Null -> ( String -> Int )
  *
- * @param string $needle The subsring to find
+ * @param string $needle The substring to find
  * @param int $offset Place to start, defaults to 0 (start)
  * @param int|null $length Max length after offset to search.
  */
@@ -562,7 +567,7 @@ function rTrim(string $mask = "\t\n\r\0\x0B"): callable
  *
  * String -> Bool -> ( String -> Int|Float )
  *
- * @param string $base The stirng to act as the base.
+ * @param string $base The string to act as the base.
  * @param bool $asPc If set to true will reutrn the percentage match, rather than char count.
  */
 function similarAsBase(string $base, bool $asPc = false): callable
@@ -590,7 +595,7 @@ function similarAsBase(string $base, bool $asPc = false): callable
 function similarAsComparisson(string $comparissonString, bool $asPc = false): callable
 {
     /**
-     * @param string $comparissonString The stirng to act as the base.
+     * @param string $comparissonString The string to act as the base.
      * @return int|float
      */
     return function (string $base) use ($comparissonString, $asPc) {
@@ -603,10 +608,10 @@ function similarAsComparisson(string $comparissonString, bool $asPc = false): ca
 /**
  * Reutrns a callable for padding out a string.
  *
- * Int -> Stirng -> Int -> ( String -> String )
+ * Int -> string -> Int -> ( String -> String )
  *
  * @param int $length Max length to make string.
- * @param string $padContent The value to padd the stirng with (defulats to ' ')
+ * @param string $padContent The value to padd the string with (defulats to ' ')
  * @param int $type How to pad, please use these constants. STR_PAD_RIGHT|STR_PAD_LEFT|STR_PAD_BOTH
  */
 function pad(int $length, string $padContent = ' ', int $type = STR_PAD_RIGHT): callable
@@ -696,8 +701,7 @@ function firstPosistion(
     int $offset = 0,
     int $flags = STRINGS_CASE_SENSITIVE
 ): callable {
-
-    $caseSensitive = ! (bool) ( $flags & STRINGS_CASE_INSENSITIVE ); // Assumes true unless INSESNITVE passed
+    $caseSensitive = ! (bool) ($flags & STRINGS_CASE_INSENSITIVE); // Assumes true unless INSESNITVE passed
 
     /**
      * @param string $haystack The haystack to look throuh.
@@ -726,8 +730,7 @@ function lastPosistion(
     int $offset = 0,
     int $flags = STRINGS_CASE_SENSITIVE
 ): callable {
-
-    $caseSensitive = ! (bool) ( $flags & STRINGS_CASE_INSENSITIVE ); // Assumes true unless INSESNITVE passed
+    $caseSensitive = ! (bool) ($flags & STRINGS_CASE_INSENSITIVE); // Assumes true unless INSESNITVE passed
 
     /**
      * @param string $haystack The haystack to look throuh.
@@ -758,8 +761,8 @@ function firstSubString(
 ): callable {
 
     // Deocde flags, only look for none defaults.
-    $beforeNeedle  = (bool) ( $flags & STRINGS_BEFORE_NEEDLE );
-    $caseSensitive = ! (bool) ( $flags & STRINGS_CASE_INSENSITIVE ); // Assumes true unless INSESNITVE passed
+    $beforeNeedle  = (bool) ($flags & STRINGS_BEFORE_NEEDLE);
+    $caseSensitive = ! (bool) ($flags & STRINGS_CASE_INSENSITIVE); // Assumes true unless INSESNITVE passed
 
     /**
      * @param string $haystack The haystack to look through.

@@ -40,7 +40,6 @@ function isEqualTo($a): callable
      * @return bool
      */
     return function ($b) use ($a): bool {
-
         if (!sameScalar($b, $a)) {
             return false;
         }
