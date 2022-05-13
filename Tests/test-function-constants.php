@@ -52,45 +52,45 @@ class FunctionConstantsTest extends TestCase {
 		$this->assertFalse( call_user_func( Functions::IS_TRUE, null ) );
 	}
 
-    /** @testdox It should be possible to use a constant for Comparisons\isFalse() as a callable */
-    public function testIsFalse(): void {
+	/** @testdox It should be possible to use a constant for Comparisons\isFalse() as a callable */
+	public function testIsFalse(): void {
 
-        // Only a false should pass
-        $this->assertTrue( call_user_func( Functions::IS_FALSE, false ) );
+		// Only a false should pass
+		$this->assertTrue( call_user_func( Functions::IS_FALSE, false ) );
 
-        $this->assertFalse( call_user_func( Functions::IS_FALSE, true ) );
+		$this->assertFalse( call_user_func( Functions::IS_FALSE, true ) );
 
-        $this->assertFalse( call_user_func( Functions::IS_FALSE, 0 ) );
-        $this->assertFalse( call_user_func( Functions::IS_FALSE, 1 ) );
+		$this->assertFalse( call_user_func( Functions::IS_FALSE, 0 ) );
+		$this->assertFalse( call_user_func( Functions::IS_FALSE, 1 ) );
 
-        $this->assertFalse( call_user_func( Functions::IS_FALSE, '' ) );
-        $this->assertFalse( call_user_func( Functions::IS_FALSE, '0' ) );
-        $this->assertFalse( call_user_func( Functions::IS_FALSE, '1' ) );
+		$this->assertFalse( call_user_func( Functions::IS_FALSE, '' ) );
+		$this->assertFalse( call_user_func( Functions::IS_FALSE, '0' ) );
+		$this->assertFalse( call_user_func( Functions::IS_FALSE, '1' ) );
 
-        $this->assertFalse( call_user_func( Functions::IS_FALSE, array() ) );
+		$this->assertFalse( call_user_func( Functions::IS_FALSE, array() ) );
 
-        $this->assertFalse( call_user_func( Functions::IS_FALSE, null ) );
-    }
+		$this->assertFalse( call_user_func( Functions::IS_FALSE, null ) );
+	}
 
-    /** @testdox It should be possible to use a constant for Comparisons\isNumber() as a callable */
-    public function testIsNumber(): void {
+	/** @testdox It should be possible to use a constant for Comparisons\isNumber() as a callable */
+	public function testIsNumber(): void {
 
-        // Only a number should pass
-        $this->assertTrue( call_user_func( Functions::IS_NUMBER, 1 ) );
-        $this->assertTrue( call_user_func( Functions::IS_NUMBER, 1.0 ) );
-        $this->assertTrue( call_user_func( Functions::IS_NUMBER, 1.1 ) );
-        $this->assertTrue( call_user_func( Functions::IS_NUMBER, 1.2 ) );
-        $this->assertTrue( call_user_func( Functions::IS_NUMBER, 1.3 ) );
+		// Only a number should pass
+		$this->assertTrue( call_user_func( Functions::IS_NUMBER, 1 ) );
+		$this->assertTrue( call_user_func( Functions::IS_NUMBER, 1.0 ) );
+		$this->assertTrue( call_user_func( Functions::IS_NUMBER, 1.1 ) );
+		$this->assertTrue( call_user_func( Functions::IS_NUMBER, 1.2 ) );
+		$this->assertTrue( call_user_func( Functions::IS_NUMBER, 1.3 ) );
 
-        $this->assertFalse( call_user_func( Functions::IS_NUMBER, '1' ) );
-        $this->assertFalse( call_user_func( Functions::IS_NUMBER, '1.0' ) );
-        $this->assertFalse( call_user_func( Functions::IS_NUMBER, '1.1' ) );
+		$this->assertFalse( call_user_func( Functions::IS_NUMBER, '1' ) );
+		$this->assertFalse( call_user_func( Functions::IS_NUMBER, '1.0' ) );
+		$this->assertFalse( call_user_func( Functions::IS_NUMBER, '1.1' ) );
 
-        $this->assertFalse( call_user_func( Functions::IS_NUMBER, array() ) );
-        $this->assertFalse( call_user_func( Functions::IS_NUMBER, array( 1, 2, 3 ) ) );
+		$this->assertFalse( call_user_func( Functions::IS_NUMBER, array() ) );
+		$this->assertFalse( call_user_func( Functions::IS_NUMBER, array( 1, 2, 3 ) ) );
 
-        $this->assertFalse( call_user_func( Functions::IS_NUMBER, null ) );
+		$this->assertFalse( call_user_func( Functions::IS_NUMBER, null ) );
 
-    }
+	}
 
 }
