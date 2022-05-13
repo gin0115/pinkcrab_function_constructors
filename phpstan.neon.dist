@@ -11,4 +11,5 @@ parameters:
         - %currentWorkingDirectory%/tests/*
     ignoreErrors:
         - '#Call to function is_array\(\) with mixed will always evaluate to false#'
+        - '#should return Closure\(array\): array{array, array} but returns Closure\(array\): array#'
     reportUnmatchedIgnoredErrors: false
