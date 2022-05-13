@@ -33,35 +33,36 @@ namespace PinkCrab\FunctionConstructors\Comparisons;
  * @param mixed $a The value to compare against.
  * @return callable
  */
-function isEqualTo( $a ): callable {
-	/**
-	 * @param mixed $b The values to comapre with
-	 * @return bool
-	 */
-	return function ( $b ) use ( $a ): bool {
-		if ( ! sameScalar( $b, $a ) ) {
-			return false;
-		}
+function isEqualTo($a): callable
+{
+    /**
+     * @param mixed $b The values to comapre with
+     * @return bool
+     */
+    return function ($b) use ($a): bool {
+        if (! sameScalar($b, $a)) {
+            return false;
+        }
 
-		switch ( gettype( $b ) ) {
-			case 'string':
-			case 'integer':
-			case 'double':
-			case 'boolean':
-				$equal = $a === $b;
-				break;
-			case 'object':
-				$equal = count( get_object_vars( $a ) ) === count( array_intersect_assoc( (array) $a, (array) $b ) );
-				break;
-			case 'array':
-				$equal = count( $a ) === count( array_intersect_assoc( $a, $b ) );
-				break;
-			default:
-				$equal = false;
-				break;
-		}
-		return $equal;
-	};
+        switch (gettype($b)) {
+            case 'string':
+            case 'integer':
+            case 'double':
+            case 'boolean':
+                $equal = $a === $b;
+                break;
+            case 'object':
+                $equal = count(get_object_vars($a)) === count(array_intersect_assoc((array) $a, (array) $b));
+                break;
+            case 'array':
+                $equal = count($a) === count(array_intersect_assoc($a, $b));
+                break;
+            default:
+                $equal = false;
+                break;
+        }
+        return $equal;
+    };
 }
 
 /**
@@ -72,14 +73,15 @@ function isEqualTo( $a ): callable {
  * @param mixed $a
  * @return callable
  */
-function isNotEqualTo( $a ): callable {
-	/**
-	 * @param mixed $b The values to comapre with
-	 * @return bool
-	 */
-	return function ( $b ) use ( $a ): bool {
-		return ! isEqualTo( $a )( $b );
-	};
+function isNotEqualTo($a): callable
+{
+    /**
+     * @param mixed $b The values to comapre with
+     * @return bool
+     */
+    return function ($b) use ($a): bool {
+        return ! isEqualTo($a)($b);
+    };
 }
 
 /**
@@ -91,15 +93,16 @@ function isNotEqualTo( $a ): callable {
  * @param int|float $a
  * @return callable
  */
-function isGreaterThan( $a ): callable {
-	/**
-	 * @param mixed $b
-	 * @return bool
-	 */
-	return function ( $b ) use ( $a ): bool {
-		return isEqualIn( array( 'integer', 'double' ) )( gettype( $b ) )
-			? $a < $b : false;
-	};
+function isGreaterThan($a): callable
+{
+    /**
+     * @param mixed $b
+     * @return bool
+     */
+    return function ($b) use ($a): bool {
+        return isEqualIn(array( 'integer', 'double' ))(gettype($b))
+            ? $a < $b : false;
+    };
 }
 
 /**
@@ -111,15 +114,16 @@ function isGreaterThan( $a ): callable {
  * @param int|float $a
  * @return callable
  */
-function isLessThan( $a ): callable {
-	/**
-	 * @param mixed $b
-	 * @return bool
-	 */
-	return function ( $b ) use ( $a ): bool {
-		return isEqualIn( array( 'integer', 'double' ) )( gettype( $b ) )
-			? $a > $b : false;
-	};
+function isLessThan($a): callable
+{
+    /**
+     * @param mixed $b
+     * @return bool
+     */
+    return function ($b) use ($a): bool {
+        return isEqualIn(array( 'integer', 'double' ))(gettype($b))
+            ? $a > $b : false;
+    };
 }
 
 /**
@@ -130,32 +134,33 @@ function isLessThan( $a ): callable {
  * @param array<mixed> $a
  * @return callable
  */
-function isEqualIn( array $a ): callable {
-	/**
-	 * @param array $b The array of values which it could be
-	 * @return bool
-	 */
-	return function ( $b ) use ( $a ): ?bool {
-		if (
-			is_numeric( $b ) || is_bool( $b ) ||
-			is_string( $b ) || is_array( $b )
-		) {
-			return in_array( $b, $a, true );
-		} elseif ( is_object( $b ) ) {
-			return in_array(
-				(array) $b,
-				array_map(
-					function ( $e ): array {
-						return (array) $e;
-					},
-					$a
-				),
-				true
-			);
-		} else {
-			return null;
-		}
-	};
+function isEqualIn(array $a): callable
+{
+    /**
+     * @param array $b The array of values which it could be
+     * @return bool
+     */
+    return function ($b) use ($a): ?bool {
+        if (
+            is_numeric($b) || is_bool($b) ||
+            is_string($b) || is_array($b)
+        ) {
+            return in_array($b, $a, true);
+        } elseif (is_object($b)) {
+            return in_array(
+                (array) $b,
+                array_map(
+                    function ($e): array {
+                        return (array) $e;
+                    },
+                    $a
+                ),
+                true
+            );
+        } else {
+            return null;
+        }
+    };
 }
 
 /**
@@ -167,8 +172,9 @@ function isEqualIn( array $a ): callable {
  * @param mixed $value The value
  * @return bool
  */
-function notEmpty( $value ): bool {
-	return ! empty( $value );
+function notEmpty($value): bool
+{
+    return ! empty($value);
 }
 
 /**
@@ -179,20 +185,21 @@ function notEmpty( $value ): bool {
  * @param callable ...$callables
  * @return callable
  */
-function groupAnd( callable ...$callables ): callable {
-	/**
-	 * @param mixed $value
-	 * @return bool
-	 */
-	return function ( $value ) use ( $callables ): bool {
-		return (bool) array_reduce(
-			$callables,
-			function ( $result, $callable ) use ( $value ) {
-				return ( is_bool( $result ) && $result === false ) ? false : $callable( $value );
-			},
-			null
-		);
-	};
+function groupAnd(callable ...$callables): callable
+{
+    /**
+     * @param mixed $value
+     * @return bool
+     */
+    return function ($value) use ($callables): bool {
+        return (bool) array_reduce(
+            $callables,
+            function ($result, $callable) use ($value) {
+                return (is_bool($result) && $result === false) ? false : $callable($value);
+            },
+            null
+        );
+    };
 }
 
 /**
@@ -203,20 +210,21 @@ function groupAnd( callable ...$callables ): callable {
  * @param callable ...$callables
  * @return callable
  */
-function groupOr( callable ...$callables ): callable {
-	/**
-	 * @param mixed $value
-	 * @return bool
-	 */
-	return function ( $value ) use ( $callables ): bool {
-		return (bool) array_reduce(
-			$callables,
-			function ( $result, $callable ) use ( $value ) {
-				return ( is_bool( $result ) && $result === true ) ? true : $callable( $value );
-			},
-			null
-		);
-	};
+function groupOr(callable ...$callables): callable
+{
+    /**
+     * @param mixed $value
+     * @return bool
+     */
+    return function ($value) use ($callables): bool {
+        return (bool) array_reduce(
+            $callables,
+            function ($result, $callable) use ($value) {
+                return (is_bool($result) && $result === true) ? true : $callable($value);
+            },
+            null
+        );
+    };
 }
 
 /**
@@ -227,14 +235,15 @@ function groupOr( callable ...$callables ): callable {
  * @param string $source Type to compare with (bool, boolean, integer, object)
  * @return callable
  */
-function isScalar( string $source ): callable {
-	/**
-	 * @param mixed $value
-	 * @return bool
-	 */
-	return function ( $value ) use ( $source ) {
-		return gettype( $value ) === $source;
-	};
+function isScalar(string $source): callable
+{
+    /**
+     * @param mixed $value
+     * @return bool
+     */
+    return function ($value) use ($source) {
+        return gettype($value) === $source;
+    };
 }
 
 
@@ -247,12 +256,13 @@ function isScalar( string $source ): callable {
  * @param mixed ...$variables
  * @return bool
  */
-function sameScalar( ...$variables ): bool {
-	return count(
-		array_unique(
-			array_map( 'gettype', $variables )
-		)
-	) === 1;
+function sameScalar(...$variables): bool
+{
+    return count(
+        array_unique(
+            array_map('gettype', $variables)
+        )
+    ) === 1;
 }
 
 /**
@@ -263,13 +273,14 @@ function sameScalar( ...$variables ): bool {
  * @param bool ...$variables
  * @return bool
  */
-function allTrue( bool ...$variables ): bool {
-	foreach ( $variables as $value ) {
-		if ( ! is_bool( $value ) || $value !== true ) {
-			return false;
-		}
-	}
-	return true;
+function allTrue(bool ...$variables): bool
+{
+    foreach ($variables as $value) {
+        if (! is_bool($value) || $value !== true) {
+            return false;
+        }
+    }
+    return true;
 }
 
 /**
@@ -280,13 +291,14 @@ function allTrue( bool ...$variables ): bool {
  * @param bool ...$variables
  * @return bool
  */
-function anyTrue( bool ...$variables ): bool {
-	foreach ( $variables as $value ) {
-		if ( is_bool( $value ) && $value === true ) {
-			return true;
-		}
-	}
-	return false;
+function anyTrue(bool ...$variables): bool
+{
+    foreach ($variables as $value) {
+        if (is_bool($value) && $value === true) {
+            return true;
+        }
+    }
+    return false;
 }
 
 /**
@@ -297,8 +309,9 @@ function anyTrue( bool ...$variables ): bool {
  * @param mixed $value
  * @return bool
  */
-function isFalse( $value ): bool {
-	return is_bool( $value ) && $value === false;
+function isFalse($value): bool
+{
+    return is_bool($value) && $value === false;
 }
 
 /**
@@ -309,8 +322,9 @@ function isFalse( $value ): bool {
  * @param mixed $value
  * @return bool
  */
-function isTrue( $value ): bool {
-	return is_bool( $value ) && $value === true;
+function isTrue($value): bool
+{
+    return is_bool($value) && $value === true;
 }
 
 /**
@@ -321,8 +335,9 @@ function isTrue( $value ): bool {
  * @param mixed $value
  * @return boolean
  */
-function isNumber( $value ): bool {
-	return is_float( $value ) || is_int( $value );
+function isNumber($value): bool
+{
+    return is_float($value) || is_int($value);
 }
 
 /**
@@ -333,8 +348,9 @@ function isNumber( $value ): bool {
  * @param callable ...$callables
  * @return callable
  */
-function any( callable ...$callables ): callable {
-	return groupOr( ...$callables );
+function any(callable ...$callables): callable
+{
+    return groupOr(...$callables);
 }
 
 /**
@@ -345,8 +361,9 @@ function any( callable ...$callables ): callable {
  * @param callable ...$callables
  * @return callable
  */
-function all( callable ...$callables ): callable {
-	return groupAnd( ...$callables );
+function all(callable ...$callables): callable
+{
+    return groupAnd(...$callables);
 }
 
 /**
@@ -357,12 +374,13 @@ function all( callable ...$callables ): callable {
  * @param callable $callable
  * @return callable
  */
-function not( callable $callable ): callable {
-	/**
-	 * @param mixed $value
-	 * @return bool
-	 */
-	return function ( $value ) use ( $callable ): bool {
-		return ! (bool) $callable( $value );
-	};
+function not(callable $callable): callable
+{
+    /**
+     * @param mixed $value
+     * @return bool
+     */
+    return function ($value) use ($callable): bool {
+        return ! (bool) $callable($value);
+    };
 }
