@@ -25,6 +25,7 @@
             "PinkCrab\\FunctionConstructors\\": "src"
         },
         "files": [
+            "src/function-constants.php",
             "src/constants.php",
             "src/procedural.php",
             "src/arrays.php",

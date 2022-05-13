@@ -35,6 +35,7 @@ class FunctionsLoader
      */
     public static function include(): void
     {
+        require_once('src/function-constants.php');
         require_once('src/constants.php');
         require_once('src/procedural.php');
         require_once('src/comparisons.php');
