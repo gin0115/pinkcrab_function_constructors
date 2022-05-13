@@ -20,9 +20,14 @@ declare(strict_types=1);
  * @author Glynn Quelch <glynn.quelch@gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
  * @package PinkCrab\FunctionConstructors
+ * @template Number of int|float
+ * @phpstan-template Number of int|float
+ * @psalm-template Number of int|float
  */
 
 namespace PinkCrab\FunctionConstructors\Comparisons;
+
+use Closure;
 
 /**
  * Returns a callback for checkining is a value is equal.
@@ -90,13 +95,13 @@ function isNotEqualTo($a): callable
  *
  * A -> ( A|B -> Bool )
  *
- * @param int|float $a
+ * @param Number $a
  * @return callable
  */
 function isGreaterThan($a): callable
 {
     /**
-     * @param mixed $b
+     * @param Number $b
      * @return bool
      */
     return function ($b) use ($a): bool {
@@ -111,7 +116,7 @@ function isGreaterThan($a): callable
  *
  * A -> ( A|B -> Bool )
  *
- * @param int|float $a
+ * @param Number $a
  * @return callable
  */
 function isLessThan($a): callable
@@ -123,6 +128,42 @@ function isLessThan($a): callable
     return function ($b) use ($a): bool {
         return isEqualIn(array( 'integer', 'double' ))(gettype($b))
             ? $a > $b : false;
+    };
+}
+
+/**
+ * Returns a closure for checking if the value passes is
+ * less than or equal to the comparison.
+ *
+ * @param Number $a The base value to compare against must be int or float.
+ * @return Closure(Number): bool
+ */
+function isLessThanOrEqualTo($a): Closure
+{
+    /**
+     * @param Number $b The base value to compare with must be int or float.
+     * @return bool
+     */
+    return function ($b) use ($a): bool {
+        return any(isEqualTo($a), isLessThan($a))($b);
+    };
+}
+
+/**
+ * Returns a closure for checking if the value passes is
+ * greater than or equal to the comparison.
+ *
+ * @param Number $a
+ * @return Closure(Number): bool
+ */
+function isGreaterThanOrEqualTo($a): Closure
+{
+    /**
+     * @param Number $b
+     * @return bool
+     */
+    return function ($b) use ($a): bool {
+        return any(isEqualTo($a), isGreaterThan($a))($b);
     };
 }
 
