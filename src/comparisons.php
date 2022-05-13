@@ -40,7 +40,7 @@ function isEqualTo($a): callable
      * @return bool
      */
     return function ($b) use ($a): bool {
-        if (!sameScalar($b, $a)) {
+        if (! sameScalar($b, $a)) {
             return false;
         }
 
@@ -80,7 +80,7 @@ function isNotEqualTo($a): callable
      * @return bool
      */
     return function ($b) use ($a): bool {
-        return !isEqualTo($a)($b);
+        return ! isEqualTo($a)($b);
     };
 }
 
@@ -100,8 +100,8 @@ function isGreaterThan($a): callable
      * @return bool
      */
     return function ($b) use ($a): bool {
-        return isEqualIn(array('integer', 'double'))(gettype($b))
-            ? $a > $b : false;
+        return isEqualIn(array( 'integer', 'double' ))(gettype($b))
+            ? $a < $b : false;
     };
 }
 
@@ -121,8 +121,8 @@ function isLessThan($a): callable
      * @return bool
      */
     return function ($b) use ($a): bool {
-        return isEqualIn(array('integer', 'double'))(gettype($b))
-            ? $a < $b : false;
+        return isEqualIn(array( 'integer', 'double' ))(gettype($b))
+            ? $a > $b : false;
     };
 }
 
@@ -151,7 +151,7 @@ function isEqualIn(array $a): callable
                 (array) $b,
                 array_map(
                     function ($e): array {
-                        return  (array) $e;
+                        return (array) $e;
                     },
                     $a
                 ),
@@ -174,7 +174,7 @@ function isEqualIn(array $a): callable
  */
 function notEmpty($value): bool
 {
-    return !empty($value);
+    return ! empty($value);
 }
 
 /**
@@ -324,7 +324,7 @@ function isFalse($value): bool
  */
 function isTrue($value): bool
 {
-    return  is_bool($value) && $value === true;
+    return is_bool($value) && $value === true;
 }
 
 /**
