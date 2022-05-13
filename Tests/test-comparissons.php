@@ -119,6 +119,28 @@ class ComparissonFunctionTest extends TestCase {
 		$this->assertFalse( Comp\isLessThan( 1 )( 1.0000001 ) );
 	}
 
+	/** @testdox It should be possible to create a closure that is created with a comparisson value and then be used to check if the passed vaue is equal to or less than. */
+	public function testCanDoLessThanOrEqualTo(): void {
+		$this->assertTrue( Comp\isLessThanOrEqualTo( 12 )( 12 ) );
+		$this->assertTrue( Comp\isLessThanOrEqualTo( 12 )( 10 ) );
+		$this->assertTrue( Comp\isLessThanOrEqualTo( 99.99 )( 99.99 ) );
+		$this->assertTrue( Comp\isLessThanOrEqualTo( 99.99 )( 98 ) );
+		
+        $this->assertFalse( Comp\isLessThanOrEqualTo( 99.99 )( 100 ) );
+		$this->assertFalse( Comp\isLessThanOrEqualTo( 1 )( 1.0000001 ) );
+	}
+
+    /** @testdox It should be possible to create a closure that is created with a comparisson value and then be used to check if the passed vaue is equal to or greater than. */
+	public function testCanDoGreaterThanOrEqualTo(): void {
+		$this->assertFalse( Comp\isGreaterThanOrEqualTo( 12 )( 10 ) );
+		$this->assertFalse( Comp\isGreaterThanOrEqualTo( 99.99 )( 98 ) );
+		
+        $this->assertTrue( Comp\isGreaterThanOrEqualTo( 99.99 )( 99.99 ) );
+        $this->assertTrue( Comp\isGreaterThanOrEqualTo( 99.99 )( 100 ) );
+		$this->assertTrue( Comp\isGreaterThanOrEqualTo( 1 )( 1.0000001 ) );
+		$this->assertTrue( Comp\isGreaterThanOrEqualTo( 1 )( 1) );
+	}
+
 	public function testCanCompareScalarTypeGroup(): void {
 		foreach ( ComparissonCases::scalarComparisons( 'pass' ) as $condition ) {
 			$this->assertTrue(
