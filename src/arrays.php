@@ -20,6 +20,9 @@ declare(strict_types=1);
  * @author Glynn Quelch <glynn.quelch@gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
  * @package PinkCrab\FunctionConstructors
+ * @template Number of int|float
+ * @phpstan-template Number of int|float
+ * @psalm-template Number of int|float
  */
 
 namespace PinkCrab\FunctionConstructors\Arrays;
@@ -612,16 +615,15 @@ function replaceRecursive(array ...$with): Closure
  * Returns a Closure for changing all values in a flat array, based on key.
  *
  * @param mixed[] ...$with Array with values to replace with, must have matching key with base array.
- * @return Closure
- * @annotation :  ( array[b] ) -> ( Array[A] -> Array[A|b] )
+ * @return Closure(mixed[]):mixed[]
  */
 function replace(array ...$with): Closure
 {
     /**
      * @param mixed[] $array The array to have elements replaced from.
-     * @return array Array with replacements.
+     * @return mixed[] Array with replacements.
      */
-    return function (array $array) use ($with) {
+    return function (array $array) use ($with): array {
         return array_replace($array, ...$with);
     };
 }
@@ -629,15 +631,14 @@ function replace(array ...$with): Closure
 /**
  * Returns a Closure for doing array_sum with the results of a function/expression.
  *
- * @param callable $function The function to return the value for array sum
- * @return Closure
- * @annotation : ( a -> int|float ) -> ( array -> int|float )
+ * @param callable(mixed):Number $function The function to return the value for array sum
+ * @return Closure(mixed[]):Number
  */
 function sumWhere(callable $function): Closure
 {
     /**
-     * @param array<int|string, mixed> $array Array to do sum() on.
-     * @return int|float The total.
+     * @param mixed[] $array Array to do sum() on.
+     * @return Number The total.
      */
     return function (array $array) use ($function) {
         return array_sum(array_map($function, $array));
@@ -645,21 +646,19 @@ function sumWhere(callable $function): Closure
 }
 
 /**
- * Creates a closure for casting an arry to an object.
+ * Creates a closure for casting an array to an object.
  * Assumed all properties are public
  * None existing properties will be set as dynamic properties.
  *
- * A -> ( Array[B] -> AB )
- *
- * @param object $object The object to cast to, defaults to stdClass
- * @return Closure
+ * @param object|null $object The object to cast to, defaults to stdClass
+ * @return Closure(mixed[]):object
  */
 function toObject(?object $object = null): Closure
 {
     $object = $object ?? new stdClass();
 
     /**
-     * @param array<int|string, mixed> $array
+     * @param mixed[] $array
      * @return object
      */
     return function (array $array) use ($object): object {
@@ -673,8 +672,6 @@ function toObject(?object $object = null): Closure
 
 /**
  * Creates a closure for encoding json with defined flags/depth
- *
- * Int -> Int -> ( A -> String )
  *
  * @param int $flags json_encode flags (default = 0)
  * @param int $depth Nodes deep to encode (default = 512)
@@ -706,16 +703,17 @@ function toJson(int $flags = 0, int $depth = 512): Closure
 
 
 /**
- * Returns a Closure for doing regular SORT again an array.
+ * Returns a Closure for doing regular SORT against an array.
+ * Doesn't maintain keys.
  *
  * @param int $flag Uses php stock sort constants or numerical values.
- * @return Closure
+ * @return Closure(mixed[]):mixed[]
  */
 function sort(int $flag = SORT_REGULAR): Closure
 {
     /**
-     *  @param array<int|string, mixed> $array The array to sort
-     *  @return array The sorted array (new array)
+     *  @param mixed[]$array The array to sort
+     *  @return mixed[] The sorted array (new array)
      */
     return function (array $array) use ($flag) {
         \sort($array, $flag);
@@ -723,11 +721,18 @@ function sort(int $flag = SORT_REGULAR): Closure
     };
 }
 
+/**
+ * Returns a Closure for doing regular Reverse SORT against an array.
+ * Doesn't maintain keys.
+ *
+ * @param int $flag Uses php stock sort constants or numerical values.
+ * @return Closure(mixed[]):mixed[]
+ */
 function rsort(int $flag = SORT_REGULAR): Closure
 {
     /**
-     *  @param array<int|string, mixed> $array The array to sort
-     *  @return array The sorted array (new array)
+     *  @param mixed[]$array The array to sort
+     *  @return mixed[] The sorted array (new array)
      */
     return function (array $array) use ($flag) {
         \rsort($array, $flag);
@@ -735,35 +740,18 @@ function rsort(int $flag = SORT_REGULAR): Closure
     };
 }
 
-function asort(int $flag = SORT_REGULAR): Closure
-{
-    /**
-     *  @param array<int|string, mixed> $array The array to sort
-     *  @return array The sorted array (new array)
-     */
-    return function (array $array) use ($flag) {
-        \asort($array, $flag);
-        return $array;
-    };
-}
 
-function krsort(int $flag = SORT_REGULAR): Closure
-{
-    /**
-     *  @param array<int|string, mixed> $array The array to sort
-     *  @return array The sorted array (new array)
-     */
-    return function (array $array) use ($flag) {
-        \krsort($array, $flag);
-        return $array;
-    };
-}
-
+/**
+ * Returns a Closure for sorting an array by key in ascending order.
+ *
+ * @param int $flag Uses php stock sort constants or numerical values.
+ * @return Closure(mixed[]):mixed[]
+ */
 function ksort(int $flag = SORT_REGULAR): Closure
 {
     /**
-     *  @param array<int|string, mixed> $array The array to sort
-     *  @return array The sorted array (new array)
+     *  @param mixed[]$array The array to sort
+     *  @return mixed[] The sorted array (new array)
      */
     return function (array $array) use ($flag) {
         \ksort($array, $flag);
@@ -771,11 +759,55 @@ function ksort(int $flag = SORT_REGULAR): Closure
     };
 }
 
+/**
+ * Returns a Closure for sorting an array by key in descending (reverse) order.
+ *
+ * @param int $flag Uses php stock sort constants or numerical values.
+ * @return Closure(mixed[]):mixed[]
+ */
+function krsort(int $flag = SORT_REGULAR): Closure
+{
+    /**
+     *  @param mixed[]$array The array to sort
+     *  @return mixed[] The sorted array (new array)
+     */
+    return function (array $array) use ($flag) {
+        \krsort($array, $flag);
+        return $array;
+    };
+}
+
+/**
+ * Returns a Closure for sorting an array by value in ascending order.
+ * Maintain keys.
+ *
+ * @param int $flag Uses php stock sort constants or numerical values.
+ * @return Closure(mixed[]):mixed[]
+ */
+function asort(int $flag = SORT_REGULAR): Closure
+{
+    /**
+     *  @param mixed[]$array The array to sort
+     *  @return mixed[] The sorted array (new array)
+     */
+    return function (array $array) use ($flag) {
+        \asort($array, $flag);
+        return $array;
+    };
+}
+
+/**
+ * Returns a Closure for sorting an array by value in descending (reverse) order.
+ * Maintain keys.
+ *
+ * @param int $flag Uses php stock sort constants or numerical values.
+ * @return Closure(mixed[]):mixed[]
+ */
 function arsort(int $flag = SORT_REGULAR): Closure
 {
     /**
-     *  @param array<int|string, mixed> $array The array to sort
-     *  @return array The sorted array (new array)
+     *  @param mixed[]$array The array to sort
+     *  @return mixed[] The sorted array (new array)
      */
     return function (array $array) use ($flag) {
         \arsort($array, $flag);
@@ -783,11 +815,16 @@ function arsort(int $flag = SORT_REGULAR): Closure
     };
 }
 
+/**
+ * Returns a Closure for sorting an array using a "natural order" algorithm
+ *
+ * @return Closure(mixed[]):mixed[]
+ */
 function natsort(): Closure
 {
     /**
-     *  @param array<int|string, mixed> $array The array to sort
-     *  @return array The sorted array (new array)
+     *  @param mixed[]$array The array to sort
+     *  @return mixed[] The sorted array (new array)
      */
     return function (array $array) {
         \natsort($array);
@@ -795,11 +832,16 @@ function natsort(): Closure
     };
 }
 
+/**
+ * Returns a Closure for sorting an array using a case insensitive "natural order" algorithm
+ *
+ * @return Closure(mixed[]):mixed[]
+ */
 function natcasesort(): Closure
 {
     /**
-     *  @param array<int|string, mixed> $array The array to sort
-     *  @return array The sorted array (new array)
+     *  @param mixed[]$array The array to sort
+     *  @return mixed[] The sorted array (new array)
      */
     return function (array $array) {
         \natcasesort($array);
@@ -807,11 +849,17 @@ function natcasesort(): Closure
     };
 }
 
+/**
+ * Returns a Closure for sorting an array by key using a custom comparison function
+ *
+ * @param callable(mixed $a, mixed $b): int $function
+ * @return Closure(mixed[]):mixed[]
+ */
 function uksort(callable $function): Closure
 {
     /**
-     *  @param array<int|string, mixed> $array The array to sort
-     *  @return array The sorted array (new array)
+     *  @param mixed[] $array The array to sort
+     *  @return mixed[] The sorted array (new array)
      */
     return function (array $array) use ($function) {
         \uksort($array, $function);
@@ -819,11 +867,18 @@ function uksort(callable $function): Closure
     };
 }
 
+/**
+ * Returns a Closure for sorting an array using a custom comparison function
+ * Maintain keys.
+ *
+ * @param callable(mixed $a, mixed $b): int $function
+ * @return Closure(mixed[]):mixed[]
+ */
 function uasort(callable $function): Closure
 {
     /**
-     *  @param array<int|string, mixed> $array The array to sort
-     *  @return array The sorted array (new array)
+     *  @param mixed[]$array The array to sort
+     *  @return mixed[] The sorted array (new array)
      */
     return function (array $array) use ($function) {
         \uasort($array, $function);
@@ -831,11 +886,19 @@ function uasort(callable $function): Closure
     };
 }
 
+
+/**
+ * Returns a Closure for sorting an array using a custom comparison function
+ * Doesn't maintain keys.
+ *
+ * @param callable(mixed $a, mixed $b): int $function
+ * @return Closure(mixed[]):mixed[]
+ */
 function usort(callable $function): Closure
 {
     /**
-     *  @param array<int|string, mixed> $array The array to sort
-     *  @return array The sorted array (new array)
+     *  @param mixed[]$array The array to sort
+     *  @return mixed[] The sorted array (new array)
      */
     return function (array $array) use ($function) {
         \usort($array, $function);
