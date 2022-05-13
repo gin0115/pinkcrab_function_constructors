@@ -13,7 +13,6 @@ use PinkCrab\FunctionConstructors\GeneralFunctions as Func;
 
 class ObjectFactory
 {
-
     /**
      * Returns a class with proivate, protected and public properties.
      * Value match the property names, which match the visibility.
@@ -23,7 +22,7 @@ class ObjectFactory
      */
     public static function mixedPropertyTypes()
     {
-        return new class (){
+        return new class () {
             protected $protected = 'protected';
             private $private = 'private';
             public $public = 'public';

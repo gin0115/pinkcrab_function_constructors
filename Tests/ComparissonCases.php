@@ -10,7 +10,6 @@ use PinkCrab\FunctionConstructors\GeneralFunctions as Func;
 
 class ComparissonCases
 {
-
     /**
      * Returns an array of strings for comparisson tests.
      * Using 'pass' as the type will produce matching cases, else failues.
@@ -135,7 +134,7 @@ class ComparissonCases
                     'test'     => 78.5,
                 ),
                 array(
-                    'expected' => ( 12 / 5 ),
+                    'expected' => (12 / 5),
                     'test'     => 2.4,
                 ),
                 array(
@@ -154,7 +153,7 @@ class ComparissonCases
                     'test'     => 80,
                 ),
                 array(
-                    'expected' => ( 12 / 5 ),
+                    'expected' => (12 / 5),
                     'test'     => 2.5,
                 ),
                 array(
@@ -198,7 +197,8 @@ class ComparissonCases
                 ),
                 array(
                     'expected' => array( 'name' => 'Barry' ),
-                    'test'     => (array) new class (){public $name = 'Barry';
+                    'test'     => (array) new class () {
+                        public $name = 'Barry';
                     },
                 ),
             );
@@ -226,7 +226,8 @@ class ComparissonCases
                 ),
                 array(
                     'expected' => array( 'name' => 'Barry' ),
-                    'test'     => (array) new class (){public $name = 'Jane';
+                    'test'     => (array) new class () {
+                        public $name = 'Jane';
                     },
                 ),
             );
@@ -243,10 +244,10 @@ class ComparissonCases
     public static function objectComparisons(string $type): array
     {
         if ($type === 'pass') {
-            $a = new class (){
+            $a = new class () {
                 public $name = 'I WAS A VAR';
             };
-            $b = new class (){
+            $b = new class () {
                 public $name = 'I WAS A VAR';
             };
 
@@ -256,7 +257,8 @@ class ComparissonCases
                     'test'     => $b,
                 ),
                 array(
-                    'expected' => new class (){public $name = 'Barry';
+                    'expected' => new class () {
+                        public $name = 'Barry';
                     },
                     'test'     => (object) array( 'name' => 'Barry' ),
                 ),
@@ -265,7 +267,7 @@ class ComparissonCases
                         'a' => 'a',
                         'b' => 'b',
                     ),
-                    'test'     => new class (){
+                    'test'     => new class () {
                         public $a = 'a';
                         public $b = 'b';
                     },
@@ -282,7 +284,8 @@ class ComparissonCases
         } else {
             return array(
                 array(
-                    'expected' => new class (){public $name = 'Barry';
+                    'expected' => new class () {
+                        public $name = 'Barry';
                     },
                     'test'     => (object) array( 'name' => 'Daisy' ),
                 ),
@@ -291,7 +294,7 @@ class ComparissonCases
                         'a' => 'b',
                         'b' => 'a',
                     ),
-                    'test'     => new class (){
+                    'test'     => new class () {
                         public $a = 'a';
                         public $b = 'b';
                     },
@@ -315,7 +318,7 @@ class ComparissonCases
         }
     }
 
-        /**
+    /**
      * Returns an object of integers for comparisson tests.
      * Using 'pass' as the type will produce matching cases, else failues.
      *
@@ -328,10 +331,10 @@ class ComparissonCases
             return array(
                 array(
                     'needles'  => array(
-                        new class (){
+                        new class () {
                             public $name = 'Barry';
                         },
-                        new class (){
+                        new class () {
                             public $name = 'Jane';
                         },
                     ),
@@ -339,18 +342,18 @@ class ComparissonCases
                 ),
                 array(
                     'needles'  => array(
-                        new class (){
+                        new class () {
                             public $name = 'Barry';
                             public $points = 46587;
                         },
-                        new class (){
+                        new class () {
                             public $name = 'Jane';
                             public $points = 132645;
                         },
                     ),
-                    'haystack' => new class (){
-                            public $name = 'Barry';
-                            public $points = 46587;
+                    'haystack' => new class () {
+                        public $name = 'Barry';
+                        public $points = 46587;
                     },
                 ),
                 array(
@@ -371,10 +374,10 @@ class ComparissonCases
             return array(
                 array(
                     'needles'  => array(
-                        new class (){
+                        new class () {
                             public $name = 'Barry';
                         },
-                        new class (){
+                        new class () {
                             public $name = 'Jane';
                         },
                     ),
@@ -382,18 +385,18 @@ class ComparissonCases
                 ),
                 array(
                     'needles'  => array(
-                        new class (){
+                        new class () {
                             public $name = 'Barry';
                             public $points = 46587;
                         },
-                        new class (){
+                        new class () {
                             public $name = 'Jane';
                             public $points = 132645;
                         },
                     ),
-                    'haystack' => new class (){
-                            public $name = 'Barry';
-                            public $points = 88888;
+                    'haystack' => new class () {
+                        public $name = 'Barry';
+                        public $points = 88888;
                     },
                 ),
                 array(
@@ -435,7 +438,7 @@ class ComparissonCases
                 array( // Int
                     123,
                     0015,
-                    ( 12 * 12 ),
+                    (12 * 12),
                     __LINE__,
                     PHP_INT_MIN,
                     E_USER_NOTICE,
@@ -445,7 +448,7 @@ class ComparissonCases
                 array( // FLoat
                     sqrt(143),
                     78.5,
-                    ( 12 / 5 ),
+                    (12 / 5),
                     M_PI,
 
                 ),
@@ -456,7 +459,7 @@ class ComparissonCases
                     array( array( 1, array( 1, 5, 6, 7, array( 44, array( 5 ) ) ) ) ),
                 ),
                 array( // Object
-                    new class (){
+                    new class () {
                     },
                     json_decode(json_encode(array( 'itWas' => 'anArray' ))),
                     new DateTime('2020-01-01T15:03:01.012345Z'),
@@ -472,14 +475,14 @@ class ComparissonCases
                     'dfdsfsdfs',
                     '          _    ',
                     123,
-                    ( 12 * 12 ),
+                    (12 * 12),
                     __LINE__,
                     PHP_INT_MIN,
                     json_decode(json_encode(array( 'itWas' => 'anArray' ))),
                     new DateTime('2020-01-01T15:03:01.012345Z'),
                     E_USER_NOTICE,
                     sqrt(144),
-                    ( 12 / 5 ),
+                    (12 / 5),
                     M_PI,
                     array( true, false, null ),
                     explode(',', 'this,is,a,test,string'),

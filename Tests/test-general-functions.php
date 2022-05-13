@@ -30,7 +30,6 @@ class ToArrayFixtureClass
  */
 class GeneralFunctionTest extends TestCase
 {
-
     public function setup(): void
     {
         FunctionsLoader::include();
@@ -38,7 +37,6 @@ class GeneralFunctionTest extends TestCase
 
     public function testFunctionCompose(): void
     {
-        
         $function = Func\compose(
             Str\replaceWith('1122', '*\/*'),
             Str\replaceWith('6677', '=/\='),
@@ -66,7 +64,6 @@ class GeneralFunctionTest extends TestCase
 
     public function testFunctionCompseSafeHandlesNull(): void
     {
-
         $reutrnsNull = function ($e) {
             return null;
         };
@@ -100,7 +97,7 @@ class GeneralFunctionTest extends TestCase
     public function testAlwaysReturns()
     {
         $alwaysHappy = Func\always('Happy');
-        
+
         $this->assertEquals('Happy', $alwaysHappy('No'));
         $this->assertEquals('Happy', $alwaysHappy(false));
         $this->assertEquals('Happy', $alwaysHappy(null));

@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Composeable strings functions.
+ * Composable strings functions.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -102,14 +102,14 @@ function asUrl(string $url, ?string $target = null): callable
 
 
 /**
- * Creates a callable for slicinig a string
+ * Creates a callable for slicing a string
  *
  * Uses substr()
  *
  * Int -> Int|Null -> ( String -> String )
  *
- * @param int $start start poition
- * @param int|null $finish end poition
+ * @param int $start start position
+ * @param int|null $finish end position
  * @return callable
  */
 function slice(int $start, ?int $finish = null): callable
@@ -126,7 +126,7 @@ function slice(int $start, ?int $finish = null): callable
 }
 
 /**
- * Creates a callable for preppedning to a string.
+ * Creates a callable for prepending to a string.
  *
  * String -> ( String -> String )
  *
@@ -164,7 +164,7 @@ function append(string $append): callable
 }
 
 /**
- * Returns a callable for formatting a string with a deifned set of rules
+ * Returns a callable for formatting a string with a defined set of rules
  *
  * Array[String] -> ( String -> String )
  *
@@ -175,7 +175,7 @@ function vSprintf(array $args = array()): callable
 {
     /**
      * @param string $string
-     * @return string Will return orginial string if false.
+     * @return string Will return original string if false.
      */
     return function (string $string) use ($args): string {
         $result = \vsprintf($string, $args);
@@ -209,7 +209,7 @@ function findToReplace(string $find): callable
 }
 
 /**
- * Creates a callbale to find and replace within a string.
+ * Creates a Closure to find and replace within a string.
  *
  * String -> String -> ( String -> string )
  *
@@ -235,13 +235,10 @@ function replaceWith(string $find, string $replace): callable
  *
  * @param string $replace The value to replace in passed string
  * @param int $offset The offset to start, negative numbers count back from end.
- * @param int|null $length Numer of chars to stop replacing at end of replacement.
+ * @param int|null $length Number of chars to stop replacing at end of replacement.
  */
-function replaceSubString(
-    string $replace,
-    int $offset = 0,
-    ?int $length = null
-): callable {
+function replaceSubString(string $replace, int $offset = 0, ?int $length = null): callable
+{
     /**
      * @param string $string
      * @return string
@@ -361,7 +358,7 @@ function splitPattern(string $pattern): callable
  * @param string $thousands The thousand separator.
  * @return callable
  */
-function decimialNumber($precision = 2, $point = '.', $thousands = ''): callable
+function decimalNumber($precision = 2, $point = '.', $thousands = ''): callable
 {
 
     /**
@@ -373,6 +370,20 @@ function decimialNumber($precision = 2, $point = '.', $thousands = ''): callable
             ? \number_format((float) $number, (int) $precision, $point, $thousands)
             : '';
     };
+}
+
+/**
+ * See decimalNumber()
+ *
+ * @deprecated Use decimalNumber() instead.
+ * @param int $precision
+ * @param string $point
+ * @param string $thousands
+ * @return callable
+ */
+function decimialNumber($precision = 2, $point = '.', $thousands = ''): callable
+{
+    return decimalNumber($precision, $point, $thousands);
 }
 
 /**
@@ -488,11 +499,8 @@ function countChars(int $mode = 1): callable
  * @param int $offset Place to start, defaults to 0 (start)
  * @param int|null $length Max length after offset to search.
  */
-function countSubString(
-    string $needle,
-    int $offset = 0,
-    ?int $length = null
-): callable {
+function countSubString(string $needle, int $offset = 0, ?int $length = null): callable
+{
     /**
      * @param string $haystack
      * @return int|array
@@ -568,41 +576,54 @@ function rTrim(string $mask = "\t\n\r\0\x0B"): callable
  * String -> Bool -> ( String -> Int|Float )
  *
  * @param string $base The string to act as the base.
- * @param bool $asPc If set to true will reutrn the percentage match, rather than char count.
+ * @param bool $asPc If set to true will return the percentage match, rather than char count.
  */
 function similarAsBase(string $base, bool $asPc = false): callable
 {
     /**
-     * @param string $comparissonString The string to compare against base.
+     * @param string $comparisonString The string to compare against base.
      * @return int|float
      */
-    return function (string $comparissonString) use ($base, $asPc) {
+    return function (string $comparisonString) use ($base, $asPc) {
         $pc       = 0.00;
-        $matching = similar_text($base, $comparissonString, $pc);
+        $matching = similar_text($base, $comparisonString, $pc);
         return $asPc ? $pc : $matching;
     };
 }
 
 /**
  * Returns a callable for finding the similarities between 2 string.
- * This sets the defined value as the comparissonString (similar_text as second)
+ * This sets the defined value as the comparisonString (similar_text as second)
  *
  * String -> Bool -> ( String -> Int|Float )
  *
- * @param string $comparissonString The string to compare against base.
+ * @param string $comparisonString The string to compare against base.
  * @param bool $asPc If set to true will reutrn the percentage match, rather than char count.
  */
-function similarAsComparisson(string $comparissonString, bool $asPc = false): callable
+function similarAsComparison(string $comparisonString, bool $asPc = false): callable
 {
     /**
-     * @param string $comparissonString The string to act as the base.
+     * @param string $comparisonString The string to act as the base.
      * @return int|float
      */
-    return function (string $base) use ($comparissonString, $asPc) {
+    return function (string $base) use ($comparisonString, $asPc) {
         $pc       = 0.00;
-        $matching = similar_text($base, $comparissonString, $pc);
+        $matching = similar_text($base, $comparisonString, $pc);
         return $asPc ? $pc : $matching;
     };
+}
+
+/**
+ * See similarAsComparison()
+ *
+ * @deprecated Use similarAsComparison() instead.
+ * @param string $comparisonString
+ * @param bool $asPc
+ * @return callable
+ */
+function similarAsComparisson(string $comparisonString, bool $asPc = false): callable
+{
+    return similarAsComparison($comparisonString, $asPc);
 }
 
 /**
@@ -687,6 +708,20 @@ function stripTags(?string $allowedTags = null): callable
 }
 
 /**
+ * See firstPosition()
+ *
+ * @deprecated
+ * @param string $needle
+ * @param int $offset
+ * @param int $flags
+ * @return callable
+ */
+function firstPosistion(string $needle, int $offset = 0, int $flags = STRINGS_CASE_SENSITIVE): callable
+{
+    return firstPosition($needle, $offset, $flags);
+}
+
+/**
  * Returns a callable for finding the first postition of a defined value in any string.
  *
  * String -> Int -> Bool -> ( String -> String|null )
@@ -696,15 +731,12 @@ function stripTags(?string $allowedTags = null): callable
  * @param int $flags STRINGS_CASE_SENSITIVE | STRINGS_CASE_INSENSITIVE
  * @return callable
  */
-function firstPosistion(
-    string $needle,
-    int $offset = 0,
-    int $flags = STRINGS_CASE_SENSITIVE
-): callable {
+function firstPosition(string $needle, int $offset = 0, int $flags = STRINGS_CASE_SENSITIVE): callable
+{
     $caseSensitive = ! (bool) ($flags & STRINGS_CASE_INSENSITIVE); // Assumes true unless INSESNITVE passed
 
     /**
-     * @param string $haystack The haystack to look throuh.
+     * @param string $haystack The haystack to look through.
      * @return int|null
      */
     return function (string $haystack) use ($needle, $offset, $caseSensitive): ?int {
@@ -716,7 +748,7 @@ function firstPosistion(
 }
 
 /**
- * Returns a callable for finding the first postition of a defined value in any string.
+ * Returns a callable for finding the first position of a defined value in any string.
  *
  * String -> Int -> Bool -> ( String -> String|null )
  *
@@ -725,15 +757,12 @@ function firstPosistion(
  * @param int $flags STRINGS_CASE_SENSITIVE | STRINGS_CASE_INSENSITIVE
  * @return callable
  */
-function lastPosistion(
-    string $needle,
-    int $offset = 0,
-    int $flags = STRINGS_CASE_SENSITIVE
-): callable {
+function lastPosition(string $needle, int $offset = 0, int $flags = STRINGS_CASE_SENSITIVE): callable
+{
     $caseSensitive = ! (bool) ($flags & STRINGS_CASE_INSENSITIVE); // Assumes true unless INSESNITVE passed
 
     /**
-     * @param string $haystack The haystack to look throuh.
+     * @param string $haystack The haystack to look through.
      * @return int|null
      */
     return function (string $haystack) use ($needle, $offset, $caseSensitive): ?int {
@@ -745,9 +774,23 @@ function lastPosistion(
 }
 
 /**
- * Returns a callable for looking for the first occurance of a substring.
+ * See lastPosition()
+ *
+ * @deprecated Use lastPosition() instead.
+ * @param string $needle The value to look for.
+ * @param int  $offset The offset to start
+ * @param int $flags STRINGS_CASE_SENSITIVE | STRINGS_CASE_INSENSITIVE
+ * @return callable
+ */
+function lastPosistion(string $needle, int $offset = 0, int $flags = STRINGS_CASE_SENSITIVE): callable
+{
+    return lastPosition($needle, $offset, $flags);
+}
+
+/**
+ * Returns a callable for looking for the first occurrence of a substring.
  * When found can return all after or before the needle (sub string)
- * Can be done as case sensitive (strstr()) or insenstive (stristr())
+ * Can be done as case sensitive (strstr()) or insensitive (stristr())
  *
  * String -> Int -> ( String -> String )
  *
@@ -755,12 +798,10 @@ function lastPosistion(
  * @param int $flags Possible STRINGS_CASE_INSENSITIVE | STRINGS_CASE_SENSITIVE | STRINGS_AFTER_NEEDLE | STRINGS_BEFORE_NEEDLE
  * @return callable
  */
-function firstSubString(
-    string $needle,
-    int $flags = STRINGS_CASE_SENSITIVE | STRINGS_AFTER_NEEDLE
-): callable {
+function firstSubString(string $needle, int $flags = STRINGS_CASE_SENSITIVE | STRINGS_AFTER_NEEDLE): callable
+{
 
-    // Deocde flags, only look for none defaults.
+    // Decode flags, only look for none defaults.
     $beforeNeedle  = (bool) ($flags & STRINGS_BEFORE_NEEDLE);
     $caseSensitive = ! (bool) ($flags & STRINGS_CASE_INSENSITIVE); // Assumes true unless INSESNITVE passed
 
@@ -777,7 +818,7 @@ function firstSubString(
 }
 
 /**
- * Returns a callable for creating a fucntion which finds the first occurance of
+ * Returns a callable for creating a function which finds the first occurrence of
  * any character (from a list) in a defined string.
  *
  * String -> ( String -> String )
@@ -845,12 +886,12 @@ function translateWith(array $dictionary): callable
  * (...(a -> b)) -> ( a -> b )
  *
  * @uses F\composeTypeSafe
- * @param callable ...$callables
+ * @param callable ...$callable
  * @return callable
  */
-function composeSafeStringFunc(callable ...$callables): callable
+function composeSafeStringFunc(callable ...$callable): callable
 {
-    return F\composeTypeSafe('is_string', ...$callables);
+    return F\composeTypeSafe('is_string', ...$callable);
 }
 
 /**
@@ -873,4 +914,15 @@ function stringCompiler(string $initial = ''): callable
         }
         return $value ? stringCompiler($initial) : $initial;
     };
+}
+
+/**
+ * Checks if the passe value is a string and if its length is 0.
+ *
+ * @param mixed $value
+ * @return bool
+ */
+function isBlank($value): bool
+{
+    return is_string($value) && \mb_strlen($value) === 0;
 }
