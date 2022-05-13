@@ -21,7 +21,6 @@ use PinkCrab\FunctionConstructors\Tests\Providers\ObjectFactory;
 
 class ProceduralFunctionsTest extends TestCase
 {
-
     public function testCanFlattenArray()
     {
         $array = array(

@@ -58,4 +58,11 @@ class Functions
      * Constants used for PinkCrab\FunctionConstructors\Arrays\tail(array $array):?mixed
      */
     public const ARRAY_TAIL = 'PinkCrab\FunctionConstructors\Arrays\tail';
+
+    ## String ##
+
+    /**
+     * Constants used for PinkCrab\FunctionConstructors\Strings\isBlank(mixed $value):bool
+     */
+    public const IS_BLANK = 'PinkCrab\FunctionConstructors\Strings\isBlank';
 }

@@ -12,21 +12,19 @@ require_once dirname(__FILE__, 2) . '/FunctionsLoader.php';
  */
 
 use PHPUnit\Framework\TestCase;
-use function PHPUnit\Framework\throwException;
 use PinkCrab\FunctionConstructors\Arrays as Arr;
 use PinkCrab\FunctionConstructors\Numbers as Num;
 use PinkCrab\FunctionConstructors\Strings as Str;
 use PinkCrab\FunctionConstructors\FunctionsLoader;
-
 use PinkCrab\FunctionConstructors\GeneralFunctions as Func;
+
+use function PHPUnit\Framework\throwException;
 
 /**
  * ArrayFunction class.
  */
 class ArrayFunctionTests extends TestCase
 {
-
-
     /**
      * Random pollyfills
      */
@@ -46,7 +44,6 @@ class ArrayFunctionTests extends TestCase
 
     public function testCanPushToHead(): void
     {
-
         $pushToHead = Arr\pushHead(array(3, 4, 5, 6));
         $added2     = $pushToHead(2);
         $this->assertEquals(2, $added2[0]);
@@ -62,7 +59,6 @@ class ArrayFunctionTests extends TestCase
 
     public function testCanPushToTail(): void
     {
-
         $pushToTail = Arr\pushTail(array(1, 2, 3, 4));
         $added2     = $pushToTail(5);
         $this->assertEquals(5, $added2[4]);
@@ -124,7 +120,6 @@ class ArrayFunctionTests extends TestCase
 
     public function testCanGroupByArray(): void
     {
-
         $groupByPerfectNumbers = Arr\groupBy(
             function ($e) {
                 return in_array($e, array(1, 2, 3, 6, 12)) ? 'Perfect' : 'Not Perfect';

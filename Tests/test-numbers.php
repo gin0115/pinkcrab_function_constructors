@@ -15,7 +15,6 @@ use PinkCrab\FunctionConstructors\FunctionsLoader;
 
 class NumberFunctionTest extends TestCase
 {
-
     public function setup(): void
     {
         FunctionsLoader::include();

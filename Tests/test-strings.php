@@ -11,7 +11,6 @@ use PinkCrab\FunctionConstructors\FunctionsLoader;
  */
 class StringFunctionTest extends TestCase
 {
-
     public function setup(): void
     {
         FunctionsLoader::include();
@@ -19,7 +18,6 @@ class StringFunctionTest extends TestCase
 
     public function testCanWrapStringWithHTMLTags(): void
     {
-
         $asDiv = Str\tagWrap('div class="test"', 'div');
         $this->assertEquals('<div class="test">HI</div>', $asDiv('HI'));
         $this->assertEquals('<div class="test">123</div>', $asDiv('123'));
@@ -168,16 +166,16 @@ class StringFunctionTest extends TestCase
 
     public function testCanFormatDecimalNumber()
     {
-        $eightDecimalPlaces = Str\decimialNumber(8);
-        $tenDecimalPlaces = Str\decimialNumber(10);
-        $doubleDecimalPlaces = Str\decimialNumber(2);
+        $eightDecimalPlaces = Str\decimalNumber(8);
+        $tenDecimalPlaces = Str\decimalNumber(10);
+        $doubleDecimalPlaces = Str\decimalNumber(2);
 
         $this->assertEquals('3.50000000', $eightDecimalPlaces(3.5));
         $this->assertEquals('2.6580000000', $tenDecimalPlaces("2.658"));
         $this->assertEquals('3.14', $doubleDecimalPlaces(M_PI));
 
-        // With thousand seperator
-        $withPipe = Str\decimialNumber(2, '.', '|');
+        // With thousand separator
+        $withPipe = Str\decimalNumber(2, '.', '|');
         $this->assertEquals('123|456|789.12', $withPipe(123456789.123456));
     }
 
@@ -282,8 +280,8 @@ class StringFunctionTest extends TestCase
     {
         $trimZ = Str\trim("zZ");
         $this->assertEquals('44455', $trimZ("zzzz44455ZZZZZZZZZ"));
-        
-        
+
+
         $trimAB = Str\lTrim("AB");
         $this->assertEquals('STD', $trimAB("ABSTD"));
         $this->assertEquals('HFJKGHDJKGHFJKFGJKFGJK', $trimAB("ABHFJKGHDJKGHFJKFGJKFGJK"));
@@ -309,10 +307,10 @@ class StringFunctionTest extends TestCase
 
     public function testCanDosimilarAsComparisson()
     {
-        $compareTheBaseAsChars = Str\similarAsComparisson("BASE");
-        $compareTheBaseAsPC = Str\similarAsComparisson("BASE", true);
+        $compareTheBaseAsChars = Str\similarAsComparison("BASE");
+        $compareTheBaseAsPC = Str\similarAsComparison("BASE", true);
         $this->assertEquals(4, $compareTheBaseAsChars('THE BASE'));
-        
+
         // This is not the calc done in the fucntion, but give the desired answer simpler!
         $this->assertEquals(66.66666666666667, $compareTheBaseAsPC('THE BASE'));
     }
@@ -383,24 +381,24 @@ class StringFunctionTest extends TestCase
 
     public function testCanFindFirstPosition()
     {
-        $findAppleCaseSense = Str\firstPosistion('Apple');
+        $findAppleCaseSense = Str\firstPosition('Apple');
         $this->assertEquals(0, $findAppleCaseSense('Apple are tasty'));
         $this->assertEquals(19, $findAppleCaseSense('I really dont like Apples'));
         $this->assertNull($findAppleCaseSense('APPLES ARE TASTY'));
 
-        $findAppleCaseInsense = Str\firstPosistion('ApPle', 10, STRINGS_CASE_INSENSITIVE);
+        $findAppleCaseInsense = Str\firstPosition('ApPle', 10, STRINGS_CASE_INSENSITIVE);
         $this->assertNull($findAppleCaseInsense('Hmm yes, APPLES are really tasty'));
         $this->assertEquals(19, $findAppleCaseInsense('I really dont like APplE Tree'));
     }
 
     public function testCanFindLastPosition()
     {
-        $findLastAppleCaseSense = Str\lastPosistion('Apple');
+        $findLastAppleCaseSense = Str\lastPosition('Apple');
         $this->assertEquals(13, $findLastAppleCaseSense('Apple a day, Apple are tasty'));
         $this->assertEquals(47, $findLastAppleCaseSense('I really dont like Apples but i do really like Apple skin'));
         $this->assertNull($findLastAppleCaseSense('APPLES ARE TASTY'));
 
-        $findAppleCaseInsense = Str\lastPosistion('ApPle', 0, STRINGS_CASE_INSENSITIVE);
+        $findAppleCaseInsense = Str\lastPosition('ApPle', 0, STRINGS_CASE_INSENSITIVE);
         $this->assertEquals(25, $findAppleCaseInsense('APPLES are tasty, I like ApPleS'));
         $this->assertEquals(41, $findAppleCaseInsense('I really dont like APplE Tree, they grow ApPLES'));
     }
@@ -463,5 +461,30 @@ class StringFunctionTest extends TestCase
     {
         $formatter = Str\vSprintf(['alpha', '12', '12.5']);
         $this->assertEquals('12alpha34-12-12.5-f', $formatter('12%s34-%s-%s-f'));
+    }
+
+    /** @testdox It should be possible to check if a value is a string and is blank */
+    public function testIsBlank(): void
+    {
+        // With string values
+        $this->assertTrue(call_user_func(Functions::IS_BLANK, ''));
+        $this->assertFalse(call_user_func(Functions::IS_BLANK, 'a'));
+        $this->assertFalse(call_user_func(Functions::IS_BLANK, ' '));
+        $this->assertFalse(call_user_func(Functions::IS_BLANK, '  '));
+
+        // With other types
+        $this->assertFalse(call_user_func(Functions::IS_BLANK, array()));
+
+        $this->assertFalse(call_user_func(Functions::IS_BLANK, null));
+
+        $this->assertFalse(call_user_func(Functions::IS_BLANK, new \stdClass()));
+
+        $this->assertFalse(call_user_func(Functions::IS_BLANK, 1));
+        $this->assertFalse(call_user_func(Functions::IS_BLANK, 1.0));
+        $this->assertFalse(call_user_func(Functions::IS_BLANK, 0));
+        $this->assertFalse(call_user_func(Functions::IS_BLANK, 0.0));
+
+        $this->assertFalse(call_user_func(Functions::IS_BLANK, true));
+        $this->assertFalse(call_user_func(Functions::IS_BLANK, false));
     }
 }

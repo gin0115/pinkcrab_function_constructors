@@ -13,7 +13,6 @@ use PinkCrab\FunctionConstructors\GeneralFunctions as Func;
 
 class RecordEncoderProvider
 {
-
     public static function userObjectSimple(): array
     {
         return [
