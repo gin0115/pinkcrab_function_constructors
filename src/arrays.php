@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Composable array functions.
+ * Array functions.
  *
  * This file is part of PinkCrab Function Constructors.
  *
