@@ -30,6 +30,7 @@ declare(strict_types=1);
 
 namespace PinkCrab\FunctionConstructors\Strings;
 
+use Closure;
 use PinkCrab\FunctionConstructors\Comparisons as C;
 use PinkCrab\FunctionConstructors\GeneralFunctions as F;
 
@@ -39,9 +40,9 @@ use PinkCrab\FunctionConstructors\GeneralFunctions as F;
  *
  * @param string $opening
  * @param string|null $closing
- * @return callable
+ * @return Closure
  */
-function wrap(string $opening, ?string $closing = null): callable
+function wrap(string $opening, ?string $closing = null): Closure
 {
     /**
      * @param string $string
@@ -58,9 +59,9 @@ function wrap(string $opening, ?string $closing = null): callable
  *
  * @param string $openingTag
  * @param string|null $closingTag
- * @return callable
+ * @return Closure
  */
-function tagWrap(string $openingTag, ?string $closingTag = null): callable
+function tagWrap(string $openingTag, ?string $closingTag = null): Closure
 {
     /**
      * @param string $string
@@ -76,9 +77,9 @@ function tagWrap(string $openingTag, ?string $closingTag = null): callable
  *
  * @param string $url
  * @param string|null $target
- * @return callable
+ * @return Closure
  */
-function asUrl(string $url, ?string $target = null): callable
+function asUrl(string $url, ?string $target = null): Closure
 {
     /**
      * @param string $string
@@ -108,9 +109,9 @@ function asUrl(string $url, ?string $target = null): callable
  *
  * @param int $start start position
  * @param int|null $finish end position
- * @return callable
+ * @return Closure
  */
-function slice(int $start, ?int $finish = null): callable
+function slice(int $start, ?int $finish = null): Closure
 {
     /**
      * @param string $string
@@ -127,9 +128,9 @@ function slice(int $start, ?int $finish = null): callable
  * Creates a callable for prepending to a string.
  *
  * @param string $prepend
- * @return callable
+ * @return Closure
  */
-function prepend(string $prepend): callable
+function prepend(string $prepend): Closure
 {
     /**
      * @param string $string
@@ -144,9 +145,9 @@ function prepend(string $prepend): callable
  * Creates a callable for appending to a string.
  *
  * @param string $append
- * @return callable
+ * @return Closure
  */
-function append(string $append): callable
+function append(string $append): Closure
 {
     /**
      * @param string $string
@@ -161,9 +162,9 @@ function append(string $append): callable
  * Returns a callable for formatting a string with a defined set of rules
  *
  * @param array<string, mixed> $args
- * @return callable
+ * @return Closure
  */
-function vSprintf(array $args = array()): callable
+function vSprintf(array $args = array()): Closure
 {
     /**
      * @param string $string
@@ -180,15 +181,15 @@ function vSprintf(array $args = array()): callable
  *
  *
  * @param string $find Value to look for
- * @return callable(string):callable
+ * @return Closure(string):callable
  */
-function findToReplace(string $find): callable
+function findToReplace(string $find): Closure
 {
     /**
      * @param string $replace value to replace with
-     * @return callable(string): string
+     * @return Closure(string): string
      */
-    return function (string $replace) use ($find): callable {
+    return function (string $replace) use ($find): Closure {
         /**
          * @param string $subject String to carry out find and replace.
          * @return string
@@ -204,9 +205,9 @@ function findToReplace(string $find): callable
  *
  * @param string  $find
  * @param string  $replace
- * @return callable
+ * @return Closure
  */
-function replaceWith(string $find, string $replace): callable
+function replaceWith(string $find, string $replace): Closure
 {
     /**
      * @param string $source
@@ -224,7 +225,7 @@ function replaceWith(string $find, string $replace): callable
  * @param int $offset The offset to start, negative numbers count back from end.
  * @param int|null $length Number of chars to stop replacing at end of replacement.
  */
-function replaceSubString(string $replace, int $offset = 0, ?int $length = null): callable
+function replaceSubString(string $replace, int $offset = 0, ?int $length = null): Closure
 {
     /**
      * @param string $string
@@ -241,9 +242,9 @@ function replaceSubString(string $replace, int $offset = 0, ?int $length = null)
  * Creates a callable for checking if a string starts with
  *
  * @param string $find The value to look for.
- * @return callable
+ * @return Closure
  */
-function startsWith(string $find): callable
+function startsWith(string $find): Closure
 {
     /**
      * @param string $source
@@ -258,9 +259,9 @@ function startsWith(string $find): callable
  * Creates a callable for checkin if a string ends with
  *
  * @param string $find The value to look for.
- * @return callable
+ * @return Closure
  */
-function endsWith(string $find): callable
+function endsWith(string $find): Closure
 {
     /**
      * @param string $source
@@ -278,9 +279,9 @@ function endsWith(string $find): callable
  * Creates a callable for checking if a string contains. using stringContains
  *
  * @param string $needle The value to look for.
- * @return callable
+ * @return Closure
  */
-function contains(string $needle): callable
+function contains(string $needle): Closure
 {
     /**
      * @param string $haystack String to look in.
@@ -295,9 +296,9 @@ function contains(string $needle): callable
  * Creates a callable for checking if a string contains using preg_match.
  *
  * @param string $pattern
- * @return callable(string): bool
+ * @return Closure(string): bool
  */
-function containsPattern(string $pattern): callable
+function containsPattern(string $pattern): Closure
 {
     /**
      * @param string $source String to look in.
@@ -312,9 +313,9 @@ function containsPattern(string $pattern): callable
  * Splits a string with a pattern
  *
  * @param string $pattern
- * @return callable
+ * @return Closure
  */
-function splitPattern(string $pattern): callable
+function splitPattern(string $pattern): Closure
 {
     /**
      * @param string $name
@@ -331,9 +332,9 @@ function splitPattern(string $pattern): callable
  * @param string|int|float $precision Number of decimal places
  * @param string $point The decimal separator
  * @param string $thousands The thousand separator.
- * @return callable
+ * @return Closure
  */
-function decimalNumber($precision = 2, $point = '.', $thousands = ''): callable
+function decimalNumber($precision = 2, $point = '.', $thousands = ''): Closure
 {
 
     /**
@@ -354,9 +355,9 @@ function decimalNumber($precision = 2, $point = '.', $thousands = ''): callable
  * @param int $precision
  * @param string $point
  * @param string $thousands
- * @return callable
+ * @return Closure
  */
-function decimialNumber($precision = 2, $point = '.', $thousands = ''): callable
+function decimialNumber($precision = 2, $point = '.', $thousands = ''): Closure
 {
     return decimalNumber($precision, $point, $thousands);
 }
@@ -365,9 +366,9 @@ function decimialNumber($precision = 2, $point = '.', $thousands = ''): callable
  * Returns a callable for adding C slashes to a string based on a defined char list.
  *
  * @param string $charList The Char list to add slashes too.
- * @return callable
+ * @return Closure
  */
-function addSlashes(string $charList): callable
+function addSlashes(string $charList): Closure
 {
     /**
      * @param string $string The string to have char, slash escaped.
@@ -382,9 +383,9 @@ function addSlashes(string $charList): callable
  * Returns a callable for splitting a string by a set amount.
  *
  * @param int $length The length to split the string up with.
- * @return callable(string):array<string> The parts.
+ * @return Closure(string):array<string> The parts.
  */
-function split(int $length): callable
+function split(int $length): Closure
 {
     /**
      * @param string $string The string to be split
@@ -400,9 +401,9 @@ function split(int $length): callable
  *
  * @param int $length The length of each chunk.
  * @param string $end The string to use at the end.
- * @return callable
+ * @return Closure
  */
-function chunk(int $length, string $end = "\r\n"): callable
+function chunk(int $length, string $end = "\r\n"): Closure
 {
     /**
      * @param string $string The string to be chunked
@@ -419,9 +420,9 @@ function chunk(int $length, string $end = "\r\n"): callable
  * @param int $width Max width for each "line"
  * @param string $break The string to use to denote the end of line.
  * @param bool $cut If set to true, words are cut at $width, else overflow.
- * @return callable
+ * @return Closure
  */
-function wordWrap(int $width, string $break = "\n", bool $cut = false): callable
+function wordWrap(int $width, string $break = "\n", bool $cut = false): Closure
 {
     /**
      * @param string $string The string to be wrapped
@@ -437,9 +438,9 @@ function wordWrap(int $width, string $break = "\n", bool $cut = false): callable
  *
  * @link https://www.php.net/manual/en/function.count-chars.php
  * @param int $mode See the PHP docs for details.
- * @return callable
+ * @return Closure
  */
-function countChars(int $mode = 1): callable
+function countChars(int $mode = 1): Closure
 {
     // Throw an exception if the mode is not supported.
     if (! in_array($mode, array( 0, 1, 2, 3, 4 ), true)) {
@@ -462,7 +463,7 @@ function countChars(int $mode = 1): callable
  * @param int $offset Place to start, defaults to 0 (start)
  * @param int|null $length Max length after offset to search.
  */
-function countSubString(string $needle, int $offset = 0, ?int $length = null): callable
+function countSubString(string $needle, int $offset = 0, ?int $length = null): Closure
 {
     /**
      * @param string $haystack
@@ -479,9 +480,9 @@ function countSubString(string $needle, int $offset = 0, ?int $length = null): c
  * Returns a callable for doing repeated trim.
  *
  * @param string $mask
- * @return callable
+ * @return Closure
  */
-function trim(string $mask = "\t\n\r\0\x0B"): callable
+function trim(string $mask = "\t\n\r\0\x0B"): Closure
 {
     /**
      * @param string $string The string to be trimmed
@@ -496,9 +497,9 @@ function trim(string $mask = "\t\n\r\0\x0B"): callable
  * Returns a callable for doing repeated ltrim.
  *
  * @param string $mask
- * @return callable
+ * @return Closure
  */
-function lTrim(string $mask = "\t\n\r\0\x0B"): callable
+function lTrim(string $mask = "\t\n\r\0\x0B"): Closure
 {
     /**
      * @param string $string The string to be trimmed
@@ -513,9 +514,9 @@ function lTrim(string $mask = "\t\n\r\0\x0B"): callable
  * Returns a callable for doing repeated rtrim.
  *
  * @param string $mask
- * @return callable
+ * @return Closure
  */
-function rTrim(string $mask = "\t\n\r\0\x0B"): callable
+function rTrim(string $mask = "\t\n\r\0\x0B"): Closure
 {
     /**
      * @param string $string The string to be trimmed
@@ -533,7 +534,7 @@ function rTrim(string $mask = "\t\n\r\0\x0B"): callable
  * @param string $base The string to act as the base.
  * @param bool $asPc If set to true will return the percentage match, rather than char count.
  */
-function similarAsBase(string $base, bool $asPc = false): callable
+function similarAsBase(string $base, bool $asPc = false): Closure
 {
     /**
      * @param string $comparisonString The string to compare against base.
@@ -553,7 +554,7 @@ function similarAsBase(string $base, bool $asPc = false): callable
  * @param string $comparisonString The string to compare against base.
  * @param bool $asPc If set to true will reutrn the percentage match, rather than char count.
  */
-function similarAsComparison(string $comparisonString, bool $asPc = false): callable
+function similarAsComparison(string $comparisonString, bool $asPc = false): Closure
 {
     /**
      * @param string $comparisonString The string to act as the base.
@@ -572,9 +573,9 @@ function similarAsComparison(string $comparisonString, bool $asPc = false): call
  * @deprecated Use similarAsComparison() instead.
  * @param string $comparisonString
  * @param bool $asPc
- * @return callable
+ * @return Closure
  */
-function similarAsComparisson(string $comparisonString, bool $asPc = false): callable
+function similarAsComparisson(string $comparisonString, bool $asPc = false): Closure
 {
     return similarAsComparison($comparisonString, $asPc);
 }
@@ -585,8 +586,9 @@ function similarAsComparisson(string $comparisonString, bool $asPc = false): cal
  * @param int $length Max length to make string.
  * @param string $padContent The value to padd the string with (defulats to ' ')
  * @param int $type How to pad, please use these constants. STR_PAD_RIGHT|STR_PAD_LEFT|STR_PAD_BOTH
+ * @return Closure
  */
-function pad(int $length, string $padContent = ' ', int $type = STR_PAD_RIGHT): callable
+function pad(int $length, string $padContent = ' ', int $type = STR_PAD_RIGHT): Closure
 {
     /**
      * @param string $string The string to pad out.
@@ -601,9 +603,9 @@ function pad(int $length, string $padContent = ' ', int $type = STR_PAD_RIGHT): 
  * Returns a callable for repeating a string by a defined number of times.
  *
  * @param int $count Number of times to repeat string.
- * @return callable
+ * @return Closure
  */
-function repeat(int $count): callable
+function repeat(int $count): Closure
 {
     /**
      * @param string $string The string to repeat
@@ -620,7 +622,7 @@ function repeat(int $count): callable
  * @param int $format can use WORD_COUNT_NUMBER_OF_WORDS | WORD_COUNT_ARRAY | WORD_COUNT_ASSOCIATIVE_ARRAY
  * @param string|null $charList The char list of option values considered words.
  */
-function wordCount(int $format = WORD_COUNT_NUMBER_OF_WORDS, ?string $charList = null): callable
+function wordCount(int $format = WORD_COUNT_NUMBER_OF_WORDS, ?string $charList = null): Closure
 {
     /**
      * @param string $string The string to pad out.
@@ -637,9 +639,9 @@ function wordCount(int $format = WORD_COUNT_NUMBER_OF_WORDS, ?string $charList =
  * Creates a function for stripping tags with a defined set of allowed tags.
  *
  * @param string|null $allowedTags The allowed tags, pass null or leave blank for none.
- * @return callable
+ * @return Closure
  */
-function stripTags(?string $allowedTags = null): callable
+function stripTags(?string $allowedTags = null): Closure
 {
     /**
      * @param string $string The string to strip tags from.
@@ -659,9 +661,9 @@ function stripTags(?string $allowedTags = null): callable
  * @param string $needle
  * @param int $offset
  * @param int $flags
- * @return callable
+ * @return Closure
  */
-function firstPosistion(string $needle, int $offset = 0, int $flags = STRINGS_CASE_SENSITIVE): callable
+function firstPosistion(string $needle, int $offset = 0, int $flags = STRINGS_CASE_SENSITIVE): Closure
 {
     return firstPosition($needle, $offset, $flags);
 }
@@ -672,9 +674,9 @@ function firstPosistion(string $needle, int $offset = 0, int $flags = STRINGS_CA
  * @param string $needle The value to look for.
  * @param int  $offset The offset to start
  * @param int $flags STRINGS_CASE_SENSITIVE | STRINGS_CASE_INSENSITIVE
- * @return callable
+ * @return Closure
  */
-function firstPosition(string $needle, int $offset = 0, int $flags = STRINGS_CASE_SENSITIVE): callable
+function firstPosition(string $needle, int $offset = 0, int $flags = STRINGS_CASE_SENSITIVE): Closure
 {
     $caseSensitive = ! (bool) ($flags & STRINGS_CASE_INSENSITIVE); // Assumes true unless INSESNITVE passed
 
@@ -696,9 +698,9 @@ function firstPosition(string $needle, int $offset = 0, int $flags = STRINGS_CAS
  * @param string $needle The value to look for.
  * @param int  $offset The offset to start
  * @param int $flags STRINGS_CASE_SENSITIVE | STRINGS_CASE_INSENSITIVE
- * @return callable
+ * @return Closure
  */
-function lastPosition(string $needle, int $offset = 0, int $flags = STRINGS_CASE_SENSITIVE): callable
+function lastPosition(string $needle, int $offset = 0, int $flags = STRINGS_CASE_SENSITIVE): Closure
 {
     $caseSensitive = ! (bool) ($flags & STRINGS_CASE_INSENSITIVE); // Assumes true unless INSESNITVE passed
 
@@ -721,9 +723,9 @@ function lastPosition(string $needle, int $offset = 0, int $flags = STRINGS_CASE
  * @param string $needle The value to look for.
  * @param int  $offset The offset to start
  * @param int $flags STRINGS_CASE_SENSITIVE | STRINGS_CASE_INSENSITIVE
- * @return callable
+ * @return Closure
  */
-function lastPosistion(string $needle, int $offset = 0, int $flags = STRINGS_CASE_SENSITIVE): callable
+function lastPosistion(string $needle, int $offset = 0, int $flags = STRINGS_CASE_SENSITIVE): Closure
 {
     return lastPosition($needle, $offset, $flags);
 }
@@ -735,9 +737,9 @@ function lastPosistion(string $needle, int $offset = 0, int $flags = STRINGS_CAS
  *
  * @param string $needle The substring to look for.
  * @param int $flags Possible STRINGS_CASE_INSENSITIVE | STRINGS_CASE_SENSITIVE | STRINGS_AFTER_NEEDLE | STRINGS_BEFORE_NEEDLE
- * @return callable
+ * @return Closure
  */
-function firstSubString(string $needle, int $flags = STRINGS_CASE_SENSITIVE | STRINGS_AFTER_NEEDLE): callable
+function firstSubString(string $needle, int $flags = STRINGS_CASE_SENSITIVE | STRINGS_AFTER_NEEDLE): Closure
 {
 
     // Decode flags, only look for none defaults.
@@ -761,9 +763,9 @@ function firstSubString(string $needle, int $flags = STRINGS_CASE_SENSITIVE | ST
  * any character (from a list) in a defined string.
  *
  * @param string $chars All chars to check with.
- * @return callable
+ * @return Closure
  */
-function firstChar(string $chars): callable
+function firstChar(string $chars): Closure
 {
     /**
      * @param string $haystack
@@ -780,9 +782,9 @@ function firstChar(string $chars): callable
  * Matches the first char passed, if more than 1 char passed, the rest are ignored.
  *
  * @param string $char
- * @return callable
+ * @return Closure
  */
-function lastChar(string $char): callable
+function lastChar(string $char): Closure
 {
     /**
      * @param string $haystack
@@ -799,9 +801,9 @@ function lastChar(string $char): callable
  * Dictionary should be ['from' => 'to' ]
  *
  * @param array<string, mixed> $dictionary
- * @return callable
+ * @return Closure
  */
-function translateWith(array $dictionary): callable
+function translateWith(array $dictionary): Closure
 {
     /**
      * @param string $haystack
@@ -818,9 +820,9 @@ function translateWith(array $dictionary): callable
  *
  * @uses F\composeTypeSafe
  * @param callable ...$callable
- * @return callable
+ * @return Closure
  */
-function composeSafeStringFunc(callable ...$callable): callable
+function composeSafeStringFunc(callable ...$callable): Closure
 {
     return F\composeTypeSafe('is_string', ...$callable);
 }
@@ -831,13 +833,13 @@ function composeSafeStringFunc(callable ...$callable): callable
  * String -> ( String|Null -> (..self..)|String )
  *
  * @param string $initial
- * @return callable
+ * @return Closure
  */
-function stringCompiler(string $initial = ''): callable
+function stringCompiler(string $initial = ''): Closure
 {
     /**
      * @param string|null $value
-     * @return callable|string
+     * @return Closure|string
      */
     return function (?string $value = null) use ($initial) {
         if ($value) {
