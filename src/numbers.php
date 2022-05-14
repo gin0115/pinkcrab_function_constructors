@@ -84,7 +84,7 @@ function accumulatorFloat(float $initial = 0): Closure
 function sum($initial = 0): Closure
 {
     if (! C\isNumber($initial)) {
-        throw new InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
+        throw new InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int)');
     }
 
     /**
@@ -107,7 +107,7 @@ function sum($initial = 0): Closure
 function subtract($initial = 0): Closure
 {
     if (! C\isNumber($initial)) {
-        throw new InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
+        throw new InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int)');
     }
 
     /**
@@ -130,7 +130,7 @@ function subtract($initial = 0): Closure
 function multiply($initial = 1): Closure
 {
     if (! C\isNumber($initial)) {
-        throw new InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
+        throw new InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int)');
     }
 
     /**
@@ -153,7 +153,7 @@ function multiply($initial = 1): Closure
 function divideBy($divisor = 1): Closure
 {
     if (! C\isNumber($divisor)) {
-        throw new \InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
+        throw new \InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int)');
     }
 
     /**
@@ -174,7 +174,7 @@ function divideBy($divisor = 1): Closure
 function divideInto($dividend = 1): Closure
 {
     if (! C\isNumber($dividend)) {
-        throw new \InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
+        throw new \InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int)');
     }
 
     /**
@@ -195,7 +195,7 @@ function divideInto($dividend = 1): Closure
 function remainderBy($divisor = 1): Closure
 {
     if (! C\isNumber($divisor)) {
-        throw new \InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
+        throw new \InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int)');
     }
 
     /**
@@ -216,7 +216,7 @@ function remainderBy($divisor = 1): Closure
 function remainderInto($dividend = 1): Closure
 {
     if (! C\isNumber($dividend)) {
-        throw new \InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
+        throw new \InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int)');
     }
 
     /**
@@ -229,6 +229,39 @@ function remainderInto($dividend = 1): Closure
 }
 
 /**
+ * Returns a function for checking if a number has a factor of another number.
+ *
+ * @param Number $dividend
+ * @return Closure(Number):bool
+ * @throws InvalidArgumentException If neither int or float passed.
+ */
+function isFactorOf($var): Closure
+{
+    if (! C\isNumber($var)) {
+        throw new \InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int)');
+    }
+
+    /**
+     * @param Number $value
+     * @return bool
+ * @throws InvalidArgumentException If neither int or float passed.
+     */
+    return function ($value) use ($var): bool {
+        if (! C\isNumber($value)) {
+            throw new \InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int)');
+        }
+
+        // Return false if 0
+        if ($value === 0) {
+            return false;
+        }
+
+        return $value % $var === 0;
+    };
+}
+
+
+/**
  * Returns a function for getting the remainder with a fixed dividend.
  *
  * @param int $precision Number of decimal places.
@@ -237,7 +270,7 @@ function remainderInto($dividend = 1): Closure
 function round($precision = 1): Closure
 {
     if (! C\isNumber($precision)) {
-        throw new \InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
+        throw new \InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int)');
     }
 
     /**

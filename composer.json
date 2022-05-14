@@ -44,7 +44,8 @@
         "phpunit/phpunit": "^7.0 || ^8.0",
         "phpstan/phpstan": "^1.0",
         "yoast/phpunit-polyfills": "^1.0.0",
-        "friendsofphp/php-cs-fixer": "^3"
+        "friendsofphp/php-cs-fixer": "^3",
+        "symfony/var-dumper": "4.*"
     },
     "require": {
         "php": ">=7.1.0"
@@ -56,5 +57,10 @@
         "all": "composer test && composer analyse && php-cs-fixer fix --diff --dry-run --rules=@PSR12 --show-progress=dots --stop-on-violation",
         "fixer": "php-cs-fixer fix --diff --rules=@PSR12 --show-progress=dots",
         "lint": "php-cs-fixer fix --diff --dry-run --rules=@PSR12"
+    },
+    "config": {
+        "allow-plugins": {
+            "infection/extension-installer": false
+        }
     }
 }
