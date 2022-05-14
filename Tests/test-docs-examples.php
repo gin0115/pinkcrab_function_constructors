@@ -68,4 +68,46 @@ class DocsExampleTest extends TestCase
 
         $this->assertSame($expected, array_map($function, $data));
     }
+
+    public function testReadingRecordProperties()
+    {
+        $data = array(
+            array(
+                'id'       => 1,
+                'name'     => 'James',
+                'timezone' => '+1',
+                'colour'   => 'red',
+            ),
+            array(
+                'id'       => 2,
+                'name'     => 'Sam',
+                'timezone' => '+1',
+                'colour'   => 'red',
+                'special'  => true,
+            ),
+            array(
+                'id'       => 3,
+                'name'     => 'Sarah',
+                'timezone' => '+2',
+                'colour'   => 'green',
+            ),
+            array(
+                'id'       => 4,
+                'name'     => 'Donna',
+                'timezone' => '+2',
+                'colour'   => 'blue',
+                'special'  => true,
+            ),
+        );
+
+        // Get all users with +2 timezone.
+        $zonePlus2 = array_filter($data, F\propertyEquals('timezone', '+2'));
+        $this->assertCount(2, $zonePlus2);
+        $this->assertEquals(array( 3, 4 ), array_column($zonePlus2, 'id'));
+
+        // Get all users who have special index.
+        $special = array_filter($data, F\hasProperty('special'));
+        $this->assertCount(2, $zonePlus2);
+        $this->assertEquals(array( 2, 4 ), array_column($special, 'id'));
+    }
 }

@@ -248,9 +248,10 @@ function propertyEquals(string $property, $value): Closure
      */
     return function ($data) use ($property, $value): bool {
         return pipe(
+            $data,
             getProperty($property),
             \PinkCrab\FunctionConstructors\Comparisons\isEqualTo($value)
-        )($data);
+        );
     };
 }
 
