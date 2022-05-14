@@ -57,6 +57,27 @@ function compose(callable ...$callables): Closure
 }
 
 /**
+ * Composes a function based on a set of callbacks in reverse
+ * All functions passed should have matching parameters.
+ *
+ * @param callable(mixed):mixed ...$callables
+ * @return Closure(mixed):mixed
+ */
+function composeR(callable ...$callables): Closure
+{
+    /**
+     * @param mixed The value passed into the functions
+     * @return mixed The final result.
+     */
+    return function ($e) use ($callables) {
+        foreach (\array_reverse($callables) as $callable) {
+            $e = $callable($e);
+        }
+        return $e;
+    };
+}
+
+/**
  * Compose a function which is escaped if the value returns as null.
  * This allows for safer composition.
  *
@@ -116,24 +137,26 @@ function composeTypeSafe(callable $validator, callable ...$callables): Closure
 /**
  * Alias for compose()
  *
- * @param callable(mixed):mixed ...$callables
- * @return Closure(mixed):mixed
+ * @param mixed $value Value to be passed through the functions.
+ * @param callable(mixed):mixed ...$callables Functions to be called.
+ * @return mixed
  */
-function pipe(callable ...$callables): Closure
+function pipe($value, callable ...$callables)
 {
-    return compose(...$callables);
+    return compose(...$callables)($value);
 }
 
 /**
  * The reverse of the functions passed into compose() (pipe())).
  * To give a more functional feel to some piped calls.
  *
+ * @param mixed $value Value to be passed through the functions.
  * @param callable(mixed):mixed ...$callables
- * @return Closure(mixed):mixed
+ * @return mixed
  */
-function pipeR(callable ...$callables): Closure
+function pipeR($value, callable ...$callables)
 {
-    return compose(...\array_reverse($callables));
+    return compose(...\array_reverse($callables))($value);
 }
 
 /**
