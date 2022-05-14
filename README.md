@@ -2,6 +2,14 @@
 
 ![Unit Tests](https://github.com/gin0115/pinkcrab_function_constructors/workflows/PHP%20Composer/badge.svg?branch=develop)
 
+[![codecov](https://codecov.io/gh/gin0115/pinkcrab_function_constructors/branch/develop/graph/badge.svg?token=X4LS5961T1)](https://codecov.io/gh/gin0115/pinkcrab_function_constructors)
+
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/gin0115/pinkcrab_function_constructors/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/gin0115/pinkcrab_function_constructors/?branch=master)
+
+![Packagist Downloads](https://img.shields.io/packagist/dt/pinkcrab/function-constructors?label=Downloads)
+
+![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/gin0115/pinkcrab_function_constructors?label=Latest)
+
 **Version 0.1.3**
 
 This library provides a small selection of functions for making functional programming a little cleaner and easier in php.
