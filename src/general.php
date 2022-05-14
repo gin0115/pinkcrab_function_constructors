@@ -98,7 +98,7 @@ function composeTypeSafe(callable $validator, callable ...$callables): Closure
             // Run through callable.
             $e = $callable($e);
 
-            // Check results and bail if invlaid type.
+            // Check results and bail if invalid type.
             if (! $validator($e)) {
                 return null;
             }
@@ -190,7 +190,7 @@ function pluckProperty(string ...$nodes): Closure
 function hasProperty(string $property): Closure
 {
     /**
-     * @param mixed $data The array or object to attmept to get param.
+     * @param mixed $data The array or object to attempt to get param.
      * @return mixed|null
      */
     return function ($data) use ($property): bool {
@@ -215,7 +215,7 @@ function hasProperty(string $property): Closure
 function propertyEquals(string $property, $value): Closure
 {
     /**
-     * @param mixed $data The array or object to attmept to get param.
+     * @param mixed $data The array or object to attempt to get param.
      * @return bool
      */
     return function ($data) use ($property, $value): bool {
