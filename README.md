@@ -42,7 +42,9 @@ At its core, the Function Constructors library is designed to make using PHP eas
 
 ### pipe()
 
-Using `pipe(mixed $value, callable ...$callables)` and [`pipeR()`*](# "Same as pipe(), but callables in reverse order")
+Using `pipe(mixed $value, callable ...$callables)` and [`pipeR()`*](#pipe "Same as pipe(), but callables in reverse order"), allows you to pass a value through a chain of callables. The result of the 1st function, is passed as the input the 2nd and so on, until the end when the final result is returned.
+
+> The rest of this library makes it easier to use standard php functions as callables, by defining some of the parameters up front.
 
 ```php
 $data = [0,3,4,5,6,8,4,6,8,1,3,4];
