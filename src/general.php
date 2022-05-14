@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace PinkCrab\FunctionConstructors\GeneralFunctions;
 
+use Closure;
 use TypeError;
 use ArrayObject;
 
@@ -33,12 +34,10 @@ use ArrayObject;
  * Composes a function based on a set of callbacks.
  * All functions passed should have matching parameters.
  *
- * ...( A -> B ) -> ( A -> B )
- *
- * @param callable ...$callables
- * @return callable
+ * @param callable(mixed):mixed ...$callables
+ * @return Closure(mixed):mixed
  */
-function compose(callable ...$callables): callable
+function compose(callable ...$callables): Closure
 {
     /**
      * @param mixed The value passed into the functions
@@ -56,12 +55,10 @@ function compose(callable ...$callables): callable
  * Compose a function which is escaped if the value returns as null.
  * This allows for safer composition.
  *
- * ...( A -> A ) -> ( A -> A|Null )
- *
- * @param callable ...$callables
- * @return callable
+ * @param callable(mixed):mixed ...$callables
+ * @return Closure(mixed):mixed
  */
-function composeSafe(callable ...$callables): callable
+function composeSafe(callable ...$callables): Closure
 {
     /**
      * @param mixed The value passed into the functions
@@ -82,14 +79,11 @@ function composeSafe(callable ...$callables): callable
  * Every return from every class, must pass a validation function
  * If any fail validation, null is returned.
  *
- * ( A -> Bool ) -> ...( A -> A ) -> ( A -> A|Null )
- *
- * @param callable $validator The validation function (b -> bool)
- * @param callable ...$callables The functions to execute (a -> a)
- * @return callable
- * @annotation ( ( b -> bool ) -> ...( a -> a ) ) -> ( a -> a )
+ * @param callable(mixed):bool $validator The validation function (b -> bool)
+ * @param callable(mixed):mixed ...$callables The functions to execute (a -> a)
+ * @return Closure(mixed):mixed
  */
-function composeTypeSafe(callable $validator, callable ...$callables): callable
+function composeTypeSafe(callable $validator, callable ...$callables): Closure
 {
     /**
      * @param mixed $e The value being passed through the functions.
@@ -117,12 +111,10 @@ function composeTypeSafe(callable $validator, callable ...$callables): callable
 /**
  * Alias for compose()
  *
- * ...( A -> B ) -> ( A -> B )
- *
- * @param callable ...$callables
- * @return callable
+ * @param callable(mixed):mixed ...$callables
+ * @return Closure(mixed):mixed
  */
-function pipe(callable ...$callables): callable
+function pipe(callable ...$callables): Closure
 {
     return compose(...$callables);
 }
@@ -131,12 +123,10 @@ function pipe(callable ...$callables): callable
  * The reverse of the functions passed into compose() (pipe())).
  * To give a more functional feel to some piped calls.
  *
- * ...( A -> B ) -> ( A -> B )
- *
- * @param callable ...$callables
- * @return callable
+ * @param callable(mixed):mixed ...$callables
+ * @return Closure(mixed):mixed
  */
-function pipeR(callable ...$callables): callable
+function pipeR(callable ...$callables): Closure
 {
     return compose(...\array_reverse($callables));
 }
@@ -144,15 +134,13 @@ function pipeR(callable ...$callables): callable
 /**
  * Returns a callback for getting a property or element from an array/object.
  *
- * String -> ( A -> B|Null )
- *
  * @param string $property
- * @return callable
+ * @return Closure(mixed):mixed
  */
-function getProperty(string $property): callable
+function getProperty(string $property): Closure
 {
     /**
-     * @param mixed $data The array or object to attmept to get param.
+     * @param mixed $data The array or object to attempt to get param.
      * @return mixed|null
      */
     return function ($data) use ($property) {
@@ -171,13 +159,15 @@ function getProperty(string $property): callable
  * Will return whatever value at final node passed.
  * If any level returns null, process aborts.
  *
- * ..String -> ( A -> B|Null )
- *
  * @param string ...$nodes
- * @return callable
+ * @return Closure(mixed[]|object):mixed
  */
-function pluckProperty(string ...$nodes): callable
+function pluckProperty(string ...$nodes): Closure
 {
+    /**
+     * @param mixed[]|object $data The array or object to attempt to get param.
+     * @return mixed|null
+     */
     return function ($data) use ($nodes) {
         foreach ($nodes as $node) {
             $data = getProperty($node)($data);
@@ -194,12 +184,10 @@ function pluckProperty(string ...$nodes): callable
  * Returns a callable for a checking if a property exists.
  * Works for both arrays and objects (with public properties).
  *
- * String -> ( Array|Object -> Bool )
- *
  * @param string $property
- * @return callable
+ * @return Closure(mixed[]|object):mixed
  */
-function hasProperty(string $property): callable
+function hasProperty(string $property): Closure
 {
     /**
      * @param mixed $data The array or object to attmept to get param.
@@ -220,13 +208,11 @@ function hasProperty(string $property): callable
  * Returns a callable for a checking if a property exists and matches the passed value
  * Works for both arrays and objects (with public properties).
  *
- * String -> A -> ( Array|Object -> Bool )
- *
  * @param string $property
  * @param mixed $value
- * @return callable
+ * @return Closure(mixed[]|object):bool
  */
-function propertyEquals(string $property, $value): callable
+function propertyEquals(string $property, $value): Closure
 {
     /**
      * @param mixed $data The array or object to attmept to get param.
@@ -243,33 +229,31 @@ function propertyEquals(string $property, $value): callable
 /**
  * Sets a property in an object or array.
  *
- * Array|Object -> ( String -> Mixed -> Array\Object )
- *
  * All object properties are passed as $object->{$property} = $value.
  * So no methods can be called using set property.
  * Will throw error is the property is protect or private.
  * Only works for public or dynamic properties.
  *
  * @param array<string,mixed>|ArrayObject<string,mixed>|object $store
- * @return callable
+ * @return Closure(string,mixed):(array<string,mixed>|ArrayObject<string,mixed>|object)
  */
-function setProperty($store): callable
+function setProperty($store): Closure
 {
 
     // If passed store is not an array or object, throw exception.
-    if (! isArrayAccess($store) && !is_object($store)) {
-        throw new TypeError("Only objects or arrays can be constructed using setProperty.");
+    if (! isArrayAccess($store) && ! is_object($store)) {
+        throw new TypeError('Only objects or arrays can be constructed using setProperty.');
     }
 
     /**
      * @param string $property The property key.
      * @param mixed $value The value to set to keu.
-     * @return array<string, mixed>|object The datastore.
+     * @return array<string,mixed>|ArrayObject<string,mixed>|object The datastore.
      */
     return function (string $property, $value) use ($store) {
         if (isArrayAccess($store)) {
             /** @phpstan-ignore-next-line */
-            $store[$property] = $value;
+            $store[ $property ] = $value;
         } else {
             $store->{$property} = $value;
         }
@@ -282,20 +266,18 @@ function setProperty($store): callable
  * Returns a callable for created an array with a set key
  * sets the value as the result of a callable being passed some data.
  *
- * String -> ( A -> B ) -> ( A -> Array[B] )
- *
  * @param string $key
- * @param callable $value
- * @return callable
+ * @param callable(mixed):mixed $value
+ * @return Closure(mixed):mixed
  */
-function encodeProperty(string $key, callable $value): callable
+function encodeProperty(string $key, callable $value): Closure
 {
     /**
      * @param mixed $data The data to pass through the callable
      * @return array
      */
     return function ($data) use ($key, $value): array {
-        return [$key => $value($data)];
+        return array( $key => $value($data) );
     };
 }
 
@@ -303,26 +285,30 @@ function encodeProperty(string $key, callable $value): callable
  * Creates a callable for encoding an array or object,
  * from an array of encodeProperty functions.
  *
- * Array|Object ->  ( ...( String -> ( A -> B ) ) ) -> ( A -> Object|Array[B] )
- *
- * @param  array<string, mixed>|object $dataType
- * @return callable
+ * @param  array<string,mixed>|ArrayObject<string,mixed>|object $dataType
+ * @return Closure(Closure(mixed):mixed ...$e):(array<string,mixed>|ArrayObject<string,mixed>|object)
  */
-function recordEncoder($dataType): callable
+function recordEncoder($dataType): Closure
 {
     /**
-     * @param callable ...$encoders encodeProperty() functions.
-     * @return callable
+     * @param callable(mixed):mixed ...$encoders encodeProperty() functions.
+     * @return Closure
      */
-    return function (...$encoders) use ($dataType): callable {
+    return function (...$encoders) use ($dataType): Closure {
         /**
          * @param mixed $data The data to pass through the encoders.
-         * @return array|object The encoded object/array.
+         * @return array<string,mixed>|object The encoded object/array.
          */
         return function ($data) use ($dataType, $encoders) {
             foreach ($encoders as $encoder) {
+                $key = array_keys($encoder($data))[0];
+                // throw exception if key is int
+                if (is_int($key)) {
+                    throw new TypeError('Encoders must user an array with a string key.');
+                }
+
                 $dataType = setProperty($dataType)(
-                    array_keys($encoder($data))[0],
+                    $key,
                     array_values($encoder($data))[0]
                 );
             }
@@ -334,12 +320,10 @@ function recordEncoder($dataType): callable
 /**
  * Partially applied callable invoker.
  *
- * ( A -> B ) -> ( ...A -> AB )
- *
- * @param callable $fn
- * @return callable
+ * @param callable(mixed):mixed $fn
+ * @return Closure(mixed ...$a):mixed
  */
-function invoker(callable $fn): callable
+function invoker(callable $fn): Closure
 {
     /**
      * @param mixed ...$args
@@ -353,12 +337,10 @@ function invoker(callable $fn): callable
 /**
  * Returns a function which always returns the value you created it with
  *
- * A -> (  ...B -> A  )
- *
  * @param mixed $value The value you always want to return.
- * @return callable
+ * @return Closure(mixed):mixed
  */
-function always($value): callable
+function always($value): Closure
 {
     /**
      * @param mixed $ignored Any values can be passed and ignored.
@@ -370,35 +352,32 @@ function always($value): callable
 }
 
 /**
- * Returns a function for turning objects into aarrays.
+ * Returns a function for turning objects into arrays.
  * Only takes public properties.
  *
- * () -> ( Object -> Array )
- *
- * @return callable
+ * @return Closure(object):array<string, mixed>
  */
-function toArray(): callable
+function toArray(): Closure
 {
     /**
      * @param object $object
-     * @return array
+     * @return array<string, mixed>
      */
     return function ($object): array {
 
         // If not object, return empty array.
-        // Pollyfill for php7.1 lacking object type hint.
         if (! is_object($object)) {
-            return [];
+            return array();
         }
 
         $objectVars = get_object_vars($object);
         return array_reduce(
             array_keys($objectVars),
             function (array $array, $key) use ($objectVars): array {
-                $array[ltrim((string)$key, '_')] = $objectVars[$key];
+                $array[ ltrim((string) $key, '_') ] = $objectVars[ $key ];
                 return $array;
             },
-            []
+            array()
         );
     };
 }
