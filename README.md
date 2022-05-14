@@ -96,7 +96,7 @@ $results = array_map($callback, $data);
 
 $results = [
     'This Is Some Descrip...',
-	'This Is Some Other D...'
+    'This Is Some Other D...'
 ]
 ```
 
