@@ -40,7 +40,9 @@ Arr\Map('esc_html') or Str\append('foo') or F\pipe($var, 'strtoupper', Str\appen
 
 At its core, the Function Constructors library is designed to make using PHP easier to use in a functional manor. With the use of functions `compose()` and `pipe()` its possible to construct complex functions, from simpler ones.
 
-### pipe()
+### Function Composition and Piping
+
+#### pipe()
 
 Using `pipe(mixed $value, callable ...$callables)` and [`pipeR()`*](#pipe "Same as pipe(), but callables in reverse order"), allows you to pass a value through a chain of callables. The result of the 1st function, is passed as the input the 2nd and so on, until the end when the final result is returned.
 
@@ -69,9 +71,47 @@ $newData = [
 ];
 ```
 
+#### compose()
+
+Piping is ideal when you are working with a single value, but when it comes to working with Arrays or writing callbacks, compose() is much more useful.
+
+`compose(callable ...$callables)`, `composeR(callable ...$callables)`, `composeSafe(callable ...$callables)` and `composeTypeSafe(callable $validator, callable ...$callables)` all allow you to create custom Closures.
+
+```php
+
+$data = [
+    ['details'=>['description' => 'This is some description']],
+    ['details'=>['description' => 'This is some other description']],
+];
+
+$callback = F\compose(
+   F\pluckProperty('details','description'), // Pluck the descriptions
+   'ucfirst',                                // Uppercase each word
+   'trim',                                   // Remove all whitespace
+   Str\slice(0, 20),                         // Remove all but first 20 chars          
+   Str\prepend('...')                        // End the string with ...
+);
+
+$results = array_map($callback, $data);
+
+$results = [
+    'This Is Some Descrip...',
+	'This Is Some Other D...'
+]
+```
+
 > For more details, please read the [wiki](https://github.com/gin0115/pinkcrab_function_constructors/wiki)
 
 ## Changes
+* 1.0.0 - 
+   * *New Functions*
+   * Numbers\isFactorOf()
+   * Strings\isBlank()
+   * GeneralFunctions\composeR()
+   * *Breaking Changes*
+   * pipe() & pipeR() have now changed and are no longer alias for compose()
+   * *Other Changes*
+   * Constants added using the functions class name, `Functions::isBlank` can be used as a string for a callable.
 * 0.1.2 - Added Arrays\zip() 
 * 0.1.3 - Added Arrays\filterKey()
 

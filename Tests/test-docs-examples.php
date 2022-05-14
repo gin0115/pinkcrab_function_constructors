@@ -7,6 +7,7 @@ require_once dirname( __FILE__, 2 ) . '/FunctionsLoader.php';
 use PHPUnit\Framework\TestCase;
 use PinkCrab\FunctionConstructors\Arrays as Arr;
 use PinkCrab\FunctionConstructors\Numbers as Num;
+use PinkCrab\FunctionConstructors\Strings as Str;
 use PinkCrab\FunctionConstructors\FunctionsLoader;
 use PinkCrab\FunctionConstructors\GeneralFunctions as F;
 
@@ -30,19 +31,38 @@ class DocsExampleTest extends TestCase {
 			Arr\map( Num\multiply( 2 ) )      // Double the values.
 		);
 
-        $expected = [
-            2 => 8,
-            6 => 8,
-            11 => 8,
-            4 => 12,
-            7 => 12,
-            5 => 16,
-            8 => 16,
-        ];
+		$expected = array(
+			2  => 8,
+			6  => 8,
+			11 => 8,
+			4  => 12,
+			7  => 12,
+			5  => 16,
+			8  => 16,
+		);
 
-        $this->assertSame( $expected, $newData );
+		$this->assertSame( $expected, $newData );
+	}
 
+	public function testReadmeComposeString(): void {
+		$function = F\compose(
+			F\pluckProperty( 'details', 'description' ),
+			'ucwords',
+			'trim',
+			Str\slice( 0, 20 ),
+			Str\append( '...' )
+		);
 
-        dump($newData);
+		$data = array(
+			array( 'details' => array( 'description' => '   This is some description   ' ) ),
+			array( 'details' => array( 'description' => '    This is some other description     ' ) ),
+		);
+
+		$expected = array(
+			'This Is Some Descrip...',
+			'This Is Some Other D...',
+		);
+
+		$this->assertSame( $expected, array_map( $function, $data ) );
 	}
 }
