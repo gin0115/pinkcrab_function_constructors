@@ -62,6 +62,27 @@ class GeneralFunctionTest extends TestCase
         );
     }
 
+    /** @testdox It should be possible to create a function from a collection of other functions. This function should then be given a value, which is passed to the last function, its return is then passed to the second last and repeated until the end of the functions. */
+    public function testComposeR()
+    {
+        $function = Func\composeR(
+            Str\replaceWith('99', '*\/*'), // 4
+            Str\replaceWith('00', '=/\='), // 3
+            Str\prepend('000'), // 2
+            Str\append('999') // 1
+        );
+
+        // 1 = __999
+        // 2 = 000__999
+        // 3 = =/\=0__999
+        // 4 = =/\=0__*\/*9
+
+        $this->assertEquals(
+            '=/\=0__*\/*9',
+            $function('__')
+        );
+    }
+
     public function testFunctionCompseSafeHandlesNull(): void
     {
         $reutrnsNull = function ($e) {
