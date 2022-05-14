@@ -42,7 +42,7 @@ At its core, the Function Constructors library is designed to make using PHP eas
 
 ### pipe()
 
-Using `pipe(mixed $value, callable ...$callables)` and [`pipeR()`](a "Same as pipe(), but callables in reverse order")
+Using `pipe(mixed $value, callable ...$callables)` and [`pipeR()`](#pipe "Same as pipe(), but callables in reverse order")
 
 ```php
 $data = [0,3,4,5,6,8,4,6,8,1,3,4];
