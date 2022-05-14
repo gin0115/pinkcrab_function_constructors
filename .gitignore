@@ -4,3 +4,5 @@ sandbox/
 wiki/
 *.code-workspace
 .phpunit.result.cache
+.php-cs-fixer.cache
+clover.xml

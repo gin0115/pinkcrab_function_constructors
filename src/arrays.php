@@ -1,41 +1,46 @@
 <?php
 
-declare(strict_types=1);
-
 /**
- * Composeable array functions.
+ * Array functions.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * This file is part of PinkCrab Function Constructors.
+ *
+ * PinkCrab Function Constructors is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU General Public License as published by the Free Software Foundation, either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * PinkCrab Function Constructors is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with PinkCrab Function Constructors.
+ * If not, see <https://www.gnu.org/licenses/>.
  *
  * @author Glynn Quelch <glynn.quelch@gmail.com>
- * @license http://www.opensource.org/licenses/mit-license.html  MIT License
+ * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html
  * @package PinkCrab\FunctionConstructors
+ * @since 0.0.1
+ *
+ * @template Number of int|float
+ * @phpstan-template Number of int|float
+ * @psalm-template Number of int|float
  */
+
+declare(strict_types=1);
 
 namespace PinkCrab\FunctionConstructors\Arrays;
 
+use Closure;
 use stdClass;
 use PinkCrab\FunctionConstructors\Comparisons as Comp;
 
 /**
- * Returns a callback for pushing a value to the head of an array
- *
- * Array[A] -> ( B -> Array[B,A] )
+ * Returns a Closure for pushing a value to the head of an array
  *
  * @param array<int|string, mixed> $array
- * @return callable
+ * @return Closure(mixed):array<int|string, mixed>
  */
-function pushHead(array $array): callable
+function pushHead(array $array): Closure
 {
     /**
      * @param mixed $value Adds value start of array.
@@ -48,18 +53,16 @@ function pushHead(array $array): callable
 }
 
 /**
- * Returns a callback for pushing a value to the head of an array
- *
- * Array[A] -> ( B -> Array[B,A] )
+ * Returns a Closure for pushing a value to the head of an array
  *
  * @param array<int|string, mixed> $array
- * @return callable
+ * @return Closure(mixed):array<int|string, mixed>
  */
-function pushTail(array $array): callable
+function pushTail(array $array): Closure
 {
     /**
      * @param mixed $value Adds value end of array.
-     * @return array New array with value on tail.
+     * @return array<int|string, mixed> New array with value on tail.
      */
     return function ($value) use ($array): array {
         $array[] = $value;
@@ -70,61 +73,53 @@ function pushTail(array $array): callable
 /**
  * Gets the first value from an array.
  *
- * Array -> A
- *
  * @param array<int|string, mixed> $array The array.
  * @return mixed Will return the first value is array is not empty, else null.
  */
 function head(array $array)
 {
-    return !empty($array) ? array_values($array)[0] : null;
+    return ! empty($array) ? array_values($array)[0] : null;
 }
 
 /**
  * Gets the last value from an array.
- *
- * Array -> A
  *
  * @param array<int|string, mixed> $array
  * @return mixed Will return the last value is array is not empty, else null.
  */
 function tail(array $array)
 {
-    return !empty($array) ? array_reverse($array, false)[0] : null;
+    return ! empty($array) ? array_reverse($array, false)[0] : null;
 }
 
 
 /**
- * Returns a callable for concatinatiing arrays with a defined glue.
+ * Creates a Closure for concatenating arrays with a defined glue.
  *
- * String|Null -> ( Array[String] -> String )
- *
- * @param string|null $glue The string to join each element. If null, will be no seperation between elements.
- * @return callable
+ * @param string|null $glue The string to join each element. If null, will be no separation between elements.
+ * @return Closure(array<int|string, mixed>):string
  *
  */
-function toString(?string $glue = null): callable
+function toString(?string $glue = null): Closure
 {
     /**
      * @param array<int|string, mixed> $array Array join
      * @return string.
      */
     return function (array $array) use ($glue): string {
-        return $glue ? \join($glue, $array) : \join($array) ;
+        return $glue ? \join($glue, $array) : \join($array);
     };
 }
 
 /**
- * Returns a callable for zipping 2 arrays.
+ * Creates a Closure for zipping 2 arrays.
  *
- * Array -> Mixed -> ( Array -> Array )
- *
- * @param array<mixed> $additional Values with the same key will be paried.
- * @param mixed $default The fallback value if the addtional array doesnt have the same length
- * @return callable(array<mixed>):array<array{mixed, mixed}>
+ * @param array<mixed> $additional Values with the same key will be paired.
+ * @param mixed $default The fallback value if the additional array doesn't have the same length
+ * @return Closure(array<mixed>):array<array{mixed, mixed}>
  *
  */
-function zip(array $additional, $default = null): callable
+function zip(array $additional, $default = null): Closure
 {
     $additional = array_values($additional);
     return function (array $array) use ($additional, $default) {
@@ -132,13 +127,13 @@ function zip(array $additional, $default = null): callable
         return array_reduce(
             array_keys($array),
             function ($carry, $key) use ($array, $additional, $default): array {
-                $carry[] = [
-                    $array[$key],
-                    array_key_exists($key, $additional) ? $additional[$key] : $default
-                ];
+                $carry[] = array(
+                    $array[ $key ],
+                    array_key_exists($key, $additional) ? $additional[ $key ] : $default,
+                );
                 return $carry;
             },
-            []
+            array()
         );
     };
 }
@@ -153,24 +148,22 @@ function zip(array $additional, $default = null): callable
 
 /**
  * Compiles an array if a value is passed.
- * Reutrns the array if nothing passed.
+ * Returns the array if nothing passed.
  *
- * Array -> ( A|Null ) -> ( A|Null )|Array[A]
- *
- * @param array<int|string, mixed> $inital Sets up the inner value.
- * @return callable
+ * @param mixed[] $inital Sets up the inner value.
+ * @return Closure
  */
-function arrayCompiler(array $inital = []): callable
+function arrayCompiler(array $inital = array()): Closure
 {
     /**
-     * @param mixed $value Adds value to inner array if value set, else reutrns.
-     * @return callable|mixed Will reutrn a new callable if value passed, else contents.
+     * @param mixed $value Adds value to inner array if value set, else returns.
+     * @return mixed[]|Closure
      */
     return function ($value = null) use ($inital) {
         if ($value) {
             $inital[] = $value;
         }
-        return !is_null($value) ? arrayCompiler($inital) : $inital;
+        return ! is_null($value) ? arrayCompiler($inital) : $inital;
     };
 }
 
@@ -178,28 +171,24 @@ function arrayCompiler(array $inital = []): callable
  * Creates a typed array compiler.
  * All values which do not pass the validator are not added.
  *
- * Validates the intial array passed also.
- *
- * ( A -> Bool ) -> Array ->  ( A|Null ) ->  ( A|Null )|Array[A]
- *
- * @param callable $validator (mixed->bool)
- * @param array<int|string, mixed> $inital The intial data to start with
- * @return callable
+ * @param Closure(mixed):bool $validator Used to validate values before adding to array.
+ * @param mixed[] $inital The inital data to start with
+ * @return Closure
  */
-function arrayCompilerTyped(callable $validator, array $inital = []): callable
+function arrayCompilerTyped(callable $validator, array $inital = array()): Closure
 {
     // Ensure all is validated from initial.
     $inital = array_filter($inital, $validator);
 
     /**
      * @param mixed $value
-     * @return callable|array
+     * @return mixed[]|Closure
      */
     return function ($value = null) use ($validator, $inital) {
-        if (!is_null($value) && $validator($value)) {
+        if (! is_null($value) && $validator($value)) {
             $inital[] = $value;
         }
-        return !is_null($value) ? arrayCompilerTyped($validator, $inital) : $inital;
+        return ! is_null($value) ? arrayCompilerTyped($validator, $inital) : $inital;
     };
 }
 
@@ -213,17 +202,16 @@ function arrayCompilerTyped(callable $validator, array $inital = []): callable
 
 
 /**
- * Use array_filter as a patial.
+ * Created a Closure for filtering an array.
  *
  * @param callable $callable The function to apply to the array.
- * @return callable
- * @annotation : ( A -> Bool ) -> ( Array[AB] -> Array[A|Empty] )
+ * @return Closure(array<int|string, mixed>):array<int|string, mixed>
  */
-function filter(callable $callable): callable
+function filter(callable $callable): Closure
 {
     /**
      * @param array<int|string, mixed> $source Array to filter
-     * @return array Filtered array.
+     * @return array<int|string, mixed> Filtered array.
      */
     return function (array $source) use ($callable): array {
         return array_filter($source, $callable);
@@ -231,17 +219,16 @@ function filter(callable $callable): callable
 }
 
 /**
- * Use array_filter as keys as a patial.
+ * Create a Closure for filtering an array by a key.
  *
  * @param callable $callable The function to apply to the array.
- * @return callable
- * @annotation : ( A -> Bool ) -> ( Array[AB] -> Array[A|Empty] )
+ * @return Closure(array<int|string, mixed>):array<int|string, mixed>
  */
-function filterKey(callable $callable): callable
+function filterKey(callable $callable): Closure
 {
     /**
      * @param array<int|string, mixed> $source Array to filter
-     * @return array Filtered array.
+     * @return array<int|string, mixed> Filtered array.
      */
     return function (array $source) use ($callable): array {
         return array_filter($source, $callable, \ARRAY_FILTER_USE_KEY);
@@ -250,19 +237,17 @@ function filterKey(callable $callable): callable
 
 
 /**
- * Creates a callback for running an array through various callbacks for all true response.
+ * Creates a Closure for running an array through various callbacks for all true response.
  * Wrapper for creating a AND group of callbacks and running through array filter.
  *
- * ...( A -> Bool ) -> ( Array[AB] -> Array[A|Empty] )
- *
  * @param callable ...$callables
- * @return callable
+ * @return Closure(array<int|string, mixed>):array<int|string, mixed>
  */
-function filterAnd(callable ...$callables): callable
+function filterAnd(callable ...$callables): Closure
 {
     /**
      * @param array<int|string, mixed> $source Array to filter
-     * @return array Filtered array.
+     * @return array<int|string, mixed> Filtered array.
      */
     return function (array $source) use ($callables): array {
         return array_filter($source, Comp\groupAnd(...$callables));
@@ -270,19 +255,17 @@ function filterAnd(callable ...$callables): callable
 }
 
 /**
- * Creates a callback for running an array through various callbacks for any true response.
+ * Creates a Closure for running an array through various callbacks for any true response.
  * Wrapper for creating a OR group of callbacks and running through array filter.
  *
- *  ...( A -> Bool ) -> ( Array[AB] -> Array[A|Empty] )
- *
  * @param callable ...$callables
- * @return callable
+ * @return Closure(array<int|string, mixed>):array<int|string, mixed>
  */
-function filterOr(callable ...$callables): callable
+function filterOr(callable ...$callables): Closure
 {
     /**
      * @param array<int|string, mixed> $source Array to filter
-     * @return array Filtered array.
+     * @return array<int|string, mixed> Filtered array.
      */
     return function (array $source) use ($callables): array {
         return array_filter($source, Comp\groupOr(...$callables));
@@ -290,14 +273,12 @@ function filterOr(callable ...$callables): callable
 }
 
 /**
- * Returns a callable for running array filter and getting the first value.
- *
- * ( A -> Bool ) -> ( Array[AB] -> A|Null )
+ * Creates a Closure for running array filter and getting the first value.
  *
  * @param callable $func
- * @return callable
+ * @return Closure(array<int|string, mixed>):?mixed
  */
-function filterFirst(callable $func): callable
+function filterFirst(callable $func): Closure
 {
     /**
      * @param array<int|string, mixed> $array The array to filter
@@ -309,14 +290,12 @@ function filterFirst(callable $func): callable
 }
 
 /**
- * Returns a callable for running array filter and getting the last value.
- *
- * ( A -> Bool ) -> ( Array[AB]  -> A|Null )
+ * Creates a Closure for running array filter and getting the last value.
  *
  * @param callable $func
- * @return callable
+ * @return Closure(array<int|string, mixed>):?mixed
  */
-function filterLast(callable $func): callable
+function filterLast(callable $func): Closure
 {
     /**
      * @param array<int|string, mixed> $array The array to filter
@@ -328,20 +307,19 @@ function filterLast(callable $func): callable
 }
 
 /**
- * Returns a callable which takes an array, applies a filter, then maps the
+ * Creates a Closure which takes an array, applies a filter, then maps the
  * results of the map.
  *
- * ( A -> Bool ) -> ( a -> b ) -> ( Array[A|b] -> array[b|null] )
  *
- * @param callable $filter Function to of filter contents
- * @param callable $map Function to map results of filter funciton.
- * @return callable
+ * @param callable(mixed):bool $filter Function to of filter contents
+ * @param callable(mixed):mixed $map Function to map results of filter function.
+ * @return Closure(array<int|string, mixed>):array<int|string, mixed>
  */
-function filterMap(callable $filter, callable $map): callable
+function filterMap(callable $filter, callable $map): Closure
 {
     /**
-     * @param array<int|string, mixed> $array The arry to filter then map.
-     * @return array
+     * @param array<int|string, mixed> $array The array to filter then map.
+     * @return array<int|string, mixed>
      */
     return function (array $array) use ($filter, $map): array {
         return array_map($map, array_filter($array, $filter));
@@ -351,12 +329,10 @@ function filterMap(callable $filter, callable $map): callable
 /**
  * Runs an array through a filters, returns the total count of true
  *
- * ( A -> Bool ) -> ( Array[A] -> Int )
- *
  * @param callable $function
- * @return callable
+ * @return Closure(array<int|string, mixed>):int
  */
-function filterCount(callable $function): callable
+function filterCount(callable $function): Closure
 {
     /**
      * @param array<int|string, mixed> $array
@@ -368,26 +344,33 @@ function filterCount(callable $function): callable
 }
 
 /**
- * Returns a callback for partitioning an array based
+ * Returns a Closure for partitioning an array based
  * on the results of a filter type function.
  * Callable will be cast to a bool, if truthy will be listed under 1 key, else 0 for falsey
  *
- * ( A|B -> Bool ) -> ( Array[A|B] -> Array[Array[A][B]] )
- *
- * @param callable $function
- * @return callable
+ * @param callable(mixed):(bool|int) $function
+ * @return Closure(mixed[]):array{0:mixed[], 1:mixed[]}
  */
-function partition(callable $function): callable
+function partition(callable $function): Closure
 {
+    /**
+     * @param mixed[] $array
+     * @return array{0:mixed[], 1:mixed[]}
+     */
     return function (array $array) use ($function): array {
         return array_reduce(
             $array,
+            /**
+             * @param array{0:mixed[], 1:mixed[]} $carry
+             * @param mixed $element
+             * @return array{0:mixed[], 1:mixed[]}
+             */
             function ($carry, $element) use ($function): array {
-                $key = (bool)$function($element) ? 1 : 0;
-                $carry[$key][] = $element;
+                $key             = (bool) $function($element) ? 1 : 0;
+                $carry[ $key ][] = $element;
                 return $carry;
             },
-            []
+            array( array(), array() )
         );
     };
 }
@@ -405,17 +388,16 @@ function partition(callable $function): callable
 
 
 /**
- * Returns a callback which can be passed an array.
+ * Returns a Closure which can be passed an array.
  *
- * @param callable $func Callback to apply to each element in array.
- * @return callable
- * @annotation : ( a -> b ) -> ( Array[A] -> array[b] )
+ * @param callable(mixed):mixed $func Callback to apply to each element in array.
+ * @return Closure(mixed[]):mixed[]
  */
-function map(callable $func): callable
+function map(callable $func): Closure
 {
     /**
-     * @param array<int|string, mixed> $array The array to map
-     * @return array
+     * @param mixed[] $array The array to map
+     * @return mixed[]
      */
     return function (array $array) use ($func): array {
         return array_map($func, $array);
@@ -423,40 +405,43 @@ function map(callable $func): callable
 }
 
 /**
- * Returns a callback for mapping of an arrays keys.
- *
- * Setting the key to an existing index will overwerite the current value at same index.
- *
- * ( a -> b ) -> ( array -> array )
+ * Returns a Closure for mapping of an arrays keys.
+ * Setting the key to an existing index will overwrite the current value at same index.
  *
  * @param callable $func
- * @return callable{
+ * @return Closure(mixed[]):mixed[]
  */
-function mapKey(callable $func): callable
+function mapKey(callable $func): Closure
 {
+    /**
+     * @param mixed[] $array The array to map
+     * @return mixed[]
+     */
     return function (array $array) use ($func): array {
         return array_reduce(
             array_keys($array),
             function ($carry, $key) use ($func, $array) {
-                $carry[$func($key)] = $array[$key];
+                $carry[ $func($key) ] = $array[ $key ];
                 return $carry;
             },
-            []
+            array()
         );
     };
 }
 
 /**
- * Returns a callback for mapping an array with additonal data.
+ * Returns a Closure for mapping an array with additional data.
  *
- *  ( A -> Array[B] ) -> ...B  -> ( Array[A] -> Array[AB] )
- *
- * @param callable $func
+ * @param callable(mixed ...$a):mixed $func
  * @param mixed ...$data
- * @return callable
+ * @return Closure(mixed[]):mixed[]
  */
-function mapWith(callable $func, ...$data): callable
+function mapWith(callable $func, ...$data): Closure
 {
+    /**
+     * @param mixed[] $array The array to map
+     * @return mixed[]
+     */
     return function (array $array) use ($func, $data): array {
         return array_map(
             function ($e) use ($data, $func) {
@@ -468,24 +453,27 @@ function mapWith(callable $func, ...$data): callable
 }
 
 /**
- * Returns a callback for flattening and mapping an array
+ * Returns a Closure for flattening and mapping an array
  *
- * ( A -> B ) -> Int|Null  -> ( Array[][A] -> Array[B] )
- *
- * @param callable $function The function to map the element. (Will no be called if resolves to array)
+ * @param callable(mixed):mixed $function The function to map the element. (Will no be called if resolves to array)
  * @param int|null $n Depth of nodes to flatten. If null will flatten to n
- * @return callable{
+ * @return Closure(mixed[]):mixed[]
  */
-function flatMap(callable $function, ?int $n = null): callable
+function flatMap(callable $function, ?int $n = null): Closure
 {
     /**
-     * @param array<int|string, mixed> $array
-     * @return array
+     * @param mixed[] $array
+     * @return mixed[]
      */
     return function (array $array) use ($n, $function): array {
         return array_reduce(
             $array,
-            function (array $carry, $element) use ($n, $function) {
+            /**
+             * @param mixed[] $carry
+             * @param mixed $element
+             * @return mixed[]
+             */
+            function (array $carry, $element) use ($n, $function): array {
                 if (is_array($element) && (is_null($n) || $n > 0)) {
                     $carry = array_merge($carry, flatMap($function, $n ? $n - 1 : null)($element));
                 } else {
@@ -493,7 +481,7 @@ function flatMap(callable $function, ?int $n = null): callable
                 }
                 return $carry;
             },
-            []
+            array()
         );
     };
 }
@@ -506,63 +494,64 @@ function flatMap(callable $function, ?int $n = null): callable
 
 
 /**
- * Creates a callback for grouping an array.
+ * Creates a Closure for grouping an array.
  *
- * @param callable $function
- * @return callable
- * @annotation : (array -> a) -> ( array -> array )
+ * @param callable(mixed):(string|int) $function The function to group by.
+ * @return Closure(mixed):mixed[]
  */
-function groupBy(callable $function): callable
+function groupBy(callable $function): Closure
 {
     /**
-     * @param array<int|string, mixed> $array The array to be grouped
-     * @return array Grouped array.
+     * @param mixed[] $array The array to be grouped
+     * @return mixed[] Grouped array.
      */
     return function (array $array) use ($function): array {
         return array_reduce(
             $array,
-            function ($carry, $item) use ($function) {
-                $carry[call_user_func($function, $item)][] = $item;
+            /**
+             * @param mixed[] $carry
+             * @param mixed $element
+             * @return mixed[]
+             */
+            function ($carry, $item) use ($function): array {
+                $carry[ call_user_func($function, $item) ][] = $item;
                 return $carry;
             },
-            []
+            array()
         );
     };
 }
 
 /**
- * Creates a callback for chunking an array to set a limit.
+ * Creates a Closure for chunking an array to set a limit.
  *
- * Int -> Bool  -> ( Array[A] -> Array[][A] )
- *
- * @param int $count The max size of each chunk.
+ * @param int $count The max size of each chunk. Must not be less than 1!
  * @param bool $preserveKeys Should inital keys be kept. Default false.
- * @return callable
+ * @return Closure(mixed[]):mixed[]
  */
-function chunk(int $count, bool $preserveKeys = false): callable
+function chunk(int $count, bool $preserveKeys = false): Closure
 {
     /**
-     * @param array<int|string, mixed> $array Array to chunk
-     * @return array
+     * @param mixed[] $array Array to chunk
+     * @return mixed[]
      */
     return function (array $array) use ($count, $preserveKeys): array {
-        return array_chunk($array, $count, $preserveKeys);
+        return array_chunk($array, max(1, $count), $preserveKeys);
     };
 }
 
 /**
  * Create callback for extracting a single column from an array.
  *
- * @param string $column Column to retirve.
- * @param string $key Use column for assigning as the index. Defualts to numeric keys if null.
- * @return callable
- * @annotation : ( string -> string|null ) -> ( array -> array )
+ * @param string $column Column to retrieve.
+ * @param string $key Use column for assigning as the index. defaults to numeric keys if null.
+ * @return Closure(mixed[]):mixed[]
  */
-function column(string $column, ?string $key = null): callable
+function column(string $column, ?string $key = null): Closure
 {
     /**
-     * @param array<int|string, mixed> $array
-     * @return array
+     * @param mixed[] $array
+     * @return mixed[]
      */
     return function (array $array) use ($column, $key): array {
         return array_column($array, $column, $key);
@@ -570,52 +559,55 @@ function column(string $column, ?string $key = null): callable
 }
 
 /**
- * Returns a callback for flattening an array to a defined depth
+ * Returns a Closure for flattening an array to a defined depth
  *
  * @param int|null $n Depth of nodes to flatten. If null will flatten to n
- * @return callable
- * @annotation : ( int|null ) -> ( array -> array )
+ * @return Closure(mixed[] $var): mixed[]
  */
-function flattenByN(?int $n = null): callable
+function flattenByN(?int $n = null): Closure
 {
     /**
-     * @param array<int|string, mixed> $array Array to flatten
-     * @return array
+     * @param mixed[] $array Array to flatten
+     * @return mixed[]
      */
     return function (array $array) use ($n): array {
         return array_reduce(
             $array,
+            /**
+             * @param array<int|string, mixed> $carry
+             * @param mixed|mixed[] $element
+             * @return array<int|string, mixed>
+             */
             function (array $carry, $element) use ($n): array {
-                // Remnove empty arrays.
+                // Remove empty arrays.
                 if (is_array($element) && empty($element)) {
                     return $carry;
                 }
                 // If the element is an array and we are still flattening, call again
-                if (is_array($element) && (is_null($n) || $n > 0)) {
+                if (is_array($element) && (is_null($n) || $n > 0)) { // @phpstan-ignore-line
                     $carry = array_merge($carry, flattenByN($n ? $n - 1 : null)($element));
                 } else {
-                    // Else just add the elememnt.
+                    // Else just add the element.
                     $carry[] = $element;
                 }
                 return $carry;
             },
-            []
+            array()
         );
     };
 }
 
 /**
- * Returns a callaback for recursivly channging values in an array.
+ * Returns a closure for recursively changing values in an array.
  *
- * @param array<int|string, mixed> ...$with The array values to replace with
- * @return callable
- * @annotation :  ( ...array[b] ) -> ( Array[A] -> Array[A|b] )
+ * @param mixed[] ...$with The array values to replace with
+ * @return Closure(mixed[]):mixed[]
  */
-function replaceRecursive(array ...$with): callable
+function replaceRecursive(array ...$with): Closure
 {
     /**
-     * @param array<int|string, mixed> $array The array to have elements replaced from.
-     * @return array Array with replacements.
+     * @param mixed[] $array The array to have elements replaced from.
+     * @return mixed[] Array with replacements.
      */
     return function (array $array) use ($with): array {
         return array_replace_recursive($array, ...$with);
@@ -623,35 +615,33 @@ function replaceRecursive(array ...$with): callable
 }
 
 /**
- * Returns a callaback for chaning all values in a flat array, based on key.
+ * Returns a Closure for changing all values in a flat array, based on key.
  *
- * @param array<int|string, mixed> ...$with Array with values to replace with, must have matching key with base array.
- * @return callable
- * @annotation :  ( array[b] ) -> ( Array[A] -> Array[A|b] )
+ * @param mixed[] ...$with Array with values to replace with, must have matching key with base array.
+ * @return Closure(mixed[]):mixed[]
  */
-function replace(array ...$with): callable
+function replace(array ...$with): Closure
 {
     /**
-     * @param array<int|string, mixed> $array The array to have elements replaced from.
-     * @return array Array with replacements.
+     * @param mixed[] $array The array to have elements replaced from.
+     * @return mixed[] Array with replacements.
      */
-    return function (array $array) use ($with) {
+    return function (array $array) use ($with): array {
         return array_replace($array, ...$with);
     };
 }
 
 /**
- * Returns a callback for doing array_sum with the results of a function/expression.
+ * Returns a Closure for doing array_sum with the results of a function/expression.
  *
- * @param callable $function The function to return the value for array sum
- * @return callable
- * @annotation : ( a -> int|float ) -> ( array -> int|float )
+ * @param callable(mixed):Number $function The function to return the value for array sum
+ * @return Closure(mixed[]):Number
  */
-function sumWhere(callable $function): callable
+function sumWhere(callable $function): Closure
 {
     /**
-     * @param array<int|string, mixed> $array Array to do sum() on.
-     * @return int|float The total.
+     * @param mixed[] $array Array to do sum() on.
+     * @return Number The total.
      */
     return function (array $array) use ($function) {
         return array_sum(array_map($function, $array));
@@ -659,26 +649,24 @@ function sumWhere(callable $function): callable
 }
 
 /**
- * Creates a callable for casting an arry to an object.
+ * Creates a closure for casting an array to an object.
  * Assumed all properties are public
  * None existing properties will be set as dynamic properties.
  *
- * A -> ( Array[B] -> AB )
- *
- * @param object $object The object to cast to, defualts to stdClass
- * @return callable
+ * @param object|null $object The object to cast to, defaults to stdClass
+ * @return Closure(mixed[]):object
  */
-function toObject(?object $object = null): callable
+function toObject(?object $object = null): Closure
 {
     $object = $object ?? new stdClass();
-    
+
     /**
-     * @param array<int|string, mixed> $array
+     * @param mixed[] $array
      * @return object
      */
     return function (array $array) use ($object): object {
         foreach ($array as $key => $value) {
-            $key = is_string($key) ? $key : (string) $key;
+            $key            = is_string($key) ? $key : (string) $key;
             $object->{$key} = $value;
         }
         return $object;
@@ -686,13 +674,11 @@ function toObject(?object $object = null): callable
 }
 
 /**
- * Creates a callable for encoding json with defined flags/depth
+ * Creates a closure for encoding json with defined flags/depth
  *
- * Int -> Int -> ( A -> String )
- *
- * @param int $flags json_encode flags (defualt = 0)
- * @param int $depth Nodes deep to encode (defualt = 512)
- * @return callable
+ * @param int $flags json_encode flags (default = 0)
+ * @param int $depth Nodes deep to encode (default = 512)
+ * @return \Closure(mixed):?string
  * @constants JSON_FORCE_OBJECT, JSON_HEX_QUOT, JSON_HEX_TAG, JSON_HEX_AMP,
  *            JSON_HEX_APOS, JSON_INVALID_UTF8_IGNORE,
  *            JSON_INVALID_UTF8_SUBSTITUTE, JSON_NUMERIC_CHECK,
@@ -700,14 +686,14 @@ function toObject(?object $object = null): callable
  *            JSON_PRETTY_PRINT, JSON_UNESCAPED_LINE_TERMINATORS,
  *            JSON_UNESCAPED_SLASHES, JSON_UNESCAPED_UNICODE, JSON_THROW_ON_ERROR
  */
-function toJson(int $flags = 0, int $depth = 512): callable
+function toJson(int $flags = 0, int $depth = 512): Closure
 {
     /**
-     * @param mixed $array
+     * @param mixed $data
      * @return string|null
      */
-    return function ($array) use ($flags, $depth): ?string {
-        return \json_encode($array, $flags, $depth) ?: null;
+    return function ($data) use ($flags, $depth): ?string {
+        return \json_encode($data, $flags, max(1, $depth)) ?: null;
     };
 }
 
@@ -720,16 +706,17 @@ function toJson(int $flags = 0, int $depth = 512): callable
 
 
 /**
- * Returns a callback for doing regular SORT again an array.
+ * Returns a Closure for doing regular SORT against an array.
+ * Doesn't maintain keys.
  *
  * @param int $flag Uses php stock sort constants or numerical values.
- * @return callable
+ * @return Closure(mixed[]):mixed[]
  */
-function sort(int $flag = SORT_REGULAR): callable
+function sort(int $flag = SORT_REGULAR): Closure
 {
     /**
-     *  @param array<int|string, mixed> $array The array to sort
-     *  @return array The sorted array (new array)
+     *  @param mixed[]$array The array to sort
+     *  @return mixed[] The sorted array (new array)
      */
     return function (array $array) use ($flag) {
         \sort($array, $flag);
@@ -737,11 +724,18 @@ function sort(int $flag = SORT_REGULAR): callable
     };
 }
 
-function rsort(int $flag = SORT_REGULAR): callable
+/**
+ * Returns a Closure for doing regular Reverse SORT against an array.
+ * Doesn't maintain keys.
+ *
+ * @param int $flag Uses php stock sort constants or numerical values.
+ * @return Closure(mixed[]):mixed[]
+ */
+function rsort(int $flag = SORT_REGULAR): Closure
 {
     /**
-     *  @param array<int|string, mixed> $array The array to sort
-     *  @return array The sorted array (new array)
+     *  @param mixed[]$array The array to sort
+     *  @return mixed[] The sorted array (new array)
      */
     return function (array $array) use ($flag) {
         \rsort($array, $flag);
@@ -749,35 +743,18 @@ function rsort(int $flag = SORT_REGULAR): callable
     };
 }
 
-function asort(int $flag = SORT_REGULAR): callable
-{
-    /**
-     *  @param array<int|string, mixed> $array The array to sort
-     *  @return array The sorted array (new array)
-     */
-    return function (array $array) use ($flag) {
-        \asort($array, $flag);
-        return $array;
-    };
-}
 
-function krsort(int $flag = SORT_REGULAR): callable
+/**
+ * Returns a Closure for sorting an array by key in ascending order.
+ *
+ * @param int $flag Uses php stock sort constants or numerical values.
+ * @return Closure(mixed[]):mixed[]
+ */
+function ksort(int $flag = SORT_REGULAR): Closure
 {
     /**
-     *  @param array<int|string, mixed> $array The array to sort
-     *  @return array The sorted array (new array)
-     */
-    return function (array $array) use ($flag) {
-        \krsort($array, $flag);
-        return $array;
-    };
-}
-
-function ksort(int $flag = SORT_REGULAR): callable
-{
-    /**
-     *  @param array<int|string, mixed> $array The array to sort
-     *  @return array The sorted array (new array)
+     *  @param mixed[]$array The array to sort
+     *  @return mixed[] The sorted array (new array)
      */
     return function (array $array) use ($flag) {
         \ksort($array, $flag);
@@ -785,11 +762,55 @@ function ksort(int $flag = SORT_REGULAR): callable
     };
 }
 
-function arsort(int $flag = SORT_REGULAR): callable
+/**
+ * Returns a Closure for sorting an array by key in descending (reverse) order.
+ *
+ * @param int $flag Uses php stock sort constants or numerical values.
+ * @return Closure(mixed[]):mixed[]
+ */
+function krsort(int $flag = SORT_REGULAR): Closure
 {
     /**
-     *  @param array<int|string, mixed> $array The array to sort
-     *  @return array The sorted array (new array)
+     *  @param mixed[]$array The array to sort
+     *  @return mixed[] The sorted array (new array)
+     */
+    return function (array $array) use ($flag) {
+        \krsort($array, $flag);
+        return $array;
+    };
+}
+
+/**
+ * Returns a Closure for sorting an array by value in ascending order.
+ * Maintain keys.
+ *
+ * @param int $flag Uses php stock sort constants or numerical values.
+ * @return Closure(mixed[]):mixed[]
+ */
+function asort(int $flag = SORT_REGULAR): Closure
+{
+    /**
+     *  @param mixed[]$array The array to sort
+     *  @return mixed[] The sorted array (new array)
+     */
+    return function (array $array) use ($flag) {
+        \asort($array, $flag);
+        return $array;
+    };
+}
+
+/**
+ * Returns a Closure for sorting an array by value in descending (reverse) order.
+ * Maintain keys.
+ *
+ * @param int $flag Uses php stock sort constants or numerical values.
+ * @return Closure(mixed[]):mixed[]
+ */
+function arsort(int $flag = SORT_REGULAR): Closure
+{
+    /**
+     *  @param mixed[]$array The array to sort
+     *  @return mixed[] The sorted array (new array)
      */
     return function (array $array) use ($flag) {
         \arsort($array, $flag);
@@ -797,11 +818,16 @@ function arsort(int $flag = SORT_REGULAR): callable
     };
 }
 
-function natsort(): callable
+/**
+ * Returns a Closure for sorting an array using a "natural order" algorithm
+ *
+ * @return Closure(mixed[]):mixed[]
+ */
+function natsort(): Closure
 {
     /**
-     *  @param array<int|string, mixed> $array The array to sort
-     *  @return array The sorted array (new array)
+     *  @param mixed[]$array The array to sort
+     *  @return mixed[] The sorted array (new array)
      */
     return function (array $array) {
         \natsort($array);
@@ -809,11 +835,16 @@ function natsort(): callable
     };
 }
 
-function natcasesort(): callable
+/**
+ * Returns a Closure for sorting an array using a case insensitive "natural order" algorithm
+ *
+ * @return Closure(mixed[]):mixed[]
+ */
+function natcasesort(): Closure
 {
     /**
-     *  @param array<int|string, mixed> $array The array to sort
-     *  @return array The sorted array (new array)
+     *  @param mixed[]$array The array to sort
+     *  @return mixed[] The sorted array (new array)
      */
     return function (array $array) {
         \natcasesort($array);
@@ -821,11 +852,17 @@ function natcasesort(): callable
     };
 }
 
-function uksort(callable $function): callable
+/**
+ * Returns a Closure for sorting an array by key using a custom comparison function
+ *
+ * @param callable(mixed $a, mixed $b): int $function
+ * @return Closure(mixed[]):mixed[]
+ */
+function uksort(callable $function): Closure
 {
     /**
-     *  @param array<int|string, mixed> $array The array to sort
-     *  @return array The sorted array (new array)
+     *  @param mixed[] $array The array to sort
+     *  @return mixed[] The sorted array (new array)
      */
     return function (array $array) use ($function) {
         \uksort($array, $function);
@@ -833,11 +870,18 @@ function uksort(callable $function): callable
     };
 }
 
-function uasort(callable $function): callable
+/**
+ * Returns a Closure for sorting an array using a custom comparison function
+ * Maintain keys.
+ *
+ * @param callable(mixed $a, mixed $b): int $function
+ * @return Closure(mixed[]):mixed[]
+ */
+function uasort(callable $function): Closure
 {
     /**
-     *  @param array<int|string, mixed> $array The array to sort
-     *  @return array The sorted array (new array)
+     *  @param mixed[]$array The array to sort
+     *  @return mixed[] The sorted array (new array)
      */
     return function (array $array) use ($function) {
         \uasort($array, $function);
@@ -845,11 +889,19 @@ function uasort(callable $function): callable
     };
 }
 
-function usort(callable $function): callable
+
+/**
+ * Returns a Closure for sorting an array using a custom comparison function
+ * Doesn't maintain keys.
+ *
+ * @param callable(mixed $a, mixed $b): int $function
+ * @return Closure(mixed[]):mixed[]
+ */
+function usort(callable $function): Closure
 {
     /**
-     *  @param array<int|string, mixed> $array The array to sort
-     *  @return array The sorted array (new array)
+     *  @param mixed[]$array The array to sort
+     *  @return mixed[] The sorted array (new array)
      */
     return function (array $array) use ($function) {
         \usort($array, $function);

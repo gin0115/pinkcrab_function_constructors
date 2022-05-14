@@ -23,14 +23,14 @@ class RecordEncoderTests extends TestCase
             F\encodeProperty('id', F\pluckProperty('id')),
             F\encodeProperty('date', F\always('Always now!')),
             F\encodeProperty('active', F\pluckProperty('active')),
-            F\encodeProperty('name', F\pipeR(
+            F\encodeProperty('name', F\composeR(
                 Arr\toString(' '),
                 F\toArray(),
                 F\pluckProperty('name')
             )),
-            F\encodeProperty('tags', F\pipeR('count', F\pluckProperty('tags'))),
+            F\encodeProperty('tags', F\composeR('count', F\pluckProperty('tags'))),
             F\encodeProperty('brokenContent', F\pluckProperty('broken', 'data', 'content')),
-            F\encodeProperty('recordCount', F\pipeR(
+            F\encodeProperty('recordCount', F\composeR(
                 'count',
                 Arr\flattenByN(2),
                 Arr\column('records'),

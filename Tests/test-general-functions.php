@@ -30,7 +30,6 @@ class ToArrayFixtureClass
  */
 class GeneralFunctionTest extends TestCase
 {
-
     public function setup(): void
     {
         FunctionsLoader::include();
@@ -38,7 +37,6 @@ class GeneralFunctionTest extends TestCase
 
     public function testFunctionCompose(): void
     {
-        
         $function = Func\compose(
             Str\replaceWith('1122', '*\/*'),
             Str\replaceWith('6677', '=/\='),
@@ -64,9 +62,29 @@ class GeneralFunctionTest extends TestCase
         );
     }
 
+    /** @testdox It should be possible to create a function from a collection of other functions. This function should then be given a value, which is passed to the last function, its return is then passed to the second last and repeated until the end of the functions. */
+    public function testComposeR()
+    {
+        $function = Func\composeR(
+            Str\replaceWith('99', '*\/*'), // 4
+            Str\replaceWith('00', '=/\='), // 3
+            Str\prepend('000'), // 2
+            Str\append('999') // 1
+        );
+
+        // 1 = __999
+        // 2 = 000__999
+        // 3 = =/\=0__999
+        // 4 = =/\=0__*\/*9
+
+        $this->assertEquals(
+            '=/\=0__*\/*9',
+            $function('__')
+        );
+    }
+
     public function testFunctionCompseSafeHandlesNull(): void
     {
-
         $reutrnsNull = function ($e) {
             return null;
         };
@@ -100,7 +118,7 @@ class GeneralFunctionTest extends TestCase
     public function testAlwaysReturns()
     {
         $alwaysHappy = Func\always('Happy');
-        
+
         $this->assertEquals('Happy', $alwaysHappy('No'));
         $this->assertEquals('Happy', $alwaysHappy(false));
         $this->assertEquals('Happy', $alwaysHappy(null));
@@ -111,20 +129,22 @@ class GeneralFunctionTest extends TestCase
     public function testCanUsePipe()
     {
         $results = Func\pipe(
+            7,
             Num\sum(12),
             Num\multiply(4),
             Num\subtract(7)
-        )(7);
+        );
         $this->assertEquals(69, $results);
     }
 
     public function testCanUsePipeR()
     {
         $results = Func\pipeR(
+            7,
             Num\subtract(7),
             Num\multiply(4),
             Num\sum(12)
-        )(7);
+        );
         $this->assertEquals(69, $results);
     }
 
@@ -194,8 +214,8 @@ class GeneralFunctionTest extends TestCase
             Func\encodeProperty('title', Func\pluckProperty('post', 'title')),
             Func\encodeProperty('url', Func\pluckProperty('post', 'url')),
             Func\encodeProperty('author', Func\pluckProperty('post', 'author', 'displayName')),
-            Func\encodeProperty('comments', Func\pipeR('count', Func\getProperty('comments'))),
-            Func\encodeProperty('totalShares', Func\pipeR('array_sum', Func\getProperty('shares'))),
+            Func\encodeProperty('comments', Func\composeR('count', Func\getProperty('comments'))),
+            Func\encodeProperty('totalShares', Func\composeR('array_sum', Func\getProperty('shares'))),
             Func\encodeProperty('fakeValue', Func\pluckProperty('i', 'do', 'not', 'exist')),
         );
 
@@ -241,7 +261,7 @@ class GeneralFunctionTest extends TestCase
      */
     public function testCanInvokeCallables()
     {
-        $doubleAnyNumber = Func\invoker(Func\pipe(
+        $doubleAnyNumber = Func\invoker(Func\compose(
             Num\sum(12),
             Num\multiply(4),
             Num\subtract(7)

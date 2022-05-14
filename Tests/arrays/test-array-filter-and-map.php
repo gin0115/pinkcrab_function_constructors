@@ -21,7 +21,6 @@ use PinkCrab\FunctionConstructors\GeneralFunctions as Func;
  */
 class ArrayFilterAndMapTests extends TestCase
 {
-
     public function setup(): void
     {
         FunctionsLoader::include();
@@ -30,7 +29,7 @@ class ArrayFilterAndMapTests extends TestCase
     public function testCanUseFilter()
     {
         $names = ["James Smith", "Betty Jones", "Sam Power", "Rebecca Smith"];
-        
+
         $isASmith = Arr\filter(Str\contains('Smith'));
 
         $this->assertContains("James Smith", $isASmith($names));
@@ -42,7 +41,7 @@ class ArrayFilterAndMapTests extends TestCase
     public function testCanUseFilterKey()
     {
         $names = ['name10' => "James Smith", 'name20' => "Betty Jones", 'name21' => "Sam Power", 'name38' => "Rebecca Smith"];
-        
+
         $isASmith = Arr\filterKey(Str\contains('name2'));
 
         $this->assertNotContains("James Smith", $isASmith($names));
@@ -50,7 +49,7 @@ class ArrayFilterAndMapTests extends TestCase
         $this->assertContains("Betty Jones", $isASmith($names));
         $this->assertContains("Sam Power", $isASmith($names));
     }
-    
+
     public function testCanFilterOr()
     {
         $names = ["James Smith", "Betty Jones", "Sam Power", "Rebecca Smith"];
@@ -80,7 +79,7 @@ class ArrayFilterAndMapTests extends TestCase
         $this->assertNotContains("Betty Jones", $isSamAndPower($names));
         $this->assertContains("Sam Power", $isSamAndPower($names));
     }
-    
+
     public function testCanFilterLast(): void
     {
         $lastEven = Arr\filterLast(
@@ -110,11 +109,11 @@ class ArrayFilterAndMapTests extends TestCase
         $nums = [1,2,3,4,5,6,7,8,9,10];
         $doubledEvenNumbers = Arr\filterMap(
             function ($a) {
-            // is even
+                // is even
                 return $a % 2 === 0;
             },
             function ($b) {
-            // double it
+                // double it
                 return $b * 2;
             }
         );

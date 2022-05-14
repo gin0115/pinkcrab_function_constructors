@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require_once(dirname(__FILE__) . '/ComparissonCases.php');
+require_once dirname(__FILE__) . '/ComparissonCases.php';
 require_once dirname(__FILE__, 2) . '/FunctionsLoader.php';
 
 use TestStub\ComparissonCases;
@@ -15,7 +15,6 @@ use PinkCrab\FunctionConstructors\Comparisons as Comp;
  */
 class ComparissonFunctionTest extends TestCase
 {
-
     public function setup(): void
     {
         FunctionsLoader::include();
@@ -114,18 +113,42 @@ class ComparissonFunctionTest extends TestCase
 
     public function testCanDoGreaterThan(): void
     {
-        $this->assertTrue(Comp\isGreaterThan(12)(10));
-        $this->assertTrue(Comp\isGreaterThan(99.99)(98));
-        $this->assertFalse(Comp\isGreaterThan(99.99)(100));
-        $this->assertFalse(Comp\isGreaterThan(1)(1.0000001));
+        $this->assertFalse(Comp\isGreaterThan(12)(10));
+        $this->assertFalse(Comp\isGreaterThan(99.99)(98));
+        $this->assertTrue(Comp\isGreaterThan(99.99)(100));
+        $this->assertTrue(Comp\isGreaterThan(1)(1.0000001));
     }
 
     public function testCanDoLessThan(): void
     {
-        $this->assertFalse(Comp\isLessThan(12)(10));
-        $this->assertFalse(Comp\isLessThan(99.99)(98));
-        $this->assertTrue(Comp\isLessThan(99.99)(100));
-        $this->assertTrue(Comp\isLessThan(1)(1.0000001));
+        $this->assertTrue(Comp\isLessThan(12)(10));
+        $this->assertTrue(Comp\isLessThan(99.99)(98));
+        $this->assertFalse(Comp\isLessThan(99.99)(100));
+        $this->assertFalse(Comp\isLessThan(1)(1.0000001));
+    }
+
+    /** @testdox It should be possible to create a closure that is created with a comparisson value and then be used to check if the passed vaue is equal to or less than. */
+    public function testCanDoLessThanOrEqualTo(): void
+    {
+        $this->assertTrue(Comp\isLessThanOrEqualTo(12)(12));
+        $this->assertTrue(Comp\isLessThanOrEqualTo(12)(10));
+        $this->assertTrue(Comp\isLessThanOrEqualTo(99.99)(99.99));
+        $this->assertTrue(Comp\isLessThanOrEqualTo(99.99)(98));
+
+        $this->assertFalse(Comp\isLessThanOrEqualTo(99.99)(100));
+        $this->assertFalse(Comp\isLessThanOrEqualTo(1)(1.0000001));
+    }
+
+    /** @testdox It should be possible to create a closure that is created with a comparisson value and then be used to check if the passed vaue is equal to or greater than. */
+    public function testCanDoGreaterThanOrEqualTo(): void
+    {
+        $this->assertFalse(Comp\isGreaterThanOrEqualTo(12)(10));
+        $this->assertFalse(Comp\isGreaterThanOrEqualTo(99.99)(98));
+
+        $this->assertTrue(Comp\isGreaterThanOrEqualTo(99.99)(99.99));
+        $this->assertTrue(Comp\isGreaterThanOrEqualTo(99.99)(100));
+        $this->assertTrue(Comp\isGreaterThanOrEqualTo(1)(1.0000001));
+        $this->assertTrue(Comp\isGreaterThanOrEqualTo(1)(1));
     }
 
     public function testCanCompareScalarTypeGroup(): void
@@ -153,12 +176,12 @@ class ComparissonFunctionTest extends TestCase
     {
         foreach (
             array(
-            'integer' => 12,
-            'double'  => 12.5,
-            'boolean' => false,
-            'string'  => 'string',
-            'array'   => array(),
-            'object'  => (object) array(),
+                'integer' => 12,
+                'double'  => 12.5,
+                'boolean' => false,
+                'string'  => 'string',
+                'array'   => array(),
+                'object'  => (object) array(),
             ) as $type => $expression
         ) {
             $callback = Comp\isScalar($type);
@@ -190,7 +213,6 @@ class ComparissonFunctionTest extends TestCase
 
     public function testCanGroupAndConditionalsWithArrays(): void
     {
-
         foreach (ComparissonCases::groupSingleAndComparisonsArrays('pass') as $condition) {
             $this->assertEquals(
                 $condition['expected'],
@@ -208,7 +230,6 @@ class ComparissonFunctionTest extends TestCase
 
     public function testCanGroupAndConditionalsWithString(): void
     {
-
         foreach (ComparissonCases::groupSingleAndComparisonsStrings('pass') as $condition) {
             foreach ($condition['value'] as $value) {
                 $this->assertTrue($condition['function']($value));
@@ -224,7 +245,6 @@ class ComparissonFunctionTest extends TestCase
 
     public function testCanGroupGroupsOfConditionalsComparisonsMixed()
     {
-
         foreach (ComparissonCases::groupedAndOrComparissonMixed('pass') as $condition) {
             foreach ($condition['value'] as $value) {
                 $this->assertTrue($condition['function']($value), $value);
@@ -240,38 +260,38 @@ class ComparissonFunctionTest extends TestCase
 
     public function testCanMatchBooleans(): void
     {
-        $this->assertTrue(Comp\allTrue(true, true, 1 == 1, 4 === ( 3 + 1 ))); // t
-        $this->assertFalse(Comp\allTrue(true, true, 1 == 3, 4 === ( 3 + 1 ))); // f
-        $this->assertTrue(Comp\anyTrue(true, true, 1 == 3, 4 === ( 3 + 1 ))); //t
-        $this->assertTrue(! Comp\allTrue(false, false, 1 == 3, 4 === ( 3 * 1 ))); //t
-        $this->assertFalse(Comp\allTrue(false, false, 1 == 3, 4 === ( 3 * 1 ))); //t
-        $this->assertFalse(Comp\anyTrue(false, false, 1 == 3, 4 === ( 3 * 1 ))); //f
+        $this->assertTrue(Comp\allTrue(true, true, 1 == 1, 4 === (3 + 1))); // t
+        $this->assertFalse(Comp\allTrue(true, true, 1 == 3, 4 === (3 + 1))); // f
+        $this->assertTrue(Comp\anyTrue(true, true, 1 == 3, 4 === (3 + 1))); //t
+        $this->assertTrue(! Comp\allTrue(false, false, 1 == 3, 4 === (3 * 1))); //t
+        $this->assertFalse(Comp\allTrue(false, false, 1 == 3, 4 === (3 * 1))); //t
+        $this->assertFalse(Comp\anyTrue(false, false, 1 == 3, 4 === (3 * 1))); //f
     }
 
     public function testCanCheckIsTrue(): void
     {
         $this->assertTrue(Comp\isTrue(true));
-        $this->assertTrue(Comp\isTrue((bool)1));
+        $this->assertTrue(Comp\isTrue((bool) 1));
         $this->assertFalse(Comp\isTrue(false));
         $this->assertFalse(Comp\isTrue(0));
-        $this->assertFalse(Comp\isTrue([0]));
+        $this->assertFalse(Comp\isTrue(array( 0 )));
     }
 
     public function testCanCheckIsFalse(): void
     {
         $this->assertTrue(Comp\isFalse(false));
-        $this->assertTrue(Comp\isFalse((bool)0));
+        $this->assertTrue(Comp\isFalse((bool) 0));
         $this->assertFalse(Comp\isFalse(true));
         $this->assertFalse(Comp\isFalse(0));
-        $this->assertFalse(Comp\isFalse([0]));
+        $this->assertFalse(Comp\isFalse(array( 0 )));
     }
 
     public function testNotEmpty()
     {
-        $this->assertTrue(Comp\notEmpty([false, 1,2]));
-        $this->assertTrue(Comp\notEmpty("Hello"));
+        $this->assertTrue(Comp\notEmpty(array( false, 1, 2 )));
+        $this->assertTrue(Comp\notEmpty('Hello'));
         $this->assertFalse(Comp\notEmpty(''));
-        $this->assertFalse(Comp\notEmpty([]));
+        $this->assertFalse(Comp\notEmpty(array()));
     }
 
     public function testCanUseNot()
@@ -279,7 +299,7 @@ class ComparissonFunctionTest extends TestCase
         $function = function ($a) {
             return $a === 1;
         };
-        
+
         $this->assertTrue(Comp\not($function)(2));
         $this->assertFalse(Comp\not($function)(1));
 
