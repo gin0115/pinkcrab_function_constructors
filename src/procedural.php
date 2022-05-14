@@ -73,14 +73,14 @@ if (! function_exists('toObject')) {
     /**
      * Simple mapper for turning arrays into stdClass objects.
      *
-     * @param array<string, mixed> $array
+     * @param array<string|int, mixed> $array
      * @return stdClass
      */
     function toObject(array $array): object
     {
         $object = new stdClass();
         foreach ($array as $key => $value) {
-            $key            = is_string($key) ? $key : (string) $key;
+            $key            = is_string($key) ? $key : sprintf('__%s', (string) $key);
             $object->{$key} = $value;
         }
         return $object;
@@ -112,8 +112,8 @@ if (! function_exists('isArrayAccess')) {
     function isArrayAccess($var)
     {
         return is_array($var) ||
-           ($var instanceof \ArrayAccess  &&
-            $var instanceof \Traversable  &&
+           ($var instanceof \ArrayAccess &&
+            $var instanceof \Traversable &&
             $var instanceof \Serializable &&
             $var instanceof \Countable);
     }
