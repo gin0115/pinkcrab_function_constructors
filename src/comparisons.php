@@ -1,47 +1,48 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * Comparison functions
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * This file is part of PinkCrab Function Constructors.
+ *
+ * PinkCrab Function Constructors is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU General Public License as published by the Free Software Foundation, either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * PinkCrab Function Constructors is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with PinkCrab Function Constructors.
+ * If not, see <https://www.gnu.org/licenses/>.
  *
  * @author Glynn Quelch <glynn.quelch@gmail.com>
- * @license http://www.opensource.org/licenses/mit-license.html  MIT License
+ * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html
  * @package PinkCrab\FunctionConstructors
+ * @since 0.0.1
+ *
  * @template Number of int|float
  * @phpstan-template Number of int|float
  * @psalm-template Number of int|float
  */
+
+declare(strict_types=1);
 
 namespace PinkCrab\FunctionConstructors\Comparisons;
 
 use Closure;
 
 /**
- * Returns a callback for checkining is a value is equal.
- * Works with String, Ints, Floats, Array, Objects & Bools
- *
- * A -> ( A|B -> Bool )
+ * Returns a callback for checking is a value is equal.
+ * Works with String, Ints, Floats, Array, Objects & Bool
  *
  * @param mixed $a The value to compare against.
- * @return callable
+ * @return Closure(mixed $b):bool
  */
-function isEqualTo($a): callable
+function isEqualTo($a): Closure
 {
     /**
-     * @param mixed $b The values to comapre with
+     * @param mixed $b The values to compare with
      * @return bool
      */
     return function ($b) use ($a): bool {
@@ -73,15 +74,13 @@ function isEqualTo($a): callable
 /**
  * Returns a callable for checking if a value is not the same as the base ($a).
  *
- * A -> ( A|B -> Bool )
- *
  * @param mixed $a
- * @return callable
+ * @return Closure(mixed $b):bool
  */
-function isNotEqualTo($a): callable
+function isNotEqualTo($a): Closure
 {
     /**
-     * @param mixed $b The values to comapre with
+     * @param mixed $b The values to compare with
      * @return bool
      */
     return function ($b) use ($a): bool {
@@ -90,15 +89,13 @@ function isNotEqualTo($a): callable
 }
 
 /**
- * Returns a callable for checking the base is larger than comparisson.
- * If the comparisson value is not a int or float, will return false.
- *
- * A -> ( A|B -> Bool )
+ * Returns a callable for checking the base is larger than comparison.
+ * If the comparison value is not a int or float, will return false.
  *
  * @param Number $a
- * @return callable
+ * @return Closure(Number $b):bool
  */
-function isGreaterThan($a): callable
+function isGreaterThan($a): Closure
 {
     /**
      * @param Number $b
@@ -111,15 +108,13 @@ function isGreaterThan($a): callable
 }
 
 /**
- * Returns a callable for checking the base is smnaller than comparisson.
- * If the comparisson value is not a int or float, will return false.
- *
- * A -> ( A|B -> Bool )
+ * Returns a callable for checking the base is smaller than comparison.
+ * If the comparison value is not a int or float, will return false.
  *
  * @param Number $a
- * @return callable
+ * @return Closure(Number $b):bool
  */
-function isLessThan($a): callable
+function isLessThan($a): Closure
 {
     /**
      * @param mixed $b
@@ -170,15 +165,13 @@ function isGreaterThanOrEqualTo($a): Closure
 /**
  * Checks if a value is in an array of values.
  *
- * Array -> ( A -> Bool )
- *
- * @param array<mixed> $a
- * @return callable
+ * @param mixed[] $a
+ * @return Closure(mixed $b):?bool
  */
-function isEqualIn(array $a): callable
+function isEqualIn(array $a): Closure
 {
     /**
-     * @param array $b The array of values which it could be
+     * @param mixed[] $b The array of values which it could be
      * @return bool
      */
     return function ($b) use ($a): ?bool {
@@ -208,8 +201,6 @@ function isEqualIn(array $a): callable
  * Simple named function for ! empty()
  * Allows to be used in function composition.
  *
- * A -> Bool
- *
  * @param mixed $value The value
  * @return bool
  */
@@ -221,12 +212,10 @@ function notEmpty($value): bool
 /**
  * Groups callbacks and checks they all return true.
  *
- * ...(A -> Bool) -> ( B -> Bool )
- *
- * @param callable ...$callables
- * @return callable
+ * @param callable(mixed):bool ...$callables
+ * @return Closure(mixed):bool
  */
-function groupAnd(callable ...$callables): callable
+function groupAnd(callable ...$callables): Closure
 {
     /**
      * @param mixed $value
@@ -246,12 +235,10 @@ function groupAnd(callable ...$callables): callable
 /**
  * Groups callbacks and checks they any return true.
  *
- * ...(A -> Bool) -> ( B -> Bool )
- *
- * @param callable ...$callables
- * @return callable
+ * @param callable(mixed):bool ...$callables
+ * @return Closure(mixed):bool
  */
-function groupOr(callable ...$callables): callable
+function groupOr(callable ...$callables): Closure
 {
     /**
      * @param mixed $value
@@ -271,12 +258,10 @@ function groupOr(callable ...$callables): callable
 /**
  * Creates a callback for checking if a value has the desired scalar type.
  *
- * A -> ( B -> Bool )
- *
  * @param string $source Type to compare with (bool, boolean, integer, object)
- * @return callable
+ * @return Closure(mixed):bool
  */
-function isScalar(string $source): callable
+function isScalar(string $source): Closure
 {
     /**
      * @param mixed $value
@@ -292,8 +277,6 @@ function isScalar(string $source): callable
 /**
  * Checks if all passed have the same scalar
  *
- * ...A -> Bool
- *
  * @param mixed ...$variables
  * @return bool
  */
@@ -308,8 +291,6 @@ function sameScalar(...$variables): bool
 
 /**
  * Checks if all the values passed are true.
- *
- * ...Bool -> Bool
  *
  * @param bool ...$variables
  * @return bool
@@ -327,8 +308,6 @@ function allTrue(bool ...$variables): bool
 /**
  * Checks if all the values passed are true.
  *
- * ...Bool -> Bool
- *
  * @param bool ...$variables
  * @return bool
  */
@@ -345,8 +324,6 @@ function anyTrue(bool ...$variables): bool
 /**
  * Checks if the passed value is a boolean and false
  *
- * ...A -> Bool
- *
  * @param mixed $value
  * @return bool
  */
@@ -357,8 +334,6 @@ function isFalse($value): bool
 
 /**
  * Checks if the passed value is a boolean and true
- *
- * A -> Bool
  *
  * @param mixed $value
  * @return bool
@@ -371,8 +346,6 @@ function isTrue($value): bool
 /**
  * Checks if the passed value is a float or int.
  *
- * A -> Bool
- *
  * @param mixed $value
  * @return boolean
  */
@@ -384,12 +357,10 @@ function isNumber($value): bool
 /**
  * Alias for groupOr
  *
- * ...(A > Bool) -> (B > Boll)
- *
- * @param callable ...$callables
- * @return callable
+ * @param callable(mixed):bool ...$callables
+ * @return Closure(mixed):bool
  */
-function any(callable ...$callables): callable
+function any(callable ...$callables): Closure
 {
     return groupOr(...$callables);
 }
@@ -397,12 +368,10 @@ function any(callable ...$callables): callable
 /**
  * Alias for groupAnd
  *
- * ...(A > Bool) -> (B > Boll)
- *
- * @param callable ...$callables
- * @return callable
+ * @param callable(mixed):bool ...$callables
+ * @return Closure(mixed):bool
  */
-function all(callable ...$callables): callable
+function all(callable ...$callables): Closure
 {
     return groupAnd(...$callables);
 }
@@ -410,12 +379,10 @@ function all(callable ...$callables): callable
 /**
  * Returns a callable for giving the reverse boolean response.
  *
- * ( A -> Bool ) -> ( A -> Bool )
- *
- * @param callable $callable
- * @return callable
+ * @param callable(mixed):bool $callable
+ * @return Closure(mixed):bool
  */
-function not(callable $callable): callable
+function not(callable $callable): Closure
 {
     /**
      * @param mixed $value

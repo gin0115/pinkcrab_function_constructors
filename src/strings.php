@@ -1,29 +1,36 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * Composable strings functions.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * This file is part of PinkCrab Function Constructors.
+ *
+ * PinkCrab Function Constructors is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU General Public License as published by the Free Software Foundation, either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * PinkCrab Function Constructors is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with PinkCrab Function Constructors.
+ * If not, see <https://www.gnu.org/licenses/>.
  *
  * @author Glynn Quelch <glynn.quelch@gmail.com>
- * @license http://www.opensource.org/licenses/mit-license.html  MIT License
+ * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html
  * @package PinkCrab\FunctionConstructors
+ * @since 0.0.1
+ *
+ * @template Number of int|float
+ * @phpstan-template Number of int|float
+ * @psalm-template Number of int|float
  */
+
+declare(strict_types=1);
 
 namespace PinkCrab\FunctionConstructors\Strings;
 
+use Closure;
 use PinkCrab\FunctionConstructors\Comparisons as C;
 use PinkCrab\FunctionConstructors\GeneralFunctions as F;
 
@@ -31,13 +38,11 @@ use PinkCrab\FunctionConstructors\GeneralFunctions as F;
  * Creates a callable for wrapping a string.
  * By defaults uses opening as closing, if no closing defined.
  *
- * String -> String|Null -> ( String -> String )
- *
  * @param string $opening
  * @param string|null $closing
- * @return callable
+ * @return Closure(string):string
  */
-function wrap(string $opening, ?string $closing = null): callable
+function wrap(string $opening, ?string $closing = null): Closure
 {
     /**
      * @param string $string
@@ -52,13 +57,11 @@ function wrap(string $opening, ?string $closing = null): callable
  * Creates a callable for wrapping a string with html/xml style tags.
  * By defaults uses opening as closing, if no closing defined.
  *
- * String -> String|Null -> ( String -> String )
- *
  * @param string $openingTag
  * @param string|null $closingTag
- * @return callable
+ * @return Closure(string):string
  */
-function tagWrap(string $openingTag, ?string $closingTag = null): callable
+function tagWrap(string $openingTag, ?string $closingTag = null): Closure
 {
     /**
      * @param string $string
@@ -72,13 +75,11 @@ function tagWrap(string $openingTag, ?string $closingTag = null): callable
 /**
  * Creates a callable for turning a string into a url.
  *
- * String -> String|Null -> ( String -> String )
- *
  * @param string $url
  * @param string|null $target
- * @return callable
+ * @return Closure(string):string
  */
-function asUrl(string $url, ?string $target = null): callable
+function asUrl(string $url, ?string $target = null): Closure
 {
     /**
      * @param string $string
@@ -106,13 +107,11 @@ function asUrl(string $url, ?string $target = null): callable
  *
  * Uses substr()
  *
- * Int -> Int|Null -> ( String -> String )
- *
  * @param int $start start position
  * @param int|null $finish end position
- * @return callable
+ * @return Closure(string):string
  */
-function slice(int $start, ?int $finish = null): callable
+function slice(int $start, ?int $finish = null): Closure
 {
     /**
      * @param string $string
@@ -128,12 +127,10 @@ function slice(int $start, ?int $finish = null): callable
 /**
  * Creates a callable for prepending to a string.
  *
- * String -> ( String -> String )
- *
  * @param string $prepend
- * @return callable
+ * @return Closure(string):string
  */
-function prepend(string $prepend): callable
+function prepend(string $prepend): Closure
 {
     /**
      * @param string $string
@@ -147,12 +144,10 @@ function prepend(string $prepend): callable
 /**
  * Creates a callable for appending to a string.
  *
- * String -> ( String -> String )
- *
  * @param string $append
- * @return callable
+ * @return Closure(string):string
  */
-function append(string $append): callable
+function append(string $append): Closure
 {
     /**
      * @param string $string
@@ -166,12 +161,10 @@ function append(string $append): callable
 /**
  * Returns a callable for formatting a string with a defined set of rules
  *
- * Array[String] -> ( String -> String )
- *
  * @param array<string, mixed> $args
- * @return callable
+ * @return Closure(string):string
  */
-function vSprintf(array $args = array()): callable
+function vSprintf(array $args = array()): Closure
 {
     /**
      * @param string $string
@@ -186,18 +179,16 @@ function vSprintf(array $args = array()): callable
 /**
  * Creates a double curried find to replace.
  *
- * String -> ( String ) -> ( String -> String )
- *
  * @param string $find Value to look for
- * @return callable(string):callable
+ * @return Closure(string):Closure(string):string
  */
-function findToReplace(string $find): callable
+function findToReplace(string $find): Closure
 {
     /**
      * @param string $replace value to replace with
-     * @return callable(string): string
+     * @return Closure(string):string
      */
-    return function (string $replace) use ($find): callable {
+    return function (string $replace) use ($find): Closure {
         /**
          * @param string $subject String to carry out find and replace.
          * @return string
@@ -211,13 +202,11 @@ function findToReplace(string $find): callable
 /**
  * Creates a Closure to find and replace within a string.
  *
- * String -> String -> ( String -> string )
- *
  * @param string  $find
  * @param string  $replace
- * @return callable
+ * @return Closure(string):string
  */
-function replaceWith(string $find, string $replace): callable
+function replaceWith(string $find, string $replace): Closure
 {
     /**
      * @param string $source
@@ -231,13 +220,12 @@ function replaceWith(string $find, string $replace): callable
 /**
  * Returns a callable that can replace a sub string with a pre defined value.
  *
- * String -> Int -> Int|Null -> ( String -> String )
- *
  * @param string $replace The value to replace in passed string
  * @param int $offset The offset to start, negative numbers count back from end.
  * @param int|null $length Number of chars to stop replacing at end of replacement.
+ * @return Closure(string):string
  */
-function replaceSubString(string $replace, int $offset = 0, ?int $length = null): callable
+function replaceSubString(string $replace, int $offset = 0, ?int $length = null): Closure
 {
     /**
      * @param string $string
@@ -253,12 +241,10 @@ function replaceSubString(string $replace, int $offset = 0, ?int $length = null)
 /**
  * Creates a callable for checking if a string starts with
  *
- * String -> ( String -> bool )
- *
  * @param string $find The value to look for.
- * @return callable
+ * @return Closure(string):bool
  */
-function startsWith(string $find): callable
+function startsWith(string $find): Closure
 {
     /**
      * @param string $source
@@ -272,12 +258,10 @@ function startsWith(string $find): callable
 /**
  * Creates a callable for checkin if a string ends with
  *
- * String -> ( String -> bool )
- *
  * @param string $find The value to look for.
- * @return callable
+ * @return Closure(string):bool
  */
-function endsWith(string $find): callable
+function endsWith(string $find): Closure
 {
     /**
      * @param string $source
@@ -294,12 +278,10 @@ function endsWith(string $find): callable
 /**
  * Creates a callable for checking if a string contains. using stringContains
  *
- * String -> ( String -> bool )
- *
  * @param string $needle The value to look for.
- * @return callable
+ * @return Closure(string):bool
  */
-function contains(string $needle): callable
+function contains(string $needle): Closure
 {
     /**
      * @param string $haystack String to look in.
@@ -313,12 +295,10 @@ function contains(string $needle): callable
 /**
  * Creates a callable for checking if a string contains using preg_match.
  *
- * String -> ( String -> bool )
- *
  * @param string $pattern
- * @return callable(string): bool
+ * @return Closure(string):bool
  */
-function containsPattern(string $pattern): callable
+function containsPattern(string $pattern): Closure
 {
     /**
      * @param string $source String to look in.
@@ -332,16 +312,14 @@ function containsPattern(string $pattern): callable
 /**
  * Splits a string with a pattern
  *
- * String -> ( String -> array|null )
- *
  * @param string $pattern
- * @return callable
+ * @return Closure(string):?string[]
  */
-function splitPattern(string $pattern): callable
+function splitPattern(string $pattern): Closure
 {
     /**
      * @param string $name
-     * @return array
+     * @return string[]
      */
     return function (string $string) use ($pattern): ?array {
         return \preg_split($pattern, $string) ?: null;
@@ -351,16 +329,13 @@ function splitPattern(string $pattern): callable
 /**
  * Converts a number (loose type) to a string representation of a float.
  *
- * Int -> String -> String -> ( String|Int|Float -> String )
- *
  * @param string|int|float $precision Number of decimal places
  * @param string $point The decimal separator
  * @param string $thousands The thousand separator.
- * @return callable
+ * @return Closure(string|int|float):string
  */
-function decimalNumber($precision = 2, $point = '.', $thousands = ''): callable
+function decimalNumber($precision = 2, $point = '.', $thousands = ''): Closure
 {
-
     /**
      * @param string|int|float $number
      * @return string
@@ -372,29 +347,15 @@ function decimalNumber($precision = 2, $point = '.', $thousands = ''): callable
     };
 }
 
-/**
- * See decimalNumber()
- *
- * @deprecated Use decimalNumber() instead.
- * @param int $precision
- * @param string $point
- * @param string $thousands
- * @return callable
- */
-function decimialNumber($precision = 2, $point = '.', $thousands = ''): callable
-{
-    return decimalNumber($precision, $point, $thousands);
-}
+
 
 /**
  * Returns a callable for adding C slashes to a string based on a defined char list.
  *
- * String -> ( String -> String )
- *
  * @param string $charList The Char list to add slashes too.
- * @return callable
+ * @return Closure(string):string
  */
-function addSlashes(string $charList): callable
+function addSlashes(string $charList): Closure
 {
     /**
      * @param string $string The string to have char, slash escaped.
@@ -408,12 +369,10 @@ function addSlashes(string $charList): callable
 /**
  * Returns a callable for splitting a string by a set amount.
  *
- * Int -> ( String -> Array[String] )
- *
  * @param int $length The length to split the string up with.
- * @return callable(string):array<string> The parts.
+ * @return Closure(string):array<string> The parts.
  */
-function split(int $length): callable
+function split(int $length): Closure
 {
     /**
      * @param string $string The string to be split
@@ -427,13 +386,11 @@ function split(int $length): callable
 /**
  * Returns a callback for splitting a string into chunks.
  *
- * Int -> String -> ( String -> String )
- *
  * @param int $length The length of each chunk.
  * @param string $end The string to use at the end.
- * @return callable
+ * @return Closure(string):string
  */
-function chunk(int $length, string $end = "\r\n"): callable
+function chunk(int $length, string $end = "\r\n"): Closure
 {
     /**
      * @param string $string The string to be chunked
@@ -447,14 +404,12 @@ function chunk(int $length, string $end = "\r\n"): callable
 /**
  * Creates a callable for wrapping a string to a defined value.
  *
- * Int -> String -> Bool -> ( String -> String )
- *
  * @param int $width Max width for each "line"
  * @param string $break The string to use to denote the end of line.
  * @param bool $cut If set to true, words are cut at $width, else overflow.
- * @return callable
+ * @return Closure(string):string
  */
-function wordWrap(int $width, string $break = "\n", bool $cut = false): callable
+function wordWrap(int $width, string $break = "\n", bool $cut = false): Closure
 {
     /**
      * @param string $string The string to be wrapped
@@ -468,13 +423,11 @@ function wordWrap(int $width, string $break = "\n", bool $cut = false): callable
 /**
  * Returns a callback for counting the number of occurrences of each char in a string.
  *
- * Int -> ( String -> Array )
- *
  * @link https://www.php.net/manual/en/function.count-chars.php
  * @param int $mode See the PHP docs for details.
- * @return callable
+ * @return Closure(string):(int[]|string)
  */
-function countChars(int $mode = 1): callable
+function countChars(int $mode = 1): Closure
 {
     // Throw an exception if the mode is not supported.
     if (! in_array($mode, array( 0, 1, 2, 3, 4 ), true)) {
@@ -483,7 +436,7 @@ function countChars(int $mode = 1): callable
 
     /**
      * @param string $string The string to have its char counted.
-     * @return array
+     * @return int[]|string
      */
     return function (string $string) use ($mode) {
         return \count_chars($string, $mode);
@@ -493,17 +446,16 @@ function countChars(int $mode = 1): callable
 /**
  * Returns a callable that counts the occurrences of a given substring in a string
  *
- * String -> Int -> Int|Null -> ( String -> Int )
- *
  * @param string $needle The substring to find
  * @param int $offset Place to start, defaults to 0 (start)
  * @param int|null $length Max length after offset to search.
+ * @return Closure(string):int
  */
-function countSubString(string $needle, int $offset = 0, ?int $length = null): callable
+function countSubString(string $needle, int $offset = 0, ?int $length = null): Closure
 {
     /**
      * @param string $haystack
-     * @return int|array
+     * @return int
      */
     return function (string $haystack) use ($needle, $offset, $length): int {
         return $length
@@ -515,16 +467,14 @@ function countSubString(string $needle, int $offset = 0, ?int $length = null): c
 /**
  * Returns a callable for doing repeated trim.
  *
- * String -> ( String -> String )
- *
  * @param string $mask
- * @return callable
+ * @return Closure(string):string
  */
-function trim(string $mask = "\t\n\r\0\x0B"): callable
+function trim(string $mask = "\t\n\r\0\x0B"): Closure
 {
     /**
      * @param string $string The string to be trimmed
-     * @return array
+     * @return string
      */
     return function (string $string) use ($mask): string {
         return \trim($string, $mask);
@@ -534,16 +484,14 @@ function trim(string $mask = "\t\n\r\0\x0B"): callable
 /**
  * Returns a callable for doing repeated ltrim.
  *
- * String -> ( String -> String )
- *
  * @param string $mask
- * @return callable
+ * @return Closure(string):string
  */
-function lTrim(string $mask = "\t\n\r\0\x0B"): callable
+function lTrim(string $mask = "\t\n\r\0\x0B"): Closure
 {
     /**
      * @param string $string The string to be trimmed
-     * @return array
+     * @return string
      */
     return function (string $string) use ($mask): string {
         return \ltrim($string, $mask);
@@ -553,16 +501,14 @@ function lTrim(string $mask = "\t\n\r\0\x0B"): callable
 /**
  * Returns a callable for doing repeated rtrim.
  *
- * String -> ( String -> String )
- *
  * @param string $mask
- * @return callable
+ * @return Closure(string):string
  */
-function rTrim(string $mask = "\t\n\r\0\x0B"): callable
+function rTrim(string $mask = "\t\n\r\0\x0B"): Closure
 {
     /**
      * @param string $string The string to be trimmed
-     * @return array
+     * @return string
      */
     return function (string $string) use ($mask): string {
         return \rtrim($string, $mask);
@@ -573,16 +519,15 @@ function rTrim(string $mask = "\t\n\r\0\x0B"): callable
  * Returns a callable for finding the similarities between 2 string.
  * This sets the defined value as the base (similar_text as first)
  *
- * String -> Bool -> ( String -> Int|Float )
- *
  * @param string $base The string to act as the base.
  * @param bool $asPc If set to true will return the percentage match, rather than char count.
+ * @return Closure(string):Number
  */
-function similarAsBase(string $base, bool $asPc = false): callable
+function similarAsBase(string $base, bool $asPc = false): Closure
 {
     /**
      * @param string $comparisonString The string to compare against base.
-     * @return int|float
+     * @return Number
      */
     return function (string $comparisonString) use ($base, $asPc) {
         $pc       = 0.00;
@@ -595,16 +540,15 @@ function similarAsBase(string $base, bool $asPc = false): callable
  * Returns a callable for finding the similarities between 2 string.
  * This sets the defined value as the comparisonString (similar_text as second)
  *
- * String -> Bool -> ( String -> Int|Float )
- *
  * @param string $comparisonString The string to compare against base.
- * @param bool $asPc If set to true will reutrn the percentage match, rather than char count.
+ * @param bool $asPc If set to true will return the percentage match, rather than char count.
+ * @return Closure(string):Number
  */
-function similarAsComparison(string $comparisonString, bool $asPc = false): callable
+function similarAsComparison(string $comparisonString, bool $asPc = false): Closure
 {
     /**
      * @param string $comparisonString The string to act as the base.
-     * @return int|float
+     * @return Number
      */
     return function (string $base) use ($comparisonString, $asPc) {
         $pc       = 0.00;
@@ -614,28 +558,14 @@ function similarAsComparison(string $comparisonString, bool $asPc = false): call
 }
 
 /**
- * See similarAsComparison()
- *
- * @deprecated Use similarAsComparison() instead.
- * @param string $comparisonString
- * @param bool $asPc
- * @return callable
- */
-function similarAsComparisson(string $comparisonString, bool $asPc = false): callable
-{
-    return similarAsComparison($comparisonString, $asPc);
-}
-
-/**
- * Reutrns a callable for padding out a string.
- *
- * Int -> string -> Int -> ( String -> String )
+ * Returns a callable for padding out a string.
  *
  * @param int $length Max length to make string.
- * @param string $padContent The value to padd the string with (defulats to ' ')
+ * @param string $padContent The value to padd the string with (defaults to ' ')
  * @param int $type How to pad, please use these constants. STR_PAD_RIGHT|STR_PAD_LEFT|STR_PAD_BOTH
+ * @return Closure(string):string
  */
-function pad(int $length, string $padContent = ' ', int $type = STR_PAD_RIGHT): callable
+function pad(int $length, string $padContent = ' ', int $type = STR_PAD_RIGHT): Closure
 {
     /**
      * @param string $string The string to pad out.
@@ -649,18 +579,16 @@ function pad(int $length, string $padContent = ' ', int $type = STR_PAD_RIGHT): 
 /**
  * Returns a callable for repeating a string by a defined number of times.
  *
- * Int -> ( String -> String )
- *
  * @param int $count Number of times to repeat string.
- * @return callable
+ * @return Closure(string):string
  */
-function repeat(int $count): callable
+function repeat(int $count): Closure
 {
     /**
      * @param string $string The string to repeat
-     * @return int|float
+     * @return string
      */
-    return function (string $string) use ($count) {
+    return function (string $string) use ($count): string {
         return \str_repeat($string, $count);
     };
 }
@@ -668,33 +596,30 @@ function repeat(int $count): callable
 /**
  * Returns a callback for creating a word counter, with set format and char list.
  *
- * Int -> String|Null -> ( String -> Int|Array )
- *
  * @param int $format can use WORD_COUNT_NUMBER_OF_WORDS | WORD_COUNT_ARRAY | WORD_COUNT_ASSOCIATIVE_ARRAY
  * @param string|null $charList The char list of option values considered words.
+ * @return Closure(string):(int|string[])
  */
-function wordCount(int $format = WORD_COUNT_NUMBER_OF_WORDS, ?string $charList = null): callable
+function wordCount(int $format = WORD_COUNT_NUMBER_OF_WORDS, ?string $charList = null): Closure
 {
     /**
      * @param string $string The string to pad out.
-     * @return int|array
+     * @return int|string[]
      */
     return function (string $string) use ($format, $charList) {
         return $charList
-            ? \str_word_count($string, $format, $charList)
-            : \str_word_count($string, $format);
+            ? (\str_word_count($string, $format, $charList) ?: 0)
+            : (\str_word_count($string, $format) ?: 0);
     };
 }
 
 /**
  * Creates a function for stripping tags with a defined set of allowed tags.
  *
- * String|Null -> ( String -> String )
- *
  * @param string|null $allowedTags The allowed tags, pass null or leave blank for none.
- * @return callable
+ * @return Closure(string):string
  */
-function stripTags(?string $allowedTags = null): callable
+function stripTags(?string $allowedTags = null): Closure
 {
     /**
      * @param string $string The string to strip tags from.
@@ -708,30 +633,14 @@ function stripTags(?string $allowedTags = null): callable
 }
 
 /**
- * See firstPosition()
- *
- * @deprecated
- * @param string $needle
- * @param int $offset
- * @param int $flags
- * @return callable
- */
-function firstPosistion(string $needle, int $offset = 0, int $flags = STRINGS_CASE_SENSITIVE): callable
-{
-    return firstPosition($needle, $offset, $flags);
-}
-
-/**
  * Returns a callable for finding the first postition of a defined value in any string.
- *
- * String -> Int -> Bool -> ( String -> String|null )
  *
  * @param string $needle The value to look for.
  * @param int  $offset The offset to start
  * @param int $flags STRINGS_CASE_SENSITIVE | STRINGS_CASE_INSENSITIVE
- * @return callable
+ * @return Closure(string):?int
  */
-function firstPosition(string $needle, int $offset = 0, int $flags = STRINGS_CASE_SENSITIVE): callable
+function firstPosition(string $needle, int $offset = 0, int $flags = STRINGS_CASE_SENSITIVE): Closure
 {
     $caseSensitive = ! (bool) ($flags & STRINGS_CASE_INSENSITIVE); // Assumes true unless INSESNITVE passed
 
@@ -750,14 +659,12 @@ function firstPosition(string $needle, int $offset = 0, int $flags = STRINGS_CAS
 /**
  * Returns a callable for finding the first position of a defined value in any string.
  *
- * String -> Int -> Bool -> ( String -> String|null )
- *
  * @param string $needle The value to look for.
  * @param int  $offset The offset to start
  * @param int $flags STRINGS_CASE_SENSITIVE | STRINGS_CASE_INSENSITIVE
- * @return callable
+ * @return Closure(string):?int
  */
-function lastPosition(string $needle, int $offset = 0, int $flags = STRINGS_CASE_SENSITIVE): callable
+function lastPosition(string $needle, int $offset = 0, int $flags = STRINGS_CASE_SENSITIVE): Closure
 {
     $caseSensitive = ! (bool) ($flags & STRINGS_CASE_INSENSITIVE); // Assumes true unless INSESNITVE passed
 
@@ -774,31 +681,15 @@ function lastPosition(string $needle, int $offset = 0, int $flags = STRINGS_CASE
 }
 
 /**
- * See lastPosition()
- *
- * @deprecated Use lastPosition() instead.
- * @param string $needle The value to look for.
- * @param int  $offset The offset to start
- * @param int $flags STRINGS_CASE_SENSITIVE | STRINGS_CASE_INSENSITIVE
- * @return callable
- */
-function lastPosistion(string $needle, int $offset = 0, int $flags = STRINGS_CASE_SENSITIVE): callable
-{
-    return lastPosition($needle, $offset, $flags);
-}
-
-/**
  * Returns a callable for looking for the first occurrence of a substring.
  * When found can return all after or before the needle (sub string)
  * Can be done as case sensitive (strstr()) or insensitive (stristr())
  *
- * String -> Int -> ( String -> String )
- *
  * @param string $needle The substring to look for.
  * @param int $flags Possible STRINGS_CASE_INSENSITIVE | STRINGS_CASE_SENSITIVE | STRINGS_AFTER_NEEDLE | STRINGS_BEFORE_NEEDLE
- * @return callable
+ * @return Closure(string):string
  */
-function firstSubString(string $needle, int $flags = STRINGS_CASE_SENSITIVE | STRINGS_AFTER_NEEDLE): callable
+function firstSubString(string $needle, int $flags = STRINGS_CASE_SENSITIVE | STRINGS_AFTER_NEEDLE): Closure
 {
 
     // Decode flags, only look for none defaults.
@@ -821,12 +712,10 @@ function firstSubString(string $needle, int $flags = STRINGS_CASE_SENSITIVE | ST
  * Returns a callable for creating a function which finds the first occurrence of
  * any character (from a list) in a defined string.
  *
- * String -> ( String -> String )
- *
  * @param string $chars All chars to check with.
- * @return callable
+ * @return Closure(string):string
  */
-function firstChar(string $chars): callable
+function firstChar(string $chars): Closure
 {
     /**
      * @param string $haystack
@@ -842,12 +731,10 @@ function firstChar(string $chars): callable
  * Returns a function that finds the last char in a string and returns the following text.
  * Matches the first char passed, if more than 1 char passed, the rest are ignored.
  *
- * String -> ( String -> String )
- *
  * @param string $char
- * @return callable
+ * @return Closure(string):string
  */
-function lastChar(string $char): callable
+function lastChar(string $char): Closure
 {
     /**
      * @param string $haystack
@@ -863,12 +750,10 @@ function lastChar(string $char): callable
  * Returns a callable which translates substrings from a defined dictionary.
  * Dictionary should be ['from' => 'to' ]
  *
- * Array[String] -> ( String -> String )
- *
  * @param array<string, mixed> $dictionary
- * @return callable
+ * @return Closure(string):string
  */
-function translateWith(array $dictionary): callable
+function translateWith(array $dictionary): Closure
 {
     /**
      * @param string $haystack
@@ -883,13 +768,11 @@ function translateWith(array $dictionary): callable
 /**
  * Creates a callable for a string safe function compose.
  *
- * (...(a -> b)) -> ( a -> b )
- *
  * @uses F\composeTypeSafe
- * @param callable ...$callable
- * @return callable
+ * @param callable(mixed):string ...$callable
+ * @return Closure(mixed):string
  */
-function composeSafeStringFunc(callable ...$callable): callable
+function composeSafeStringFunc(callable ...$callable): Closure
 {
     return F\composeTypeSafe('is_string', ...$callable);
 }
@@ -897,16 +780,14 @@ function composeSafeStringFunc(callable ...$callable): callable
 /**
  * Creates a callable for compiling a string.
  *
- * String -> ( String|Null -> (..self..)|String )
- *
  * @param string $initial
- * @return callable
+ * @return Closure(string|null):(Closure|string)
  */
-function stringCompiler(string $initial = ''): callable
+function stringCompiler(string $initial = ''): Closure
 {
     /**
      * @param string|null $value
-     * @return callable|string
+     * @return Closure|string
      */
     return function (?string $value = null) use ($initial) {
         if ($value) {
@@ -925,4 +806,67 @@ function stringCompiler(string $initial = ''): callable
 function isBlank($value): bool
 {
     return is_string($value) && \mb_strlen($value) === 0;
+}
+
+
+/************************************************************************/
+/************************************************************************/
+/**                        Deprecated Functions                        **/
+/************************************************************************/
+/************************************************************************/
+
+
+/**
+ * See decimalNumber()
+ *
+ * @deprecated Use decimalNumber() instead.
+ * @param int $precision
+ * @param string $point
+ * @param string $thousands
+ * @return Closure
+ */
+function decimialNumber($precision = 2, $point = '.', $thousands = ''): Closure
+{
+    return decimalNumber($precision, $point, $thousands);
+}
+
+/**
+ * See similarAsComparison()
+ *
+ * @deprecated Use similarAsComparison() instead.
+ * @param string $comparisonString
+ * @param bool $asPc
+ * @return Closure
+ */
+function similarAsComparisson(string $comparisonString, bool $asPc = false): Closure
+{
+    return similarAsComparison($comparisonString, $asPc);
+}
+
+/**
+ * See firstPosition()
+ *
+ * @deprecated
+ * @param string $needle
+ * @param int $offset
+ * @param int $flags
+ * @return Closure
+ */
+function firstPosistion(string $needle, int $offset = 0, int $flags = STRINGS_CASE_SENSITIVE): Closure
+{
+    return firstPosition($needle, $offset, $flags);
+}
+
+/**
+ * See lastPosition()
+ *
+ * @deprecated Use lastPosition() instead.
+ * @param string $needle The value to look for.
+ * @param int  $offset The offset to start
+ * @param int $flags STRINGS_CASE_SENSITIVE | STRINGS_CASE_INSENSITIVE
+ * @return Closure
+ */
+function lastPosistion(string $needle, int $offset = 0, int $flags = STRINGS_CASE_SENSITIVE): Closure
+{
+    return lastPosition($needle, $offset, $flags);
 }
