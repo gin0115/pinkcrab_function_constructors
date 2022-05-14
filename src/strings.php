@@ -40,7 +40,7 @@ use PinkCrab\FunctionConstructors\GeneralFunctions as F;
  *
  * @param string $opening
  * @param string|null $closing
- * @return Closure
+ * @return Closure(string):string
  */
 function wrap(string $opening, ?string $closing = null): Closure
 {
@@ -59,7 +59,7 @@ function wrap(string $opening, ?string $closing = null): Closure
  *
  * @param string $openingTag
  * @param string|null $closingTag
- * @return Closure
+ * @return Closure(string):string
  */
 function tagWrap(string $openingTag, ?string $closingTag = null): Closure
 {
@@ -77,7 +77,7 @@ function tagWrap(string $openingTag, ?string $closingTag = null): Closure
  *
  * @param string $url
  * @param string|null $target
- * @return Closure
+ * @return Closure(string):string
  */
 function asUrl(string $url, ?string $target = null): Closure
 {
@@ -109,7 +109,7 @@ function asUrl(string $url, ?string $target = null): Closure
  *
  * @param int $start start position
  * @param int|null $finish end position
- * @return Closure
+ * @return Closure(string):string
  */
 function slice(int $start, ?int $finish = null): Closure
 {
@@ -128,7 +128,7 @@ function slice(int $start, ?int $finish = null): Closure
  * Creates a callable for prepending to a string.
  *
  * @param string $prepend
- * @return Closure
+ * @return Closure(string):string
  */
 function prepend(string $prepend): Closure
 {
@@ -145,7 +145,7 @@ function prepend(string $prepend): Closure
  * Creates a callable for appending to a string.
  *
  * @param string $append
- * @return Closure
+ * @return Closure(string):string
  */
 function append(string $append): Closure
 {
@@ -162,7 +162,7 @@ function append(string $append): Closure
  * Returns a callable for formatting a string with a defined set of rules
  *
  * @param array<string, mixed> $args
- * @return Closure
+ * @return Closure(string):string
  */
 function vSprintf(array $args = array()): Closure
 {
@@ -179,15 +179,14 @@ function vSprintf(array $args = array()): Closure
 /**
  * Creates a double curried find to replace.
  *
- *
  * @param string $find Value to look for
- * @return Closure(string):callable
+ * @return Closure(string):Closure(string):string
  */
 function findToReplace(string $find): Closure
 {
     /**
      * @param string $replace value to replace with
-     * @return Closure(string): string
+     * @return Closure(string):string
      */
     return function (string $replace) use ($find): Closure {
         /**
@@ -205,7 +204,7 @@ function findToReplace(string $find): Closure
  *
  * @param string  $find
  * @param string  $replace
- * @return Closure
+ * @return Closure(string):string
  */
 function replaceWith(string $find, string $replace): Closure
 {
@@ -224,6 +223,7 @@ function replaceWith(string $find, string $replace): Closure
  * @param string $replace The value to replace in passed string
  * @param int $offset The offset to start, negative numbers count back from end.
  * @param int|null $length Number of chars to stop replacing at end of replacement.
+ * @return Closure(string):string
  */
 function replaceSubString(string $replace, int $offset = 0, ?int $length = null): Closure
 {
@@ -242,7 +242,7 @@ function replaceSubString(string $replace, int $offset = 0, ?int $length = null)
  * Creates a callable for checking if a string starts with
  *
  * @param string $find The value to look for.
- * @return Closure
+ * @return Closure(string):bool
  */
 function startsWith(string $find): Closure
 {
@@ -259,7 +259,7 @@ function startsWith(string $find): Closure
  * Creates a callable for checkin if a string ends with
  *
  * @param string $find The value to look for.
- * @return Closure
+ * @return Closure(string):bool
  */
 function endsWith(string $find): Closure
 {
@@ -279,7 +279,7 @@ function endsWith(string $find): Closure
  * Creates a callable for checking if a string contains. using stringContains
  *
  * @param string $needle The value to look for.
- * @return Closure
+ * @return Closure(string):bool
  */
 function contains(string $needle): Closure
 {
@@ -296,7 +296,7 @@ function contains(string $needle): Closure
  * Creates a callable for checking if a string contains using preg_match.
  *
  * @param string $pattern
- * @return Closure(string): bool
+ * @return Closure(string):bool
  */
 function containsPattern(string $pattern): Closure
 {
@@ -313,13 +313,13 @@ function containsPattern(string $pattern): Closure
  * Splits a string with a pattern
  *
  * @param string $pattern
- * @return Closure
+ * @return Closure(string):?string[]
  */
 function splitPattern(string $pattern): Closure
 {
     /**
      * @param string $name
-     * @return array
+     * @return string[]
      */
     return function (string $string) use ($pattern): ?array {
         return \preg_split($pattern, $string) ?: null;
@@ -332,11 +332,10 @@ function splitPattern(string $pattern): Closure
  * @param string|int|float $precision Number of decimal places
  * @param string $point The decimal separator
  * @param string $thousands The thousand separator.
- * @return Closure
+ * @return Closure(string|int|float):string
  */
 function decimalNumber($precision = 2, $point = '.', $thousands = ''): Closure
 {
-
     /**
      * @param string|int|float $number
      * @return string
@@ -348,25 +347,13 @@ function decimalNumber($precision = 2, $point = '.', $thousands = ''): Closure
     };
 }
 
-/**
- * See decimalNumber()
- *
- * @deprecated Use decimalNumber() instead.
- * @param int $precision
- * @param string $point
- * @param string $thousands
- * @return Closure
- */
-function decimialNumber($precision = 2, $point = '.', $thousands = ''): Closure
-{
-    return decimalNumber($precision, $point, $thousands);
-}
+
 
 /**
  * Returns a callable for adding C slashes to a string based on a defined char list.
  *
  * @param string $charList The Char list to add slashes too.
- * @return Closure
+ * @return Closure(string):string
  */
 function addSlashes(string $charList): Closure
 {
@@ -401,7 +388,7 @@ function split(int $length): Closure
  *
  * @param int $length The length of each chunk.
  * @param string $end The string to use at the end.
- * @return Closure
+ * @return Closure(string):string
  */
 function chunk(int $length, string $end = "\r\n"): Closure
 {
@@ -420,7 +407,7 @@ function chunk(int $length, string $end = "\r\n"): Closure
  * @param int $width Max width for each "line"
  * @param string $break The string to use to denote the end of line.
  * @param bool $cut If set to true, words are cut at $width, else overflow.
- * @return Closure
+ * @return Closure(string):string
  */
 function wordWrap(int $width, string $break = "\n", bool $cut = false): Closure
 {
@@ -438,7 +425,7 @@ function wordWrap(int $width, string $break = "\n", bool $cut = false): Closure
  *
  * @link https://www.php.net/manual/en/function.count-chars.php
  * @param int $mode See the PHP docs for details.
- * @return Closure
+ * @return Closure(string):(int[]|string)
  */
 function countChars(int $mode = 1): Closure
 {
@@ -449,7 +436,7 @@ function countChars(int $mode = 1): Closure
 
     /**
      * @param string $string The string to have its char counted.
-     * @return array
+     * @return int[]|string
      */
     return function (string $string) use ($mode) {
         return \count_chars($string, $mode);
@@ -552,7 +539,7 @@ function similarAsBase(string $base, bool $asPc = false): Closure
  * This sets the defined value as the comparisonString (similar_text as second)
  *
  * @param string $comparisonString The string to compare against base.
- * @param bool $asPc If set to true will reutrn the percentage match, rather than char count.
+ * @param bool $asPc If set to true will return the percentage match, rather than char count.
  */
 function similarAsComparison(string $comparisonString, bool $asPc = false): Closure
 {
@@ -568,20 +555,7 @@ function similarAsComparison(string $comparisonString, bool $asPc = false): Clos
 }
 
 /**
- * See similarAsComparison()
- *
- * @deprecated Use similarAsComparison() instead.
- * @param string $comparisonString
- * @param bool $asPc
- * @return Closure
- */
-function similarAsComparisson(string $comparisonString, bool $asPc = false): Closure
-{
-    return similarAsComparison($comparisonString, $asPc);
-}
-
-/**
- * Reutrns a callable for padding out a string.
+ * Returns a callable for padding out a string.
  *
  * @param int $length Max length to make string.
  * @param string $padContent The value to padd the string with (defulats to ' ')
@@ -655,20 +629,6 @@ function stripTags(?string $allowedTags = null): Closure
 }
 
 /**
- * See firstPosition()
- *
- * @deprecated
- * @param string $needle
- * @param int $offset
- * @param int $flags
- * @return Closure
- */
-function firstPosistion(string $needle, int $offset = 0, int $flags = STRINGS_CASE_SENSITIVE): Closure
-{
-    return firstPosition($needle, $offset, $flags);
-}
-
-/**
  * Returns a callable for finding the first postition of a defined value in any string.
  *
  * @param string $needle The value to look for.
@@ -714,20 +674,6 @@ function lastPosition(string $needle, int $offset = 0, int $flags = STRINGS_CASE
             : strripos($haystack, $needle, $offset);
         return is_int($pos) ? (int) $pos : null;
     };
-}
-
-/**
- * See lastPosition()
- *
- * @deprecated Use lastPosition() instead.
- * @param string $needle The value to look for.
- * @param int  $offset The offset to start
- * @param int $flags STRINGS_CASE_SENSITIVE | STRINGS_CASE_INSENSITIVE
- * @return Closure
- */
-function lastPosistion(string $needle, int $offset = 0, int $flags = STRINGS_CASE_SENSITIVE): Closure
-{
-    return lastPosition($needle, $offset, $flags);
 }
 
 /**
@@ -858,4 +804,67 @@ function stringCompiler(string $initial = ''): Closure
 function isBlank($value): bool
 {
     return is_string($value) && \mb_strlen($value) === 0;
+}
+
+
+/************************************************************************/
+/************************************************************************/
+/**                        Deprecated Functions                        **/
+/************************************************************************/
+/************************************************************************/
+
+
+/**
+ * See decimalNumber()
+ *
+ * @deprecated Use decimalNumber() instead.
+ * @param int $precision
+ * @param string $point
+ * @param string $thousands
+ * @return Closure
+ */
+function decimialNumber($precision = 2, $point = '.', $thousands = ''): Closure
+{
+    return decimalNumber($precision, $point, $thousands);
+}
+
+/**
+ * See similarAsComparison()
+ *
+ * @deprecated Use similarAsComparison() instead.
+ * @param string $comparisonString
+ * @param bool $asPc
+ * @return Closure
+ */
+function similarAsComparisson(string $comparisonString, bool $asPc = false): Closure
+{
+    return similarAsComparison($comparisonString, $asPc);
+}
+
+/**
+ * See firstPosition()
+ *
+ * @deprecated
+ * @param string $needle
+ * @param int $offset
+ * @param int $flags
+ * @return Closure
+ */
+function firstPosistion(string $needle, int $offset = 0, int $flags = STRINGS_CASE_SENSITIVE): Closure
+{
+    return firstPosition($needle, $offset, $flags);
+}
+
+/**
+ * See lastPosition()
+ *
+ * @deprecated Use lastPosition() instead.
+ * @param string $needle The value to look for.
+ * @param int  $offset The offset to start
+ * @param int $flags STRINGS_CASE_SENSITIVE | STRINGS_CASE_INSENSITIVE
+ * @return Closure
+ */
+function lastPosistion(string $needle, int $offset = 0, int $flags = STRINGS_CASE_SENSITIVE): Closure
+{
+    return lastPosition($needle, $offset, $flags);
 }
