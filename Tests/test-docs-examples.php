@@ -50,9 +50,9 @@ class DocsExampleTest extends TestCase
     {
         $function = F\compose(
             F\pluckProperty('details', 'description'),
-            'ucwords',
             'trim',
             Str\slice(0, 20),
+            'ucwords',
             Str\append('...')
         );
 

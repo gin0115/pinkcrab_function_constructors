@@ -86,9 +86,9 @@ $data = [
 
 $callback = F\compose(
    F\pluckProperty('details','description'), // Pluck the descriptions
-   'ucfirst',                                // Uppercase each word
    'trim',                                   // Remove all whitespace
    Str\slice(0, 20),                         // Remove all but first 20 chars          
+   'ucfirst',                                // Uppercase each word
    Str\prepend('...')                        // End the string with ...
 );
 
@@ -99,6 +99,8 @@ $results = [
     'This Is Some Other D...'
 ]
 ```
+
+> You can use `composeTypeSafe()` if you want to pass the return of each callable through a validator before being passed to the next. If the validator fails, the rest fo the chain will be skipped and null will be returned.
 
 > For more details, please read the [wiki](https://github.com/gin0115/pinkcrab_function_constructors/wiki)
 
