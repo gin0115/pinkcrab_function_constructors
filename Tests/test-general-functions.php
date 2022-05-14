@@ -108,20 +108,22 @@ class GeneralFunctionTest extends TestCase
     public function testCanUsePipe()
     {
         $results = Func\pipe(
+            7,
             Num\sum(12),
             Num\multiply(4),
             Num\subtract(7)
-        )(7);
+        );
         $this->assertEquals(69, $results);
     }
 
     public function testCanUsePipeR()
     {
         $results = Func\pipeR(
+            7,
             Num\subtract(7),
             Num\multiply(4),
             Num\sum(12)
-        )(7);
+        );
         $this->assertEquals(69, $results);
     }
 
@@ -191,8 +193,8 @@ class GeneralFunctionTest extends TestCase
             Func\encodeProperty('title', Func\pluckProperty('post', 'title')),
             Func\encodeProperty('url', Func\pluckProperty('post', 'url')),
             Func\encodeProperty('author', Func\pluckProperty('post', 'author', 'displayName')),
-            Func\encodeProperty('comments', Func\pipeR('count', Func\getProperty('comments'))),
-            Func\encodeProperty('totalShares', Func\pipeR('array_sum', Func\getProperty('shares'))),
+            Func\encodeProperty('comments', Func\composeR('count', Func\getProperty('comments'))),
+            Func\encodeProperty('totalShares', Func\composeR('array_sum', Func\getProperty('shares'))),
             Func\encodeProperty('fakeValue', Func\pluckProperty('i', 'do', 'not', 'exist')),
         );
 
@@ -238,7 +240,7 @@ class GeneralFunctionTest extends TestCase
      */
     public function testCanInvokeCallables()
     {
-        $doubleAnyNumber = Func\invoker(Func\pipe(
+        $doubleAnyNumber = Func\invoker(Func\compose(
             Num\sum(12),
             Num\multiply(4),
             Num\subtract(7)
