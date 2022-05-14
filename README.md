@@ -104,13 +104,13 @@ $results = [
 
 ## Changes
 * 1.0.0 - 
-   * *New Functions*
+   * **New Functions**
    * Numbers\isFactorOf()
    * Strings\isBlank()
    * GeneralFunctions\composeR()
-   * *Breaking Changes*
+   * **Breaking Changes**
    * pipe() & pipeR() have now changed and are no longer alias for compose()
-   * *Other Changes*
+   * **Other Changes**
    * Constants added using the functions class name, `Functions::isBlank` can be used as a string for a callable.
 * 0.1.2 - Added Arrays\zip() 
 * 0.1.3 - Added Arrays\filterKey()
