@@ -25,6 +25,7 @@
  * @phpstan-template Number of int|float
  * @psalm-template Number of int|float
  */
+
 declare(strict_types=1);
 
 namespace PinkCrab\FunctionConstructors\Strings;

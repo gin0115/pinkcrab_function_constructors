@@ -40,18 +40,18 @@ if (! function_exists('stringContains')) {
 if (! function_exists('array_flatten')) {
     /**
      * Flattens an array to desired depth.
-     * Doesnt preserve keys
+     * doesn't preserve keys
      *
-     * @param array<mixed> $array The array to flatten
+     * @param mixed[] $array The array to flatten
      * @param int|null $n The depth to flatten the array, if null will flatten all arrays.
-     * @return array<mixed>
+     * @return mixed[]
      */
     function arrayFlatten(array $array, ?int $n = null): array
     {
         return array_reduce(
             $array,
             function (array $carry, $element) use ($n): array {
-                // Remnove empty arrays.
+                // Remove empty arrays.
                 if (is_array($element) && empty($element)) {
                     return $carry;
                 }
@@ -59,7 +59,7 @@ if (! function_exists('array_flatten')) {
                 if (is_array($element) && (is_null($n) || $n > 0)) { // @phpstan-ignore-line
                     $carry = array_merge($carry, arrayFlatten($element, $n ? $n - 1 : null));
                 } else {
-                    // Else just add the elememnt.
+                    // Else just add the element.
                     $carry[] = $element;
                 }
                 return $carry;
@@ -73,7 +73,7 @@ if (! function_exists('toObject')) {
     /**
      * Simple mapper for turning arrays into stdClass objects.
      *
-     * @param array<mixed> $array
+     * @param array<string, mixed> $array
      * @return stdClass
      */
     function toObject(array $array): object
@@ -91,7 +91,7 @@ if (! function_exists('invokeCallable')) {
     /**
      * Used to invoke a callable.
      *
-     * @param callable $fn
+     * @param callable(mixed ...$args):void $fn
      * @param mixed ...$args
      * @return void
      */
