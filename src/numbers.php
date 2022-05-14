@@ -100,7 +100,7 @@ function sum($initial = 0): Closure
 /**
  * Returns a function for adding a fixed amount.
  *
- * @param int $initial Defualts to 0
+ * @param int $initial Defaults to 0
  * @return Closure(Number):Number
  * @throws InvalidArgumentException If neither int or float passed.
  */
@@ -123,7 +123,7 @@ function subtract($initial = 0): Closure
 /**
  * Returns a function for multiplying a fixed amount.
  *
- * @param Number $initial Defualts to 1
+ * @param Number $initial Defaults to 1
  * @return Closure(Number):Number
  * @throws InvalidArgumentException
  */
