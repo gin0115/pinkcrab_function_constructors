@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * Collection of constants used for simple functions.
  *
@@ -21,7 +19,16 @@ declare(strict_types=1);
  * @author Glynn Quelch <glynn.quelch@gmail.com>
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html
  * @package PinkCrab\FunctionConstructors
+ * @since 0.1.0
+ *
+ * @template Number of int|float
+ * @phpstan-template Number of int|float
+ * @psalm-template Number of int|float
  */
+
+declare(strict_types=1);
+
+namespace PinkCrab\FunctionConstructors;
 
 class Functions
 {

@@ -19,6 +19,8 @@
  * @author Glynn Quelch <glynn.quelch@gmail.com>
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html
  * @package PinkCrab\FunctionConstructors
+ * @since 0.0.1
+ *
  * @template Number of int|float
  * @phpstan-template Number of int|float
  * @psalm-template Number of int|float
