@@ -30,22 +30,21 @@ declare(strict_types=1);
 
 namespace PinkCrab\FunctionConstructors\Numbers;
 
+use Closure;
 use InvalidArgumentException;
 use PinkCrab\FunctionConstructors\Comparisons as C;
 
 /**
  * Used to accumulate integers
  *
- * Int|Float -> ( Int|Float -> Int|Float )
- *
  * @param int $initial
- * @return callable
+ * @return Closure(int|null):(Closure|int)
  */
-function accumulatorInt(int $initial = 0): callable
+function accumulatorInt(int $initial = 0): Closure
 {
     /**
      * @param int|null $value
-     * @return callable|int
+     * @return Closure(int|null):(Closure|int)|int
      */
     return function (?int $value = null) use ($initial) {
         if ($value) {
@@ -58,16 +57,14 @@ function accumulatorInt(int $initial = 0): callable
 /**
  * Used to accumulate floats
  *
- * Int|Float -> ( Int|Float -> Int|Float )
- *
  * @param float $initial
- * @return callable
+ * @return Closure(float|null):(Closure|float)
  */
-function accumulatorFloat(float $initial = 0): callable
+function accumulatorFloat(float $initial = 0): Closure
 {
     /**
      * @param float|null $value
-     * @return callable|float
+     * @return Closure(float|null):(Closure|float)|float
      */
     return function (?float $value = null) use ($initial) {
         if ($value) {
@@ -80,20 +77,18 @@ function accumulatorFloat(float $initial = 0): callable
 /**
  * Returns a function for adding a fixed amount.
  *
- * Int|Float -> ( Int|Float -> Int|Float )
- *
- * @param int|float $initial Defualts to 0
- * @return callable
+ * @param Number $initial Defaults to 0
+ * @return Closure(Number):Number
  * @throws InvalidArgumentException If neither int or float passed.
  */
-function sum($initial = 0): callable
+function sum($initial = 0): Closure
 {
     if (! C\isNumber($initial)) {
         throw new InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
     }
 
     /**
-     * @param int|float $value
+     * @param Number $value
      * @return int|float
      */
     return function ($value) use ($initial) {
@@ -105,20 +100,18 @@ function sum($initial = 0): callable
 /**
  * Returns a function for adding a fixed amount.
  *
- * Int|Float -> ( Int|Float -> Int|Float )
- *
  * @param int $initial Defualts to 0
- * @return callable
+ * @return Closure(Number):Number
  * @throws InvalidArgumentException If neither int or float passed.
  */
-function subtract($initial = 0): callable
+function subtract($initial = 0): Closure
 {
     if (! C\isNumber($initial)) {
         throw new InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
     }
 
     /**
-     * @param int|float $value
+     * @param Number $value
      * @return int|float
      */
     return function ($value) use ($initial) {
@@ -130,21 +123,19 @@ function subtract($initial = 0): callable
 /**
  * Returns a function for multiplying a fixed amount.
  *
- * Int|Float -> ( Int|Float -> Int|Float )
- *
- * @param int|float $initial Defualts to 1
- * @return callable
+ * @param Number $initial Defualts to 1
+ * @return Closure(Number):Number
  * @throws InvalidArgumentException
  */
-function multiply($initial = 1): callable
+function multiply($initial = 1): Closure
 {
     if (! C\isNumber($initial)) {
         throw new InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
     }
 
     /**
-     * @param int|float $value
-     * @return int|float
+     * @param Number $value
+     * @return Number
      */
     return function ($value) use ($initial) {
         return $value * $initial;
@@ -156,13 +147,10 @@ function multiply($initial = 1): callable
 /**
  * Returns a function for divideBy a fixed amount.
  *
- * Int|Float -> ( Int|Float -> Int|Float )
- *
  * @param float $divisor The value to divide the passed value by
- * @return callable
- * @annotation ( int|float ) -> ( int|float -> float )
+ * @return Closure(Number):float
  */
-function divideBy($divisor = 1): callable
+function divideBy($divisor = 1): Closure
 {
     if (! C\isNumber($divisor)) {
         throw new \InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
@@ -180,12 +168,10 @@ function divideBy($divisor = 1): callable
 /**
  * Returns a function for divideInto a fixed amount.
  *
- * Int|Float -> ( Int|Float -> Int|Float )
- *
  * @param float $dividend The value to divide the passed value by
- * @return callable
+ * @return Closure(Number):float
  */
-function divideInto($dividend = 1): callable
+function divideInto($dividend = 1): Closure
 {
     if (! C\isNumber($dividend)) {
         throw new \InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
@@ -203,12 +189,10 @@ function divideInto($dividend = 1): callable
 /**
  * Returns a function for getting the remainder with a fixed divisor.
  *
- * Int|Float -> ( Int|Float -> Int|Float )
- *
  * @param float $divisor
- * @return callable
+ * @return Closure(Number):float
  */
-function remainderBy($divisor = 1): callable
+function remainderBy($divisor = 1): Closure
 {
     if (! C\isNumber($divisor)) {
         throw new \InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
@@ -226,12 +210,10 @@ function remainderBy($divisor = 1): callable
 /**
  * Returns a function for getting the remainder with a fixed dividend.
  *
- * Int|Float -> ( Int|Float -> Int|Float )
- *
  * @param float $dividend
- * @return callable
+ * @return Closure(Number):float
  */
-function remainderInto($dividend = 1): callable
+function remainderInto($dividend = 1): Closure
 {
     if (! C\isNumber($dividend)) {
         throw new \InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
@@ -249,25 +231,23 @@ function remainderInto($dividend = 1): callable
 /**
  * Returns a function for getting the remainder with a fixed dividend.
  *
- * Int|Float -> ( Int|Float -> Float )
- *
- * @param int $precission Number of decimal places.
- * @return callable
+ * @param int $precision Number of decimal places.
+ * @return Closure(Number):float
  */
-function round($precission = 1): callable
+function round($precision = 1): Closure
 {
-    if (! C\isNumber($precission)) {
+    if (! C\isNumber($precision)) {
         throw new \InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
     }
 
     /**
-     * @param int|float $value
+     * @param Number $value
      * @return float
      */
-    return function ($value) use ($precission): float {
+    return function ($value) use ($precision): float {
         if (! C\isNumber($value)) {
             throw new \InvalidArgumentException("Num\\round() only accepts a valid Number ( Int|Float -> Float )");
         }
-        return \round(\floatval($value), $precission);
+        return \round(\floatval($value), $precision);
     };
 }
