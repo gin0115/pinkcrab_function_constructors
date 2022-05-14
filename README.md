@@ -40,6 +40,10 @@ Arr\Map('esc_html') or Str\append('foo') or F\pipe($var, 'strtoupper', Str\appen
 
 At its core, the Function Constructors library is designed to make using PHP easier to use in a functional manor. With the use of functions `compose()` and `pipe()` its possible to construct complex functions, from simpler ones.
 
+### pipe()
+
+Using `pipe(mixed $value, callable ...$callables)` and [`pipeR()`](a "Same as pipe(), but callables in reverse order")
+
 ```php
 $data = [0,3,4,5,6,8,4,6,8,1,3,4];
 
@@ -47,8 +51,8 @@ $data = [0,3,4,5,6,8,4,6,8,1,3,4];
 $newData = F\pipe(
     $data,
     Arr\filter(Num\isFactorOf(2)), // Remove odd numbers
-    Arr\natsort(),                // Sort the remaining values
-    Arr\map(Num\multiply(2))      // Double the values.
+    Arr\natsort(),                 // Sort the remaining values
+    Arr\map(Num\multiply(2))       // Double the values.
 );
 
 // Result
