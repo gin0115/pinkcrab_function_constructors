@@ -449,12 +449,13 @@ function countChars(int $mode = 1): Closure
  * @param string $needle The substring to find
  * @param int $offset Place to start, defaults to 0 (start)
  * @param int|null $length Max length after offset to search.
+ * @return Closure(string):int
  */
 function countSubString(string $needle, int $offset = 0, ?int $length = null): Closure
 {
     /**
      * @param string $haystack
-     * @return int|array
+     * @return int
      */
     return function (string $haystack) use ($needle, $offset, $length): int {
         return $length
@@ -467,13 +468,13 @@ function countSubString(string $needle, int $offset = 0, ?int $length = null): C
  * Returns a callable for doing repeated trim.
  *
  * @param string $mask
- * @return Closure
+ * @return Closure(string):string
  */
 function trim(string $mask = "\t\n\r\0\x0B"): Closure
 {
     /**
      * @param string $string The string to be trimmed
-     * @return array
+     * @return string
      */
     return function (string $string) use ($mask): string {
         return \trim($string, $mask);
@@ -484,13 +485,13 @@ function trim(string $mask = "\t\n\r\0\x0B"): Closure
  * Returns a callable for doing repeated ltrim.
  *
  * @param string $mask
- * @return Closure
+ * @return Closure(string):string
  */
 function lTrim(string $mask = "\t\n\r\0\x0B"): Closure
 {
     /**
      * @param string $string The string to be trimmed
-     * @return array
+     * @return string
      */
     return function (string $string) use ($mask): string {
         return \ltrim($string, $mask);
@@ -501,13 +502,13 @@ function lTrim(string $mask = "\t\n\r\0\x0B"): Closure
  * Returns a callable for doing repeated rtrim.
  *
  * @param string $mask
- * @return Closure
+ * @return Closure(string):string
  */
 function rTrim(string $mask = "\t\n\r\0\x0B"): Closure
 {
     /**
      * @param string $string The string to be trimmed
-     * @return array
+     * @return string
      */
     return function (string $string) use ($mask): string {
         return \rtrim($string, $mask);
@@ -520,12 +521,13 @@ function rTrim(string $mask = "\t\n\r\0\x0B"): Closure
  *
  * @param string $base The string to act as the base.
  * @param bool $asPc If set to true will return the percentage match, rather than char count.
+ * @return Closure(string):Number
  */
 function similarAsBase(string $base, bool $asPc = false): Closure
 {
     /**
      * @param string $comparisonString The string to compare against base.
-     * @return int|float
+     * @return Number
      */
     return function (string $comparisonString) use ($base, $asPc) {
         $pc       = 0.00;
@@ -540,12 +542,13 @@ function similarAsBase(string $base, bool $asPc = false): Closure
  *
  * @param string $comparisonString The string to compare against base.
  * @param bool $asPc If set to true will return the percentage match, rather than char count.
+ * @return Closure(string):Number
  */
 function similarAsComparison(string $comparisonString, bool $asPc = false): Closure
 {
     /**
      * @param string $comparisonString The string to act as the base.
-     * @return int|float
+     * @return Number
      */
     return function (string $base) use ($comparisonString, $asPc) {
         $pc       = 0.00;
@@ -558,9 +561,9 @@ function similarAsComparison(string $comparisonString, bool $asPc = false): Clos
  * Returns a callable for padding out a string.
  *
  * @param int $length Max length to make string.
- * @param string $padContent The value to padd the string with (defulats to ' ')
+ * @param string $padContent The value to padd the string with (defaults to ' ')
  * @param int $type How to pad, please use these constants. STR_PAD_RIGHT|STR_PAD_LEFT|STR_PAD_BOTH
- * @return Closure
+ * @return Closure(string):string
  */
 function pad(int $length, string $padContent = ' ', int $type = STR_PAD_RIGHT): Closure
 {
@@ -577,15 +580,15 @@ function pad(int $length, string $padContent = ' ', int $type = STR_PAD_RIGHT): 
  * Returns a callable for repeating a string by a defined number of times.
  *
  * @param int $count Number of times to repeat string.
- * @return Closure
+ * @return Closure(string):string
  */
 function repeat(int $count): Closure
 {
     /**
      * @param string $string The string to repeat
-     * @return int|float
+     * @return string
      */
-    return function (string $string) use ($count) {
+    return function (string $string) use ($count): string {
         return \str_repeat($string, $count);
     };
 }
@@ -595,17 +598,18 @@ function repeat(int $count): Closure
  *
  * @param int $format can use WORD_COUNT_NUMBER_OF_WORDS | WORD_COUNT_ARRAY | WORD_COUNT_ASSOCIATIVE_ARRAY
  * @param string|null $charList The char list of option values considered words.
+ * @return Closure(string):(int|string[])
  */
 function wordCount(int $format = WORD_COUNT_NUMBER_OF_WORDS, ?string $charList = null): Closure
 {
     /**
      * @param string $string The string to pad out.
-     * @return int|array
+     * @return int|string[]
      */
     return function (string $string) use ($format, $charList) {
         return $charList
-            ? \str_word_count($string, $format, $charList)
-            : \str_word_count($string, $format);
+            ? (\str_word_count($string, $format, $charList) ?: 0)
+            : (\str_word_count($string, $format) ?: 0);
     };
 }
 
@@ -613,7 +617,7 @@ function wordCount(int $format = WORD_COUNT_NUMBER_OF_WORDS, ?string $charList =
  * Creates a function for stripping tags with a defined set of allowed tags.
  *
  * @param string|null $allowedTags The allowed tags, pass null or leave blank for none.
- * @return Closure
+ * @return Closure(string):string
  */
 function stripTags(?string $allowedTags = null): Closure
 {
@@ -634,7 +638,7 @@ function stripTags(?string $allowedTags = null): Closure
  * @param string $needle The value to look for.
  * @param int  $offset The offset to start
  * @param int $flags STRINGS_CASE_SENSITIVE | STRINGS_CASE_INSENSITIVE
- * @return Closure
+ * @return Closure(string):?int
  */
 function firstPosition(string $needle, int $offset = 0, int $flags = STRINGS_CASE_SENSITIVE): Closure
 {
@@ -658,7 +662,7 @@ function firstPosition(string $needle, int $offset = 0, int $flags = STRINGS_CAS
  * @param string $needle The value to look for.
  * @param int  $offset The offset to start
  * @param int $flags STRINGS_CASE_SENSITIVE | STRINGS_CASE_INSENSITIVE
- * @return Closure
+ * @return Closure(string):?int
  */
 function lastPosition(string $needle, int $offset = 0, int $flags = STRINGS_CASE_SENSITIVE): Closure
 {
@@ -683,7 +687,7 @@ function lastPosition(string $needle, int $offset = 0, int $flags = STRINGS_CASE
  *
  * @param string $needle The substring to look for.
  * @param int $flags Possible STRINGS_CASE_INSENSITIVE | STRINGS_CASE_SENSITIVE | STRINGS_AFTER_NEEDLE | STRINGS_BEFORE_NEEDLE
- * @return Closure
+ * @return Closure(string):string
  */
 function firstSubString(string $needle, int $flags = STRINGS_CASE_SENSITIVE | STRINGS_AFTER_NEEDLE): Closure
 {
@@ -709,7 +713,7 @@ function firstSubString(string $needle, int $flags = STRINGS_CASE_SENSITIVE | ST
  * any character (from a list) in a defined string.
  *
  * @param string $chars All chars to check with.
- * @return Closure
+ * @return Closure(string):string
  */
 function firstChar(string $chars): Closure
 {
@@ -728,7 +732,7 @@ function firstChar(string $chars): Closure
  * Matches the first char passed, if more than 1 char passed, the rest are ignored.
  *
  * @param string $char
- * @return Closure
+ * @return Closure(string):string
  */
 function lastChar(string $char): Closure
 {
@@ -747,7 +751,7 @@ function lastChar(string $char): Closure
  * Dictionary should be ['from' => 'to' ]
  *
  * @param array<string, mixed> $dictionary
- * @return Closure
+ * @return Closure(string):string
  */
 function translateWith(array $dictionary): Closure
 {
@@ -765,8 +769,8 @@ function translateWith(array $dictionary): Closure
  * Creates a callable for a string safe function compose.
  *
  * @uses F\composeTypeSafe
- * @param callable ...$callable
- * @return Closure
+ * @param callable(mixed):string ...$callable
+ * @return Closure(mixed):string
  */
 function composeSafeStringFunc(callable ...$callable): Closure
 {
@@ -776,10 +780,8 @@ function composeSafeStringFunc(callable ...$callable): Closure
 /**
  * Creates a callable for compiling a string.
  *
- * String -> ( String|Null -> (..self..)|String )
- *
  * @param string $initial
- * @return Closure
+ * @return Closure(string|null):(Closure|string)
  */
 function stringCompiler(string $initial = ''): Closure
 {
