@@ -80,12 +80,12 @@ Piping is ideal when you are working with a single value, but when it comes to w
 ```php
 
 $data = [
-    ['details'=>['description' => 'This is some description']],
-    ['details'=>['description' => 'This is some other description']],
+    ['details'=>['description' => '    This is some description ']],
+    ['details'=>['description' => '        This is some other description    ']],
 ];
 
 $callback = F\compose(
-   F\pluckProperty('details','description'), // Pluck the descriptions
+   F\pluckProperty('details','description'), // Plucks the description
    'trim',                                   // Remove all whitespace
    Str\slice(0, 20),                         // Remove all but first 20 chars          
    'ucfirst',                                // Uppercase each word
