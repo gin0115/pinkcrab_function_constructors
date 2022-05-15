@@ -136,6 +136,24 @@ $results = ['red', 'red', 'green', 'blue'];
 
 Its also possible to write properties of objects and set values to indexes in arrays using the `setProperty()` function. More complex structures can also be created using the [Record Encoder](../../../../pinkcrab_function_constructors/wiki/Record_Encoder)
 
+```php
+// Set object property.
+$object = new class(){ public $key = 'default'};
+
+// Create a custom setter function.
+$setKeyOfObject = F\setProperty($object, 'key');
+$object = $setKeyOfObject('new value');
+// {"key":"new value"}
+
+// Can be used with arrays too
+$array = ['key' => 'default'];
+
+// Create a custom setter function.
+$setKeyOfSArray = F\setProperty($array, 'key');
+$array = $setKeyOfSArray('new value');
+// [key => "new value"]
+
+
 > For more details, please read the [wiki](https://github.com/gin0115/pinkcrab_function_constructors/wiki)
 
 ## Changes

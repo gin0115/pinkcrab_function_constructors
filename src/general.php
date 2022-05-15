@@ -264,9 +264,10 @@ function propertyEquals(string $property, $value): Closure
  * Only works for public or dynamic properties.
  *
  * @param array<string,mixed>|ArrayObject<string,mixed>|object $store
- * @return Closure(string,mixed):(array<string,mixed>|ArrayObject<string,mixed>|object)
+     * @param string $property The property key.
+ * @return Closure(mixed):(array<string,mixed>|ArrayObject<string,mixed>|object)
  */
-function setProperty($store): Closure
+function setProperty($store, string $property): Closure
 {
 
     // If passed store is not an array or object, throw exception.
@@ -275,11 +276,10 @@ function setProperty($store): Closure
     }
 
     /**
-     * @param string $property The property key.
      * @param mixed $value The value to set to keu.
      * @return array<string,mixed>|ArrayObject<string,mixed>|object The datastore.
      */
-    return function (string $property, $value) use ($store) {
+    return function ($value) use ($store, $property) {
         if (isArrayAccess($store)) {
             /** @phpstan-ignore-next-line */
             $store[ $property ] = $value;
@@ -336,10 +336,7 @@ function recordEncoder($dataType): Closure
                     throw new TypeError('Encoders must user an array with a string key.');
                 }
 
-                $dataType = setProperty($dataType)(
-                    $key,
-                    array_values($encoder($data))[0]
-                );
+                $dataType = setProperty($dataType, $key)(array_values($encoder($data))[0]);
             }
             return $dataType;
         };

@@ -231,13 +231,13 @@ function remainderInto($dividend = 1): Closure
 /**
  * Returns a function for checking if a number has a factor of another number.
  *
- * @param Number $dividend
+ * @param Number $factor
  * @return Closure(Number):bool
  * @throws InvalidArgumentException If neither int or float passed.
  */
-function isFactorOf($var): Closure
+function isFactorOf($factor): Closure
 {
-    if (! C\isNumber($var)) {
+    if (! C\isNumber($factor)) {
         throw new \InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int)');
     }
 
@@ -246,7 +246,7 @@ function isFactorOf($var): Closure
      * @return bool
  * @throws InvalidArgumentException If neither int or float passed.
      */
-    return function ($value) use ($var): bool {
+    return function ($value) use ($factor): bool {
         if (! C\isNumber($value)) {
             throw new \InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int)');
         }
@@ -256,7 +256,7 @@ function isFactorOf($var): Closure
             return false;
         }
 
-        return $value % $var === 0;
+        return $value % $factor === 0;
     };
 }
 
