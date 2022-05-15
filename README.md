@@ -134,7 +134,7 @@ $results = ['red', 'red', 'green', 'blue'];
 
 #### Writing Properties
 
-Its also possible to write properties of objects and set values to indexes in arrays using the `setProperty()` function. More complex structures can also be created using the [Record Encoder](wiki/Record_Encoder)
+Its also possible to write properties of objects and set values to indexes in arrays using the `setProperty()` function. More complex structures can also be created using the [Record Encoder](pinkcrab_function_constructors/wiki)
 
 > For more details, please read the [wiki](https://github.com/gin0115/pinkcrab_function_constructors/wiki)
 
