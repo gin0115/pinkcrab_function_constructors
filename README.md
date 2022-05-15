@@ -130,7 +130,7 @@ $results = [['id' => 2, ....],['id' => 4, ...]];
 $colours = array_map(F\getProperty('colour'), $data);
 $results = ['red', 'red', 'green', 'blue'];
 ```
-> `pluckProperty()` can also be used if you need to traverse nested properties/indexes of either **arrays** or **objects** (also handles `ArrayAccess` objects, set with array syntax) (see example on [`compose()`](#compose) )
+> `pluckProperty()` can also be used if you need to traverse nested properties/indexes of either **arrays** or **objects** *also handles `ArrayAccess` objects, set with array syntax* [see example on `compose()`](#compose)
 
 #### Writing Properties
 
