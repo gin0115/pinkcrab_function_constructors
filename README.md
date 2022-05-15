@@ -106,7 +106,7 @@ $results = [
 
 It is possible to work with the properties of *Records* (arrays and objects). Indexes or Properties can be checked, fetched and set using some of the `GeneralFunctions`. 
 
-### Reading Properties
+#### Reading Properties
 
 You can check if a property exists, get its value or compare it an defined value.
 
@@ -118,15 +118,23 @@ $data = [
     ['id' => 4, 'name' => 'Donna', 'timezone' => '+2', 'colour' => 'blue', 'special' => true],
 ];
 
-// Get all users with +2 timezone.
+// Filter all users with +2 timezone.
 $zonePlus2 = array_filter($data, F\propertyEquals('timezone','+2'));
 $results = [['id' => 3, ....],['id' => 4, ...]];
 
-// Get all user who have the special index.
+// Filter all user who have the special index.
 $special = array_filter($data, F\hasProperty('special'));
 $results = [['id' => 2, ....],['id' => 4, ...]];
 
+// Get a list of all colours.
+$colours = array_map(F\getProperty('colour'), $data);
+$results = ['red', 'red', 'green', 'blue'];
 ```
+> `pluckProperty()` can also be used if you need to traverse nested properties/indexes of either **arrays** or **objects** (also handles `ArrayAccess` objects, set with array syntax) (see example on [#compose](`compose()`))
+
+#### Writing Properties
+
+I
 
 > For more details, please read the [wiki](https://github.com/gin0115/pinkcrab_function_constructors/wiki)
 
