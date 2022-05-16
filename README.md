@@ -187,7 +187,7 @@ There is a series of functions that can be used to
 ## Changes
 * 1.0.0 - 
    * **New Functions**
-   * Numbers\isFactorOf()
+   * ```php Numbers\isFactorOf()```
    * Strings\isBlank()
    * GeneralFunctions\composeR()
    * **Breaking Changes**
