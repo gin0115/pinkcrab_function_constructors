@@ -202,6 +202,8 @@ $startsBar('foo-bar'); // false
 // Check if a blank string
 Str\isBlank('');   // true
 Str\isBlank(' ');  // false
+
+// Unlike using empty(), this checks if the value is a string also.
 Str\isBlank(0);    // false 
 Str\isBlank(null); // false
 
