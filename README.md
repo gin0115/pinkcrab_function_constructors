@@ -245,6 +245,10 @@ $result = $firstFoo('abcdefoog');
 // 5
 ```
 
+### Number Functions
+
+Much of the number functions found in this library act as wrappers for common standard (PHP) library functions, but curried to allow them to be easier composed with.
+
 > See more of the Strings functions [on the wiki](../../../../pinkcrab_function_constructors/wiki/Strings)
 
 > For more details, please read the [wiki](https://github.com/gin0115/pinkcrab_function_constructors/wiki)
