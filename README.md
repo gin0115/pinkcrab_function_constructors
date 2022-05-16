@@ -230,7 +230,6 @@ $result = $in5s('aaaaabbbbbccccc');
 $charCount = Str\countChars();
 $results = $charCount('Hello World');
 // [32 => 1, 72 => 1, 87 => 1, 100 => 1, 101 => 1, 108 => 3, 111 => 2, 114 => 1]
-
 // If the keys are mapped using chr(), you will get 
 $results = (Arr\mapKey('chr')($results));
 // ['H' => 1,'e' => 1,'l' => 3,'o' => 2,' ' => 1,'W' => 1,'r' => 1,'d' => 1,]
