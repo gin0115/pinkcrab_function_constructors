@@ -178,6 +178,40 @@ $result = $wrapStringWithBar('foo');
 // bar-start-foo-bar-end
 ```
 
+### String Contents
+
+There is a collection of functions that be used to check the contents of a string.
+
+```php
+// Check if a string contains
+$containsFoo = Str\contains('foo');
+$containsFoo('foo');   // true
+$containsFoo('fobar'); // false
+
+// Check if string start with (ends with also included)
+$startsBar = Str\startsWith('bar');
+$startsBar('bar-foo'); // true
+$startsBar('foo-bar'); // false
+
+// Check if a blank string
+Str\isBlank('');   // true
+Str\isBlank(' ');  // false
+Str\isBlank(0);    // false 
+Str\isBlank(null); // false
+
+// Contains a regex pattern
+$containsNumber = Str\containsPattern('~[0-9]+~');
+$containsNumber('apple');   // false
+$containsNumber('A12DFR3'); // true
+```
+> `Str\isBlank()` can be used when composing a function, thanks to the Functions::isBlank constant.
+
+```php
+$data = [0 => '', 1 => 'fff', 2 => '    '];
+$noneEmpty = array_filter(PinkCrab\FunctionConstructors\Functions::IS_BLANK, $data);
+//[1 => 'fff', 2 => '    '] 
+```
+
 #### Sub Strings
 There is a series of functions that can be used to 
 
