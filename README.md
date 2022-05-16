@@ -178,7 +178,7 @@ $result = $wrapStringWithBar('foo');
 // bar-start-foo-bar-end
 ```
 
-### String Contents
+#### String Contents
 
 There is a collection of functions that be used to check the contents of a string.
 
