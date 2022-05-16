@@ -100,7 +100,10 @@ $results = [
 ]
 ```
 
-> You can use `composeTypeSafe()` if you want to pass the return of each callable through a validator before being passed to the next. If the validator fails, the rest fo the chain will be skipped and null will be returned.
+> You can use `composeTypeSafe()` if you want to pass the return of each callable through a validator before being passed to the next. If the validator fails, the rest of the chain will be skipped and null will be returned.
+
+*****
+
 
 ### Working with Records
 
