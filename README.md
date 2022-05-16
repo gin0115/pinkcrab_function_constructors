@@ -208,8 +208,8 @@ $containsNumber('A12DFR3'); // true
 
 ```php
 $data = [0 => '', 1 => 'fff', 2 => '    '];
-$noneEmpty = array_filter(PinkCrab\FunctionConstructors\Functions::IS_BLANK, $data);
-//[1 => 'fff', 2 => '    '] 
+$notBlanks = array_filter(PinkCrab\FunctionConstructors\Functions::IS_BLANK, $data);
+// [0 => ''] 
 ```
 
 #### Sub Strings
