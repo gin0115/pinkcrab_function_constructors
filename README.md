@@ -154,6 +154,9 @@ $array = $setKeyOfSArray('new value');
 // [key => "new value"]
 ```
 
+*****
+
+
 ### String Functions
 
 Much of the string functions found in this library act as wrappers for common standard (PHP) library functions, but curried to allow them to be easier composed with.
@@ -247,6 +250,7 @@ $result = $firstFoo('abcdefoog');
 
 > See more of the Strings functions [on the wiki](../../../../pinkcrab_function_constructors/wiki/Strings)
 
+*****
 
 ### Number Functions
 
