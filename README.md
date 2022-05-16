@@ -166,29 +166,21 @@ There is a collection of functions with make for the concatination of strings.
 $appendFoo = Str\append('foo');
 $result = $appendFoo('BAR');
 
-$pependFoo = Str\prepend('foo');
-$result = $pependFoo('BAR');
+$prependFoo = Str\prepend('foo');
+$result = $prependFoo('BAR');
 
 $replaceFooWithBar = Str\replaceWith('foo', 'bar');
 $result = $replaceFooWithBar("its all a bit foo foo");
 // "its all a bit bar bar"
+
+$wrapStringWithBar = Str\wrap('bar-start-', '-bar-end');
+$result = $wrapStringWithBar('foo');
+// bar-start-foo-bar-end
 ```
 
-There are some which are helpful for creating HTML
+#### Sub Strings
+There is a series of functions that can be used to 
 
-```php
-$makeParagraph = Str\tagWrap('p class="paragraph"', 'p');
-echo $makeParagraph("Some text"); // <p class="paragraph">Some text</p>
-
-// Make a list from an array.
-$asList = F\pipe(
-    ['item1', 'item2'],
-    Arr\map(Str\tagWrap('li')), // Wrap each item as a <li>
-    'join',                     // Concatinate the array of strings.
-    Str\tagWrap('ul')           // Wrap <li>'s in a set of <ul> tags.
-);
-
-echo $asList; //<ul><li>item1</li><li>item2</li></ul>
 
 > For more details, please read the [wiki](https://github.com/gin0115/pinkcrab_function_constructors/wiki)
 
