@@ -152,7 +152,43 @@ $array = ['key' => 'default'];
 $setKeyOfSArray = F\setProperty($array, 'key');
 $array = $setKeyOfSArray('new value');
 // [key => "new value"]
+```
 
+### String Functions
+
+Much of the string functions found in this library act as wrappers for common standard (PHP) library functions, but curried to allow them to be easier composed with.
+
+#### String Manipulation
+
+There is a collection of functions with make for the concatination of strings.
+
+```php
+$appendFoo = Str\append('foo');
+$result = $appendFoo('BAR');
+
+$pependFoo = Str\prepend('foo');
+$result = $pependFoo('BAR');
+
+$replaceFooWithBar = Str\replaceWith('foo', 'bar');
+$result = $replaceFooWithBar("its all a bit foo foo");
+// "its all a bit bar bar"
+```
+
+There are some which are helpful for creating HTML
+
+```php
+$makeParagraph = Str\tagWrap('p class="paragraph"', 'p');
+echo $makeParagraph("Some text"); // <p class="paragraph">Some text</p>
+
+// Make a list from an array.
+$asList = F\pipe(
+    ['item1', 'item2'],
+    Arr\map(Str\tagWrap('li')), // Wrap each item as a <li>
+    'join',                     // Concatinate the array of strings.
+    Str\tagWrap('ul')           // Wrap <li>'s in a set of <ul> tags.
+);
+
+echo $asList; //<ul><li>item1</li><li>item2</li></ul>
 
 > For more details, please read the [wiki](https://github.com/gin0115/pinkcrab_function_constructors/wiki)
 
