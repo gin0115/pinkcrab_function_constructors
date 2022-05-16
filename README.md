@@ -213,8 +213,26 @@ $notBlanks = array_filter(PinkCrab\FunctionConstructors\Functions::IS_BLANK, $da
 ```
 
 #### Sub Strings
-There is a series of functions that can be used to 
+There is a series of functions that can be used to work with substrings.
 
+```php
+// Split the string into sub string
+$inFours = Str\split(4);
+$split = $inFours('AAAABBBBCCCCDDDD');
+// ['AAAA','BBBB','CCCC','DDDD']
+
+// Chunk the string
+$in5s = Str\chunk(5, '-');
+$result = $in5s('aaaaabbbbbccccc');
+// 'aaaaa-bbbbb-ccccc-'
+
+// Count all characters in a given string.
+$charCount = Str\countChars();
+$results = $charCount('Hello World');
+// [32 => 1, 72 => 1, 87 => 1, 100 => 1, 101 => 1, 108 => 3, 111 => 2, 114 => 1]
+// If the keys are mapped using chr(), you will get
+// ['H' => 1,'e' => 1,'l' => 3,'o' => 2,' ' => 1,'W' => 1,'r' => 1,'d' => 1,]
+```
 
 > For more details, please read the [wiki](https://github.com/gin0115/pinkcrab_function_constructors/wiki)
 
