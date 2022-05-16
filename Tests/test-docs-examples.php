@@ -156,6 +156,7 @@ class DocsExampleTest extends TestCase {
 		$this->assertEquals( 'new value', $array['key'] );
 	}
 
+    /** @testdox README : Sub Strings -- Count the chars used in a string */
 	public function testCharCount(): void {
 		$charCount = Str\countChars();
 		$results   = $charCount( 'Hello World' );
@@ -177,6 +178,14 @@ class DocsExampleTest extends TestCase {
 				Arr\mapKey( 'chr' )( $results )
 			)
 		);
-		// $this->assertSame( $expected,  );
 	}
+
+    /** @testdox README : Sub Strings -- Count the chars used in a string */
+    public function testFirstFoo(): void
+    {
+        $firstFoo = Str\firstPosition('foo');
+        $result = $firstFoo('abcdefoog');
+        $this->assertEquals(5, $result);
+        dump($result);
+    }
 }

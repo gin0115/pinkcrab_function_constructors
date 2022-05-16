@@ -160,7 +160,7 @@ Much of the string functions found in this library act as wrappers for common st
 
 #### String Manipulation
 
-There is a collection of functions with make for the concatination of strings.
+There is a collection of functions with make for the concatenation of strings.
 
 ```php
 $appendFoo = Str\append('foo');
@@ -233,7 +233,19 @@ $results = $charCount('Hello World');
 // If the keys are mapped using chr(), you will get 
 $results = (Arr\mapKey('chr')($results));
 // ['H' => 1,'e' => 1,'l' => 3,'o' => 2,' ' => 1,'W' => 1,'r' => 1,'d' => 1,]
+
+// Count occurrences of a substring.
+$countFoo = Str\countSubString('foo');
+$results = $countFoo('foo is foo and bar is not foo');
+// 3
+
+// Find the first position of foo in string.
+$firstFoo = Str\firstPosition('foo');
+$result = $firstFoo('abcdefoog');
+// 5
 ```
+
+> See more of the Strings functions [on the wiki](../../../../pinkcrab_function_constructors/wiki/Strings)
 
 > For more details, please read the [wiki](https://github.com/gin0115/pinkcrab_function_constructors/wiki)
 
