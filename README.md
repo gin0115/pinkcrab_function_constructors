@@ -187,14 +187,14 @@ There is a series of functions that can be used to
 ## Changes
 * 1.0.0 - 
    * **New Functions**
-   * ```php Numbers\isFactorOf()```
-   * Strings\isBlank()
-   * GeneralFunctions\composeR()
+   * `Numbers\isFactorOf()`
+   * `Strings\isBlank()`
+   * `GeneralFunctions\composeR()`
    * **Breaking Changes**
-   * GeneralFunctions\pipe() & GeneralFunctions\pipeR() have now changed and are no longer alias for compose()
-   * GeneralFunctions\setProperty() now takes the property argument when creating the Closure.
+   * `GeneralFunctions\pipe()` & `GeneralFunctions\pipeR()` have now changed and are no longer alias for compose()
+   * `GeneralFunctions\setProperty()` now takes the property argument when creating the Closure.
    * **Other Changes**
    * Constants added using the functions class name, `Functions::isBlank` can be used as a string for a callable.
-* 0.1.2 - Added Arrays\zip() 
-* 0.1.3 - Added Arrays\filterKey()
+* 0.1.2 - Added `Arrays\zip()` 
+* 0.1.3 - Added` Arrays\filterKey()`
 
