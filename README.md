@@ -261,6 +261,53 @@ $result = $firstFoo('abcdefoog');
 
 Much of the number functions found in this library act as wrappers for common standard (PHP) library functions, but curried to allow them to be easier composed with.
 
+#### Basic Arithmetic 
+
+You can do some basic arithmetic using composable functions. This allows for the creation of a base value, then work using the passed value.
+
+> All these functions allow the use of `INT` or `FLOAT` only, all numerical strings must be cast before being used. Will throw `TypeError` otherwise.
+
+```php
+// Add
+$addTo5 = Num\sum(5);
+
+$addTo5(15.5); // 20.5
+$addTo5(-2); // 3
+
+// Subtract
+$subtractFrom10 = Num\subtract(10);
+$subtractFrom10(3)  // 7
+$subtractFrom10(20) // -10
+
+// Multiply 
+$multiplyBy10 = Num\multiply(10)
+$multiplyBy10(5);   // 50 
+$multiplyBy10(2.5); // 25.0
+
+// Divide By
+$divideBy3 = Num\divideBy(3);
+$divideBy3(12); // 4 = 12/3
+$divideBy3(10); // 3.333333333333 
+
+// Divide Into
+$divideInto12 = Num\divideInto(12);
+$divideInto12(4); // 3 = 12/4
+```
+
+#### Factors and Modulus
+
+It is possible to do basic modulus operations and working out if a number has a whole factor of another.
+
+```php
+// Factor of 
+$isFactorOf2 = Num\isFactor(2);
+$isFactorOf2(12); // true
+$isFactorOf2(13); // false
+
+// Getting the modulus
+$remainderBy2 = Num\remainderBy(2);
+$remainderBy2(10); // 0   = 10/2 = 5.0  ~ 0.0
+$remainderBy2(21); // 0.5 = 21/2 = 10.5 ~ 0.5
 
 > For more details, please read the [wiki](https://github.com/gin0115/pinkcrab_function_constructors/wiki)
 
