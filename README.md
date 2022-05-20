@@ -308,6 +308,12 @@ $isFactorOf2(13); // false
 $remainderBy2 = Num\remainderBy(2);
 $remainderBy2(10); // 0   = 10/2 = 5.0  ~ 0.0
 $remainderBy2(21); // 0.5 = 21/2 = 10.5 ~ 0.5
+```
+
+> For more details on the Number function, please see the wiki.
+
+
+
 
 > For more details, please read the [wiki](https://github.com/gin0115/pinkcrab_function_constructors/wiki)
 
