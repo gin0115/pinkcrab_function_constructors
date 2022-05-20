@@ -223,4 +223,66 @@ class NumberFunctionTest extends TestCase
         $r = Num\isFactorOf(5);
         $r('HELLO');
     }
+
+    /** @testdox It Should be possible to raise a number by a pre defined exponent as a closure */
+    public function testPowerOf(): void
+    {
+        // [exponent, value, expected]
+        $data = [
+            [2, 2, 4],
+            [3, 3, 27],
+            [5, 11, 161051],
+            [3, -3, -27],
+        ];
+
+        foreach ($data as list($exponent, $value, $expected)) {
+            $this->assertEquals($expected, Num\power($exponent)($value));
+        }
+    }
+
+    /** @testdox Attempting to use a none number (int or float) as the value for factor, should throw an error */
+    public function testPowerOfThrowsIfBaseNotNumber()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        Num\power('5');
+    }
+
+    /** @testdox Attempting to use a none number (int or float) as the value passed to be raised to the power of, should throw an error */
+    public function testPowerOfThrowsIfCompNotNumber()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $r = Num\power(5);
+        $r('HELLO');
+    }
+
+    /** @testdox It Should be possible to raise a number by a pre defined exponent as a closure */
+    public function testRoot(): void
+    {
+        // [root, value, expected]
+        $data = [
+            [2, 4, 2.0],
+            [3, 27, 3.0],
+            [3, 4, 1.5874010519682],
+            [-13, 12, 0.8260114319958],
+        ];
+
+        foreach ($data as list($root, $value, $expected)) {
+            $this->assertEquals($expected, Num\root($root)($value));
+        }
+    }
+
+    /** @testdox Attempting to use a none number (int or float) as the value for root, should throw an error */
+    public function testRootThrowsIfBaseNotNumber()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        Num\root('5');
+    }
+
+    /** @testdox Attempting to use a none number (int or float) as the value passed to be raised to the root should throw an error */
+    public function testRootThrowsIfCompNotNumber()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $r = Num\root(5);
+        $r('HELLO');
+    }
 }

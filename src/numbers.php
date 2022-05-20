@@ -149,6 +149,7 @@ function multiply($initial = 1): Closure
  *
  * @param float $divisor The value to divide the passed value by
  * @return Closure(Number):float
+ * @throws InvalidArgumentException If neither int or float passed.
  */
 function divideBy($divisor = 1): Closure
 {
@@ -170,6 +171,7 @@ function divideBy($divisor = 1): Closure
  *
  * @param float $dividend The value to divide the passed value by
  * @return Closure(Number):float
+ * @throws InvalidArgumentException If neither int or float passed.
  */
 function divideInto($dividend = 1): Closure
 {
@@ -191,6 +193,7 @@ function divideInto($dividend = 1): Closure
  *
  * @param float $divisor
  * @return Closure(Number):float
+ * @throws InvalidArgumentException If neither int or float passed.
  */
 function remainderBy($divisor = 1): Closure
 {
@@ -212,6 +215,7 @@ function remainderBy($divisor = 1): Closure
  *
  * @param float $dividend
  * @return Closure(Number):float
+ * @throws InvalidArgumentException If neither int or float passed.
  */
 function remainderInto($dividend = 1): Closure
 {
@@ -244,7 +248,7 @@ function isFactorOf($factor): Closure
     /**
      * @param Number $value
      * @return bool
- * @throws InvalidArgumentException If neither int or float passed.
+     * @throws InvalidArgumentException If neither int or float passed.
      */
     return function ($value) use ($factor): bool {
         if (! C\isNumber($value)) {
@@ -266,6 +270,7 @@ function isFactorOf($factor): Closure
  *
  * @param int $precision Number of decimal places.
  * @return Closure(Number):float
+ * @throws InvalidArgumentException If neither int or float passed.
  */
 function round($precision = 1): Closure
 {
@@ -276,11 +281,64 @@ function round($precision = 1): Closure
     /**
      * @param Number $value
      * @return float
+     * @throws InvalidArgumentException If neither int or float passed.
      */
     return function ($value) use ($precision): float {
         if (! C\isNumber($value)) {
             throw new \InvalidArgumentException("Num\\round() only accepts a valid Number ( Int|Float -> Float )");
         }
         return \round(\floatval($value), $precision);
+    };
+}
+
+/**
+ * Returns a closure for raising the power of the passed by value, by a pre defined exponent.
+ *
+ * @param Number $exponent
+ * @return Closure(Number):Number
+ * @throws InvalidArgumentException If neither int or float passed.
+ */
+function power($exponent): Closure
+{
+    if (! C\isNumber($exponent)) {
+        throw new \InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int) for the exponent');
+    }
+
+    /**
+     * @param Number $value
+     * @return Number
+     * @throws InvalidArgumentException If neither int or float passed.
+     */
+    return function ($value) use ($exponent) {
+        if (! C\isNumber($value)) {
+            throw new \InvalidArgumentException('Num\\power() only accepts a valid Number ( Int|Float )');
+        }
+        return \pow($value, $exponent);
+    };
+}
+
+/**
+ * Returns closure for getting the pre defined root of a passed value.
+ *
+ * @param Number $root
+ * @return Closure(Number):Number
+ * @throws InvalidArgumentException If neither int or float passed.
+ */
+function root($root): Closure
+{
+    if (! C\isNumber($root)) {
+        throw new \InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int) for the root');
+    }
+
+    /**
+     * @param Number $value
+     * @return Number
+     * @throws InvalidArgumentException If neither int or float passed.
+     */
+    return function ($value) use ($root) {
+        if (! C\isNumber($value)) {
+            throw new \InvalidArgumentException('Num\\root() only accepts a valid Number ( Int|Float )');
+        }
+        return pow($value, (1 / $root));
     };
 }
