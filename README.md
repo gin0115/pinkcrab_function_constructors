@@ -323,6 +323,8 @@ $remainderBy2(21); // 0.5 = 21/2 = 10.5 ~ 0.5
    * `Numbers\isFactorOf()`
    * `Strings\isBlank()`
    * `GeneralFunctions\composeR()`
+   * `Arrays\scan()`
+   * `Arrays\scanR()`
    * **Breaking Changes**
    * `GeneralFunctions\pipe()` & `GeneralFunctions\pipeR()` have now changed and are no longer alias for compose()
    * `GeneralFunctions\setProperty()` now takes the property argument when creating the Closure.
