@@ -463,6 +463,18 @@ class ArrayFunctionTests extends TestCase
         );
 
         $this->assertEquals($expected, $scan($initial));
+
+        // Get a ruuning max value using scan.
+        $max = Arr\scan(
+            function ($carry, $item) {
+                return max($carry, $item);
+            },
+            0
+        );
+
+        $data = [1,3,4,1,5,9,2,6,5,3,5,8,9,7,9];
+        $expected= [0,1,3,4,4,5,9,9,9,9,9,9,9,9,9,9];
+        $this->assertEquals($expected, $max($data));
     }
 
     /** @testdox It should be possible to create a function which allows for calling scanr on a passed array.     */
@@ -477,8 +489,6 @@ class ArrayFunctionTests extends TestCase
             },
             0
         );
-
-        dump($scanR($initial));
 
         $this->assertEquals($expected, $scanR($initial));
     }
