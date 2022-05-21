@@ -492,4 +492,45 @@ class ArrayFunctionTests extends TestCase
 
         $this->assertEquals($expected, $scanR($initial));
     }
+
+    /** @testdox It should be possible to create a function, pre defined to perform fold/reduce on a given array. */
+    public function testFold(): void
+    {
+        $sumMe = [1,2,3,4,5,6,7,8,9,10];
+        $biggest = [1,5,6,7,10,2];
+
+        $findSum = Arr\fold(function (int $carry, int $current) {
+            return $current + $carry;
+        }, 0);
+        $findBiggest = Arr\fold(function (int $carry, int $current) {
+            return max($current, $carry);
+        }, 0);
+
+        $this->assertEquals(55, $findSum($sumMe));
+        $this->assertEquals(10, $findBiggest($biggest));
+    }
+
+    /** @testdox  It should be possible to create a function, pre defined to perform fold/reduce on a given array in reverse order. */
+    public function testFoldR(): void
+    {
+        $data = ['a', 'b', 'c', 'd'];
+        $joinArray = Arr\foldR(function (string $carry, string $value): string {
+            return $carry.$value;
+        }, '');
+        $this->assertEquals('dcba', $joinArray($data));
+    }
+
+    /** @testdox It should be possible to create a function will allows doing fold/reduce with access the array key also. */
+    public function testFoldKeys(): void
+    {
+        $data = [1 => 1, 3 => 3, 2 => 2, 5 => 5, 4 => 4, 0 => 0];
+        $expected = ["key-1::value-1", "key-3::value-3", "key-2::value-2", "key-5::value-5", "key-4::value-4", "key-0::value-0"];
+
+        $foldWithKeys = Arr\foldKeys(function (array $carry, int $key, int $value): array {
+            $carry[] = "key-{$key}::value-{$value}";
+            return $carry;
+        });
+
+        $this->assertEquals($expected, $foldWithKeys($data));
+    }
 }
