@@ -407,3 +407,49 @@ function toArray(): Closure
         );
     };
 }
+
+/**
+ * Creates a function which will validate the data through a condition callable, then return
+ * the results of passing the data through the callback.
+ * Has a simple static else/fallback
+ *
+ * @param callable(mixed):bool  $condition
+ * @param callable(mixed):mixed $then
+ * @param mixed                 $else
+ * @return \Closure(mixed):mixed
+ */
+function ifThen(callable $condition, callable $then, $else = null): Closure
+{
+    /**
+     * @param  mixed $value
+     * @return mixed
+     */
+    return function ($value) use ($condition, $then, $else) {
+        return true === (bool) $condition($value)
+            ? $then($value)
+            : $else;
+    };
+}
+
+/**
+ * Creates a function which will validate the data through a condition callable, then return
+ * the results of passing the data through the callback.
+ * Has a required callback required for failing condition.
+ *
+ * @param callable(mixed):bool  $condition
+ * @param callable(mixed):mixed $then
+ * @param callable(mixed):mixed $else
+ * @return \Closure
+ */
+function ifElse(callable $condition, callable $then, callable $else): Closure
+{
+    /**
+     * @param  mixed $value
+     * @return mixed
+     */
+    return function ($value) use ($condition, $then, $else) {
+        return true === (bool) $condition($value)
+            ? $then($value)
+            : $else($value);
+    };
+}
