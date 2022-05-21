@@ -946,3 +946,61 @@ function scanR(callable $function, $initialValue): Closure
         return \array_reverse($carry);
     };
 }
+
+/**
+ * Creates a function for defining the callback and initial for reduce/fold
+ *
+ * @param callable(mixed $carry, mixed $value): mixed $callable
+ * @param mixed $initial
+ * @return Closure(mixed[]):mixed
+ */
+function fold(callable $callable, $initial = []): Closure
+{
+    /**
+     * @param mixed[] $array
+     * @return mixed
+     */
+    return function (array $array) use ($callable, $initial) {
+        return array_reduce($array, $callable, $initial);
+    };
+}
+
+/**
+ * Creates a function for defining the callback and initial for reduce/fold
+ *
+ * @param callable(mixed $carry, mixed $value): mixed $callable
+ * @param mixed $initial
+ * @return Closure(mixed[]):mixed
+ */
+function foldR(callable $callable, $initial = []): Closure
+{
+    /**
+     * @param mixed[] $array
+     * @return mixed
+     */
+    return function (array $array) use ($callable, $initial) {
+        return array_reduce(\array_reverse($array), $callable, $initial);
+    };
+}
+
+/**
+ * Creates a function for defining the callback and initial for reduce/fold, with the key
+ * also passed to the callback.
+ *
+ * @param callable(mixed $carry, int|string $key, mixed $value): mixed $callable
+ * @param mixed $initial
+ * @return Closure(mixed[]):mixed
+ */
+function foldKeys(callable $callable, $initial = []): Closure
+{
+    /**
+     * @param mixed[] $array
+     * @return mixed
+     */
+    return function (array $array) use ($callable, $initial) {
+        foreach ($array as $key => $value) {
+            $initial = $callable($initial, $key, $value);
+        }
+        return $initial;
+    };
+}
