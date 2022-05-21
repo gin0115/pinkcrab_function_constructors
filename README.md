@@ -336,7 +336,7 @@ $remainderBy2(21); // 0.5 = 21/2 = 10.5 ~ 0.5
    * `GeneralFunctions\pipe()` & `GeneralFunctions\pipeR()` have now changed and are no longer alias for compose()
    * `GeneralFunctions\setProperty()` now takes the property argument when creating the Closure.
    * **Other Changes**
-   * Constants added using the functions class name, `Functions::isBlank` can be used as a string for a callable.
+   * Constants added using the `Functions` class-name, `Functions::isBlank` can be used as a string for a callable.
 * 0.1.2 - Added `Arrays\zip()` 
 * 0.1.3 - Added` Arrays\filterKey()`
 
