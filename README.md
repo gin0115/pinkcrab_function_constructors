@@ -323,6 +323,9 @@ $remainderBy2(21); // 0.5 = 21/2 = 10.5 ~ 0.5
    * `Numbers\isFactorOf()`
    * `Strings\isBlank()`
    * `GeneralFunctions\composeR()`
+   * `Arrays\fold()`
+   * `Arrays\foldR()`
+   * `Arrays\foldKey()`
    * `Arrays\scan()`
    * `Arrays\scanR()`
    * `Objects\isInstanceOf()`
