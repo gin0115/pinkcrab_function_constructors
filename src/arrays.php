@@ -908,3 +908,41 @@ function usort(callable $function): Closure
         return $array;
     };
 }
+
+/**
+ * Returns a Closure for applying a function to every element of an array
+ *
+ * @param callable(mixed $carry, mixed $value):mixed $function
+ * @param mixed $initialValue
+ * @return Closure(mixed[]):mixed[]
+ */
+function scan(callable $function, $initialValue): Closure
+{
+    return function (array $array) use ($function, $initialValue) {
+        $carry[] = $initialValue;
+        foreach ($array as $key => $value) {
+            $initialValue  = $function($initialValue, $value);
+            $carry[] = $initialValue;
+        }
+        return $carry;
+    };
+}
+
+/**
+ * Returns a Closure for applying a function to every element of an array
+ *
+ * @param callable(mixed $carry, mixed $value):mixed $function
+ * @param mixed $initialValue
+ * @return Closure(mixed[]):mixed[]
+ */
+function scanR(callable $function, $initialValue): Closure
+{
+    return function (array $array) use ($function, $initialValue) {
+        $carry[] = $initialValue;
+        foreach (array_reverse($array) as $key => $value) {
+            $initialValue  = $function($initialValue, $value);
+            $carry[] = $initialValue;
+        }
+        return \array_reverse($carry);
+    };
+}
