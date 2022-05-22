@@ -310,6 +310,36 @@ $remainderBy2(10); // 0 = 10/2 = 5.0  ∴ 0
 $remainderBy2(21); // 5 = 21/2 = 10.5 ∴ 5
 ```
 
+### Array Functions
+
+As you can imagine there are a large number of functions relating to arrays and working with them. 
+
+#### Map
+
+This library contains a large number of variations of `array_map`, these can all be pre composed, using the other functions to be extremely powerful and easy to follow.
+
+```php
+// Create a mapper which doubles the value.
+$doubleIt = Arr\map( Num\multiply(2) );
+$doubleIt([1,2,3,4]); // [2,4,6,8] 
+
+// Create mapper to normalise array keys
+$normaliseKeys = Arr\mapKey(F\compose(
+    'strval',
+    'trim',
+    Str\replace(' ', '-')
+    Str\prepend('__')
+));
+
+$normaliseKeys(1 => 'a', ' 2 ' => 'b', 'some key' => 'c');
+// ['__1'=> 'a', '__2' => 'b', '__some-key' => 'c']
+```
+> There is `flatMap()` and `mapWith()` also included, please see the wiki.
+
+#### Filter and Take
+
+
+
 > For more details on the Number function, please see the wiki.
 
 
