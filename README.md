@@ -306,8 +306,8 @@ $isFactorOf2(13); // false
 
 // Getting the modulus
 $remainderBy2 = Num\remainderBy(2);
-$remainderBy2(10); // 0   = 10/2 = 5.0  ∴ 0
-$remainderBy2(21); // 0.5 = 21/2 = 10.5 ∴ 5
+$remainderBy2(10); // 0 = 10/2 = 5.0  ∴ 0
+$remainderBy2(21); // 5 = 21/2 = 10.5 ∴ 5
 ```
 
 > For more details on the Number function, please see the wiki.
