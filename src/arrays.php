@@ -921,8 +921,8 @@ function scan(callable $function, $initialValue): Closure
     return function (array $array) use ($function, $initialValue) {
         $carry[] = $initialValue;
         foreach ($array as $key => $value) {
-            $initialValue  = $function($initialValue, $value);
-            $carry[] = $initialValue;
+            $initialValue = $function($initialValue, $value);
+            $carry[]      = $initialValue;
         }
         return $carry;
     };
@@ -940,8 +940,8 @@ function scanR(callable $function, $initialValue): Closure
     return function (array $array) use ($function, $initialValue) {
         $carry[] = $initialValue;
         foreach (array_reverse($array) as $key => $value) {
-            $initialValue  = $function($initialValue, $value);
-            $carry[] = $initialValue;
+            $initialValue = $function($initialValue, $value);
+            $carry[]      = $initialValue;
         }
         return \array_reverse($carry);
     };
@@ -954,7 +954,7 @@ function scanR(callable $function, $initialValue): Closure
  * @param mixed $initial
  * @return Closure(mixed[]):mixed
  */
-function fold(callable $callable, $initial = []): Closure
+function fold(callable $callable, $initial = array()): Closure
 {
     /**
      * @param mixed[] $array
@@ -972,7 +972,7 @@ function fold(callable $callable, $initial = []): Closure
  * @param mixed $initial
  * @return Closure(mixed[]):mixed
  */
-function foldR(callable $callable, $initial = []): Closure
+function foldR(callable $callable, $initial = array()): Closure
 {
     /**
      * @param mixed[] $array
@@ -991,7 +991,7 @@ function foldR(callable $callable, $initial = []): Closure
  * @param mixed $initial
  * @return Closure(mixed[]):mixed
  */
-function foldKeys(callable $callable, $initial = []): Closure
+function foldKeys(callable $callable, $initial = array()): Closure
 {
     /**
      * @param mixed[] $array
@@ -1002,5 +1002,108 @@ function foldKeys(callable $callable, $initial = []): Closure
             $initial = $callable($initial, $key, $value);
         }
         return $initial;
+    };
+}
+
+/**
+ * Creates a function which takes the first n elements from an array
+ *
+ * @param int $count
+ * @return Closure(mixed[]):mixed[]
+ * @throws \InvalidArgumentException if count is negative
+ */
+function take(int $count = 1): Closure
+{
+    // throw InvalidArgumentException if count is negative
+    if ($count < 0) {
+        throw new \InvalidArgumentException(__FUNCTION__ . ' count must be greater than or equal to 0');
+    }
+
+    /**
+     * @param mixed[] $array
+     * @return mixed[]
+     */
+    return function (array $array) use ($count) {
+        return \array_slice($array, 0, $count);
+    };
+}
+
+/**
+ * Creates a function which takes the last n elements from an array
+ *
+ * @param int $count
+ * @return Closure(mixed[]):mixed[]
+ * @throws \InvalidArgumentException if count is negative
+ */
+function takeLast(int $count = 1): Closure
+{
+    // throw InvalidArgumentException if count is negative
+    if ($count < 0) {
+        throw new \InvalidArgumentException(__FUNCTION__ . ' count must be greater than or equal to 0');
+    }
+
+    // If count is 0, return an empty array
+    if ($count === 0) {
+        return function (array $array) {
+            return [];
+        };
+    }
+
+    /**
+     * @param mixed[] $array
+     * @return mixed[]
+     */
+    return function (array $array) use ($count) {
+        return \array_slice($array, - $count);
+    };
+}
+
+/**
+ * Creates a function that allows you to take a slice of an array until the passed conditional
+ * returns true.
+ *
+ * @param callable(mixed): bool $conditional
+ * @return Closure(mixed[]):mixed[]
+ */
+function takeUntil(callable $conditional): Closure
+{
+    /**
+     * @param mixed[] $array
+     * @return mixed[]
+     */
+    return function (array $array) use ($conditional) {
+        $carry = array();
+        foreach ($array as $key => $value) {
+            if (true === $conditional($value)) {
+                break;
+            }
+            $carry[ $key ] = $value;
+        }
+        return $carry;
+    };
+}
+
+/**
+ * Creates a function that allows you to take a slice of an array until the passed conditional
+ * returns false.
+ *
+ * @param callable(mixed): bool $conditional
+ * @return Closure(mixed[]):mixed[]
+ */
+function takeWhile(callable $conditional): Closure
+{
+    /**
+     * @param mixed[] $array
+     * @return mixed[]
+     */
+    return function (array $array) use ($conditional) {
+        $carry = array();
+        foreach ($array as $key => $value) {
+            if (false === $conditional($value)) {
+                break;
+            }
+            $carry[ $key ] = $value;
+        }
+        return $carry;
     };
 }
