@@ -589,4 +589,48 @@ class ArrayFunctionTests extends TestCase
         $take = Arr\takeLast(-1);
         $take([]);
     }
+
+    /** @testdox It should be possible return an array which includes all values until the callback returns true using Arr\takeUntil() */
+    public function testTakeUntil(): void
+    {
+        $data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        $expected = [1, 2, 3, 4, 5, 6, 7, 8];
+
+        $takeUntil = Arr\takeUntil(function ($value) {
+            return $value > 8;
+        });
+        $this->assertEquals($expected, $takeUntil($data));
+
+        $takeUntil = Arr\takeUntil(function ($value) {
+            return $value < 10;
+        });
+        $this->assertEquals([], $takeUntil($data));
+
+        $takeUntil = Arr\takeUntil(function ($value) {
+            return $value > 100;
+        });
+        $this->assertEquals($data, $takeUntil($data));
+    }
+
+    /** @testdox It should be possible to return an array which includes all values until the callback returns false using Arr\takeWhile() */
+    public function testTakeWhile(): void
+    {
+        $data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        $expected = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+        $takeWhile = Arr\takeWhile(function ($value) {
+            return $value < 10;
+        });
+        $this->assertEquals($expected, $takeWhile($data));
+
+        $takeWhile = Arr\takeWhile(function ($value) {
+            return $value < 1;
+        });
+        $this->assertEquals([], $takeWhile($data));
+
+        $takeWhile = Arr\takeWhile(function ($value) {
+            return $value < 100;
+        });
+        $this->assertEquals($data, $takeWhile($data));
+    }
 }
