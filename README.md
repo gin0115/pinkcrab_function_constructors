@@ -367,7 +367,31 @@ $result = $totalWins($games); // 2
 > Filter is great if you want to just process every result in the collection, the `take()` family of functions allow for controlling how much of an array is filtered
 
 ```php
+// Take the first or last items from an array
+$first5 = Arr\take(5);
+$last3 = Arr\takeLast(5);
 
+$nums = [1,3,5,6,8,4,1,3,5,7,9,3,4];
+$first5($nums); // [1,3,5,6,8]
+$last3($nums);  // [9,3,4]
+
+
+// Using takeWhile and takeUntil to get the same result.
+$games = [
+    ['id'=>1, 'result'=>'loss'],
+    ['id'=>2, 'result'=>'loss'],
+    ['id'=>3, 'result'=>'win'],
+    ['id'=>4, 'result'=>'win'],
+    ['id'=>5, 'result'=>'loss'],
+];
+
+// All games while the result is a loss
+$initialLoosingStreak = Arr\takeWhile(F\propertyEquals('result','loss'));
+// All games until the first win
+$untilFirstWin = Arr\takeUntil(F\propertyEquals('result', 'win'));
+
+$result = $initialLoosingStreak($game);
+$result = $untilFirstWin($game);
 ```
 
 > For more details on the Number function, please see the wiki.

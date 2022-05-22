@@ -22,15 +22,15 @@ class DocsExampleTest extends TestCase
     }
 
     /**
-    * Determine if two associative arrays are similar
-    *
-    * Both arrays must have the same indexes with identical values
-    * without respect to key ordering
-    *
-    * @param mixed[] $a
-    * @param mixed[] $b
-    * @return bool
-    */
+     * Determine if two associative arrays are similar
+     *
+     * Both arrays must have the same indexes with identical values
+     * without respect to key ordering
+     *
+     * @param mixed[] $a
+     * @param mixed[] $b
+     * @return bool
+     */
     private function arrays_are_similar(array $a, array $b): bool
     {
         // if the indexes don't match, return immediately
@@ -40,7 +40,7 @@ class DocsExampleTest extends TestCase
         // we know that the indexes, but maybe not values, match.
         // compare the values between the two arrays
         foreach ($a as $k => $v) {
-            if ($v !== $b[ $k ]) {
+            if ($v !== $b[$k]) {
                 return false;
             }
         }
@@ -52,7 +52,7 @@ class DocsExampleTest extends TestCase
     /** @testdox README : Pipe Example -- Remove all odd numbers, sort in an acceding order and double the value. */
     public function testReadmePipeArrayOfInts(): void
     {
-        $data = array( 0, 3, 4, 5, 6, 8, 4, 6, 8, 1, 3, 4 );
+        $data = array(0, 3, 4, 5, 6, 8, 4, 6, 8, 1, 3, 4);
 
         // Remove all odd numbers, sort in an acceding order and double the value.
         $newData = F\pipe(
@@ -86,8 +86,8 @@ class DocsExampleTest extends TestCase
         );
 
         $data = array(
-            array( 'details' => array( 'description' => '   This is some description   ' ) ),
-            array( 'details' => array( 'description' => '    This is some other description     ' ) ),
+            array('details' => array('description' => '   This is some description   ')),
+            array('details' => array('description' => '    This is some other description     ')),
         );
 
         $expected = array(
@@ -132,15 +132,15 @@ class DocsExampleTest extends TestCase
         // Get all users with +2 timezone.
         $zonePlus2 = array_filter($data, F\propertyEquals('timezone', '+2'));
         $this->assertCount(2, $zonePlus2);
-        $this->assertEquals(array( 3, 4 ), array_column($zonePlus2, 'id'));
+        $this->assertEquals(array(3, 4), array_column($zonePlus2, 'id'));
 
         // Get all users who have special index.
         $special = array_filter($data, F\hasProperty('special'));
         $this->assertCount(2, $zonePlus2);
-        $this->assertEquals(array( 2, 4 ), array_column($special, 'id'));
+        $this->assertEquals(array(2, 4), array_column($special, 'id'));
 
         $colours = array_map(F\getProperty('colour'), $data);
-        $results = array( 'red', 'red', 'green', 'blue' ); // Expected results.
+        $results = array('red', 'red', 'green', 'blue'); // Expected results.
         $this->assertEquals($results, $colours);
     }
 
@@ -156,7 +156,7 @@ class DocsExampleTest extends TestCase
         $this->assertEquals('new value', $object->key);
 
         // Set array index.
-        $array          = array( 'key' => 'default' );
+        $array          = array('key' => 'default');
         $setKeyOfSArray = F\setProperty($array, 'key');
         $array          = $setKeyOfSArray('new value');
         $this->assertEquals('new value', $array['key']);
@@ -194,5 +194,35 @@ class DocsExampleTest extends TestCase
         $result = $firstFoo('abcdefoog');
         $this->assertEquals(5, $result);
         dump($result);
+    }
+
+    /** @testdox README : Use takeWhile() and takeUntil() with games data */
+    public function testTakeWhileTakeUntil(): void
+    {
+        $games = [
+            ['id' => 1, 'result' => 'loss'],
+            ['id' => 2, 'result' => 'loss'],
+            ['id' => 3, 'result' => 'win'],
+            ['id' => 4, 'result' => 'win'],
+            ['id' => 5, 'result' => 'loss'],
+        ];
+
+        // All the games until the first win using takeWhile
+        $initialLoosingStreak = Arr\takeWhile(
+            F\propertyEquals('result', 'loss')
+        );
+        $this->assertEquals(
+            [['id' => 1, 'result' => 'loss'], ['id' => 2, 'result' => 'loss']],
+            $initialLoosingStreak($games)
+        );
+
+        // All the games until the first win using takeUntil
+        $untilFirstWin = Arr\takeUntil(
+            F\propertyEquals('result', 'win')
+        );
+        $this->assertEquals(
+            [['id' => 1, 'result' => 'loss'], ['id' => 2, 'result' => 'loss']],
+            $untilFirstWin($games)
+        );
     }
 }
