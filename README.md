@@ -304,10 +304,10 @@ $isFactorOf2 = Num\isFactor(2);
 $isFactorOf2(12); // true
 $isFactorOf2(13); // false
 
-// Getting the modulus
+// Getting the remainder
 $remainderBy2 = Num\remainderBy(2);
-$remainderBy2(10); // 0 = 10/2 = 5.0  ∴ 0
-$remainderBy2(21); // 5 = 21/2 = 10.5 ∴ 5
+$remainderBy2(10); // 0 = (5 * 2) - 10
+$remainderBy2(9);  // 1 = (4 * 2) - 9
 ```
 
 ### Array Functions
@@ -338,7 +338,37 @@ $normaliseKeys(1 => 'a', ' 2 ' => 'b', 'some key' => 'c');
 
 #### Filter and Take
 
+There is a large number of composible functions based around `array_filter()`. Combined with a basic set of `take*()` functions, you can compose functions to work with lists/collections much easier.
 
+```php
+// Filter out ony factors of 3
+$factorsOf3s = Arr\filter( Num\factorOf(3) );
+$factorsOf3s([1,3,5,6,8,7,9,11]); // [3,6,9]
+
+// Filer first and last of an array/
+$games = [
+    ['id'=>1, 'result'=>'loss'],
+    ['id'=>2, 'result'=>'loss'],
+    ['id'=>3, 'result'=>'win'],
+    ['id'=>4, 'result'=>'win'],
+    ['id'=>5, 'result'=>'loss'],
+];
+
+$firstWin = Arr\filterFirst( F\propertyEquals('result','win') );
+$result = $firstWin($games); // ['id'=>3, 'result'=>'win']
+
+$lastLoss = Arr\filterLast( F\propertyEquals('result','win') );
+$result = $lastLoss($games); // ['id'=>5, 'result'=>'loss']
+
+// Count result of filter.
+$totalWins = Arr\filterCount( F\propertyEquals('result','win') );
+$result = $totalWins($games); // 2
+```
+> Filter is great if you want to just process every result in the collection, the `take()` family of functions allow for controlling how much of an array is filtered
+
+```php
+
+```
 
 > For more details on the Number function, please see the wiki.
 
