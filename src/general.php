@@ -422,7 +422,7 @@ function ifThen(callable $condition, callable $then): Closure
      * @param  mixed $value
      * @return mixed
      */
-    return function ($value) use ($condition, $then, $else) {
+    return function ($value) use ($condition, $then) {
         return true === (bool) $condition($value)
             ? $then($value)
             : $value;
