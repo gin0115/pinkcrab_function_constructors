@@ -1010,9 +1010,15 @@ function foldKeys(callable $callable, $initial = array()): Closure
  *
  * @param int $count
  * @return Closure(mixed[]):mixed[]
+ * @throws \InvalidArgumentException if count is negative
  */
 function take(int $count = 1): Closure
 {
+    // throw InvalidArgumentException if count is negative
+    if ($count < 0) {
+        throw new \InvalidArgumentException(__FUNCTION__ . ' count must be greater than or equal to 0');
+    }
+
     /**
      * @param mixed[] $array
      * @return mixed[]
@@ -1027,9 +1033,22 @@ function take(int $count = 1): Closure
  *
  * @param int $count
  * @return Closure(mixed[]):mixed[]
+ * @throws \InvalidArgumentException if count is negative
  */
 function takeLast(int $count = 1): Closure
 {
+    // throw InvalidArgumentException if count is negative
+    if ($count < 0) {
+        throw new \InvalidArgumentException(__FUNCTION__ . ' count must be greater than or equal to 0');
+    }
+
+    // If count is 0, return an empty array
+    if ($count === 0) {
+        return function (array $array) {
+            return [];
+        };
+    }
+
     /**
      * @param mixed[] $array
      * @return mixed[]
@@ -1053,7 +1072,7 @@ function takeUntil(callable $conditional): Closure
      * @return mixed[]
      */
     return function (array $array) use ($conditional) {
-        $carry = [];
+        $carry = array();
         foreach ($array as $key => $value) {
             if (true === $conditional($value)) {
                 break;
@@ -1078,7 +1097,7 @@ function takeWhile(callable $conditional): Closure
      * @return mixed[]
      */
     return function (array $array) use ($conditional) {
-        $carry = [];
+        $carry = array();
         foreach ($array as $key => $value) {
             if (false === $conditional($value)) {
                 break;

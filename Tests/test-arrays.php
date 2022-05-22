@@ -533,4 +533,60 @@ class ArrayFunctionTests extends TestCase
 
         $this->assertEquals($expected, $foldWithKeys($data));
     }
+
+    /** @testdox It should be possible to take n number of elements from an array using Arr\take() */
+    public function testTake(): void
+    {
+        $data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        $expected = [1, 2, 3, 4, 5];
+
+        $take5 = Arr\take(5);
+        $this->assertEquals($expected, $take5($data));
+
+        $take3 = Arr\take(3);
+        $this->assertEquals([1, 2, 3], $take3($data));
+
+        $take0 = Arr\take(0);
+        $this->assertEquals([], $take0($data));
+
+        $takeAll = Arr\take(count($data));
+        $this->assertEquals($data, $takeAll($data));
+    }
+
+    /** @testdox Passing a negative number to take should result in an InvalidArgumentException being thrown */
+    public function testTakeThrowsExceptionOnNegativeNumber(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $take = Arr\take(-1);
+        $take([]);
+    }
+
+    /** @testdox It should be possible to take n number of elements from an array using Arr\takeLast() */
+    public function testTakeLast(): void
+    {
+        $data = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+        $expected = [5, 6, 7, 8, 9];
+
+        $take5 = Arr\takeLast(5);
+        $this->assertEquals($expected, $take5($data));
+
+        $take3 = Arr\takeLast(3);
+        $this->assertEquals([7, 8, 9], $take3($data));
+
+        $take0 = Arr\takeLast(0);
+        $this->assertEquals([], $take0($data));
+
+        $takeAll = Arr\takeLast(count($data));
+        $this->assertEquals($data, $takeAll($data));
+    }
+
+    /** @testdox Passing a negative number to take should result in an InvalidArgumentException being thrown */
+    public function testTakeLastThrowsExceptionOnNegativeNumber(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $take = Arr\takeLast(-1);
+        $take([]);
+    }
 }
