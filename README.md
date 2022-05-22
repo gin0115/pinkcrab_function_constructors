@@ -357,7 +357,7 @@ $games = [
 $firstWin = Arr\filterFirst( F\propertyEquals('result','win') );
 $result = $firstWin($games); // ['id'=>3, 'result'=>'win']
 
-$lastLoss = Arr\filterLast( F\propertyEquals('result','win') );
+$lastLoss = Arr\filterLast( F\propertyEquals('result','loss') );
 $result = $lastLoss($games); // ['id'=>5, 'result'=>'loss']
 
 // Count result of filter.
