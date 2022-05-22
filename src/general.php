@@ -411,14 +411,12 @@ function toArray(): Closure
 /**
  * Creates a function which will validate the data through a condition callable, then return
  * the results of passing the data through the callback.
- * Has a simple static else/fallback
  *
  * @param callable(mixed):bool  $condition
  * @param callable(mixed):mixed $then
- * @param mixed                 $else
  * @return \Closure(mixed):mixed
  */
-function ifThen(callable $condition, callable $then, $else = null): Closure
+function ifThen(callable $condition, callable $then): Closure
 {
     /**
      * @param  mixed $value
@@ -427,7 +425,7 @@ function ifThen(callable $condition, callable $then, $else = null): Closure
     return function ($value) use ($condition, $then, $else) {
         return true === (bool) $condition($value)
             ? $then($value)
-            : $else;
+            : $value;
     };
 }
 
