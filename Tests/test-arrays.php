@@ -12,13 +12,13 @@ require_once dirname(__FILE__, 2) . '/FunctionsLoader.php';
  */
 
 use PHPUnit\Framework\TestCase;
+use function PHPUnit\Framework\throwException;
 use PinkCrab\FunctionConstructors\Arrays as Arr;
 use PinkCrab\FunctionConstructors\Numbers as Num;
 use PinkCrab\FunctionConstructors\Strings as Str;
 use PinkCrab\FunctionConstructors\FunctionsLoader;
-use PinkCrab\FunctionConstructors\GeneralFunctions as Func;
 
-use function PHPUnit\Framework\throwException;
+use PinkCrab\FunctionConstructors\GeneralFunctions as Func;
 
 /**
  * ArrayFunction class.
@@ -624,9 +624,9 @@ class ArrayFunctionTests extends TestCase
         $this->assertEquals($expected, $takeWhile($data));
 
         $takeWhile = Arr\takeWhile(function ($value) {
-            return $value < 1;
+            return $value < 5;
         });
-        $this->assertEquals([], $takeWhile($data));
+        $this->assertEquals([1,2,3,4], $takeWhile($data));
 
         $takeWhile = Arr\takeWhile(function ($value) {
             return $value < 100;
