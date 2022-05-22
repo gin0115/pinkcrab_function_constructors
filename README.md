@@ -330,6 +330,10 @@ $remainderBy2(21); // 5 = 21/2 = 10.5 ∴ 5
    * `Arrays\foldKey()`
    * `Arrays\scan()`
    * `Arrays\scanR()`
+   * `Arrays\take()`
+   * `Arrays\takeLast()`
+   * `Arrays\takeUntil()`
+   * `Arrays\takeWhile()`
    * `Objects\isInstanceOf()`
    * `Objects\implementsInterface()`
    * **Breaking Changes**
