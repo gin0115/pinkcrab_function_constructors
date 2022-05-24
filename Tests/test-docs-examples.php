@@ -148,8 +148,7 @@ class DocsExampleTest extends TestCase
     public function testWritingProperty(): void
     {
         // Set object property.
-        $object         = new class()
-        {
+        $object         = new class () {
             public $key = 'default';
         };
         $setKeyOfObject = F\setProperty($object, 'key');
