@@ -432,7 +432,7 @@ $logCardPayments = Arr\foldKeys(function($log, $key, $payment){
 $cardPaymentLog = $logCardPayments($payments);
 var_dump($cardPayments->getPayments());
 // [{'key': 'gfg1dg3d', 'amount': 12.53}, {'key': '5g7tgxfb', 'amount': 1.99}]
-
+```
 
 > For more details on the Number function, please see the wiki.
 
