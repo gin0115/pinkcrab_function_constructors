@@ -453,7 +453,7 @@ $result = $runningTotal($payments);
 ## Changes
 
 * 1.0.0 - 
-   * **New Functions**
+  * **New Functions**
    * `Numbers\isMultipleOf()`
 
    * `Strings\isBlank()`
