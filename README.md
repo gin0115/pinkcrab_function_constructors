@@ -445,7 +445,6 @@ $result = $runningTotal($payments);
 ```
 > You also have access to `foldR()` and `scanR()` which will iterate through the array backwards.
 
-```php
 // 
 > For more details on the Number function, please see the wiki.
 
