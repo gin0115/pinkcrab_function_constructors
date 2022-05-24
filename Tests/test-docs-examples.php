@@ -57,7 +57,7 @@ class DocsExampleTest extends TestCase
         // Remove all odd numbers, sort in an acceding order and double the value.
         $newData = F\pipe(
             $data,
-            Arr\filter(Num\isFactorOf(2)), // Remove odd numbers
+            Arr\filter(Num\isMultipleOf(2)), // Remove odd numbers
             Arr\natsort(),                // Sort the remaining values
             Arr\map(Num\multiply(2))      // Double the values.
         );
@@ -148,7 +148,8 @@ class DocsExampleTest extends TestCase
     public function testWritingProperty(): void
     {
         // Set object property.
-        $object         = new class () {
+        $object         = new class()
+        {
             public $key = 'default';
         };
         $setKeyOfObject = F\setProperty($object, 'key');
@@ -224,5 +225,26 @@ class DocsExampleTest extends TestCase
             [['id' => 1, 'result' => 'loss'], ['id' => 2, 'result' => 'loss']],
             $untilFirstWin($games)
         );
+    }
+
+    /** @testdox README : Use fold with payments */
+    public function testArrayFoldWithPayments(): void
+    {
+        $payments = [
+            ['type' => 'card', 'amount' => 12.53],
+            ['type' => 'cash', 'amount' => 21.95],
+            ['type' => 'card', 'amount' => 1.99],
+            ['type' => 'cash', 'amount' => 4.50],
+            ['type' => 'cash', 'amount' => 21.50],
+        ];
+
+        $allCash = Arr\fold(function ($total, $payment) {
+            if ($payment['type'] === 'cash') {
+                $total += $payment['amount'];
+            }
+            return $total;
+        }, 0.00);
+
+        dump($allCash($payments));
     }
 }

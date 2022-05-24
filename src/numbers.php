@@ -239,7 +239,7 @@ function remainderInto($dividend = 1): Closure
  * @return Closure(Number):bool
  * @throws InvalidArgumentException If neither int or float passed.
  */
-function isFactorOf($factor): Closure
+function isMultipleOf($factor): Closure
 {
     if (! C\isNumber($factor)) {
         throw new \InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int)');

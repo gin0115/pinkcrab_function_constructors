@@ -12,7 +12,7 @@ Can be included into your project using either composer or added manually to you
 
 ### Via Composer
 
-`$ composer require pinkcrab/function-constructors`
+ `$ composer require pinkcrab/function-constructors`
 
 ### Via Manual Loader
 
@@ -26,11 +26,11 @@ FunctionsLoader::include();
 All of our functions are namespaced as **PinkCrab\FunctionConstructors\\{lib}**. So the easiest way to use them is to use with an alias. Throughout all the docs on the wiki we use the following aliases.
 
 ```php
-use PinkCrab\FunctionConstructors\GeneralFunctions as F;
-use PinkCrab\FunctionConstructors\Comparisons as C;
+use PinkCrab\FunctionConstructors\Arrays as Arr;
 use PinkCrab\FunctionConstructors\Numbers as Num;
 use PinkCrab\FunctionConstructors\Strings as Str;
-use PinkCrab\FunctionConstructors\Arrays as Arr;
+use PinkCrab\FunctionConstructors\Comparisons as C;
+use PinkCrab\FunctionConstructors\GeneralFunctions as F;
 
 // Allowing for
 Arr\Map('esc_html') or Str\append('foo') or F\pipe($var, 'strtoupper', Str\append('foo'))
@@ -44,7 +44,7 @@ At its core, the Function Constructors library is designed to make using PHP eas
 
 #### pipe()
 
-Using `pipe(mixed $value, callable ...$callables)` and [`pipeR()`*](#pipe "Same as pipe(), but callables in reverse order"), allows you to pass a value through a chain of callables. The result of the 1st function, is passed as the input the 2nd and so on, until the end when the final result is returned.
+Using `pipe(mixed $value, callable ...$callables)` and [ `pipeR()` *](#pipe "Same as pipe(), but callables in reverse order"), allows you to pass a value through a chain of callables. The result of the 1st function, is passed as the input the 2nd and so on, until the end when the final result is returned.
 
 > The rest of this library makes it easier to use standard php functions as callables, by defining some of the parameters up front.
 
@@ -54,7 +54,7 @@ $data = [0,3,4,5,6,8,4,6,8,1,3,4];
 // Remove all odd numbers, sort in an acceding order and double the value.
 $newData = F\pipe(
     $data,
-    Arr\filter(Num\isFactorOf(2)), // Remove odd numbers
+    Arr\filter(Num\isMultipleOf(2)), // Remove odd numbers
     Arr\natsort(),                 // Sort the remaining values
     Arr\map(Num\multiply(2))       // Double the values.
 );
@@ -75,7 +75,7 @@ $newData = [
 
 Piping is ideal when you are working with a single value, but when it comes to working with Arrays or writing callbacks, compose() is much more useful.
 
-`compose(callable ...$callables)`, `composeR(callable ...$callables)`, `composeSafe(callable ...$callables)` and `composeTypeSafe(callable $validator, callable ...$callables)` all allow you to create custom Closures.
+`compose(callable ...$callables)` , `composeR(callable ...$callables)` , `composeSafe(callable ...$callables)` and `composeTypeSafe(callable $validator, callable ...$callables)` all allow you to create custom Closures.
 
 ```php
 
@@ -104,10 +104,9 @@ $results = [
 
 *****
 
-
 ### Working with Records
 
-It is possible to work with the properties of *Records* (arrays and objects). Indexes or Properties can be checked, fetched and set using some of the `GeneralFunctions`. 
+It is possible to work with the properties of *Records* (arrays and objects). Indexes or Properties can be checked, fetched and set using some of the `GeneralFunctions` . 
 
 #### Reading Properties
 
@@ -133,7 +132,8 @@ $results = [['id' => 2, ....],['id' => 4, ...]];
 $colours = array_map(F\getProperty('colour'), $data);
 $results = ['red', 'red', 'green', 'blue'];
 ```
-> `pluckProperty()` can also be used if you need to traverse nested properties/indexes of either **arrays** or **objects** *also handles `ArrayAccess` objects, set with array syntax* [see example on `compose()`](#compose)
+
+> `pluckProperty()` can also be used if you need to traverse nested properties/indexes of either **arrays** or **objects** *also handles `ArrayAccess` objects, set with array syntax* [see example on `compose()` ](#compose)
 
 #### Writing Properties
 
@@ -158,7 +158,6 @@ $array = $setKeyOfSArray('new value');
 ```
 
 *****
-
 
 ### String Functions
 
@@ -212,6 +211,7 @@ $containsNumber = Str\containsPattern('~[0-9]+~');
 $containsNumber('apple');   // false
 $containsNumber('A12DFR3'); // true
 ```
+
 > `Str\isBlank()` can be used when composing a function, thanks to the Functions::isBlank constant.
 
 ```php
@@ -221,6 +221,7 @@ $notBlanks = array_filter(PinkCrab\FunctionConstructors\Functions::IS_BLANK, $da
 ```
 
 #### Sub Strings
+
 There is a series of functions that can be used to work with substrings.
 
 ```php
@@ -294,15 +295,15 @@ $divideInto12 = Num\divideInto(12);
 $divideInto12(4); // 3 = 12/4
 ```
 
-#### Factors and Modulus
+#### Multiple and Modulus
 
 It is possible to do basic modulus operations and working out if a number has a whole factor of another.
 
 ```php
 // Factor of 
-$isFactorOf2 = Num\isFactor(2);
-$isFactorOf2(12); // true
-$isFactorOf2(13); // false
+$isMultipleOf2 = Num\isMultipleOf(2);
+$isMultipleOf2(12); // true
+$isMultipleOf2(13); // false
 
 // Getting the remainder
 $remainderBy2 = Num\remainderBy(2);
@@ -316,7 +317,7 @@ As you can imagine there are a large number of functions relating to arrays and 
 
 #### Map
 
-This library contains a large number of variations of `array_map`, these can all be pre composed, using the other functions to be extremely powerful and easy to follow.
+This library contains a large number of variations of `array_map` , these can all be pre composed, using the other functions to be extremely powerful and easy to follow.
 
 ```php
 // Create a mapper which doubles the value.
@@ -334,11 +335,12 @@ $normaliseKeys = Arr\mapKey(F\compose(
 $normaliseKeys(1 => 'a', ' 2 ' => 'b', 'some key' => 'c');
 // ['__1'=> 'a', '__2' => 'b', '__some-key' => 'c']
 ```
+
 > There is `flatMap()` and `mapWith()` also included, please see the wiki.
 
 #### Filter and Take
 
-There is a large number of composible functions based around `array_filter()`. Combined with a basic set of `take*()` functions, you can compose functions to work with lists/collections much easier.
+There is a large number of composible functions based around `array_filter()` . Combined with a basic set of `take*()` functions, you can compose functions to work with lists/collections much easier.
 
 ```php
 // Filter out ony factors of 3
@@ -364,6 +366,7 @@ $result = $lastLoss($games); // ['id'=>5, 'result'=>'loss']
 $totalWins = Arr\filterCount( F\propertyEquals('result','win') );
 $result = $totalWins($games); // 2
 ```
+
 > Filter is great if you want to just process every result in the collection, the `take()` family of functions allow for controlling how much of an array is filtered
 
 ```php
@@ -375,7 +378,6 @@ $nums = [1,3,5,6,8,4,1,3,5,7,9,3,4];
 $first5($nums); // [1,3,5,6,8]
 $last3($nums);  // [9,3,4]
 
-
 // Using takeWhile and takeUntil to get the same result.
 $games = [
     ['id'=>1, 'result'=>'loss'],
@@ -385,46 +387,98 @@ $games = [
     ['id'=>5, 'result'=>'loss'],
 ];
 
-// All games while the result is a loss
+// All games while the result is a loss, then stop
 $initialLoosingStreak = Arr\takeWhile(F\propertyEquals('result','loss'));
-// All games until the first win
+// All games until the first win, then stop
 $untilFirstWin = Arr\takeUntil(F\propertyEquals('result', 'win'));
 
 $result = $initialLoosingStreak($game);
 $result = $untilFirstWin($game);
+// [['id' => 1, 'result' => 'loss'], ['id' => 2, 'result' => 'loss']]
 ```
 
+#### Fold and Scan
+
+Folding or reducing an a list is a pretty common operation and unlike the native `array_reduce` you have a little more flexibility.
+
+```php
+
+$payments = [
+    'gfg1dg3d' => ['type' => 'card', 'amount' => 12.53],
+    'eg43ytfh' => ['type' => 'cash', 'amount' => 21.95],
+    '5g7tgxfb' => ['type' => 'card', 'amount' => 1.99],
+    'oitu87uo' => ['type' => 'cash', 'amount' => 4.50],
+    'ew1e5435' => ['type' => 'cash', 'amount' => 21.50],
+];
+
+// Get total for all cash payment.
+$allCash = Arr\fold(function($total, $payment){
+    if($payment['type'] === 'cash'){
+        $total += $payment['amount'];
+    }
+    return $total;
+},0.00);
+
+$result = $allCash($payments); // 47.95
+
+// Log all card payment in some class, with access to array keys.
+$logCardPayments = Arr\foldKeys(function($log, $key, $payment){
+    if($payment['type'] === 'card'){
+        $log->addPayment(payment_key: $key, amount: $payment['amount']);
+    }
+    return $log;
+}, new CardPaymentLog('some setup') );
+
+$cardPaymentLog = $logCardPayments($payments);
+var_dump($cardPayments->getPayments());
+// [{'key': 'gfg1dg3d', 'amount': 12.53}, {'key': '5g7tgxfb', 'amount': 1.99}]
+
+
 > For more details on the Number function, please see the wiki.
-
-
-
 
 > For more details, please read the [wiki](https://github.com/gin0115/pinkcrab_function_constructors/wiki)
 
 ## Changes
+
 * 1.0.0 - 
    * **New Functions**
-   * `Numbers\isFactorOf()`
+   * `Numbers\isMultipleOf()`
+
    * `Strings\isBlank()`
+
    * `GeneralFunctions\ifThen()`
+
    * `GeneralFunctions\ifElse()`
+
    * `GeneralFunctions\composeR()`
+
    * `Arrays\fold()`
+
    * `Arrays\foldR()`
+
    * `Arrays\foldKey()`
+
    * `Arrays\scan()`
+
    * `Arrays\scanR()`
+
    * `Arrays\take()`
+
    * `Arrays\takeLast()`
+
    * `Arrays\takeUntil()`
+
    * `Arrays\takeWhile()`
+
    * `Objects\isInstanceOf()`
+
    * `Objects\implementsInterface()`
+
    * **Breaking Changes**
    * `GeneralFunctions\pipe()` & `GeneralFunctions\pipeR()` have now changed and are no longer alias for compose()
    * `GeneralFunctions\setProperty()` now takes the property argument when creating the Closure.
    * **Other Changes**
    * Constants added using the `Functions` class-name, `Functions::isBlank` can be used as a string for a callable.
-* 0.1.2 - Added `Arrays\zip()` 
-* 0.1.3 - Added` Arrays\filterKey()`
+* 0.1.2 - Added `Arrays\zip()`
 
+* 0.1.3 - Added` Arrays\filterKey()`

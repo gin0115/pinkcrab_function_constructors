@@ -192,9 +192,9 @@ class NumberFunctionTest extends TestCase
     }
 
     /** @testdox It should be possible to check if a number is a factor of another number */
-    public function testIsFactorOf(): void
+    public function testisMultipleOf(): void
     {
-        $factorOf5 = Num\isFactorOf(5);
+        $factorOf5 = Num\isMultipleOf(5);
 
         // Is factors of 5
         $this->assertTrue($factorOf5(10));
@@ -213,14 +213,14 @@ class NumberFunctionTest extends TestCase
     public function testIsFactorOfThrowsIfBaseNotNumber()
     {
         $this->expectException(InvalidArgumentException::class);
-        Num\isFactorOf('5');
+        Num\isMultipleOf('5');
     }
 
     /** @testdox Attempting to use a none number (int or float) as the value for checked number, should throw an error */
     public function testIsFactorOfThrowsIfCompNotNumber()
     {
         $this->expectException(InvalidArgumentException::class);
-        $r = Num\isFactorOf(5);
+        $r = Num\isMultipleOf(5);
         $r('HELLO');
     }
 
