@@ -227,8 +227,8 @@ class DocsExampleTest extends TestCase
         );
     }
 
-    /** @testdox README : Use fold with payments */
-    public function testArrayFoldWithPayments(): void
+    /** @testdox README : Use fold and scan with payments */
+    public function testArrayFoldAndScanWithPayments(): void
     {
         $payments = [
             ['type' => 'card', 'amount' => 12.53],
@@ -245,6 +245,17 @@ class DocsExampleTest extends TestCase
             return $total;
         }, 0.00);
 
+        $this->assertEquals(47.95, $allCash($payments));
+
         dump($allCash($payments));
+        $runningTotal = Arr\scan(function ($runningTotal, $payment) {
+            $runningTotal += $payment['amount'];
+            return $runningTotal;
+        }, 0.00);
+        $expected = [0.0, 12.53, 34.48, 36.47, 40.97, 62.47];
+
+        $this->assertEquals($expected, $runningTotal($payments));
+
+        dump($runningTotal($payments));
     }
 }

@@ -432,8 +432,21 @@ $logCardPayments = Arr\foldKeys(function($log, $key, $payment){
 $cardPaymentLog = $logCardPayments($payments);
 var_dump($cardPayments->getPayments());
 // [{'key': 'gfg1dg3d', 'amount': 12.53}, {'key': '5g7tgxfb', 'amount': 1.99}]
-```
 
+// Generate a running total of all payments.
+$runningTotal = Arr\scan(function($runningTotal, $payment){
+    $runningTotal += $payment['amount'];
+    return $runningTotal;
+
+}, 0.00);
+
+$result = $runningTotal($payments);
+// [0.0, 12.53, 34.48, 36.47, 40.97, 62.47]
+```
+> You also have access to `foldR()` and `scanR()` which will iterate through the array backwards.
+
+```php
+// 
 > For more details on the Number function, please see the wiki.
 
 > For more details, please read the [wiki](https://github.com/gin0115/pinkcrab_function_constructors/wiki)
