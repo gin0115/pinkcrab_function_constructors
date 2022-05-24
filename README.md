@@ -470,7 +470,8 @@ $result = $runningTotal($payments);
 > * `Arrays\takeWhile()`
 > * `Objects\isInstanceOf()`
 > * `Objects\implementsInterface()`
-> * **Breaking Changes**> * `GeneralFunctions\pipe()` & `GeneralFunctions\pipeR()` have now changed and are no longer alias for compose()
+> * **Breaking Changes**
+> * `GeneralFunctions\pipe()` & `GeneralFunctions\pipeR()` have now changed and are no longer alias for compose()
 >  * `GeneralFunctions\setProperty()` now takes the property argument when creating the Closure.
 >  * **Other Changes**
 >  * Constants added using the `Functions` class-name, `Functions::isBlank` can be used as a string for a callable.
