@@ -83,7 +83,7 @@ function accumulatorFloat(float $initial = 0): Closure
  */
 function sum($initial = 0): Closure
 {
-    if (! C\isNumber($initial)) {
+    if (!C\isNumber($initial)) {
         throw new InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int)');
     }
 
@@ -106,7 +106,7 @@ function sum($initial = 0): Closure
  */
 function subtract($initial = 0): Closure
 {
-    if (! C\isNumber($initial)) {
+    if (!C\isNumber($initial)) {
         throw new InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int)');
     }
 
@@ -129,7 +129,7 @@ function subtract($initial = 0): Closure
  */
 function multiply($initial = 1): Closure
 {
-    if (! C\isNumber($initial)) {
+    if (!C\isNumber($initial)) {
         throw new InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int)');
     }
 
@@ -153,7 +153,7 @@ function multiply($initial = 1): Closure
  */
 function divideBy($divisor = 1): Closure
 {
-    if (! C\isNumber($divisor)) {
+    if (!C\isNumber($divisor)) {
         throw new \InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int)');
     }
 
@@ -175,7 +175,7 @@ function divideBy($divisor = 1): Closure
  */
 function divideInto($dividend = 1): Closure
 {
-    if (! C\isNumber($dividend)) {
+    if (!C\isNumber($dividend)) {
         throw new \InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int)');
     }
 
@@ -197,7 +197,7 @@ function divideInto($dividend = 1): Closure
  */
 function remainderBy($divisor = 1): Closure
 {
-    if (! C\isNumber($divisor)) {
+    if (!C\isNumber($divisor)) {
         throw new \InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int)');
     }
 
@@ -219,7 +219,7 @@ function remainderBy($divisor = 1): Closure
  */
 function remainderInto($dividend = 1): Closure
 {
-    if (! C\isNumber($dividend)) {
+    if (!C\isNumber($dividend)) {
         throw new \InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int)');
     }
 
@@ -233,15 +233,15 @@ function remainderInto($dividend = 1): Closure
 }
 
 /**
- * Returns a function for checking if a number has a factor of another number.
+ * Returns a function for checking if a number is multiple of the pre defined value.
  *
- * @param Number $factor
+ * @param Number $multiple
  * @return Closure(Number):bool
  * @throws InvalidArgumentException If neither int or float passed.
  */
-function isMultipleOf($factor): Closure
+function isMultipleOf($multiple): Closure
 {
-    if (! C\isNumber($factor)) {
+    if (!C\isNumber($multiple)) {
         throw new \InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int)');
     }
 
@@ -250,8 +250,8 @@ function isMultipleOf($factor): Closure
      * @return bool
      * @throws InvalidArgumentException If neither int or float passed.
      */
-    return function ($value) use ($factor): bool {
-        if (! C\isNumber($value)) {
+    return function ($value) use ($multiple): bool {
+        if (!C\isNumber($value)) {
             throw new \InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int)');
         }
 
@@ -260,7 +260,39 @@ function isMultipleOf($factor): Closure
             return false;
         }
 
-        return $value % $factor === 0;
+        return $value % $multiple === 0;
+    };
+}
+
+/**
+ * Returns a function for checking if a number has a factor of another number.
+ *
+ * @param Number $factor
+ * @return Closure(Number):bool
+ * @throws InvalidArgumentException If neither int or float passed.
+ */
+function isFactorOf($factor): Closure
+{
+    if (!C\isNumber($factor)) {
+        throw new \InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int) for the factor');
+    }
+
+    /**
+     * @param Number $value
+     * @return bool
+     * @throws InvalidArgumentException If neither int or float passed.
+     */
+    return function ($value) use ($factor): bool {
+        if (!C\isNumber($value)) {
+            throw new \InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int) for the value');
+        }
+
+        // Return false if 0
+        if ($value === 0) {
+            return false;
+        }
+
+        return $factor % $value === 0;
     };
 }
 
@@ -274,7 +306,7 @@ function isMultipleOf($factor): Closure
  */
 function round($precision = 1): Closure
 {
-    if (! C\isNumber($precision)) {
+    if (!C\isNumber($precision)) {
         throw new \InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int)');
     }
 
@@ -284,7 +316,7 @@ function round($precision = 1): Closure
      * @throws InvalidArgumentException If neither int or float passed.
      */
     return function ($value) use ($precision): float {
-        if (! C\isNumber($value)) {
+        if (!C\isNumber($value)) {
             throw new \InvalidArgumentException("Num\\round() only accepts a valid Number ( Int|Float -> Float )");
         }
         return \round(\floatval($value), $precision);
@@ -300,7 +332,7 @@ function round($precision = 1): Closure
  */
 function power($exponent): Closure
 {
-    if (! C\isNumber($exponent)) {
+    if (!C\isNumber($exponent)) {
         throw new \InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int) for the exponent');
     }
 
@@ -310,7 +342,7 @@ function power($exponent): Closure
      * @throws InvalidArgumentException If neither int or float passed.
      */
     return function ($value) use ($exponent) {
-        if (! C\isNumber($value)) {
+        if (!C\isNumber($value)) {
             throw new \InvalidArgumentException('Num\\power() only accepts a valid Number ( Int|Float )');
         }
         return \pow($value, $exponent);
@@ -326,7 +358,7 @@ function power($exponent): Closure
  */
 function root($root): Closure
 {
-    if (! C\isNumber($root)) {
+    if (!C\isNumber($root)) {
         throw new \InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int) for the root');
     }
 
@@ -336,7 +368,7 @@ function root($root): Closure
      * @throws InvalidArgumentException If neither int or float passed.
      */
     return function ($value) use ($root) {
-        if (! C\isNumber($value)) {
+        if (!C\isNumber($value)) {
             throw new \InvalidArgumentException('Num\\root() only accepts a valid Number ( Int|Float )');
         }
         return pow($value, (1 / $root));
