@@ -261,9 +261,9 @@ class DocsExampleTest extends TestCase
         $data = [
             ['id' => 1, 'name' => 'John', 'age' => 20, 'someMetric' => 'A12'],
             ['id' => 2, 'name' => 'Jane', 'age' => 21, 'someMetric' => 'B10'],
-            ['id' => 3, 'name' => 'Joe', 'age' => 22, 'someMetric' => 'C15'],
-            ['id' => 4, 'name' => 'Jack', 'age' => 23, 'someMetric' => 'B10'],
-            ['id' => 5, 'name' => 'Jill', 'age' => 24, 'someMetric' => 'A12'],
+            ['id' => 3, 'name' => 'Joe', 'age' => 20, 'someMetric' => 'C15'],
+            ['id' => 4, 'name' => 'Jack', 'age' => 18, 'someMetric' => 'B10'],
+            ['id' => 5, 'name' => 'Jill', 'age' => 22, 'someMetric' => 'A12'],
         ];
 
 
@@ -283,7 +283,7 @@ class DocsExampleTest extends TestCase
                 [
                     "id" => 5,
                     "name" => "Jill",
-                    "age" => 24,
+                    "age" => 22,
                     "someMetric" => "A12"
                 ]
             ],
@@ -297,7 +297,7 @@ class DocsExampleTest extends TestCase
                 [
                     "id" => 4,
                     "name" => "Jack",
-                    "age" => 23,
+                    "age" => 18,
                     "someMetric" => "B10"
                 ]
             ],
@@ -305,12 +305,59 @@ class DocsExampleTest extends TestCase
                 [
                     "id" => 3,
                     "name" => "Joe",
-                    "age" => 22,
+                    "age" => 20,
                     "someMetric" => "C15",
                 ]
             ]
         ];
 
         $this->assertSame($expected, $groupedByMetric($data));
+
+        // Partition using a predicate function.
+        $over21 = Arr\partition(function ($item) {
+            return $item['age'] >= 21;
+        });
+
+        $expected = [
+            0 => [
+                [
+                    "id" => 1,
+                    "name" => "John",
+                    "age" => 20,
+                    "someMetric" => "A12"
+                ],
+                [
+                    "id" => 3,
+                    "name" => "Joe",
+                    "age" => 20,
+                    "someMetric" => "C15"
+                ],
+                [
+                    "id" => 4,
+                    "name" => "Jack",
+                    "age" => 18,
+                    "someMetric" => "B10"
+                ]
+            ],
+            1 => [
+                [
+                    "id" => 2,
+                    "name" => "Jane",
+                    "age" => 21,
+                    "someMetric" => "B10"
+                ],
+                [
+                    "id" => 5,
+                    "name" => "Jill",
+                    "age" => 22,
+                    "someMetric" => "A12"
+                ]
+            ]
+        ];
+
+        $this->assertSame($expected, $over21($data));
+
+
+        dump($over21($data));
     }
 }

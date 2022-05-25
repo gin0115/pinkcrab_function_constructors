@@ -453,30 +453,44 @@ Function Constructor has a number of functions which make it easy to group and p
 $data = [
     ['id'=>1, 'name'=>'John', 'age'=>20, 'someMetric' => 'A12'],
     ['id'=>2, 'name'=>'Jane', 'age'=>21, 'someMetric' => 'B10'],
-    ['id'=>3, 'name'=>'Joe', 'age'=>22, 'someMetric' => '15'],
-    ['id'=>4, 'name'=>'Jack', 'age'=>23, 'someMetric' => 'B10'],
-    ['id'=>5, 'name'=>'Jill', 'age'=>24, 'someMetric' => 'A12'],
-]
-
-
-// Group by a property
-$groupedByMetric = Arr\groupBy(function($item){
-    return $item['foo'];
-});
-$results = $groupedByMetric($data);
-[
-    "A12" =>  [
-        ["id" => 1,"name" => "John"],
-        ["id" => 5,"name" => "Jill"]
-    ],
-    "B10" =>  [
-        ["id" => 2,"name" => "Jane"],
-        ["id" => 4,"name" => "Jack"]
-    ],
-    "C15" =>  [
-        ["id" => 3,"name" => "Joe"]
-    ]
+    ['id'=>3, 'name'=>'Joe', 'age'=>20, 'someMetric' => 'C15'],
+    ['id'=>4, 'name'=>'Jack', 'age'=>18, 'someMetric' => 'B10'],
+    ['id'=>5, 'name'=>'Jill', 'age'=>22, 'someMetric' => 'A12'],
 ];
+
+
+// Group by the return value of the function.
+$groupedByMetric = Arr\groupBy(function($item){
+    return $item['someMetric'];
+});
+
+$results = $groupedByMetric($data);
+["A12" =>  [
+    ["id" => 1,"name" => "John", ...],
+    ["id" => 5,"name" => "Jill", ...]
+],
+"B10" =>  [
+    ["id" => 2,"name" => "Jane", ...],
+    ["id" => 4,"name" => "Jack", ...]
+],
+"C15" =>  [
+    ["id" => 3,"name" => "Joe", ...]
+]];
+
+// Partition using a predicate function.
+$over21 = Arr\partition(function($item){
+    return $item['age'] >= 21;
+});
+
+$results = $over21($data);
+[0 => [ // false values
+    ["name" => "John", "age" => 20, ...],
+    ["name" => "Joe", "age" => 20, ...],
+    ["name" => "Jack", "age" => 18, ...]
+],1 => [ // true values
+    ["name" => "Jane", "age" => 21, ...],
+    ["name" => "Jill", "age" => 22, ...]
+]];
 ```
 
 > For more details on the Number function, please see the wiki.
