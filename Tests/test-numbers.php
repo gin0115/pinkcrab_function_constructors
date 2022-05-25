@@ -53,7 +53,7 @@ class NumberFunctionTest extends TestCase
     {
         $this->expectException(TypeError::class);
         $acc = Num\accumulatorFloat(0);
-        $acc = $acc(array( 1, 2, 3, 4, 5, 6 ));
+        $acc = $acc(array(1, 2, 3, 4, 5, 6));
         // Throws InvalidArgumentException.
     }
 
@@ -129,7 +129,7 @@ class NumberFunctionTest extends TestCase
     public function testMultiplyThrowsNoneNumError()
     {
         $this->expectException(InvalidArgumentException::class);
-        $acc = Num\multiply(array( array( '0' ), false ));
+        $acc = Num\multiply(array(array('0'), false));
         // Throws InvalidArgumentException.
     }
 
@@ -178,7 +178,7 @@ class NumberFunctionTest extends TestCase
     public function testRoundThrowsNoneNumErrorA()
     {
         $this->expectException(InvalidArgumentException::class);
-        $rounder = Num\round(array( 'HELLO', 'NOT A NUMBER' ));
+        $rounder = Num\round(array('HELLO', 'NOT A NUMBER'));
         // Throws InvalidArgumentException.
     }
 
@@ -196,12 +196,12 @@ class NumberFunctionTest extends TestCase
     {
         $factorOf5 = Num\isMultipleOf(5);
 
-        // Is factors of 5
+        // Is mutliples of 5
         $this->assertTrue($factorOf5(10));
         $this->assertTrue($factorOf5(15));
         $this->assertTrue($factorOf5(20));
 
-        // Is not factors of 5
+        // Is not mutliples of 5
         $this->assertFalse($factorOf5(4));
         $this->assertFalse($factorOf5(6));
         $this->assertFalse($factorOf5(7));
@@ -210,14 +210,14 @@ class NumberFunctionTest extends TestCase
     }
 
     /** @testdox Attempting to use a none number (int or float) as the value for factor, should throw an error */
-    public function testIsFactorOfThrowsIfBaseNotNumber()
+    public function testIsMultipleOfThrowsIfBaseNotNumber()
     {
         $this->expectException(InvalidArgumentException::class);
         Num\isMultipleOf('5');
     }
 
     /** @testdox Attempting to use a none number (int or float) as the value for checked number, should throw an error */
-    public function testIsFactorOfThrowsIfCompNotNumber()
+    public function testIsMultipleOfThrowsIfCompNotNumber()
     {
         $this->expectException(InvalidArgumentException::class);
         $r = Num\isMultipleOf(5);
@@ -284,5 +284,23 @@ class NumberFunctionTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $r = Num\root(5);
         $r('HELLO');
+    }
+
+    /** @testdox It should be possible to check if a number is a factor of another number */
+    public function testisFactorOf(): void
+    {
+        $factorOf27 = Num\isFactorOf(27);
+
+        // Is factors of 27
+        $this->assertTrue($factorOf27(1));
+        $this->assertTrue($factorOf27(3));
+        $this->assertTrue($factorOf27(9));
+        $this->assertTrue($factorOf27(-1));
+
+        // Is not factors of 27
+        $this->assertFalse($factorOf27(4));
+        $this->assertFalse($factorOf27(6));
+        $this->assertFalse($factorOf27(7));
+        $this->assertFalse($factorOf27(0));
     }
 }
