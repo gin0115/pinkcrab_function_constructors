@@ -53,13 +53,13 @@ class NumberFunctionTest extends TestCase
     {
         $this->expectException(TypeError::class);
         $acc = Num\accumulatorFloat(0);
-        $acc = $acc([1,2,3,4,5,6]);
+        $acc = $acc(array( 1, 2, 3, 4, 5, 6 ));
         // Throws InvalidArgumentException.
     }
 
     public function testCanSum()
     {
-        $addsFive = Num\sum(5);
+        $addsFive        = Num\sum(5);
         $addsTwoAndAHalf = Num\sum(2.5);
 
         $a = 0;
@@ -84,7 +84,7 @@ class NumberFunctionTest extends TestCase
 
     public function testCanSub()
     {
-        $subsFive = Num\subtract(5);
+        $subsFive        = Num\subtract(5);
         $subsTwoAndAHalf = Num\subtract(2.5);
 
         $a = 10;
@@ -109,7 +109,7 @@ class NumberFunctionTest extends TestCase
 
     public function testCanMultiply()
     {
-        $subsFive = Num\multiply(5);
+        $subsFive        = Num\multiply(5);
         $subsTwoAndAHalf = Num\multiply(2.5);
 
         $a = 1;
@@ -129,15 +129,14 @@ class NumberFunctionTest extends TestCase
     public function testMultiplyThrowsNoneNumError()
     {
         $this->expectException(InvalidArgumentException::class);
-        $acc = Num\multiply([['0'], false]);
+        $acc = Num\multiply(array( array( '0' ), false ));
         // Throws InvalidArgumentException.
     }
 
     public function testCanDivideByAndInto()
     {
-        $divideBy2 = Num\divideBy(2);
+        $divideBy2   = Num\divideBy(2);
         $divideInto2 = Num\divideInto(2);
-
 
         $a = 10;
         $b = 10;
@@ -160,14 +159,13 @@ class NumberFunctionTest extends TestCase
         $this->assertEquals(0, $remainderBy2(10)); // 10 / 2 = 5
         $this->assertEquals(1, $remainderBy2(9)); // 9 / 2 = 4.5
 
-
         $remainderInto2 = Num\remainderInto(2);
         $this->assertEquals(2, $remainderInto2(10)); // 2 / 10 = 0.2
     }
 
     public function testCanRoundFloatsAndInts()
     {
-        $twoDecimalPlaces = Num\round(2);
+        $twoDecimalPlaces   = Num\round(2);
         $eightDecimalPlaces = Num\round(8);
 
         $this->assertEquals(8.12, $twoDecimalPlaces(8.123456));
@@ -180,7 +178,7 @@ class NumberFunctionTest extends TestCase
     public function testRoundThrowsNoneNumErrorA()
     {
         $this->expectException(InvalidArgumentException::class);
-        $rounder = Num\round(['HELLO', 'NOT A NUMBER']);
+        $rounder = Num\round(array( 'HELLO', 'NOT A NUMBER' ));
         // Throws InvalidArgumentException.
     }
 
@@ -191,5 +189,100 @@ class NumberFunctionTest extends TestCase
         $rounder = Num\round(5);
         $rounder('STRINGS');
         // Throws InvalidArgumentException.
+    }
+
+    /** @testdox It should be possible to check if a number is a factor of another number */
+    public function testisMultipleOf(): void
+    {
+        $factorOf5 = Num\isMultipleOf(5);
+
+        // Is factors of 5
+        $this->assertTrue($factorOf5(10));
+        $this->assertTrue($factorOf5(15));
+        $this->assertTrue($factorOf5(20));
+
+        // Is not factors of 5
+        $this->assertFalse($factorOf5(4));
+        $this->assertFalse($factorOf5(6));
+        $this->assertFalse($factorOf5(7));
+        $this->assertFalse($factorOf5(0));
+        $this->assertFalse($factorOf5(-1));
+    }
+
+    /** @testdox Attempting to use a none number (int or float) as the value for factor, should throw an error */
+    public function testIsFactorOfThrowsIfBaseNotNumber()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        Num\isMultipleOf('5');
+    }
+
+    /** @testdox Attempting to use a none number (int or float) as the value for checked number, should throw an error */
+    public function testIsFactorOfThrowsIfCompNotNumber()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $r = Num\isMultipleOf(5);
+        $r('HELLO');
+    }
+
+    /** @testdox It Should be possible to raise a number by a pre defined exponent as a closure */
+    public function testPowerOf(): void
+    {
+        // [exponent, value, expected]
+        $data = [
+            [2, 2, 4],
+            [3, 3, 27],
+            [5, 11, 161051],
+            [3, -3, -27],
+        ];
+
+        foreach ($data as list($exponent, $value, $expected)) {
+            $this->assertEquals($expected, Num\power($exponent)($value));
+        }
+    }
+
+    /** @testdox Attempting to use a none number (int or float) as the value for factor, should throw an error */
+    public function testPowerOfThrowsIfBaseNotNumber()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        Num\power('5');
+    }
+
+    /** @testdox Attempting to use a none number (int or float) as the value passed to be raised to the power of, should throw an error */
+    public function testPowerOfThrowsIfCompNotNumber()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $r = Num\power(5);
+        $r('HELLO');
+    }
+
+    /** @testdox It Should be possible to raise a number by a pre defined exponent as a closure */
+    public function testRoot(): void
+    {
+        // [root, value, expected]
+        $data = [
+            [2, 4, 2.0],
+            [3, 27, 3.0],
+            [3, 4, 1.5874010519682],
+            [-13, 12, 0.8260114319958],
+        ];
+
+        foreach ($data as list($root, $value, $expected)) {
+            $this->assertEquals($expected, Num\root($root)($value));
+        }
+    }
+
+    /** @testdox Attempting to use a none number (int or float) as the value for root, should throw an error */
+    public function testRootThrowsIfBaseNotNumber()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        Num\root('5');
+    }
+
+    /** @testdox Attempting to use a none number (int or float) as the value passed to be raised to the root should throw an error */
+    public function testRootThrowsIfCompNotNumber()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $r = Num\root(5);
+        $r('HELLO');
     }
 }

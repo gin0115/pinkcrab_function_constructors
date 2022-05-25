@@ -299,4 +299,40 @@ class GeneralFunctionTest extends TestCase
         $this->assertEmpty($toArrray(2.5));
         $this->assertEmpty($toArrray('STRING'));
     }
+
+    /** @testdox It should be possible to create a simple if statement, which can be preloaded and used as part of currying */
+    public function testIfThen(): void
+    {
+        $ifStringMakeTree = Func\ifThen(
+            function ($e) {
+                return $e === 'string';
+            },
+            function ($e) {
+                return 'tree';
+            }
+        );
+
+        $this->assertEquals('tree', $ifStringMakeTree('string'));
+        $this->assertEquals('NOTSTRING', $ifStringMakeTree('NOTSTRING'));
+    }
+
+    /** @testdox It should be possible to create a function that will takes a conditional, a true callback and a false callback, the correct callback will be called based on the result of the conditional */
+    public function testIfElse(): void
+    {
+        $ifStringMakeTree = Func\ifElse(
+            function ($e) {
+                return $e === 'string';
+            },
+            function ($e) {
+                return 'tree';
+            },
+            function ($e) {
+                return 'NOTSTRING';
+            }
+        );
+
+        $this->assertEquals('tree', $ifStringMakeTree('string'));
+        $this->assertEquals('NOTSTRING', $ifStringMakeTree('NOTSTRING'));
+        $this->assertEquals('NOTSTRING', $ifStringMakeTree('RRRRR'));
+    }
 }

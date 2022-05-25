@@ -248,9 +248,10 @@ function propertyEquals(string $property, $value): Closure
      */
     return function ($data) use ($property, $value): bool {
         return pipe(
+            $data,
             getProperty($property),
             \PinkCrab\FunctionConstructors\Comparisons\isEqualTo($value)
-        )($data);
+        );
     };
 }
 
@@ -263,9 +264,10 @@ function propertyEquals(string $property, $value): Closure
  * Only works for public or dynamic properties.
  *
  * @param array<string,mixed>|ArrayObject<string,mixed>|object $store
- * @return Closure(string,mixed):(array<string,mixed>|ArrayObject<string,mixed>|object)
+     * @param string $property The property key.
+ * @return Closure(mixed):(array<string,mixed>|ArrayObject<string,mixed>|object)
  */
-function setProperty($store): Closure
+function setProperty($store, string $property): Closure
 {
 
     // If passed store is not an array or object, throw exception.
@@ -274,11 +276,10 @@ function setProperty($store): Closure
     }
 
     /**
-     * @param string $property The property key.
      * @param mixed $value The value to set to keu.
      * @return array<string,mixed>|ArrayObject<string,mixed>|object The datastore.
      */
-    return function (string $property, $value) use ($store) {
+    return function ($value) use ($store, $property) {
         if (isArrayAccess($store)) {
             /** @phpstan-ignore-next-line */
             $store[ $property ] = $value;
@@ -335,10 +336,7 @@ function recordEncoder($dataType): Closure
                     throw new TypeError('Encoders must user an array with a string key.');
                 }
 
-                $dataType = setProperty($dataType)(
-                    $key,
-                    array_values($encoder($data))[0]
-                );
+                $dataType = setProperty($dataType, $key)(array_values($encoder($data))[0]);
             }
             return $dataType;
         };
@@ -407,5 +405,49 @@ function toArray(): Closure
             },
             array()
         );
+    };
+}
+
+/**
+ * Creates a function which will validate the data through a condition callable, then return
+ * the results of passing the data through the callback.
+ *
+ * @param callable(mixed):bool  $condition
+ * @param callable(mixed):mixed $then
+ * @return \Closure(mixed):mixed
+ */
+function ifThen(callable $condition, callable $then): Closure
+{
+    /**
+     * @param  mixed $value
+     * @return mixed
+     */
+    return function ($value) use ($condition, $then) {
+        return true === (bool) $condition($value)
+            ? $then($value)
+            : $value;
+    };
+}
+
+/**
+ * Creates a function which will validate the data through a condition callable, then return
+ * the results of passing the data through the callback.
+ * Has a required callback required for failing condition.
+ *
+ * @param callable(mixed):bool  $condition
+ * @param callable(mixed):mixed $then
+ * @param callable(mixed):mixed $else
+ * @return \Closure
+ */
+function ifElse(callable $condition, callable $then, callable $else): Closure
+{
+    /**
+     * @param  mixed $value
+     * @return mixed
+     */
+    return function ($value) use ($condition, $then, $else) {
+        return true === (bool) $condition($value)
+            ? $then($value)
+            : $else($value);
     };
 }

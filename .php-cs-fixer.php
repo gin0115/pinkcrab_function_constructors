@@ -9,7 +9,7 @@ $finder = ( new Finder() )
 	->files()
 	->name( '*.php' )
 	->in( __DIR__ . '/src' )
-    ->in( __DIR__ . '/Tests' );
+	->in( __DIR__ . '/Tests' );
 
 /**
  * Cache file for PHP-CS
@@ -27,20 +27,31 @@ return ( new Config( 'function-constructors' ) )
 	->setRules(
 		array(
 			// default
-			'@PSR12'                     => true,
-			'@Symfony'                   => true,
+			// '@PSR12'                     => true,
+			// '@Symfony'                   => true,
 			// additionally
 			'array_syntax'               => array( 'syntax' => 'short' ),
-			'concat_space'               => false,
-			'cast_spaces'                => false,
-			'no_unused_imports'          => false,
+			'concat_space'               => array( 'spacing' => 'one' ),
+			'cast_spaces'                => array( 'space' => 'single' ),
+			'no_unused_imports'          => true,
 			'no_useless_else'            => true,
 			'no_useless_return'          => true,
-			'no_superfluous_phpdoc_tags' => false,
-			'ordered_imports'            => true,
-			'phpdoc_align'               => false,
-			'phpdoc_order'               => false,
+			'no_superfluous_phpdoc_tags' => array(
+				'allow_mixed'         => true,
+				'allow_unused_params' => true,
+			),
+			'ordered_imports'            => array(
+				'sort_algorithm' => 'alpha',
+				'imports_order'  => array( 'const', 'class', 'function' ),
+			),
+			// 'phpdoc_align'               => array( 'align' => 'vertical' ),
+			// 'phpdoc_order'               => false,
+			// 'phpdoc_order_by_value'      => array( 'author', 'covers', 'coversNothing', 'dataProvider', 'depends', 'group', 'internal', 'method', 'property', 'property-read', 'property-write', 'requires', 'throws', 'uses' ),
 			'phpdoc_trim'                => false,
+			'phpdoc_types_order'         => array(
+				'null_adjustment' => 'always_last',
+				'sort_algorithm'  => 'none',
+			),
 			'phpdoc_summary'             => false,
 			'simplified_null_return'     => false,
 			'ternary_to_null_coalescing' => true,

@@ -57,5 +57,10 @@
         "all": "composer test && composer analyse && php-cs-fixer fix --diff --dry-run --rules=@PSR12 --show-progress=dots --stop-on-violation",
         "fixer": "php-cs-fixer fix --diff --rules=@PSR12 --show-progress=dots",
         "lint": "php-cs-fixer fix --diff --dry-run --rules=@PSR12"
+    },
+    "config": {
+        "allow-plugins": {
+            "infection/extension-installer": false
+        }
     }
 }
