@@ -289,19 +289,19 @@ class NumberFunctionTest extends TestCase
     /** @testdox It should be possible to check if a number is a factor of another number */
     public function testisFactorOf(): void
     {
-        $factorOf5 = Num\isFactorOf(27);
+        $factorOf27 = Num\isFactorOf(27);
 
         // Is factors of 27
-        $this->assertTrue($factorOf5(1));
-        $this->assertTrue($factorOf5(3));
-        $this->assertTrue($factorOf5(9));
-        $this->assertTrue($factorOf5(-1));
+        $this->assertTrue($factorOf27(1));
+        $this->assertTrue($factorOf27(3));
+        $this->assertTrue($factorOf27(9));
+        $this->assertTrue($factorOf27(-1));
 
         // Is not factors of 27
-        $this->assertFalse($factorOf5(4));
-        $this->assertFalse($factorOf5(6));
-        $this->assertFalse($factorOf5(7));
-        $this->assertFalse($factorOf5(0));
+        $this->assertFalse($factorOf27(4));
+        $this->assertFalse($factorOf27(6));
+        $this->assertFalse($factorOf27(7));
+        $this->assertFalse($factorOf27(0));
     }
 
     /** @testdox Attempting to use a none number (int or float) as the value for factor, should throw an error */
