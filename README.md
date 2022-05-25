@@ -445,7 +445,40 @@ $result = $runningTotal($payments);
 ```
 > You also have access to `foldR()` and `scanR()` which will iterate through the array backwards.
 
-// 
+#### Grouping and Partitioning 
+
+Function Constructor has a number of functions which make it easy to group and partition arrays
+
+```php
+$data = [
+    ['id'=>1, 'name'=>'John', 'age'=>20, 'someMetric' => 'A12'],
+    ['id'=>2, 'name'=>'Jane', 'age'=>21, 'someMetric' => 'B10'],
+    ['id'=>3, 'name'=>'Joe', 'age'=>22, 'someMetric' => '15'],
+    ['id'=>4, 'name'=>'Jack', 'age'=>23, 'someMetric' => 'B10'],
+    ['id'=>5, 'name'=>'Jill', 'age'=>24, 'someMetric' => 'A12'],
+]
+
+
+// Group by a property
+$groupedByMetric = Arr\groupBy(function($item){
+    return $item['foo'];
+});
+$results = $groupedByMetric($data);
+[
+    "A12" =>  [
+        ["id" => 1,"name" => "John"],
+        ["id" => 5,"name" => "Jill"]
+    ],
+    "B10" =>  [
+        ["id" => 2,"name" => "Jane"],
+        ["id" => 4,"name" => "Jack"]
+    ],
+    "C15" =>  [
+        ["id" => 3,"name" => "Joe"]
+    ]
+];
+```
+
 > For more details on the Number function, please see the wiki.
 
 > For more details, please read the [wiki](https://github.com/gin0115/pinkcrab_function_constructors/wiki)
@@ -455,6 +488,7 @@ $result = $runningTotal($payments);
 * 1.0.0 - 
 > * **New Functions**
 > * `Numbers\isMultipleOf()`
+> * `Numbers\isFactorOf()`
 > * `Strings\isBlank()`
 > * `GeneralFunctions\ifThen()`
 > * `GeneralFunctions\ifElse()`

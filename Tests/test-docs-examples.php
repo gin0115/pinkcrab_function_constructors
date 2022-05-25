@@ -148,7 +148,8 @@ class DocsExampleTest extends TestCase
     public function testWritingProperty(): void
     {
         // Set object property.
-        $object         = new class () {
+        $object         = new class()
+        {
             public $key = 'default';
         };
         $setKeyOfObject = F\setProperty($object, 'key');
@@ -246,7 +247,6 @@ class DocsExampleTest extends TestCase
 
         $this->assertEquals(47.95, $allCash($payments));
 
-        dump($allCash($payments));
         $runningTotal = Arr\scan(function ($runningTotal, $payment) {
             $runningTotal += $payment['amount'];
             return $runningTotal;
@@ -254,7 +254,63 @@ class DocsExampleTest extends TestCase
         $expected = [0.0, 12.53, 34.48, 36.47, 40.97, 62.47];
 
         $this->assertEquals($expected, $runningTotal($payments));
+    }
 
-        dump($runningTotal($payments));
+    public function testGroupByMetric(): void
+    {
+        $data = [
+            ['id' => 1, 'name' => 'John', 'age' => 20, 'someMetric' => 'A12'],
+            ['id' => 2, 'name' => 'Jane', 'age' => 21, 'someMetric' => 'B10'],
+            ['id' => 3, 'name' => 'Joe', 'age' => 22, 'someMetric' => 'C15'],
+            ['id' => 4, 'name' => 'Jack', 'age' => 23, 'someMetric' => 'B10'],
+            ['id' => 5, 'name' => 'Jill', 'age' => 24, 'someMetric' => 'A12'],
+        ];
+
+
+        // Group by a property
+        $groupedByMetric = Arr\groupBy(function ($item) {
+            return $item['someMetric'];
+        });
+
+        $expected = [
+            "A12" =>  [
+                [
+                    "id" => 1,
+                    "name" => "John",
+                    "age" => 20,
+                    "someMetric" => "A12"
+                ],
+                [
+                    "id" => 5,
+                    "name" => "Jill",
+                    "age" => 24,
+                    "someMetric" => "A12"
+                ]
+            ],
+            "B10" =>  [
+                [
+                    "id" => 2,
+                    "name" => "Jane",
+                    "age" => 21,
+                    "someMetric" => "B10"
+                ],
+                [
+                    "id" => 4,
+                    "name" => "Jack",
+                    "age" => 23,
+                    "someMetric" => "B10"
+                ]
+            ],
+            "C15" =>  [
+                [
+                    "id" => 3,
+                    "name" => "Joe",
+                    "age" => 22,
+                    "someMetric" => "C15",
+                ]
+            ]
+        ];
+
+        $this->assertSame($expected, $groupedByMetric($data));
     }
 }
