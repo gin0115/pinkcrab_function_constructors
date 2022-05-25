@@ -487,7 +487,8 @@ $results = $over21($data);
     ["name" => "John", "age" => 20, ...],
     ["name" => "Joe", "age" => 20, ...],
     ["name" => "Jack", "age" => 18, ...]
-],1 => [ // true values
+],
+ 1 => [ // true values
     ["name" => "Jane", "age" => 21, ...],
     ["name" => "Jill", "age" => 22, ...]
 ]];
