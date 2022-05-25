@@ -267,26 +267,17 @@ function isMultipleOf($multiple): Closure
 /**
  * Returns a function for checking if a number has a factor of another number.
  *
- * @param Number $factor
- * @return Closure(Number):bool
- * @throws InvalidArgumentException If neither int or float passed.
+ * @param int $factor
+ * @return Closure(int):bool
  */
-function isFactorOf($factor): Closure
+function isFactorOf(int $factor): Closure
 {
-    if (!C\isNumber($factor)) {
-        throw new \InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int) for the factor');
-    }
-
     /**
-     * @param Number $value
+     * @param int $value
      * @return bool
      * @throws InvalidArgumentException If neither int or float passed.
      */
-    return function ($value) use ($factor): bool {
-        if (!C\isNumber($value)) {
-            throw new \InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int) for the value');
-        }
-
+    return function (int $value) use ($factor): bool {
         // Return false if 0
         if ($value === 0) {
             return false;

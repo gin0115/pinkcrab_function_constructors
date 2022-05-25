@@ -303,19 +303,4 @@ class NumberFunctionTest extends TestCase
         $this->assertFalse($factorOf27(7));
         $this->assertFalse($factorOf27(0));
     }
-
-    /** @testdox Attempting to use a none number (int or float) as the value for factor, should throw an error */
-    public function testIsFactorOfThrowsIfBaseNotNumber()
-    {
-        $this->expectException(InvalidArgumentException::class);
-        Num\isFactorOf('12');
-    }
-
-    /** @testdox Attempting to use a none number (int or float) as the value for checked number, should throw an error */
-    public function testIsFactorOfThrowsIfCompNotNumber()
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $r = Num\isFactorOf(5);
-        $r('NOT A NUMBER');
-    }
 }
