@@ -501,8 +501,14 @@ $results = $over21($data);
 The native PHP `sort` functions are tricky with a functional approach, as they sort via reference, rather than by a return value. The Function Constructor library covers all native sorting as partially applied functions.
 
 ```php
+// Sorting simple arrays
 $dataWords = ['Zoo', 'cat', 'Dog', 'ant', 'bat', 'Cow']; 
 
+$sortWords = Arr\sort(SORT_STRING);
+$result = $sortWords($dataWords);
+// ['ant', 'bat', 'cat', 'Cow', 'Dog', 'Zoo'];
+
+// Sorting associative arrays
 $dataBooks = [    
     'ehjf89' => ['id'=>'ehjf89', 'title'=>'Some title', 'author'=> 'Adam James'],
     'retg23' => ['id'=>'retg23', 'title'=>'A Title', 'author'=> 'Jane Jones'],
@@ -510,17 +516,43 @@ $dataBooks = [
     'mgged3' => ['id'=>'mgged3', 'title'=>'Book', 'author'=> 'Will Adams'],
 ]; 
 
-$sortWords = Arr\sort(SORT_STRING);
-$result = $sortWords($dataWords);
+
+// Sort by key
+$sortBookByKey = Arr\ksort(SORT_STRING | SORT_FLAG_CASE);
+$result = $sortBookByKey($dataBooks);
+[
+    'ehJF89' => ['id' => 'ehjf89', 'title' => 'Some title', 'author' => 'Adam James'],
+    'fvbI43' => ['id' => 'fvbi43', 'title' => 'Some title words', 'author' => 'Sam Smith'],
+    'MggEd3' => ['id' => 'mgged3', 'title' => 'Book', 'author' => 'Will Adams'],
+    'Retg23' => ['id' => 'retg23', 'title' => 'A Title', 'author' => 'Jane Jones'],
+]
+
+// Sort by author
+$sortBookByAuthor = Arr\uasort(function ($a, $b) {
+    return strcmp($a['author'], $b['author']);
+});
+$sortBookByAuthor($dataBooks);
+[
+    'ehJF89' => ['id' => 'ehjf89', 'title' => 'Some title', 'author' => 'Adam James'],
+    'Retg23' => ['id' => 'retg23', 'title' => 'A Title', 'author' => 'Jane Jones'],
+    'fvbI43' => ['id' => 'fvbi43', 'title' => 'Some title words', 'author' => 'Sam Smith'],
+    'MggEd3' => ['id' => 'mgged3', 'title' => 'Book', 'author' => 'Will Adams'],
+]
 
 ```
-> For more details on the Number function, please see the wiki.
+****
+
+### Contributions
+
+If you would like to contribute to this project, please feel to fork the project on github and submit a pull request.
+
+****
 
 > For more details, please read the [wiki](https://github.com/gin0115/pinkcrab_function_constructors/wiki)
 
 ## Changes
 
-* 1.0.0 - 
+* 0.2.0 - 
 
 > * **New Functions**
 > * `Numbers\isMultipleOf()`
