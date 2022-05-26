@@ -193,7 +193,6 @@ class DocsExampleTest extends TestCase
         $firstFoo = Str\firstPosition('foo');
         $result = $firstFoo('abcdefoog');
         $this->assertEquals(5, $result);
-        dump($result);
     }
 
     /** @testdox README : Use takeWhile() and takeUntil() with games data */
@@ -246,7 +245,6 @@ class DocsExampleTest extends TestCase
 
         $this->assertEquals(47.95, $allCash($payments));
 
-        dump($allCash($payments));
         $runningTotal = Arr\scan(function ($runningTotal, $payment) {
             $runningTotal += $payment['amount'];
             return $runningTotal;
@@ -254,7 +252,148 @@ class DocsExampleTest extends TestCase
         $expected = [0.0, 12.53, 34.48, 36.47, 40.97, 62.47];
 
         $this->assertEquals($expected, $runningTotal($payments));
+    }
 
-        dump($runningTotal($payments));
+    /** @testdox README : use groupBy and Partition*/
+    public function testGroupByAndPartition(): void
+    {
+        $data = [
+            ['id' => 1, 'name' => 'John', 'age' => 20, 'someMetric' => 'A12'],
+            ['id' => 2, 'name' => 'Jane', 'age' => 21, 'someMetric' => 'B10'],
+            ['id' => 3, 'name' => 'Joe', 'age' => 20, 'someMetric' => 'C15'],
+            ['id' => 4, 'name' => 'Jack', 'age' => 18, 'someMetric' => 'B10'],
+            ['id' => 5, 'name' => 'Jill', 'age' => 22, 'someMetric' => 'A12'],
+        ];
+
+
+        // Group by a property
+        $groupedByMetric = Arr\groupBy(function ($item) {
+            return $item['someMetric'];
+        });
+
+        $expected = [
+            "A12" =>  [
+                [
+                    "id" => 1,
+                    "name" => "John",
+                    "age" => 20,
+                    "someMetric" => "A12"
+                ],
+                [
+                    "id" => 5,
+                    "name" => "Jill",
+                    "age" => 22,
+                    "someMetric" => "A12"
+                ]
+            ],
+            "B10" =>  [
+                [
+                    "id" => 2,
+                    "name" => "Jane",
+                    "age" => 21,
+                    "someMetric" => "B10"
+                ],
+                [
+                    "id" => 4,
+                    "name" => "Jack",
+                    "age" => 18,
+                    "someMetric" => "B10"
+                ]
+            ],
+            "C15" =>  [
+                [
+                    "id" => 3,
+                    "name" => "Joe",
+                    "age" => 20,
+                    "someMetric" => "C15",
+                ]
+            ]
+        ];
+
+        $this->assertSame($expected, $groupedByMetric($data));
+
+        // Partition using a predicate function.
+        $over21 = Arr\partition(function ($item) {
+            return $item['age'] >= 21;
+        });
+
+        $expected = [
+            0 => [
+                [
+                    "id" => 1,
+                    "name" => "John",
+                    "age" => 20,
+                    "someMetric" => "A12"
+                ],
+                [
+                    "id" => 3,
+                    "name" => "Joe",
+                    "age" => 20,
+                    "someMetric" => "C15"
+                ],
+                [
+                    "id" => 4,
+                    "name" => "Jack",
+                    "age" => 18,
+                    "someMetric" => "B10"
+                ]
+            ],
+            1 => [
+                [
+                    "id" => 2,
+                    "name" => "Jane",
+                    "age" => 21,
+                    "someMetric" => "B10"
+                ],
+                [
+                    "id" => 5,
+                    "name" => "Jill",
+                    "age" => 22,
+                    "someMetric" => "A12"
+                ]
+            ]
+        ];
+
+        $this->assertSame($expected, $over21($data));
+    }
+
+    /** @testdox README : use sort, ksort and uasort */
+    public function testArraySort(): void
+    {
+        $dataWords = ['Zoo', 'cat', 'Dog', 'ant', 'bat', 'Cow'];
+        $sortWords = Arr\sort(SORT_STRING | SORT_FLAG_CASE);
+
+        $expected = ['ant', 'bat', 'cat', 'Cow', 'Dog', 'Zoo'];
+        $this->assertSame($expected, $sortWords($dataWords));
+
+
+        $dataBooks = [
+            'ehJF89' => ['id' => 'ehjf89', 'title' => 'Some title', 'author' => 'Adam James'],
+            'Retg23' => ['id' => 'retg23', 'title' => 'A Title', 'author' => 'Jane Jones'],
+            'fvbI43' => ['id' => 'fvbi43', 'title' => 'Some title words', 'author' => 'Sam Smith'],
+            'MggEd3' => ['id' => 'mgged3', 'title' => 'Book', 'author' => 'Will Adams'],
+        ];
+
+        // Sort the books by key
+        $sortBookByKey = Arr\ksort(SORT_STRING | SORT_FLAG_CASE);
+        $expected = [
+            'ehJF89' => ['id' => 'ehjf89', 'title' => 'Some title', 'author' => 'Adam James'],
+            'fvbI43' => ['id' => 'fvbi43', 'title' => 'Some title words', 'author' => 'Sam Smith'],
+            'MggEd3' => ['id' => 'mgged3', 'title' => 'Book', 'author' => 'Will Adams'],
+            'Retg23' => ['id' => 'retg23', 'title' => 'A Title', 'author' => 'Jane Jones'],
+        ];
+        $this->assertSame($expected, $sortBookByKey($dataBooks));
+
+        // Sort by author
+        $sortBookByAuthor = Arr\uasort(function ($a, $b) {
+            return strcmp($a['author'], $b['author']);
+        });
+        $expected = [
+            'ehJF89' => ['id' => 'ehjf89', 'title' => 'Some title', 'author' => 'Adam James'],
+            'Retg23' => ['id' => 'retg23', 'title' => 'A Title', 'author' => 'Jane Jones'],
+            'fvbI43' => ['id' => 'fvbi43', 'title' => 'Some title words', 'author' => 'Sam Smith'],
+            'MggEd3' => ['id' => 'mgged3', 'title' => 'Book', 'author' => 'Will Adams'],
+        ];
+        $this->assertSame($expected, $sortBookByAuthor($dataBooks));
     }
 }

@@ -7,7 +7,7 @@ require_once dirname(__FILE__, 3) . '/FunctionsLoader.php';
 /**
  * Tests for the Object functions class.
  *
- * @since 1.0.0
+ * @since 0.2.0
  * @author Glynn Quelch <glynn.quelch@gmail.com>
  */
 
@@ -46,5 +46,22 @@ class ObjectTests extends TestCase
         $this->assertTrue($isSameAsName(new \stdClass()));
         $this->assertTrue($isSameAsName(\stdClass::class));
         $this->assertTrue($isSameAsName($extends));
+    }
+
+    /** @testdox It should be possibel to check if a calss implements an interface */
+    public function testObjectImplementsInterface(): void
+    {
+        $classWithCount = new class () implements Countable {
+            public function count(): int
+            {
+                return 0;
+            }
+        };
+
+        $classWithoutCount = new class () {
+        };
+
+        $this->assertTrue(Obj\implementsInterface(Countable::class)($classWithCount));
+        $this->assertFalse(Obj\implementsInterface(Countable::class)($classWithoutCount));
     }
 }

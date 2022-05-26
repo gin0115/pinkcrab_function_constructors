@@ -52,7 +52,7 @@ function isInstanceOf($class): Closure
     if (is_object($class)) {
         $class = get_class($class);
     }
-    if (! class_exists($class)) {
+    if (!class_exists($class)) {
         throw new InvalidArgumentException(__FUNCTION__ . 'only accepts a Class or Class Name');
     }
 
@@ -64,7 +64,7 @@ function isInstanceOf($class): Closure
         if (is_object($value)) {
             $value = get_class($value);
         }
-        if (! class_exists($value)) {
+        if (!class_exists($value)) {
             throw new InvalidArgumentException(__FUNCTION__ . 'only accepts a Class or Class Name');
         }
         return is_a($value, $class, true);
@@ -86,8 +86,8 @@ function implementsInterface($interface): Closure
      */
     return function ($class) use ($interface): bool {
         return in_array(
-            $class,
-            class_implements($interface, false) ?: array(),
+            $interface,
+            class_implements($class, false) ?: array(),
             true
         );
     };
