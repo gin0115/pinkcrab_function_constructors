@@ -553,45 +553,26 @@ If you would like to contribute to this project, please feel to fork the project
 ## Changes
 
 * 0.2.0 - 
-
 > * **New Functions**
 > * `Numbers\isMultipleOf()`
-
 > * `Numbers\isFactorOf()`
-
 > * `Strings\isBlank()`
-
 > * `GeneralFunctions\ifThen()`
-
 > * `GeneralFunctions\ifElse()`
-
 > * `GeneralFunctions\composeR()`
-
 > * `Arrays\fold()`
-
 > * `Arrays\foldR()`
-
 > * `Arrays\foldKey()`
-
 > * `Arrays\scan()`
-
 > * `Arrays\scanR()`
-
 > * `Arrays\take()`
-
 > * `Arrays\takeLast()`
-
 > * `Arrays\takeUntil()`
-
 > * `Arrays\takeWhile()`
-
 > * `Objects\isInstanceOf()`
-
 > * `Objects\implementsInterface()`
-
 > * **Breaking Changes**
 > * `GeneralFunctions\pipe()` & `GeneralFunctions\pipeR()` have now changed and are no longer alias for `compose()`
-
 > * `GeneralFunctions\setProperty()` now takes the property argument when creating the Closure.
 > * **Other Changes**
 > * Constants added using the `Functions` class-name, `Functions::isBlank` can be used as a string for a callable.
