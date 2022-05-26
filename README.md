@@ -443,6 +443,7 @@ $runningTotal = Arr\scan(function($runningTotal, $payment){
 $result = $runningTotal($payments);
 // [0.0, 12.53, 34.48, 36.47, 40.97, 62.47]
 ```
+
 > You also have access to `foldR()` and `scanR()` which will iterate through the array backwards.
 
 #### Grouping and Partitioning 
@@ -457,7 +458,6 @@ $data = [
     ['id'=>4, 'name'=>'Jack', 'age'=>18, 'someMetric' => 'B10'],
     ['id'=>5, 'name'=>'Jill', 'age'=>22, 'someMetric' => 'A12'],
 ];
-
 
 // Group by the return value of the function.
 $groupedByMetric = Arr\groupBy(function($item){
@@ -488,12 +488,32 @@ $results = $over21($data);
     ["name" => "Joe", "age" => 20, ...],
     ["name" => "Jack", "age" => 18, ...]
 ],
- 1 => [ // true values
+1 => [ // true values
     ["name" => "Jane", "age" => 21, ...],
     ["name" => "Jill", "age" => 22, ...]
 ]];
 ```
 
+> It is possible to chunk and split arrays, see the wiki for more.
+
+#### Sorting
+
+The native PHP `sort` functions are tricky with a functional approach, as they sort via reference, rather than by a return value. The Function Constructor library covers all native sorting as partially applied functions.
+
+```php
+$dataWords = ['Zoo', 'cat', 'Dog', 'ant', 'bat', 'Cow']; 
+
+$dataBooks = [    
+    'ehjf89' => ['id'=>'ehjf89', 'title'=>'Some title', 'author'=> 'Adam James'],
+    'retg23' => ['id'=>'retg23', 'title'=>'A Title', 'author'=> 'Jane Jones'],
+    'fvbi43' => ['id'=>'fvbi43', 'title'=>'Some title words', 'author'=> 'Sam Smith'],
+    'mgged3' => ['id'=>'mgged3', 'title'=>'Book', 'author'=> 'Will Adams'],
+]; 
+
+$sortWords = Arr\sort(SORT_STRING);
+$result = $sortWords($dataWords);
+
+```
 > For more details on the Number function, please see the wiki.
 
 > For more details, please read the [wiki](https://github.com/gin0115/pinkcrab_function_constructors/wiki)
@@ -501,29 +521,49 @@ $results = $over21($data);
 ## Changes
 
 * 1.0.0 - 
+
 > * **New Functions**
 > * `Numbers\isMultipleOf()`
+
 > * `Numbers\isFactorOf()`
+
 > * `Strings\isBlank()`
+
 > * `GeneralFunctions\ifThen()`
+
 > * `GeneralFunctions\ifElse()`
+
 > * `GeneralFunctions\composeR()`
+
 > * `Arrays\fold()`
+
 > * `Arrays\foldR()`
+
 > * `Arrays\foldKey()`
+
 > * `Arrays\scan()`
+
 > * `Arrays\scanR()`
+
 > * `Arrays\take()`
+
 > * `Arrays\takeLast()`
+
 > * `Arrays\takeUntil()`
+
 > * `Arrays\takeWhile()`
+
 > * `Objects\isInstanceOf()`
+
 > * `Objects\implementsInterface()`
+
 > * **Breaking Changes**
 > * `GeneralFunctions\pipe()` & `GeneralFunctions\pipeR()` have now changed and are no longer alias for `compose()`
->  * `GeneralFunctions\setProperty()` now takes the property argument when creating the Closure.
->  * **Other Changes**
->  * Constants added using the `Functions` class-name, `Functions::isBlank` can be used as a string for a callable.
+
+> * `GeneralFunctions\setProperty()` now takes the property argument when creating the Closure.
+> * **Other Changes**
+> * Constants added using the `Functions` class-name, `Functions::isBlank` can be used as a string for a callable.
+
 * 0.1.2 - Added `Arrays\zip()`
 
 * 0.1.3 - Added` Arrays\filterKey()`

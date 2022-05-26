@@ -255,7 +255,8 @@ class DocsExampleTest extends TestCase
         $this->assertEquals($expected, $runningTotal($payments));
     }
 
-    public function testGroupByMetric(): void
+    /** @testdox description */
+    public function testGroupByAndPartition(): void
     {
         $data = [
             ['id' => 1, 'name' => 'John', 'age' => 20, 'someMetric' => 'A12'],
@@ -358,5 +359,54 @@ class DocsExampleTest extends TestCase
 
 
         dump($over21($data));
+    }
+
+    public function testArraySort(): void
+    {
+        $dataWords = ['Zoo', 'cat', 'Dog', 'ant', 'bat', 'Cow'];
+        $sortWords = Arr\sort(SORT_STRING | SORT_FLAG_CASE);
+
+        $expected = ['ant', 'bat', 'cat', 'Cow', 'Dog', 'Zoo'];
+        $this->assertSame($expected, $sortWords($dataWords));
+
+
+
+
+
+        $dataBooks = [
+            'ehJF89' => ['id' => 'ehjf89', 'title' => 'Some title', 'author' => 'Adam James'],
+            'Retg23' => ['id' => 'retg23', 'title' => 'A Title', 'author' => 'Jane Jones'],
+            'fvbI43' => ['id' => 'fvbi43', 'title' => 'Some title words', 'author' => 'Sam Smith'],
+            'MggEd3' => ['id' => 'mgged3', 'title' => 'Book', 'author' => 'Will Adams'],
+        ];
+
+        // Sort the books by key
+        $sortBookByKey = Arr\ksort(SORT_STRING | SORT_FLAG_CASE);
+        $expected = [
+            'ehJF89' => ['id' => 'ehjf89', 'title' => 'Some title', 'author' => 'Adam James'],
+            'fvbI43' => ['id' => 'fvbi43', 'title' => 'Some title words', 'author' => 'Sam Smith'],
+            'MggEd3' => ['id' => 'mgged3', 'title' => 'Book', 'author' => 'Will Adams'],
+            'Retg23' => ['id' => 'retg23', 'title' => 'A Title', 'author' => 'Jane Jones'],
+        ];
+        $this->assertSame($expected, $sortBookByKey($dataBooks));
+
+        // Sort by author
+        $sortBookByAuthor = Arr\uasort(function ($a, $b) {
+            return strcmp($a['author'], $b['author']);
+        });
+        $expected = [
+            'ehJF89' => ['id' => 'ehjf89', 'title' => 'Some title', 'author' => 'Adam James'],
+            'Retg23' => ['id' => 'retg23', 'title' => 'A Title', 'author' => 'Jane Jones'],
+            'fvbI43' => ['id' => 'fvbi43', 'title' => 'Some title words', 'author' => 'Sam Smith'],
+            'MggEd3' => ['id' => 'mgged3', 'title' => 'Book', 'author' => 'Will Adams'],
+        ];
+        $this->assertSame($expected, $sortBookByAuthor($dataBooks));
+
+
+        $result = $sortBookByAuthor($dataBooks);
+
+
+
+        dump($result);
     }
 }
