@@ -193,7 +193,6 @@ class DocsExampleTest extends TestCase
         $firstFoo = Str\firstPosition('foo');
         $result = $firstFoo('abcdefoog');
         $this->assertEquals(5, $result);
-        dump($result);
     }
 
     /** @testdox README : Use takeWhile() and takeUntil() with games data */
@@ -255,7 +254,7 @@ class DocsExampleTest extends TestCase
         $this->assertEquals($expected, $runningTotal($payments));
     }
 
-    /** @testdox description */
+    /** @testdox README : use groupBy and Partition*/
     public function testGroupByAndPartition(): void
     {
         $data = [
@@ -356,11 +355,9 @@ class DocsExampleTest extends TestCase
         ];
 
         $this->assertSame($expected, $over21($data));
-
-
-        dump($over21($data));
     }
 
+    /** @testdox README : use sort, ksort and uasort */
     public function testArraySort(): void
     {
         $dataWords = ['Zoo', 'cat', 'Dog', 'ant', 'bat', 'Cow'];
@@ -368,9 +365,6 @@ class DocsExampleTest extends TestCase
 
         $expected = ['ant', 'bat', 'cat', 'Cow', 'Dog', 'Zoo'];
         $this->assertSame($expected, $sortWords($dataWords));
-
-
-
 
 
         $dataBooks = [
@@ -401,12 +395,5 @@ class DocsExampleTest extends TestCase
             'MggEd3' => ['id' => 'mgged3', 'title' => 'Book', 'author' => 'Will Adams'],
         ];
         $this->assertSame($expected, $sortBookByAuthor($dataBooks));
-
-
-        $result = $sortBookByAuthor($dataBooks);
-
-
-
-        dump($result);
     }
 }
