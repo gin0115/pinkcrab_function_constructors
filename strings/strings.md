@@ -1,4 +1,16 @@
-# Strings\wrap()  
+# Strings
+
+> A collection of functions which can be used to work with strings. They have broken down into the following sub sections.
+
+<div class="vmenu-wrapper">
+    <div class="vmenu-item">Foo</div>
+    <div class="vmenu-item">Foo</div>
+    <div class="vmenu-item">Foo</div>
+<div>
+
+
+
+## Strings\wrap()  
   
 Creates a closure that can be used to wrap a string with a definable opening and closing val
 ues.  
@@ -30,7 +42,7 @@ var_dump($string); // ['##string1##', '##string2##','##string3##']
 
 ***
 
-# Strings\tagWrap()  
+## Strings\tagWrap()  
 
 Creates a closure that can be used to wrap a string with a definable opening and closing tag.
 
