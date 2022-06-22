@@ -6,7 +6,7 @@
     <div class="vmenu-item">Foo</div>
     <div class="vmenu-item">Foo</div>
     <div class="vmenu-item">Foo</div>
-<div>
+</div>
 
 
 
