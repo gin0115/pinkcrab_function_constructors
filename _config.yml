@@ -1,5 +1,36 @@
-remote_theme: just-the-docs/just-the-docs
-color_scheme: dark
+# https://github.com/mmistakes/minimal-mistakes/blob/master/_config.yml
+
+
+github_username: username
+minimal_mistakes_skin: default
+search: true
+
+plugins:
+  - jekyll-paginate
+  - jekyll-sitemap
+  - jekyll-gist
+  - jekyll-feed
+  - jemoji
+  - jekyll-include-cache
+
+# Build settings
+remote_theme: mmistakes/minimal-mistakes
 aux_links:
   "Function Constructors":
     - "//github.com/gin0115/pinkcrab_function_constructors"
+
+title: Function Constructors
+tagline: Create functions from functions with PHP
+description: >-
+  A package which allow for the use of common PHP Functions via partial application, ideal
+  for creating new functions on the fly or piped.
+
+name                     : "Glynn Quelch | PinkCrab"
+url: https://gin0115.github.io/pinkcrab_function_constructors
+repository: gin0115/pinkcrab_function_constructors
+
+## All custom collections
+collections:
+  strings:
+    output: true
+    permalink: /strings/:title.html
