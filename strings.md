@@ -1,6 +1,6 @@
 ---
 layout: base
-title: String Functions
+title: Strings
 subtitle: Archive of all functions in the Strings namespace.
 ---
 
@@ -11,7 +11,7 @@ subtitle: Archive of all functions in the Strings namespace.
   >> <a href="{{ page.url | absolute_url }}">{{page.title}}</a>
 </div>
 
-> A collection of functions which can be used to work with strings. They have broken down into the following sub sections.
+> A collection of functions which can be used to work with strings.
 
 
 ## String Functions.
