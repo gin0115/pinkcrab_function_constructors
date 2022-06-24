@@ -20,7 +20,7 @@
                 <div class="card-body">
                     <h2 class="card-title">{{ function.title }}</h2>
                     <p class="card-text">{{  function.subtitle }}</p>
-                    <a href="{{ function.url | absolute_url }}" class="btn btn-primary">Go somewhere {{ function.url  }} {{function.url | absolute_url}}</a>
+                    <a href="{{ function.url | absolute_url }}" class="btn btn-primary">Go somewhere {{ function.url  }} - {{function.url | absolute_url}}</a>
                 </div>
             </div>
         </div>
