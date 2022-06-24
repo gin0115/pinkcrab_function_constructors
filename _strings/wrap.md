@@ -1,7 +1,7 @@
 ---
 layout: function
 title: Strings\wrap()
-subtitle: Creates a pure function that wraps a string with defined values.
+subtitle: Allows you to create a function which wraps any passed string with opening and closing strings. These can either be used as part of a Higher Order Function such as array_map() or as part of a compiled/pipe function.
 group: strings
 subgroup: string_manipulation
 definition: >
@@ -21,8 +21,6 @@ closure: >
  $function(string $toWrap): string
 
 ---
-
-`wrap()` allows you to create a function which wraps any passed string with opening and closing strings.
 
 ### Examples
 

@@ -53,8 +53,9 @@ $width in $breakpoints {
             margin: 0;
             margin-top: 2rem;
         }
-        p {
-            margin: 0;
+        .small-desciption {
+            font-size: 16px;
+            margin: 0.25rem 0;
         }
         figure.highlight {
             margin: 0;
@@ -74,8 +75,18 @@ $width in $breakpoints {
 }
 
 details.details__example {
+    margin: 0.25rem 0;
+    &[open]>summary {
+        list-style-type: 'ℹ️ ';
+    }
     summary {
         cursor: pointer;
+        list-style-type: 'ℹ️ ';
+        background-color: #e3e3e3;
+        padding: 0.25rem;
+        color: #487a8b;
+        font-size: 16px;
+        line-height: 19px;
     }
     .details__content {
         p {
@@ -86,10 +97,9 @@ details.details__example {
             width: 100%;
             display: block;
         }
-        margin: 0.5rem;
-        padding: 0.5rem;
-        background-color: $light-gray;
-        border-radius: 15px;
+        padding: 0.25rem;
+        background-color: #e3e3e3;
+        font-size: 16px;
     }
 }
 
