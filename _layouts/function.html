@@ -40,7 +40,7 @@ layout: default
     <h3><em>{{ page.group | capitalize }}</em> Functions</h3>
     <ul>
         {% for related in site.strings %}
-            <li><a href="{{ related.url }}">{{ related.title }}</a></li>
+            <li><a href="{{ related.url | absolute_url }}">{{ related.title }}</a></li>
         {% endfor %}
     </ul>
 </div>
@@ -50,7 +50,7 @@ layout: default
     <ul> 
         {% for related in site.strings %}
         {% if related.subgroup == page.subgroup and related.title != page.title  %}
-            <li><a href="{{ related.url }}">{{ related.title }}</a></li>
+            <li><a href="{{ related.url | absolute_url }}">{{ related.title }}</a></li>
         {% endif %}
         {% endfor %}
     </ul>
