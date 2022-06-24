@@ -1,15 +1,15 @@
+---
+layout: base
+title: String Functions
+subtitle: Archive of all functions in the Strings namespace.
+---
+
 # Strings
 
 > A collection of functions which can be used to work with strings. They have broken down into the following sub sections.
 
-<div class="vmenu-wrapper">
-    <div class="vmenu-item">String Manipulation</div>
-    <div class="vmenu-item">Foo</div>
-    <div class="vmenu-item">Foo</div>
-</div>
 
 ## String Functions.
-
 
 <div class="container">
     <div class="grid all-functions">
