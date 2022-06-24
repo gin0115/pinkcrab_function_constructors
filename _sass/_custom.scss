@@ -1,0 +1,73 @@
+#string-functions {
+    color: red;
+}
+
+// GRID
+$columns: 12;
+$gap: 30px;
+$breakpoints: ( xs: 480px, sm: 768px, md: 960px, lg: 1170px, xl: 1280px);
+@mixin create-selectors($breakpoint: null) {
+    $infix: if($breakpoint==null, '', '-#{$breakpoint}');
+    @for $i from 1 through $columns {
+        .col#{$infix}-#{$i} {
+            grid-column-end: span $i;
+        }
+        .col-offset#{$infix}-#{$i} {
+            grid-column-start: $i + 1;
+        }
+        .row#{$infix}-#{$i} {
+            grid-row-end: span $i;
+        }
+        .row-offset#{$infix}-#{$i} {
+            grid-row-start: $i + 1;
+        }
+    }
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat($columns, 1fr);
+    grid-gap: $gap;
+    gap: $gap;
+}
+
+@include create-selectors;
+@each $breakpoint,
+$width in $breakpoints {
+    @media (min-width: $width) {
+        @include create-selectors($breakpoint);
+    }
+}
+
+.initial-content {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.function {
+    &__definition,
+    &__closure {
+        h3 {
+            margin: 0;
+            margin-top: 2rem;
+        }
+        p {
+            margin: 0;
+        }
+        figure.highlight {
+            margin: 0;
+        }
+    }
+    &__content {
+        p:first-child {
+            margin-top: 0;
+        }
+        h3 {
+            margin: 0;
+        }
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid $light-gray;
+    }
+}

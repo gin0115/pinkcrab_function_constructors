@@ -1,6 +1,6 @@
 ---
 layout: function
-title: Strings\wrap()
+title: Strings\wrapTag()
 subtitle: Creates a pure function that wraps a string with defined values.
 group: strings
 subgroup: string_manipulation

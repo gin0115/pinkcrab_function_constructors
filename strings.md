@@ -11,11 +11,34 @@
 ## String Functions.
 
 
-[Link button](http://example.com/){: .btn .btn-green }
- 
+[Link button](http://example.com/){: .btn .btn-green }  
 
+
+**Watch out!** This paragraph of text has been [emphasized](#) with the `{: .notice--danger}` class.
+{: .notice--danger}  
+
+<div class="row">
+  <div class="col-1-of-4">
+      Col 1 of 2
+  </div>
+  <div class="col-1-of-2">
+      Col 1 of 2
+  </div>
+  <div class="col-1-of-2">
+      Col 1 of 2
+  </div>
+  <div class="col-1-of-2">
+      Col 1 of 2
+  </div>
+  <div class="col-1-of-2">
+      Col 1 of 2
+  </div>
+</div>
+
+
+[Text](#link){: .btn .btn--light-outline}  
 <div class="container">
-    <div class="row">
+    <div class="d">
     {% for function in site.strings %}
 
         <div class="col-xs-12 col-md-6 {{ function.subgroup }}">
@@ -23,7 +46,7 @@
                 <div class="card-body">
                     <h2 class="card-title">{{ function.title }}</h2>
                     <p class="card-text">{{  function.subtitle }}</p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                    <a href="{{ function.url }}" class="btn btn-primary">Go somewhere</a>
                 </div>
             </div>
         </div>
@@ -31,5 +54,12 @@
     {% endfor %} 
 
     </div>
+</div>
+
+
+<div class="grid">
+    <div class="col-12 col-md-4">I'm a column 2/3 wide</div>
+    <div class="col-12 col-md-4">I'm a column 1/3 wide</div>
+    <div class="col-12 col-md-4">I'm a column 1/3 wide</div>
 </div>
 

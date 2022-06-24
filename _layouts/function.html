@@ -1,0 +1,57 @@
+---
+layout: default
+---
+
+<h1>{{ page.title }}</h1>
+
+<div class="function__subtitle">
+    <p>  
+        {% if page.subtitle %}  
+            {{ page.subtitle }}  
+        {% else %}  
+            <span class="notice--danger">This function has no description defined.</span>
+        {% endif %}   
+    </p>
+</div>
+
+<div class="function__definition">
+        {% if page.definition %}  
+{% highlight php %}
+{{ page.definition }}
+{% endhighlight %}
+        {% endif %}
+</div>
+
+<div class="function__closure">
+        {% if page.closure %}  
+        <h3>Returned Closure</h3>
+        <p>The closure returned by this function is used to call the function.</p>
+{% highlight php %}
+{{ page.closure }}
+{% endhighlight %}
+        {% endif %}
+</div>
+
+<div class="function__content">
+    {{content}}
+</div>
+
+<div class="function__releated-group">
+    <h3><em>{{ page.group | capitalize }}</em> Functions</h3>
+    <ul>
+        {% for related in site.strings %}
+            <li><a href="{{ related.url }}">{{ related.title }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
+
+<div class="function__releated-subgroup">
+    <h3>Releated <em>{{ page.subgroup | capitalize | replace: "_", " "  }}</em> Functions</h3>
+    <ul> 
+        {% for related in site.strings %}
+        {% if related.subgroup == page.subgroup and related.title != page.title  %}
+            <li><a href="{{ related.url }}">{{ related.title }}</a></li>
+        {% endif %}
+        {% endfor %}
+    </ul>
+</div>
