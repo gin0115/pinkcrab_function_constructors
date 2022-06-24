@@ -11,32 +11,6 @@
 ## String Functions.
 
 
-[Link button](http://example.com/){: .btn .btn-green }  
-
-
-**Watch out!** This paragraph of text has been [emphasized](#) with the `{: .notice--danger}` class.
-{: .notice--danger}  
-
-<div class="row">
-  <div class="col-1-of-4">
-      Col 1 of 2
-  </div>
-  <div class="col-1-of-2">
-      Col 1 of 2
-  </div>
-  <div class="col-1-of-2">
-      Col 1 of 2
-  </div>
-  <div class="col-1-of-2">
-      Col 1 of 2
-  </div>
-  <div class="col-1-of-2">
-      Col 1 of 2
-  </div>
-</div>
-
-
-[Text](#link){: .btn .btn--light-outline}  
 <div class="container">
     <div class="d">
     {% for function in site.strings %}
@@ -46,7 +20,7 @@
                 <div class="card-body">
                     <h2 class="card-title">{{ function.title }}</h2>
                     <p class="card-text">{{  function.subtitle }}</p>
-                    <a href="{{ function.url | absolute_url }}" class="btn btn-primary">Go somewhere {{ function.url | absolute_url }}</a>
+                    <a href="{{ function.url | absolute_url }}" class="btn btn-primary">Go somewhere {{ function.url  }} {{function.url | absolute_url}}</a>
                 </div>
             </div>
         </div>
