@@ -16,6 +16,7 @@ closure: >
  /**
    * @param string $toWrap  The string to be wrapped
    * @return string         The wrapped string
+   * @psalm-pure
    */ 
  $function(string $toWrap): string
 
