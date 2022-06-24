@@ -4,6 +4,11 @@ layout: default
 
 <h1>{{ page.title }}</h1>
 
+<div class="breadcrumbs">
+  >> <a href="{{ site.url }}">Home</a> 
+  >> <a href="{{ site.url }}/{{page.group}}.html">{{page.group}}</a>
+</div>
+
 <div class="function__subtitle">
     <p>  
         {% if page.subtitle %}  

@@ -26,20 +26,21 @@ closure: >
 
 ### Examples
 
-This can used to create a simple closure which can be used as a regular function.
+{% include partials/as-closure.md %}
 
 ```php
 $makeSpan = Strings\wrap('<span>', '</span>');
 echo $makeSpan('Hello'); // <span>Hello</span>
 ```
 
-This can also be used straight away as a curried function.
+{% include partials/as-curried.md %}
     
 ```php
 echo Strings\wrap('##')('Hello'); // ##Hello##
 ```
 
-As a callable for a higher order function like `array_map()`
+{% include partials/for-higher-order.md %}
+
 
 ```php
 $array = array_map

@@ -40,7 +40,8 @@ $width in $breakpoints {
 }
 
 .initial-content {
-    max-width: 1200px;
+    max-width: 1000px;
+    width: 1000px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -69,5 +70,25 @@ $width in $breakpoints {
         margin-top: 2rem;
         padding-top: 2rem;
         border-top: 1px solid $light-gray;
+    }
+}
+
+details.details__example {
+    summary {
+        cursor: pointer;
+    }
+    .details__content {
+        p {
+            margin: 0;
+        }
+        a {
+            text-align: center;
+            width: 100%;
+            display: block;
+        }
+        margin: 0.5rem;
+        padding: 0.5rem;
+        background-color: $light-gray;
+        border-radius: 15px;
     }
 }
