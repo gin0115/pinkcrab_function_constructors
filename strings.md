@@ -12,10 +12,12 @@
 
 
 <div class="container">
-    <div class="d">
+    <div class="grid all-functions">
     {% for function in site.strings %}
-
-        <div class="col-xs-12 col-md-6 {{ function.subgroup }}">
+        <div class="col-12 col-md-4">
+            <a href="{{ site.url }}{{ function.url}}">{{ function.title }}</a>
+        </div>
+        <!-- <div class="col-xs-12 col-md-6 {{ function.subgroup }}">
             <div class="card">
                 <div class="card-body">
                     <h2 class="card-title">{{ function.title }}</h2>
@@ -23,10 +25,8 @@
                     <a href="{{ site.url }}{{ function.url}}" class="btn btn-primary">Read Function Docs</a>
                 </div>
             </div>
-        </div>
-   
+        </div> -->
     {% endfor %} 
-
     </div>
 </div>
 
