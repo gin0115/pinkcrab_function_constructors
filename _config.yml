@@ -1,7 +1,7 @@
 # https://github.com/mmistakes/minimal-mistakes/blob/master/_config.yml
 
 
-github_username: username
+github_username: gin0115
 minimal_mistakes_skin: default
 search: true
 
@@ -27,7 +27,7 @@ description: >-
 
 name                     : "Glynn Quelch | PinkCrab"
 url: https://gin0115.github.io/pinkcrab_function_constructors/
-baseurl: /pinkcrab_function_constructors
+# baseurl: /pinkcrab_function_constructors
 repository: gin0115/pinkcrab_function_constructors
 
 ## All custom collections
