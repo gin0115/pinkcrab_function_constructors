@@ -4,7 +4,12 @@ title: String Functions
 subtitle: Archive of all functions in the Strings namespace.
 ---
 
-# Strings
+<h1 class="page-title">{{ page.title }}</h1>
+
+<div class="breadcrumbs">
+  <a href="{{ site.url | absolute_url  }}">Home</a> 
+  >> <a href="{{ page.url | absolute_url }}">{{page.title}}</a>
+</div>
 
 > A collection of functions which can be used to work with strings. They have broken down into the following sub sections.
 
