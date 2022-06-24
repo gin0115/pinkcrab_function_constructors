@@ -21,6 +21,7 @@
                     <h2 class="card-title">{{ function.title }}</h2>
                     <p class="card-text">{{  function.subtitle }}</p>
                     <a href="{{ function.url | absolute_url }}" class="btn btn-primary">Go somewhere {{ function.url  }} - {{function.url | absolute_url}}</a>
+                    <a href="{{ function.url | absolute_url }}" class="btn btn-primary">Base - post</a>
                 </div>
             </div>
         </div>
@@ -30,7 +31,7 @@
     </div>
 </div>
 
-
+{{ site.url }}
 <div class="grid">
     <div class="col-12 col-md-4">I'm a column 2/3 wide</div>
     <div class="col-12 col-md-4">I'm a column 1/3 wide</div>
