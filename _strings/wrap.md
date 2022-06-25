@@ -24,26 +24,50 @@ closure: >
 
 ### Examples
 
-{% include partials/as-closure.md %}
-
-```php
+<div class="panel">
+    <h4 class="panel__title">        Partial Application</h4>
+    <div class="panel__content">
+        <p>
+            This can be used to create a simple closure which can be used as a regular function.
+        </p>
+{% highlight php %}
+// Create the closure to wrap any string with a <span> tag
 $makeSpan = Strings\wrap('<span>', '</span>');
+
+// Called as a function.
 echo $makeSpan('Hello'); // <span>Hello</span>
-```
 
-{% include partials/as-curried.md %}
-    
-```php
+// Used in a higher order function.
+$array = array_map( $makeSpan, ['Hello', 'World']);
+print_r($array); // [<span>Hello</span>, <span>World</span>]
+{% endhighlight %}
+    </div>
+</div>
+
+<div class="panel">
+    <h4 class="panel__title">        Curried</h4>
+    <div class="panel__content">
+        <p>
+            You can use currying to directly define can call the function as it is, without defining the Closure first.
+        </p>
+{% highlight php %}
 echo Strings\wrap('##')('Hello'); // ##Hello##
-```
-
-{% include partials/for-higher-order.md %}
-
-
-```php
+{% endhighlight %}
+    </div>
+</div>
+    
+<div class="panel">
+    <h4 class="panel__title">        Inlined with Higher Order Function</h4>
+    <div class="panel__content">
+        <p>
+            If you are not planning on reusing the Closure created, you can just call it inline with a higher order function as its callable.
+        </p>
+{% highlight php %}
 $array = array_map
     Strings\wrap('<p>', '</p>'), 
     ['Hello', 'World']
 );
 print_r($array); // [<p>Hello</p>, <p>World</p>]
-```
+{% endhighlight %}
+    </div>
+</div>

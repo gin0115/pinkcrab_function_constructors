@@ -26,16 +26,18 @@ layout: default
 {% endhighlight %}
         {% endif %}
 </div>
-
-<div class="function__closure">
-        {% if page.closure %}  
-        <h3>Returned Closure</h3>
-        <p class="small-desciption">The closure returned by this function is used to call the function.</p>
+        
+{% if page.closure %}  
+    <div class="panel">
+        <h3 class="panel__title">Returned Closure</h3>
+        <div class="panel__content">
+            <p class="small-desciption">The closure returned by this function is used to call the function.</p>
 {% highlight php %}
 {{ page.closure }}
 {% endhighlight %}
-        {% endif %}
-</div>
+        </div>
+    </div>
+{% endif %}
 
 <div class="function__content">
     {{content}}
