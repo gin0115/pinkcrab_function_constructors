@@ -17,16 +17,6 @@ class StringFunctionTest extends TestCase
         FunctionsLoader::include();
     }
 
-    public function testCanWrapStringWithHTMLTags(): void
-    {
-        $asDiv = Str\tagWrap('div class="test"', 'div');
-        $this->assertEquals('<div class="test">HI</div>', $asDiv('HI'));
-        $this->assertEquals('<div class="test">123</div>', $asDiv('123'));
-
-        $asLi = Str\tagWrap('li');
-        $this->assertEquals('<li>HI</li>', $asLi('HI'));
-        $this->assertEquals('<li>123</li>', $asLi('123'));
-    }
 
     public function testCanWrapString(): void
     {
@@ -37,21 +27,6 @@ class StringFunctionTest extends TestCase
         $bar = Str\wrap('\/');
         $this->assertEquals('\/HI\/', $bar('HI'));
         $this->assertEquals('\/123\/', $bar('123'));
-    }
-
-    public function testCanMakeUrl(): void
-    {
-        $makeUrl = Str\asUrl('http://test.com');
-        $this->assertEquals(
-            "<a href='http://test.com'>test</a>",
-            $makeUrl('test')
-        );
-
-        $makeUrlBlank = Str\asUrl('http://test.com', '_blank');
-        $this->assertEquals(
-            "<a href='http://test.com' target='_blank'>test</a>",
-            $makeUrlBlank('test')
-        );
     }
 
     public function testCanPrependString(): void
