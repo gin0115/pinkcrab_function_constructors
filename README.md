@@ -574,6 +574,8 @@ If you would like to contribute to this project, please feel to fork the project
 > * **Breaking Changes**
 > * `GeneralFunctions\pipe()` & `GeneralFunctions\pipeR()` have now changed and are no longer alias for `compose()`
 > * `GeneralFunctions\setProperty()` now takes the property argument when creating the Closure.
+> * `Strings\tagWrap()` has been removed
+> * `Strings\asUrl()` has been removed
 > * **Other Changes**
 > * Constants added using the `Functions` class-name, `Functions::isBlank` can be used as a string for a callable.
 

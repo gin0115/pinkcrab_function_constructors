@@ -29,6 +29,17 @@ class StringFunctionTest extends TestCase
         $this->assertEquals('\/123\/', $bar('123'));
     }
 
+    /** @testdox It should be possible to split a string by defining a start point with an optional length. */
+    public function testCanSliceString(): void
+    {
+        $first5 = Str\slice(0, 5);
+        $this->assertEquals('Hello', $first5('Hello World'));
+        $this->assertEquals('He', $first5('He'));
+
+        $skip5 = Str\slice(5);
+        $this->assertEquals('World', $skip5('HelloWorld'));
+    }
+
     public function testCanPrependString(): void
     {
         $prep10 = Str\prepend('10');
