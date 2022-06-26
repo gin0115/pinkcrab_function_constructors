@@ -54,55 +54,6 @@ function wrap(string $opening, ?string $closing = null): Closure
 }
 
 /**
- * Creates a callable for wrapping a string with html/xml style tags.
- * By defaults uses opening as closing, if no closing defined.
- *
- * @param string $openingTag
- * @param string|null $closingTag
- * @return Closure(string):string
- */
-function tagWrap(string $openingTag, ?string $closingTag = null): Closure
-{
-    /**
-     * @param string $string
-     * @return string
-     */
-    return function (string $string) use ($openingTag, $closingTag): string {
-        return \sprintf('<%s>%s</%s>', $openingTag, $string, $closingTag ?? $openingTag);
-    };
-}
-
-/**
- * Creates a callable for turning a string into a url.
- *
- * @param string $url
- * @param string|null $target
- * @return Closure(string):string
- */
-function asUrl(string $url, ?string $target = null): Closure
-{
-    /**
-     * @param string $string
-     * @return string
-     */
-    return function (string $string) use ($url, $target): string {
-        return $target ?
-            \sprintf(
-                "<a href='%s' target='%s'>%s</a>",
-                $url,
-                $target,
-                $string
-            ) :
-            \sprintf(
-                "<a href='%s'>%s</a>",
-                $url,
-                $string
-            );
-    };
-}
-
-
-/**
  * Creates a callable for slicing a string
  *
  * Uses substr()
@@ -180,7 +131,7 @@ function vSprintf(array $args = array()): Closure
  * Creates a double curried find to replace.
  *
  * @param string $find Value to look for
- * @return Closure(string):Closure(string):string
+ * @return Closure(string):Closure
  */
 function findToReplace(string $find): Closure
 {
