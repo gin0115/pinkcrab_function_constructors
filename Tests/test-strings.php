@@ -19,13 +19,18 @@ class StringFunctionTest extends TestCase
 
     public function testCanWrapStringWithHTMLTags(): void
     {
-        $asDiv = Str\tagWrap('div class="test"', 'div');
-        $this->assertEquals('<div class="test">HI</div>', $asDiv('HI'));
-        $this->assertEquals('<div class="test">123</div>', $asDiv('123'));
-
         $asLi = Str\tagWrap('li');
         $this->assertEquals('<li>HI</li>', $asLi('HI'));
         $this->assertEquals('<li>123</li>', $asLi('123'));
+
+        $asDiv = Str\tagWrap('div', ['class' => 'test']);
+        $this->assertEquals('<div class="test">HI</div>', $asDiv('HI'));
+        $this->assertEquals('<div class="test">123</div>', $asDiv('123'));
+
+        // With attibut with no value.
+        $asDiv = Str\tagWrap('div', ['data-foo' => null]);
+        $this->assertEquals('<div data-foo>HI</div>', $asDiv('HI'));
+        $this->assertEquals('<div data-foo>123</div>', $asDiv('123'));
     }
 
     public function testCanWrapString(): void

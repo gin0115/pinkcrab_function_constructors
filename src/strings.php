@@ -31,6 +31,7 @@ declare(strict_types=1);
 namespace PinkCrab\FunctionConstructors\Strings;
 
 use Closure;
+use PinkCrab\FunctionConstructors\Arrays as A;
 use PinkCrab\FunctionConstructors\Comparisons as C;
 use PinkCrab\FunctionConstructors\GeneralFunctions as F;
 
@@ -57,18 +58,26 @@ function wrap(string $opening, ?string $closing = null): Closure
  * Creates a callable for wrapping a string with html/xml style tags.
  * By defaults uses opening as closing, if no closing defined.
  *
- * @param string $openingTag
- * @param string|null $closingTag
+ * @param string $tag
+ * @param array<string,?string>|null $additionalAttributes
  * @return Closure(string):string
  */
-function tagWrap(string $openingTag, ?string $closingTag = null): Closure
+function tagWrap(string $tag, ?array $additionalAttributes = null): Closure
 {
     /**
      * @param string $string
      * @return string
      */
-    return function (string $string) use ($openingTag, $closingTag): string {
-        return \sprintf('<%s>%s</%s>', $openingTag, $string, $closingTag ?? $openingTag);
+    return function (string $string) use ($tag, $additionalAttributes): string {
+        $attributes = array_map(function (string $key, ?string $value): string {
+            return null === $value
+                ? \sprintf('%s', $key)
+                : \sprintf('%s="%s"', $key, $value);
+        }, array_keys($additionalAttributes ?? []), array_values($additionalAttributes ?? []));
+
+        $attributes = empty($attributes)
+            ? '' : ' ' . join(' ', $attributes);
+        return \sprintf('<%1$s%2$s>%3$s</%1$s>', $tag, $attributes, $string);
     };
 }
 
@@ -180,7 +189,7 @@ function vSprintf(array $args = array()): Closure
  * Creates a double curried find to replace.
  *
  * @param string $find Value to look for
- * @return Closure(string):Closure(string):string
+ * @return Closure(string):Closure
  */
 function findToReplace(string $find): Closure
 {
