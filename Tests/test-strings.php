@@ -37,7 +37,7 @@ class StringFunctionTest extends TestCase
         $this->assertEquals('He', $first5('He'));
 
         $skip5 = Str\slice(5);
-        $this->assertEquals('World', $skip5('HelloWorld'));
+        $this->assertEquals('WorldBar', $skip5('HelloWorldBar'));
     }
 
     public function testCanPrependString(): void
@@ -446,8 +446,8 @@ class StringFunctionTest extends TestCase
 
     public function testCanUseVSprintf()
     {
-        $formatter = Str\vSprintf(['alpha', '12', '12.5']);
-        $this->assertEquals('12alpha34-12-12.5-f', $formatter('12%s34-%s-%s-f'));
+        $formatter = Str\vSprintf('12%s34-%s-%s-f');
+        $this->assertEquals('12alpha34-12-12.5-f', $formatter(['alpha', '12', '12.5']));
     }
 
     /** @testdox It should be possible to check if a value is a string and is blank */
