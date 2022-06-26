@@ -59,24 +59,29 @@ function wrap(string $opening, ?string $closing = null): Closure
  * By defaults uses opening as closing, if no closing defined.
  *
  * @param string $tag
- * @param array<string,?string>|null $additionalAttributes
+ * @param array<string,?string>|null $attributes
  * @return Closure(string):string
  */
-function tagWrap(string $tag, ?array $additionalAttributes = null): Closure
+function tagWrap(string $tag, ?array $attributes = null): Closure
 {
     /**
      * @param string $string
      * @return string
      */
-    return function (string $string) use ($tag, $additionalAttributes): string {
+    return function (string $string) use ($tag, $attributes): string {
+
+        // Parse attributes into strings.
         $attributes = array_map(function (string $key, ?string $value): string {
+            // If the value is null, treat as a key only attribute.
             return null === $value
                 ? \sprintf('%s', $key)
                 : \sprintf('%s="%s"', $key, $value);
-        }, array_keys($additionalAttributes ?? []), array_values($additionalAttributes ?? []));
+        }, array_keys($attributes ?? []), array_values($attributes ?? []));
 
+        // Join attributes into a string, with leading space if any.
         $attributes = empty($attributes)
             ? '' : ' ' . join(' ', $attributes);
+
         return \sprintf('<%1$s%2$s>%3$s</%1$s>', $tag, $attributes, $string);
     };
 }
