@@ -112,17 +112,17 @@ function append(string $append): Closure
 /**
  * Returns a callable for formatting a string with a defined set of rules
  *
- * @param string $string
+ * @param string $template
  * @return Closure(array<string, mixed>):string
  */
-function vSprintf(string $string): Closure
+function vSprintf(string $template): Closure
 {
     /**
-     * @param array<string, mixed> $args
+     * @param array<string, mixed> $values
      * @return string Will return original string if false.
      */
-    return function (array $args = array()) use ($string): string {
-        return \vsprintf($string, $args);
+    return function (array $values = array()) use ($template): string {
+        return \vsprintf($template, $values);
     };
 }
 
