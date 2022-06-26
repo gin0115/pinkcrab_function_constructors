@@ -122,8 +122,7 @@ function vSprintf(string $string): Closure
      * @return string Will return original string if false.
      */
     return function (array $args = array()) use ($string): string {
-        $result = \vsprintf($string, $args);
-        return ! C\isFalse($result) ? $result : $string;
+        return \vsprintf($string, $args);
     };
 }
 
