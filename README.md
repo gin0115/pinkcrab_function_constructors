@@ -571,13 +571,16 @@ If you would like to contribute to this project, please feel to fork the project
 > * `Arrays\takeWhile()`
 > * `Objects\isInstanceOf()`
 > * `Objects\implementsInterface()`
+> * `Objects\toArray()`
 > * **Breaking Changes**
 > * `GeneralFunctions\pipe()` & `GeneralFunctions\pipeR()` have now changed and are no longer alias for `compose()`
 > * `GeneralFunctions\setProperty()` now takes the property argument when creating the Closure.
 > * `Strings\tagWrap()` has been removed
 > * `Strings\asUrl()` has been removed
+> * `Strings\vSprintf()` has has its arguments reversed.
 > * **Other Changes**
 > * Constants added using the `Functions` class-name, `Functions::isBlank` can be used as a string for a callable.
+> * `GeneralFunctions\toArray()` has been moved to `Objects\toArray()`, `Objects\toArray()` is now an alias for `GeneralFunctions\toArray()`
 
 * 0.1.2 - Added `Arrays\zip()`
 
