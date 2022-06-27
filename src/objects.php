@@ -92,3 +92,34 @@ function implementsInterface($interface): Closure
         );
     };
 }
+
+/**
+ * Returns a function for turning objects into arrays.
+ * Only takes public properties.
+ *
+ * @return Closure(object):array<string, mixed>
+ */
+function toArray(): Closure
+{
+    /**
+     * @param object $object
+     * @return array<string, mixed>
+     */
+    return function ($object): array {
+
+        // If not object, return empty array.
+        if (! is_object($object)) {
+            return array();
+        }
+
+        $objectVars = get_object_vars($object);
+        return array_reduce(
+            array_keys($objectVars),
+            function (array $array, $key) use ($objectVars): array {
+                $array[ ltrim((string) $key, '_') ] = $objectVars[ $key ];
+                return $array;
+            },
+            array()
+        );
+    };
+}

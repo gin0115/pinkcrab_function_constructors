@@ -17,9 +17,16 @@ use PinkCrab\FunctionConstructors\Numbers as Num;
 use PinkCrab\FunctionConstructors\Objects as Obj;
 use PinkCrab\FunctionConstructors\Strings as Str;
 use PinkCrab\FunctionConstructors\FunctionsLoader;
-use PinkCrab\FunctionConstructors\GeneralFunctions as Func;
 
+use PinkCrab\FunctionConstructors\GeneralFunctions as Func;
 use function PHPUnit\Framework\throwException;
+
+class ToArrayFixtureClassObj
+{
+    private $propA = 1;
+    protected $propB = 2;
+    public $propC = 3;
+}
 
 /**
  * Object class.
@@ -63,5 +70,37 @@ class ObjectTests extends TestCase
 
         $this->assertTrue(Obj\implementsInterface(Countable::class)($classWithCount));
         $this->assertFalse(Obj\implementsInterface(Countable::class)($classWithoutCount));
+    }
+
+    /** @testdox  */
+    public function testToArray(): void
+    {
+
+        // Create the simple to array wrapper.
+        $toArrray = Obj\toArray();
+
+        // Test with valid stdClass.
+        $obj = new stdClass();
+        $obj->propA = 1;
+        $obj->propB = 2;
+        $this->assertArrayHasKey('propA', $toArrray($obj));
+        $this->assertEquals(1, $toArrray($obj)['propA']);
+        $this->assertArrayHasKey('propB', $toArrray($obj));
+        $this->assertEquals(2, $toArrray($obj)['propB']);
+
+        // Test only valid public properties.
+        $obj = new ToArrayFixtureClassObj();
+        $this->assertArrayNotHasKey('propA', $toArrray($obj));
+        $this->assertArrayNotHasKey('propB', $toArrray($obj));
+        $this->assertArrayHasKey('propC', $toArrray($obj));
+        $this->assertEquals(3, $toArrray($obj)['propC']);
+
+        // Check it returns blank array if any other value passed.
+        $this->assertEmpty($toArrray(false));
+        $this->assertEmpty($toArrray(null));
+        $this->assertEmpty($toArrray([1,2,3,4]));
+        $this->assertEmpty($toArrray(1));
+        $this->assertEmpty($toArrray(2.5));
+        $this->assertEmpty($toArrray('STRING'));
     }
 }
