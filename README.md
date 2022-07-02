@@ -569,6 +569,8 @@ If you would like to contribute to this project, please feel to fork the project
    * `Arrays\takeLast()`
    * `Arrays\takeUntil()`
    * `Arrays\takeWhile()`
+   * `Arrays\filterAny()`
+   * `Arrays\filterAll()`
    * `Objects\isInstanceOf()`
    * `Objects\implementsInterface()`
    * `Objects\toArray()`

@@ -235,7 +235,6 @@ function filterKey(callable $callable): Closure
     };
 }
 
-
 /**
  * Creates a Closure for running an array through various callbacks for all true response.
  * Wrapper for creating a AND group of callbacks and running through array filter.
@@ -375,8 +374,50 @@ function partition(callable $function): Closure
     };
 }
 
+/**
+ * Returns a closure for checking all elements pass a filter.
+ *
+ * @param callable(mixed):bool $function
+ * @return Closure(mixed[]):bool
+ */
+function filterAll(callable $function): Closure
+{
+    /**
+     * @param mixed[] $array
+     * @return bool
+     */
+    return function (array $array) use ($function): bool {
+        foreach ($array as $value) {
+            if (false === $function($value)) {
+                return false;
+            }
+        }
+        return true;
+    };
+}
 
 
+/**
+ * Returns a closure for checking any elements pass a filter.
+ *
+ * @param callable(mixed):bool $function
+ * @return Closure(mixed[]):bool
+ */
+function filterAny(callable $function): Closure
+{
+    /**
+     * @param mixed[] $array
+     * @return bool
+     */
+    return function (array $array) use ($function): bool {
+        foreach ($array as $value) {
+            if (true === $function($value)) {
+                return true;
+            }
+        }
+        return false;
+    };
+}
 
 
 /*
@@ -1045,7 +1086,7 @@ function takeLast(int $count = 1): Closure
     // If count is 0, return an empty array
     if ($count === 0) {
         return function (array $array) {
-            return [];
+            return array();
         };
     }
 
