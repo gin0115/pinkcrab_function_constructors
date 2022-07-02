@@ -32,8 +32,7 @@
             "src/comparisons.php",
             "src/general.php",
             "src/strings.php",
-            "src/numbers.php",
-            "src/objects.php"
+            "src/numbers.php"
         ]
     },
     "autoload-dev": {
