@@ -180,7 +180,7 @@ function vSprintf(array $args = array()): Closure
  * Creates a double curried find to replace.
  *
  * @param string $find Value to look for
- * @return Closure(string):Closure(string):string
+ * @return Closure(string):Closure
  */
 function findToReplace(string $find): Closure
 {
