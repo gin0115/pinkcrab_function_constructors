@@ -579,6 +579,7 @@ If you would like to contribute to this project, please feel to fork the project
    * `Arrays\filterAny()`
    * `Arrays\filterAll()`
    * `Arrays\mapWithKey()`
+   * `Arrays\each()`
    * `Objects\isInstanceOf()`
    * `Objects\implementsInterface()`
    * `Objects\toArray()`
