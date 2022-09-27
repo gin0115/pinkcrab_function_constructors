@@ -517,6 +517,29 @@ function mapWithKey(callable $func): Closure
 }
 
 /**
+ * Returns a Closure foreaching over an array
+ *
+ * @param callable(int|string $key, mixed $value):void $func
+ * @return Closure(mixed[]):void
+ */
+function each(callable $func): Closure
+{
+    /**
+     * @param mixed[] $array The array to map
+     * @return void
+     */
+    return function (array $array) use ($func): void {
+        array_map(
+            function ($key, $value) use ($func) {
+                $func($key, $value);
+            },
+            array_keys($array),
+            $array
+        );
+    };
+}
+
+/**
  * Returns a Closure for flattening and mapping an array
  *
  * @param callable(mixed):mixed $function The function to map the element. (Will no be called if resolves to array)

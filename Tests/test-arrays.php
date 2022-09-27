@@ -645,4 +645,18 @@ class ArrayFunctionTests extends TestCase
         });
         $this->assertEquals($expected, $map($data));
     }
+
+    /** @testdox It should be possible to iterate over an array and have access to the key and value.  */
+    public function testIterateWithKeys(): void
+    {
+        $data = ['a' => 'pple', 'b' => 'anana', 'c' => 'arrot'];
+
+        $this->expectOutputString('applebananacarrot');
+
+        $iterate = Arr\each(function (string $key, string $value) {
+            echo $key . $value;
+        });
+
+        $iterate($data);
+    }
 }
