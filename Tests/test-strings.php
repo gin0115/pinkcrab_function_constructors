@@ -90,11 +90,11 @@ class StringFunctionTest extends TestCase
 
     public function testCanReplaceSubStrings()
     {
-        $atStart = Str\replaceSubString('PHP');
-        $startAt10 = Str\replaceSubString('PHP', 10);
+        $atStart       = Str\replaceSubString('PHP');
+        $startAt10     = Str\replaceSubString('PHP', 10);
         $startAt10For5 = Str\replaceSubString('PHP', 10, 5);
 
-        $string = "abcdefghijklmnopqrstuvwxyz";
+        $string = 'abcdefghijklmnopqrstuvwxyz';
 
         $this->assertEquals('PHP', $atStart($string));
         $this->assertEquals('abcdefghijPHP', $startAt10($string));
@@ -135,10 +135,10 @@ class StringFunctionTest extends TestCase
 
     public function testCanSplitStringWithPattern()
     {
-        $splitter = Str\splitPattern("/-/");
-        $date1 = "1970-01-01";
-        $date2 = "2020-11-11";
-        $dateFail = "RETURNED1";
+        $splitter = Str\splitPattern('/-/');
+        $date1    = '1970-01-01';
+        $date2    = '2020-11-11';
+        $dateFail = 'RETURNED1';
 
         $this->assertEquals('1970', $splitter($date1)[0]);
         $this->assertEquals('01', $splitter($date1)[1]);
@@ -153,12 +153,12 @@ class StringFunctionTest extends TestCase
 
     public function testCanFormatDecimalNumber()
     {
-        $eightDecimalPlaces = Str\decimalNumber(8);
-        $tenDecimalPlaces = Str\decimalNumber(10);
+        $eightDecimalPlaces  = Str\decimalNumber(8);
+        $tenDecimalPlaces    = Str\decimalNumber(10);
         $doubleDecimalPlaces = Str\decimalNumber(2);
 
         $this->assertEquals('3.50000000', $eightDecimalPlaces(3.5));
-        $this->assertEquals('2.6580000000', $tenDecimalPlaces("2.658"));
+        $this->assertEquals('2.6580000000', $tenDecimalPlaces('2.658'));
         $this->assertEquals('3.14', $doubleDecimalPlaces(M_PI));
 
         // With thousand separator
@@ -209,7 +209,7 @@ class StringFunctionTest extends TestCase
             Str\append('99')
         );
 
-        $results = array_map($function, array('1a2', '1b3', '1t4'));
+        $results = array_map($function, array( '1a2', '1b3', '1t4' ));
         $this->assertEquals('001_a_299', $results[0]);
         $this->assertEquals('001b399', $results[1]);
         $this->assertEquals('001-t-499', $results[2]);
@@ -252,50 +252,49 @@ class StringFunctionTest extends TestCase
     public function testCanwordWrap()
     {
         $loose10 = Str\wordWrap(10, '--');
-        $tight5 = Str\wordWrap(5, '--', true);
+        $tight5  = Str\wordWrap(5, '--', true);
 
-        $string = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        $string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $this->assertEquals('ABCDEFGHIJKLMNOPQRSTUVWXYZ', $loose10($string));
         $this->assertEquals('ABCDE--FGHIJ--KLMNO--PQRST--UVWXY--Z', $tight5($string));
 
-        $string = "ABCDEF GHIJK LMN OPQ RST UV WX YZ";
+        $string = 'ABCDEF GHIJK LMN OPQ RST UV WX YZ';
         $this->assertEquals('ABCDEF--GHIJK LMN--OPQ RST UV--WX YZ', $loose10($string));
         $this->assertEquals('ABCDE--F--GHIJK--LMN--OPQ--RST--UV WX--YZ', $tight5($string));
     }
 
     public function testCanDoTrim()
     {
-        $trimZ = Str\trim("zZ");
-        $this->assertEquals('44455', $trimZ("zzzz44455ZZZZZZZZZ"));
+        $trimZ = Str\trim('zZ');
+        $this->assertEquals('44455', $trimZ('zzzz44455ZZZZZZZZZ'));
 
+        $trimAB = Str\lTrim('AB');
+        $this->assertEquals('STD', $trimAB('ABSTD'));
+        $this->assertEquals('HFJKGHDJKGHFJKFGJKFGJK', $trimAB('ABHFJKGHDJKGHFJKFGJKFGJK'));
 
-        $trimAB = Str\lTrim("AB");
-        $this->assertEquals('STD', $trimAB("ABSTD"));
-        $this->assertEquals('HFJKGHDJKGHFJKFGJKFGJK', $trimAB("ABHFJKGHDJKGHFJKFGJKFGJK"));
-
-        $trimIU = Str\trim("IU");
-        $this->assertEquals('RESSTD', $trimIU("IURESSTDIU"));
-        $this->assertEquals('TREHFJKGHDJKGHFJKFGJKFGJK', $trimIU("IUIUIUTREHFJKGHDJKGHFJKFGJKFGJKIUIUIUIUIUIUIUIUIUIU"));
+        $trimIU = Str\trim('IU');
+        $this->assertEquals('RESSTD', $trimIU('IURESSTDIU'));
+        $this->assertEquals('TREHFJKGHDJKGHFJKFGJKFGJK', $trimIU('IUIUIUTREHFJKGHDJKGHFJKFGJKFGJKIUIUIUIUIUIUIUIUIUIU'));
 
         $this->assertEquals('CLEAR', Str\trim()("\t\nCLEAR\r\0"));
 
-        $trimYZ = Str\rTrim("YZ");
-        $this->assertEquals('STD', $trimYZ("STDYZ"));
-        $this->assertEquals('ABHFJKGHDJKGHFJKFGJKFGJK', $trimYZ("ABHFJKGHDJKGHFJKFGJKFGJKYZ"));
+        $trimYZ = Str\rTrim('YZ');
+        $this->assertEquals('STD', $trimYZ('STDYZ'));
+        $this->assertEquals('ABHFJKGHDJKGHFJKFGJKFGJK', $trimYZ('ABHFJKGHDJKGHFJKFGJKFGJKYZ'));
     }
 
     public function testCanDosimilarAsBase()
     {
-        $compareTheBaseAsChars = Str\similarAsBase("THE BASE");
-        $compareTheBaseAsPC = Str\similarAsBase("THE BASE", true);
+        $compareTheBaseAsChars = Str\similarAsBase('THE BASE');
+        $compareTheBaseAsPC    = Str\similarAsBase('THE BASE', true);
         $this->assertEquals(4, $compareTheBaseAsChars('BASE'));
-        $this->assertEquals((6 / 9) * 100, $compareTheBaseAsPC('BASE'));
+        $this->assertEquals(round((6 / 9), 4) * 100, round($compareTheBaseAsPC('BASE'), 2));
     }
 
     public function testCanDosimilarAsComparisson()
     {
-        $compareTheBaseAsChars = Str\similarAsComparison("BASE");
-        $compareTheBaseAsPC = Str\similarAsComparison("BASE", true);
+        $compareTheBaseAsChars = Str\similarAsComparison('BASE');
+        $compareTheBaseAsPC    = Str\similarAsComparison('BASE', true);
         $this->assertEquals(4, $compareTheBaseAsChars('THE BASE'));
 
         // This is not the calc done in the fucntion, but give the desired answer simpler!
@@ -304,9 +303,9 @@ class StringFunctionTest extends TestCase
 
     public function testCanPadStrings()
     {
-        $padLeft10 = Str\pad(10, '.', STR_PAD_LEFT);
+        $padLeft10  = Str\pad(10, '.', STR_PAD_LEFT);
         $padRight10 = Str\pad(10, '_', STR_PAD_RIGHT);
-        $padBoth10 = Str\pad(10, '\'', STR_PAD_BOTH);
+        $padBoth10  = Str\pad(10, '\'', STR_PAD_BOTH);
 
         $this->assertEquals('........HI', $padLeft10('HI'));
         $this->assertEquals('HI________', $padRight10('HI'));
@@ -340,8 +339,8 @@ class StringFunctionTest extends TestCase
 
     public function testCanCountSubStrings()
     {
-        $findNemoAll = Str\countSubString('Nemo');
-        $findNemoAllAfter20 = Str\countSubString('Nemo', 20);
+        $findNemoAll                     = Str\countSubString('Nemo');
+        $findNemoAllAfter20              = Str\countSubString('Nemo', 20);
         $findNemoAllAfter20OnlyFor40More = Str\countSubString('Nemo', 20, 40);
 
         $haystack1 = str_repeat('Nemo is a fish.', 11); // 15 chars
@@ -359,7 +358,7 @@ class StringFunctionTest extends TestCase
 
     public function testCanStripTags()
     {
-        $allTags = Str\stripTags();
+        $allTags    = Str\stripTags();
         $allowPTags = Str\stripTags('<p><a>');
 
         $this->assertEquals('1Stuff', $allTags('1<p>Stuff</p>'));
@@ -392,10 +391,10 @@ class StringFunctionTest extends TestCase
 
     public function testCanFindSubStrings()
     {
-        $caseSenseBefore = Str\firstSubString('abc', STRINGS_BEFORE_NEEDLE);
-        $caseSenseAfter = Str\firstSubString('abc');
+        $caseSenseBefore   = Str\firstSubString('abc', STRINGS_BEFORE_NEEDLE);
+        $caseSenseAfter    = Str\firstSubString('abc');
         $caseInsenseBefore = Str\firstSubString('aBc', STRINGS_BEFORE_NEEDLE | STRINGS_CASE_INSENSITIVE);
-        $caseInsenseAfter = Str\firstSubString('abC', STRINGS_CASE_INSENSITIVE);
+        $caseInsenseAfter  = Str\firstSubString('abC', STRINGS_CASE_INSENSITIVE);
 
         $this->assertEquals('abcefg', $caseSenseAfter('qwertabcefg'));
         $this->assertEquals('qwert', $caseSenseBefore('qwertabcefg'));
@@ -404,7 +403,6 @@ class StringFunctionTest extends TestCase
         $this->assertNotNull($caseSenseAfter('QWERTABCEFG')); // Uppercase
         $this->assertEquals('', $caseSenseAfter('rutoiuerot'));// No match
         $this->assertEquals('', $caseSenseAfter('QWERTABCEFG'));// Uppercase
-
 
         $this->assertEquals('ABCEFG', $caseInsenseAfter('QWERTABCEFG'));
         $this->assertEquals('QWERT', $caseInsenseBefore('QWERTABCEFG'));
@@ -430,11 +428,13 @@ class StringFunctionTest extends TestCase
 
     public function testCanTranslateSubString()
     {
-        $rosStone = Str\translateWith([
-            'Hi' => 'Hello',
-            'Yeah' => 'Yes',
-            'Sod' => 'XXX',
-        ]);
+        $rosStone = Str\translateWith(
+            array(
+                'Hi'   => 'Hello',
+                'Yeah' => 'Yes',
+                'Sod'  => 'XXX',
+            )
+        );
 
         $this->assertEquals('Hello you', $rosStone('Hi you'));
         $this->assertEquals('Hello Hello', $rosStone('Hi Hi'));
@@ -447,7 +447,7 @@ class StringFunctionTest extends TestCase
     public function testCanUseVSprintf()
     {
         $formatter = Str\vSprintf('12%s34-%s-%s-f');
-        $this->assertEquals('12alpha34-12-12.5-f', $formatter(['alpha', '12', '12.5']));
+        $this->assertEquals('12alpha34-12-12.5-f', $formatter(array( 'alpha', '12', '12.5' )));
     }
 
     /** @testdox It should be possible to check if a value is a string and is blank */

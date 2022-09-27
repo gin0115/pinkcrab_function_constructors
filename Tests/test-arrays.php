@@ -633,4 +633,16 @@ class ArrayFunctionTests extends TestCase
         });
         $this->assertEquals($data, $takeWhile($data));
     }
+
+    /** @testdox It should be possible to use Map() and have access to key and value. */
+    public function testMapWithKeys(): void
+    {
+        $data = ['a' => 'pple', 'b' => 'anana', 'c' => 'arrot'];
+        $expected = ['apple', 'banana', 'carrot'];
+
+        $map = Arr\mapWithKey(function (string $key, string $value) {
+            return $key . $value;
+        });
+        $this->assertEquals($expected, $map($data));
+    }
 }
