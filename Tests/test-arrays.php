@@ -12,13 +12,13 @@ require_once dirname(__FILE__, 2) . '/FunctionsLoader.php';
  */
 
 use PHPUnit\Framework\TestCase;
+use function PHPUnit\Framework\throwException;
 use PinkCrab\FunctionConstructors\Arrays as Arr;
 use PinkCrab\FunctionConstructors\Numbers as Num;
 use PinkCrab\FunctionConstructors\Strings as Str;
 use PinkCrab\FunctionConstructors\FunctionsLoader;
-use PinkCrab\FunctionConstructors\GeneralFunctions as Func;
 
-use function PHPUnit\Framework\throwException;
+use PinkCrab\FunctionConstructors\GeneralFunctions as Func;
 
 /**
  * ArrayFunction class.
@@ -632,5 +632,17 @@ class ArrayFunctionTests extends TestCase
             return $value < 100;
         });
         $this->assertEquals($data, $takeWhile($data));
+    }
+
+    /** @testdox It should be possible to use Map() and have access to key and value. */
+    public function testMapWithKeys(): void
+    {
+        $data = ['a' => 'pple', 'b' => 'anana', 'c' => 'arrot'];
+        $expected = ['apple', 'banana', 'carrot'];
+
+        $map = Arr\mapWithKey(function (string $value, string $key) {
+            return $key . $value;
+        });
+        $this->assertEquals($expected, $map($data));
     }
 }

@@ -334,6 +334,13 @@ $normaliseKeys = Arr\mapKey(F\compose(
 
 $normaliseKeys(1 => 'a', ' 2 ' => 'b', 'some key' => 'c');
 // ['__1'=> 'a', '__2' => 'b', '__some-key' => 'c']
+
+// Map and array with the value and key.
+$mapWithKey = Arr\mapWithKey( function($value, $key) {
+    return $key . $value;
+});
+$mapWithKey('a' => 'pple', 'b' => 'anana'); 
+// ['apple', 'banana']
 ```
 
 > There is `flatMap()` and `mapWith()` also included, please see the wiki.
@@ -571,6 +578,7 @@ If you would like to contribute to this project, please feel to fork the project
    * `Arrays\takeWhile()`
    * `Arrays\filterAny()`
    * `Arrays\filterAll()`
+   * `Arrays\mapWithKey()`
    * `Objects\isInstanceOf()`
    * `Objects\implementsInterface()`
    * `Objects\toArray()`

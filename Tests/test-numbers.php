@@ -267,7 +267,7 @@ class NumberFunctionTest extends TestCase
         ];
 
         foreach ($data as list($root, $value, $expected)) {
-            $this->assertEquals($expected, Num\root($root)($value));
+            $this->assertEquals(round($expected, 12), round(Num\root($root)($value), 12));
         }
     }
 

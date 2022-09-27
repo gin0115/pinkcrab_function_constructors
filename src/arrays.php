@@ -494,6 +494,29 @@ function mapWith(callable $func, ...$data): Closure
 }
 
 /**
+ * Returns a Closure for mapping an array with access to value and key.
+ * 
+ * @param callable(mixed $value, int|string $key):mixed $func
+ * @return Closure(mixed[]):mixed[]
+ */
+function mapWithKey(callable $func): Closure
+{
+    /**
+     * @param mixed[] $array The array to map
+     * @return mixed[]
+     */
+    return function (array $array) use ($func): array {
+        return array_map(
+            function ($value, $key) use ($func) {
+                return $func($value, $key);
+            },
+            $array,
+            array_keys($array)
+        );
+    };
+}
+
+/**
  * Returns a Closure for flattening and mapping an array
  *
  * @param callable(mixed):mixed $function The function to map the element. (Will no be called if resolves to array)
