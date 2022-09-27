@@ -640,7 +640,7 @@ class ArrayFunctionTests extends TestCase
         $data = ['a' => 'pple', 'b' => 'anana', 'c' => 'arrot'];
         $expected = ['apple', 'banana', 'carrot'];
 
-        $map = Arr\mapWithKey(function (string $value, string $key) {
+        $map = Arr\mapWithKey(function (string $key, string $value) {
             return $key . $value;
         });
         $this->assertEquals($expected, $map($data));

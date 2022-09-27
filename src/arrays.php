@@ -496,7 +496,7 @@ function mapWith(callable $func, ...$data): Closure
 /**
  * Returns a Closure for mapping an array with access to value and key.
  *
- * @param callable(mixed $value, int|string $key):mixed $func
+ * @param callable(int|string $key, mixed $value):mixed $func
  * @return Closure(mixed[]):mixed[]
  */
 function mapWithKey(callable $func): Closure
@@ -507,7 +507,7 @@ function mapWithKey(callable $func): Closure
      */
     return function (array $array) use ($func): array {
         return array_map(
-            function ($value, $key) use ($func) {
+            function ($key, $value) use ($func) {
                 return $func($value, $key);
             },
             $array,

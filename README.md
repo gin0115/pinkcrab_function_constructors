@@ -336,7 +336,7 @@ $normaliseKeys(1 => 'a', ' 2 ' => 'b', 'some key' => 'c');
 // ['__1'=> 'a', '__2' => 'b', '__some-key' => 'c']
 
 // Map and array with the value and key.
-$mapWithKey = Arr\mapWithKey( function($value, $key) {
+$mapWithKey = Arr\mapWithKey( function($key, $value) {
     return $key . $value;
 });
 $mapWithKey('a' => 'pple', 'b' => 'anana'); 
