@@ -152,3 +152,53 @@ function usesTrait(string $trait, bool $autoload = true): Closure
         return in_array($trait, $traits, true);
     };
 };
+
+/**
+ * Creates a class which allows the creation of an object with a set of predefined properties and pass additionals.
+ *
+ * @template Class of object
+ * @param class-string<Class> $class
+ * @param array<string, mixed> $baseProperties
+ * @return Closure(array<string, mixed>):Class
+ */
+function createWith(string $class, array $baseProperties = array()): Closure
+{
+    // Get all expected constrcutor args as an array of keys with any default values.
+    $constructor = new \ReflectionClass($class);
+    $constructorArgs = $constructor->getConstructor() ? $constructor->getConstructor()->getParameters() : array();
+    $constructorArgs = array_reduce(
+        $constructorArgs,
+        function (array $args, \ReflectionParameter $param) use ($baseProperties): array {
+            // If the param exists in base properties use that, else use the default value or null.
+            $args[ $param->getName() ] = \array_key_exists($param->getName(), $baseProperties)
+                ? $baseProperties[ $param->getName() ]
+                : ($param->isDefaultValueAvailable()
+                    ? $param->getDefaultValue()
+                    : null);
+            return $args;
+        },
+        array()
+    );
+
+
+    /**
+     * @param array<string, mixed> $properties
+     * @return Class
+     */
+    return function (array $properties = array()) use ($class, $constructorArgs): object {
+        // Loop through constructorArgs and replace with any passed properties.
+        $constructorArgs = array_reduce(
+            array_keys($constructorArgs),
+            function (array $args, string $key) use ($constructorArgs, $properties): array {
+                $args[] = \array_key_exists($key, $properties)
+                    ? $properties[ $key ]
+                    : $constructorArgs[ $key ];
+                return $args;
+            },
+            array()
+        );
+
+
+        return new $class(...$constructorArgs);
+    };
+}

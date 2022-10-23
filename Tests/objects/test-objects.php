@@ -46,6 +46,19 @@ class UsesFooTraitChild extends UsesFooTrait
 {
 }
 
+class classWithConstructor
+{
+    public $a;
+    public $b;
+    public $c;
+    public function __construct(string $a = 'default', int $b, float $c)
+    {
+        $this->a = $a;
+        $this->b = $b;
+        $this->c = $c;
+    }
+}
+
 /**
  * Object class.
  */
@@ -161,5 +174,49 @@ class ObjectTests extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
         Obj\usesTrait(fooTrait::class)('Not a class');
+    }
+
+    /** @testdox It should be possible to create an instance of an object with a base set of properties.*/
+    public function testObjectWithBaseProperties(): void
+    {
+        $objFactory = Obj\createWith(classWithConstructor::class, ['a' => 'a', 'b' => 1, 'c' => 2.5]);
+        $instance = $objFactory();
+        $this->assertEquals('a', $instance->a);
+        $this->assertEquals(1, $instance->b);
+        $this->assertEquals(2.5, $instance->c);
+        $this->assertInstanceOf(classWithConstructor::class, $instance);
+    }
+
+    /** @testdox It should be possible to create an instance of an object with the array of args in any order. */
+    public function testObjectWithBasePropertiesInAnyOrder(): void
+    {
+        $objFactory = Obj\createWith(classWithConstructor::class, ['c' => 3.5, 'b' => 2, 'a' => 'b']);
+        $instance = $objFactory();
+        $this->assertEquals('b', $instance->a);
+        $this->assertEquals(2, $instance->b);
+        $this->assertEquals(3.5, $instance->c);
+        $this->assertInstanceOf(classWithConstructor::class, $instance);
+    }
+
+    /** @testdox It should be possible to create an instance of an object and have any default values taken in to account. */
+    public function testObjectWithBasePropertiesAndDefaults(): void
+    {
+        $objFactory = Obj\createWith(classWithConstructor::class, ['b' => 1, 'c' => 2.5]);
+        $instance = $objFactory();
+        $this->assertEquals('default', $instance->a);
+        $this->assertEquals(1, $instance->b);
+        $this->assertEquals(2.5, $instance->c);
+        $this->assertInstanceOf(classWithConstructor::class, $instance);
+    }
+
+    /** @testdox It should be possible to create an instance of an object with defined initial values, but allow these to be overwritten when called. */
+    public function testObjectWithBasePropertiesAndOverwrite(): void
+    {
+        $objFactory = Obj\createWith(classWithConstructor::class);
+        $instance = $objFactory(['a' => 'b', 'b' => 2, 'c' => 3.5]);
+        $this->assertEquals('b', $instance->a);
+        $this->assertEquals(2, $instance->b);
+        $this->assertEquals(3.5, $instance->c);
+        $this->assertInstanceOf(classWithConstructor::class, $instance);
     }
 }
