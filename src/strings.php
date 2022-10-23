@@ -319,7 +319,8 @@ function addSlashes(string $charList): Closure
 /**
  * Returns a callable for splitting a string by a set amount.
  *
- * @param int $limit The number of chars to split by.
+ * @param non-empty-string $separator The char to split by.
+ * @param int $limit The number of groups to split into.
  * @return Closure(string):array<string> The parts.
  */
 function split(string $separator, int $limit = PHP_INT_MAX): Closure
@@ -329,7 +330,8 @@ function split(string $separator, int $limit = PHP_INT_MAX): Closure
      * @return array<int, string>
      */
     return function (string $string) use ($separator, $limit): array {
-        return explode($separator, $string, $limit); // @phpstan-ignore-line, inconsistent errors with differing php versions.
+        $chunks = explode($separator, $string, $limit);
+        return is_array($chunks) ? $chunks : []; // @phpstan-ignore-line, inconsistent errors with differing php versions.
     };
 }
 

@@ -52,7 +52,7 @@ function isInstanceOf($class): Closure
     if (is_object($class)) {
         $class = get_class($class);
     }
-    if (!class_exists($class)) {
+    if (! class_exists($class)) {
         throw new InvalidArgumentException(__FUNCTION__ . 'only accepts a Class or Class Name');
     }
 
@@ -64,7 +64,7 @@ function isInstanceOf($class): Closure
         if (is_object($value)) {
             $value = get_class($value);
         }
-        if (!class_exists($value)) {
+        if (! class_exists($value)) {
             throw new InvalidArgumentException(__FUNCTION__ . 'only accepts a Class or Class Name');
         }
         return is_a($value, $class, true);
@@ -123,3 +123,32 @@ function toArray(): Closure
         );
     };
 }
+
+
+/**
+ * Returns a closure for checking if an object uses a trait.
+ *
+ * @param string $trait
+ * @param bool $autoload Whether to call __autoload by default.
+ * @return Closure(object):bool
+ */
+function usesTrait(string $trait, bool $autoload = true): Closure
+{
+    /**
+     * @param object|class-string $object
+     * @return bool
+     */
+    return function ($object) use ($trait, $autoload): bool {
+        // Throw type error if not object or class-string.
+        if (! is_object($object) && ! class_exists($object, false)) {
+            throw new InvalidArgumentException(__FUNCTION__ . ' only accepts an object or class-string');
+        }
+
+        $traits = array();
+        do {
+            $traits = array_merge(class_uses($object, $autoload) ?: array(), $traits);
+        } while ($object = get_parent_class($object));
+
+        return in_array($trait, $traits, true);
+    };
+};

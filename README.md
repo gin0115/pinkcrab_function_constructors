@@ -583,6 +583,7 @@ If you would like to contribute to this project, please feel to fork the project
    * `Objects\isInstanceOf()`
    * `Objects\implementsInterface()`
    * `Objects\toArray()`
+   * `Objects\usesTrait()`
    * **Breaking Changes**
    * `GeneralFunctions\pipe()` & `GeneralFunctions\pipeR()` have now changed and are no longer alias for `compose()`
    * `GeneralFunctions\setProperty()` now takes the property argument when creating the Closure.
