@@ -155,4 +155,11 @@ class ObjectTests extends TestCase
     {
         $this->assertTrue(Obj\usesTrait(fooTrait::class)(UsesFooTraitChild::class));
     }
+
+    /** @testdox Attempting to check if a none object or class string uses a trait should result in a InvalidArgumentException exception being thrown. */
+    public function testObjectUsesTraitWithInvalidType(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        Obj\usesTrait(fooTrait::class)('Not a class');
+    }
 }
