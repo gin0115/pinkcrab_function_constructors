@@ -329,7 +329,8 @@ function split(string $separator, int $limit = PHP_INT_MAX): Closure
      * @return array<int, string>
      */
     return function (string $string) use ($separator, $limit): array {
-        return explode($separator, $string, $limit); // @phpstan-ignore-line, inconsistent errors with differing php versions.
+        $chunks = explode($separator, $string, $limit);
+        return is_array($chunks) ? $chunks : [];
     };
 }
 

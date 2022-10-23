@@ -24,9 +24,26 @@ use function PHPUnit\Framework\throwException;
 
 class ToArrayFixtureClassObj
 {
-    private $propA = 1;
+    private $propA   = 1;
     protected $propB = 2;
-    public $propC = 3;
+    public $propC    = 3;
+}
+
+trait fooTrait
+{
+    public function foo()
+    {
+        return 'foo';
+    }
+}
+
+class UsesFooTrait
+{
+    use fooTrait;
+}
+
+class UsesFooTraitChild extends UsesFooTrait
+{
 }
 
 /**
@@ -81,7 +98,7 @@ class ObjectTests extends TestCase
         $toArrray = Obj\toArray();
 
         // Test with valid stdClass.
-        $obj = new stdClass();
+        $obj        = new stdClass();
         $obj->propA = 1;
         $obj->propB = 2;
         $this->assertArrayHasKey('propA', $toArrray($obj));
@@ -99,9 +116,43 @@ class ObjectTests extends TestCase
         // Check it returns blank array if any other value passed.
         $this->assertEmpty($toArrray(false));
         $this->assertEmpty($toArrray(null));
-        $this->assertEmpty($toArrray([1,2,3,4]));
+        $this->assertEmpty($toArrray(array( 1, 2, 3, 4 )));
         $this->assertEmpty($toArrray(1));
         $this->assertEmpty($toArrray(2.5));
         $this->assertEmpty($toArrray('STRING'));
+    }
+
+    /** @testdox It should be possible to check if a class uses a trait directly using an instance. */
+    public function testObjectUsesTraitWithInstance(): void
+    {
+        $classWithTrait = new class () {
+            use fooTrait;
+        };
+
+        $classWithoutTrait = new class () {
+        };
+
+        $this->assertTrue(Obj\usesTrait(fooTrait::class)($classWithTrait));
+        $this->assertFalse(Obj\usesTrait(fooTrait::class)($classWithoutTrait));
+    }
+
+    /** @testdox It should be possible to check if a class uses a trait indirectly as part of a hierarchy using an instance. */
+    public function testObjectUsesTraitIndirectlyWithInstance(): void
+    {
+        $classWithoutTrait = new class () extends UsesFooTraitChild {};
+        $this->assertTrue(Obj\usesTrait(fooTrait::class)($classWithoutTrait));
+    }
+
+    /** @testdox It should be possible to check if a class uses a trait directly using class name. */
+    public function testObjectUsesTraitWithName(): void
+    {
+        $this->assertTrue(Obj\usesTrait(fooTrait::class)(UsesFooTrait::class));
+        $this->assertFalse(Obj\usesTrait(fooTrait::class)(ToArrayFixtureClassObj::class));
+    }
+
+    /** @testdox It should be possible to check if a class uses a trait indirectly as part of a hierarchy using class name. */
+    public function testObjectUsesTraitIndirectlyWithName(): void
+    {
+        $this->assertTrue(Obj\usesTrait(fooTrait::class)(UsesFooTraitChild::class));
     }
 }
