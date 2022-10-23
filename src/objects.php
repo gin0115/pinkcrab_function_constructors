@@ -180,7 +180,7 @@ function createWith(string $class, array $baseProperties = array()): Closure
         array()
     );
 
-
+dump([$constructorArgs,$constructor->getConstructor()->getParameters()]);
     /**
      * @param array<string, mixed> $properties
      * @return Class
