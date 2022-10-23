@@ -175,12 +175,15 @@ function createWith(string $class, array $baseProperties = array()): Closure
                 : ($param->isDefaultValueAvailable()
                     ? $param->getDefaultValue()
                     : null);
+dump([ ($param->isDefaultValueAvailable()
+                    ? $param->getDefaultValue()
+                    : null)]);
+            
             return $args;
         },
         array()
     );
 
-dump([$constructorArgs,$constructor->getConstructor()->getParameters()]);
     /**
      * @param array<string, mixed> $properties
      * @return Class
