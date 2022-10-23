@@ -185,7 +185,7 @@ function createWith(string $class, array $baseProperties = array()): Closure
      * @param array<string, mixed> $properties
      * @return Class
      */
-    return function (array $properties = array()) use ($class, $constructorArgs): object {
+    return function (array $properties = array()) use ($class, $constructorArgs) {
         // Loop through constructorArgs and replace with any passed properties.
         $constructorArgs = array_reduce(
             array_keys($constructorArgs),
