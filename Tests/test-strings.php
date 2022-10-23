@@ -224,11 +224,33 @@ class StringFunctionTest extends TestCase
         $this->assertEquals('h\appy \d\ays', $slashAD('happy days'));
     }
 
-    public function testCanSplitString()
+    public function testCanSplitStringByLength()
     {
-        $splitIntoFours = Str\split(4);
+        $splitIntoFours = Str\splitByLength(4);
 
         $split = $splitIntoFours('AAAABBBBCCCCDDDD');
+        $this->assertEquals('AAAA', $split[0]);
+        $this->assertEquals('BBBB', $split[1]);
+        $this->assertEquals('CCCC', $split[2]);
+        $this->assertEquals('DDDD', $split[3]);
+    }
+
+    /** @testdox It should be possible to split a string into an array using a define separator and using the limit */
+    public function testCanSplitStringBySeperatorAndLimit()
+    {
+        $splitByComma = Str\split(',', 2);
+
+        $split = $splitByComma('AAAA,BBBB,CCCC,DDDD');
+        $this->assertEquals('AAAA', $split[0]);
+        $this->assertEquals('BBBB,CCCC,DDDD', $split[1]);
+    }
+
+    /** @testdox It should be possible to split a string into an array using a defined separator with an unlimited limit.  */
+    public function testCanSplitStringBySeperatorAndUnlimitedLimit()
+    {
+        $splitByComma = Str\split(',');
+
+        $split = $splitByComma('AAAA,BBBB,CCCC,DDDD');
         $this->assertEquals('AAAA', $split[0]);
         $this->assertEquals('BBBB', $split[1]);
         $this->assertEquals('CCCC', $split[2]);

@@ -564,6 +564,7 @@ If you would like to contribute to this project, please feel to fork the project
    * `Numbers\isMultipleOf()`
    * `Numbers\isFactorOf()`
    * `Strings\isBlank()`
+   * `Strings\splitByLength()`
    * `GeneralFunctions\ifThen()`
    * `GeneralFunctions\ifElse()`
    * `GeneralFunctions\composeR()`
@@ -588,6 +589,7 @@ If you would like to contribute to this project, please feel to fork the project
    * `Strings\tagWrap()` has been removed
    * `Strings\asUrl()` has been removed
    * `Strings\vSprintf()` has has its arguments reversed.
+   * `Strings\split()` is now a wrapper for explode() and the existing `Strings\split()` has been renamed to `Strings\splitByLength()`
    * **Other Changes**
    * Constants added using the `Functions` class-name, `Functions::isBlank` can be used as a string for a callable.
    * `GeneralFunctions\toArray()` has been moved to `Objects\toArray()`, `Objects\toArray()` is now an alias for `GeneralFunctions\toArray()`
