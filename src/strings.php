@@ -331,7 +331,7 @@ function split(string $separator, int $limit = PHP_INT_MAX): Closure
      */
     return function (string $string) use ($separator, $limit): array {
         $chunks = explode($separator, $string, $limit);
-        return is_array($chunks) ? $chunks : []; // phpstan:ignore
+        return is_array($chunks) ? $chunks : []; // @phpstan-ignore-line, inconsistent errors with differing php versions.
     };
 }
 
