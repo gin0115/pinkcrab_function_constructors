@@ -175,7 +175,7 @@ function createWith(string $class, array $baseProperties = array()): Closure
                 : ($param->isDefaultValueAvailable()
                     ? $param->getDefaultValue()
                     : null);
-dump([ ($param->isDefaultValueAvailable()
+dump([ $param->isDefaultValueAvailable(),($param->isDefaultValueAvailable()
                     ? $param->getDefaultValue()
                     : null)]);
             
