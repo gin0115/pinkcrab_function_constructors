@@ -12,15 +12,15 @@ require_once dirname(__FILE__, 3) . '/FunctionsLoader.php';
  */
 
 use PHPUnit\Framework\TestCase;
+use function PHPUnit\Framework\throwException;
 use PinkCrab\FunctionConstructors\Arrays as Arr;
 use PinkCrab\FunctionConstructors\Numbers as Num;
 use PinkCrab\FunctionConstructors\Objects as Obj;
 use PinkCrab\FunctionConstructors\Strings as Str;
+
 use PinkCrab\FunctionConstructors\FunctionsLoader;
 
 use PinkCrab\FunctionConstructors\GeneralFunctions as Func;
-
-use function PHPUnit\Framework\throwException;
 
 class ToArrayFixtureClassObj
 {
@@ -51,7 +51,7 @@ class classWithConstructor
     public $a;
     public $b;
     public $c;
-    public function __construct(string $a = 'default', int $b, float $c)
+    public function __construct(int $b, float $c, string $a = 'default')
     {
         $this->a = $a;
         $this->b = $b;
