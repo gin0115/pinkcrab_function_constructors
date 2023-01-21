@@ -320,4 +320,37 @@ class ComparissonFunctionTest extends TestCase
         $this->assertTrue($notEquals1(2));
         $this->assertFalse($notEquals1(1));
     }
+
+    /** @testdox Using any() should act as an alias for groupor() */
+    public function testCanUseAny()
+    {
+        $isTrue = function ($a) {
+            return $a === true;
+        };
+
+        $isNotFalse = function ($a) {
+            return $a === false;
+        };
+
+        $this->assertEquals(
+            Comp\groupOr($isTrue, $isNotFalse)(true),
+            Comp\any($isTrue, $isNotFalse)(true)
+        );
+    }
+    /** @testdox Using all() should act as an alias for groupAnd() */
+    public function testCanUseAll()
+    {
+        $isTrue = function ($a) {
+            return $a === true;
+        };
+
+        $isNotFalse = function ($a) {
+            return $a !== false;
+        };
+
+        $this->assertEquals(
+            Comp\groupAnd($isTrue, $isNotFalse)(true),
+            Comp\all($isTrue, $isNotFalse)(true)
+        );
+    }
 }
