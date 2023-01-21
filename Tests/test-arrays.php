@@ -888,4 +888,24 @@ class ArrayFunctionTests extends TestCase
         $this->assertEquals(array( 'e' => 5, 'd' => 4, 'c' => 3, 'b' => 2, 'a' => 1 ), $arsort($foo));
         $this->assertEquals(array( 'a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5 ), $data);
     }
+
+    /** testdox It should be possible to use asort with predefined flags and not have the original array changed */
+    public function testAsort(): void
+    {
+        $data = array( 'a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5 );
+
+        $asort = Arr\asort();
+        $this->assertEquals(array( 'a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5 ), $asort($data));
+        $this->assertEquals(array( 'a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5 ), $data);
+
+        $asort = Arr\asort(SORT_NUMERIC);
+        $this->assertEquals(array( 'a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5 ), $asort($data));
+        $this->assertEquals(array( 'a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5 ), $data);
+
+        // Passed as reference
+        $asort = Arr\asort(SORT_NUMERIC, true);
+        $foo = &$data;
+        $this->assertEquals(array( 'a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5 ), $asort($foo));
+        $this->assertEquals(array( 'a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5 ), $data);
+    }
 }
