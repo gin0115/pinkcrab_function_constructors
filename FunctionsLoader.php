@@ -28,7 +28,7 @@ class FunctionsLoader
 {
 
     /**
-     * Loads all supplimentry function files.
+     * Loads all supplementary function files.
      *
      * @author Glynn Quelch <glynn.quelch@gmail.com>
      * @since 0.1.0
