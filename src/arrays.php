@@ -1195,4 +1195,3 @@ function takeWhile(callable $conditional): Closure
         return $carry;
     };
 }
-

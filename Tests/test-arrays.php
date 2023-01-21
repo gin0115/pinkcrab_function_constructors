@@ -659,5 +659,4 @@ class ArrayFunctionTests extends TestCase
 
         $iterate($data);
     }
-
 }
