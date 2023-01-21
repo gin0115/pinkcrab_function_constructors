@@ -111,6 +111,12 @@ class ComparissonFunctionTest extends TestCase
         }
     }
 
+    /** @testdox When using isEqualTo with a resourse, the response should always be false. */
+    public function testCanNotFindEqualToResource(): void
+    {
+        $this->assertFalse(Comp\isEqualTo(fopen('php://memory', 'r'))(fopen('php://memory', 'r')));
+    }
+
     public function testCanDoGreaterThan(): void
     {
         $this->assertFalse(Comp\isGreaterThan(12)(10));
