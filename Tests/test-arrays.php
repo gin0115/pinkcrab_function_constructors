@@ -863,7 +863,7 @@ class ArrayFunctionTests extends TestCase
         $this->assertEquals(array( 'a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5 ), $data);
 
         // Passed as reference
-        $krsort = Arr\krsort(SORT_NUMERIC, true);
+        $krsort = Arr\krsort(SORT_NUMERIC);
         $foo = &$data;
         $this->assertEquals(array( 'e' => 5, 'd' => 4, 'c' => 3, 'b' => 2, 'a' => 1 ), $krsort($foo));
         $this->assertEquals(array( 'a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5 ), $data);
@@ -883,7 +883,7 @@ class ArrayFunctionTests extends TestCase
         $this->assertEquals(array( 'a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5 ), $data);
 
         // Passed as reference
-        $arsort = Arr\arsort(SORT_NUMERIC, true);
+        $arsort = Arr\arsort(SORT_NUMERIC);
         $foo = &$data;
         $this->assertEquals(array( 'e' => 5, 'd' => 4, 'c' => 3, 'b' => 2, 'a' => 1 ), $arsort($foo));
         $this->assertEquals(array( 'a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5 ), $data);
@@ -903,7 +903,7 @@ class ArrayFunctionTests extends TestCase
         $this->assertEquals(array( 'a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5 ), $data);
 
         // Passed as reference
-        $asort = Arr\asort(SORT_NUMERIC, true);
+        $asort = Arr\asort(SORT_NUMERIC);
         $foo = &$data;
         $this->assertEquals(array( 'a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5 ), $asort($foo));
         $this->assertEquals(array( 'a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5 ), $data);
@@ -919,9 +919,26 @@ class ArrayFunctionTests extends TestCase
         $this->assertEquals(array( 'a' => 'a', 'b' => 'B', 'c' => 'C', 'd' => 'd', 'e' => 'E' ), $data);
 
         // Passed as reference
-        $natcasesort = Arr\natcasesort(true);
+        $natcasesort = Arr\natcasesort();
         $foo = &$data;
         $this->assertEquals(array( 'a' => 'a', 'b' => 'B', 'c' => 'C', 'd' => 'd', 'e' => 'E' ), $natcasesort($foo));
         $this->assertEquals(array( 'a' => 'a', 'b' => 'B', 'c' => 'C', 'd' => 'd', 'e' => 'E' ), $data);
+    }
+
+    /** testdox It should be possible to use uksort with predefined flags and not have the original array changed */
+    public function testUksort(): void
+    {
+        $data = array( 'a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5 );
+        $sortHighToLow = function ($a, $b) {
+            return $b <=> $a;
+        };
+
+        $uksort = Arr\uksort($sortHighToLow);
+        $this->assertEquals(array( 'e' => 5, 'd' => 4, 'c' => 3, 'b' => 2, 'a' => 1 ), $uksort($data));
+
+        // Passed as reference
+        $uksort = Arr\uksort($sortHighToLow);
+        $foo = &$data;
+        $this->assertEquals(array( 'e' => 5, 'd' => 4, 'c' => 3, 'b' => 2, 'a' => 1 ), $uksort($foo));
     }
 }
