@@ -813,4 +813,19 @@ class ArrayFunctionTests extends TestCase
         $this->assertEquals('John', $populated->name);
         $this->assertEquals(35, $populated->age);
     }
+
+    /** @testdox It should be possible to create a function which uses predefined configs for casting an array to a json string. */
+    public function testJsonEncode(): void
+    {
+        $data = array(
+            'name' => 'John',
+            'age'  => 30,
+        );
+
+        $jsonEncode = Arr\toJson();
+        $this->assertEquals('{"name":"John","age":30}', $jsonEncode($data));
+
+        $jsonEncode = Arr\toJson(JSON_HEX_AMP);
+        $this->assertEquals('{"name":"John \u0026 Sam","age":20}', $jsonEncode(['name' => 'John & Sam', 'age' => 20]));
+    }
 }
