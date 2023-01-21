@@ -12,13 +12,13 @@ require_once dirname(__FILE__, 2) . '/FunctionsLoader.php';
  */
 
 use PHPUnit\Framework\TestCase;
+use function PHPUnit\Framework\throwException;
 use PinkCrab\FunctionConstructors\Arrays as Arr;
 use PinkCrab\FunctionConstructors\Numbers as Num;
 use PinkCrab\FunctionConstructors\Strings as Str;
 use PinkCrab\FunctionConstructors\FunctionsLoader;
-use PinkCrab\FunctionConstructors\GeneralFunctions as Func;
 
-use function PHPUnit\Framework\throwException;
+use PinkCrab\FunctionConstructors\GeneralFunctions as Func;
 
 /**
  * ArrayFunction class.
@@ -843,9 +843,50 @@ class ArrayFunctionTests extends TestCase
         $this->assertEquals(array( 1, 2, 3, 4, 5 ), $data);
 
         // Passed as reference
-        $rsort = Arr\rsort(SORT_NUMERIC, true);
+        $rsort = Arr\rsort(SORT_NUMERIC);
         $foo = &$data;
         $this->assertEquals(array( 5, 4, 3, 2, 1 ), $rsort($foo));
         $this->assertEquals(array( 1, 2, 3, 4, 5 ), $data);
     }
+
+    /** testdox It should be possible to use krsort with predefined flags and not have the original array changed */
+    public function testKrsort(): void
+    {
+        $data = array( 'a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5 );
+
+        $krsort = Arr\krsort();
+        $this->assertEquals(array( 'e' => 5, 'd' => 4, 'c' => 3, 'b' => 2, 'a' => 1 ), $krsort($data));
+        $this->assertEquals(array( 'a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5 ), $data);
+
+        $krsort = Arr\krsort(SORT_NUMERIC);
+        $this->assertEquals(array( 'e' => 5, 'd' => 4, 'c' => 3, 'b' => 2, 'a' => 1 ), $krsort($data));
+        $this->assertEquals(array( 'a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5 ), $data);
+
+        // Passed as reference
+        $krsort = Arr\krsort(SORT_NUMERIC, true);
+        $foo = &$data;
+        $this->assertEquals(array( 'e' => 5, 'd' => 4, 'c' => 3, 'b' => 2, 'a' => 1 ), $krsort($foo));
+        $this->assertEquals(array( 'a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5 ), $data);
+    }
+
+    /** testdox It should be possible to use arsort with predefined flags and not have the original array changed */
+    public function testArsort(): void
+    {
+        $data = array( 'a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5 );
+
+        $arsort = Arr\arsort();
+        $this->assertEquals(array( 'e' => 5, 'd' => 4, 'c' => 3, 'b' => 2, 'a' => 1 ), $arsort($data));
+        $this->assertEquals(array( 'a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5 ), $data);
+
+        $arsort = Arr\arsort(SORT_NUMERIC);
+        $this->assertEquals(array( 'e' => 5, 'd' => 4, 'c' => 3, 'b' => 2, 'a' => 1 ), $arsort($data));
+        $this->assertEquals(array( 'a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5 ), $data);
+
+        // Passed as reference
+        $arsort = Arr\arsort(SORT_NUMERIC, true);
+        $foo = &$data;
+        $this->assertEquals(array( 'e' => 5, 'd' => 4, 'c' => 3, 'b' => 2, 'a' => 1 ), $arsort($foo));
+        $this->assertEquals(array( 'a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5 ), $data);
+    }
+
 }
