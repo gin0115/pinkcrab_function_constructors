@@ -19,9 +19,9 @@ use PinkCrab\FunctionConstructors\GeneralFunctions as Func;
 
 class ToArrayFixtureClass
 {
-    private $propA = 1;
+    private $propA   = 1;
     protected $propB = 2;
-    public $propC = 3;
+    public $propC    = 3;
 }
 
 
@@ -115,6 +115,22 @@ class GeneralFunctionTest extends TestCase
         );
     }
 
+    /** @testdox When using composeTypeSafe if the validator returns null before the callable is run, it should bail and return null */
+    public function testTypeSafeFunctionalComposerReturnsNull(): void
+    {
+        $function = Func\composeTypeSafe(
+            function ($e) {
+                return false;
+            },
+            Str\replaceWith('3344', '*\/*'),
+            Str\replaceWith('5566', '=/\='),
+            Str\prepend('00'),
+            Str\append('99')
+        );
+
+        $this->assertNull($function('1122334455667788'));
+    }
+
     public function testAlwaysReturns()
     {
         $alwaysHappy = Func\always('Happy');
@@ -150,18 +166,18 @@ class GeneralFunctionTest extends TestCase
 
     public function testCanUsePluckProperty()
     {
-        $data = (object)[
-            'alpha' => [
-                'bravo' => (object)[
-                    'charlie' => [
-                        'delta' => 'SPOONS'
-                    ]
-                ]
-            ]
-        ];
+        $data = (object) array(
+            'alpha' => array(
+                'bravo' => (object) array(
+                    'charlie' => array(
+                        'delta' => 'SPOONS',
+                    ),
+                ),
+            ),
+        );
 
         $getSpoons = Func\pluckProperty('alpha', 'bravo', 'charlie', 'delta');
-        $getDelta = Func\pluckProperty('alpha', 'bravo', 'charlie');
+        $getDelta  = Func\pluckProperty('alpha', 'bravo', 'charlie');
         $this->assertEquals('SPOONS', $getSpoons($data));
         $this->assertArrayHasKey('delta', $getDelta($data));
         $this->assertContains('SPOONS', $getDelta($data));
@@ -169,44 +185,44 @@ class GeneralFunctionTest extends TestCase
 
     public function testCanUseRecordEncoder()
     {
-        $data = (object)[
-            'post' => (object)[
-                'id' => 123,
-                'title' => 'Lorem ipsum dolor',
+        $data = (object) array(
+            'post'     => (object) array(
+                'id'      => 123,
+                'title'   => 'Lorem ipsum dolor',
                 'content' => 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique iste voluptatum sequi. Officia dignissimos minus ipsum odit, facilis voluptatibus veniam enim molestiae ipsam quae temporibus porro necessitatibus quia non mollitia!',
-                'date' => (new DateTime())->format('d/m/yy H:m'),
-                'author' => (object)[
-                    'userName' => 'someUser12',
-                    'displayName' => 'Sam Smith'
-                ],
-                'url' => 'https://www.url.tld/post/123/lorem-ipsum-dolor'
-            ],
-            'comments' => [
-                (object)[
-                    'post' => 123,
-                    'author' => (object)[
-                    'userName' => 'someUser2',
-                    'displayName' => 'Jane Jameson',
-                    'comment' => 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Hic, illo tempore repudiandae quos vero, vitae aut ullam tenetur officiis accusantium dolor animi ipsa omnis impedit, saepe est harum quisquam sit.',
-                    'date' => (new DateTime('yesterday'))->format('d/m/yy H:m'),
-                    ]
-                ],
-                (object)[
-                    'post' => 123,
-                    'author' => (object)[
-                    'userName' => 'someUser22',
-                    'displayName' => 'Barry Burton',
-                    'comment' => 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Hic, illo tempore repudiandae quos vero, vitae aut ullam tenetur officiis accusantium dolor animi ipsa omnis impedit, saepe est harum quisquam sit.',
-                    'date' => (new DateTime('yesterday'))->format('d/m/yy H:m'),
-                    ]
-                ]
-            ],
-            'shares' => [
-                'facebook' => 125,
-                'twitter' => 1458,
-                'instagram' => 8
-            ]
-        ];
+                'date'    => ( new DateTime() )->format('d/m/yy H:m'),
+                'author'  => (object) array(
+                    'userName'    => 'someUser12',
+                    'displayName' => 'Sam Smith',
+                ),
+                'url'     => 'https://www.url.tld/post/123/lorem-ipsum-dolor',
+            ),
+            'comments' => array(
+                (object) array(
+                    'post'   => 123,
+                    'author' => (object) array(
+                        'userName'    => 'someUser2',
+                        'displayName' => 'Jane Jameson',
+                        'comment'     => 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Hic, illo tempore repudiandae quos vero, vitae aut ullam tenetur officiis accusantium dolor animi ipsa omnis impedit, saepe est harum quisquam sit.',
+                        'date'        => ( new DateTime('yesterday') )->format('d/m/yy H:m'),
+                    ),
+                ),
+                (object) array(
+                    'post'   => 123,
+                    'author' => (object) array(
+                        'userName'    => 'someUser22',
+                        'displayName' => 'Barry Burton',
+                        'comment'     => 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Hic, illo tempore repudiandae quos vero, vitae aut ullam tenetur officiis accusantium dolor animi ipsa omnis impedit, saepe est harum quisquam sit.',
+                        'date'        => ( new DateTime('yesterday') )->format('d/m/yy H:m'),
+                    ),
+                ),
+            ),
+            'shares'   => array(
+                'facebook'  => 125,
+                'twitter'   => 1458,
+                'instagram' => 8,
+            ),
+        );
 
         // Simplified post encoder
         $encoder = array(
@@ -221,16 +237,15 @@ class GeneralFunctionTest extends TestCase
 
         // Create a generic stdClass encoder.
         $objectBuilder = Func\recordEncoder(new stdClass());
-        $arrayBuilder = Func\recordEncoder([]);
-
+        $arrayBuilder  = Func\recordEncoder(array());
 
         // Populte builders with the encoder.
         $simplePostCreatorObject = $objectBuilder(...$encoder);
-        $simplePostCreatorArray = $arrayBuilder(...$encoder);
+        $simplePostCreatorArray  = $arrayBuilder(...$encoder);
 
         // Build the final array/object
         $simpleObject = $simplePostCreatorObject($data);
-        $simpleArray = $simplePostCreatorArray($data);
+        $simpleArray  = $simplePostCreatorArray($data);
 
         $this->assertEquals(123, $simpleObject->id);
         $this->assertEquals(123, $simpleArray['id']);
@@ -261,11 +276,13 @@ class GeneralFunctionTest extends TestCase
      */
     public function testCanInvokeCallables()
     {
-        $doubleAnyNumber = Func\invoker(Func\compose(
-            Num\sum(12),
-            Num\multiply(4),
-            Num\subtract(7)
-        ));
+        $doubleAnyNumber = Func\invoker(
+            Func\compose(
+                Num\sum(12),
+                Num\multiply(4),
+                Num\subtract(7)
+            )
+        );
 
         $this->assertEquals(69, $doubleAnyNumber(7));
     }
@@ -276,7 +293,7 @@ class GeneralFunctionTest extends TestCase
         $toArrray = Func\toArray();
 
         // Test with valid stdClass.
-        $obj = new stdClass();
+        $obj        = new stdClass();
         $obj->propA = 1;
         $obj->propB = 2;
         $this->assertArrayHasKey('propA', $toArrray($obj));
@@ -294,7 +311,7 @@ class GeneralFunctionTest extends TestCase
         // Check it returns blank array if any other value passed.
         $this->assertEmpty($toArrray(false));
         $this->assertEmpty($toArrray(null));
-        $this->assertEmpty($toArrray([1,2,3,4]));
+        $this->assertEmpty($toArrray(array( 1, 2, 3, 4 )));
         $this->assertEmpty($toArrray(1));
         $this->assertEmpty($toArrray(2.5));
         $this->assertEmpty($toArrray('STRING'));
