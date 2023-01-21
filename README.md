@@ -31,6 +31,7 @@ use PinkCrab\FunctionConstructors\Numbers as Num;
 use PinkCrab\FunctionConstructors\Strings as Str;
 use PinkCrab\FunctionConstructors\Comparisons as C;
 use PinkCrab\FunctionConstructors\GeneralFunctions as F;
+use PinkCrab\FunctionConstructors\Objects as Obj;
 
 // Allowing for
 Arr\Map('esc_html') or Str\append('foo') or F\pipe($var, 'strtoupper', Str\append('foo'))
@@ -43,6 +44,8 @@ At its core, the Function Constructors library is designed to make using PHP eas
 ### Function Composition and Piping
 
 #### pipe()
+
+> PLEASE NOTE THIS HAS CHANGED IN VERSION 2.0.0, using `compose()` is now the preferred method.
 
 Using `pipe(mixed $value, callable ...$callables)` and [ `pipeR()` *](#pipe "Same as pipe(), but callables in reverse order"), allows you to pass a value through a chain of callables. The result of the 1st function, is passed as the input the 2nd and so on, until the end when the final result is returned.
 
