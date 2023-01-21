@@ -67,10 +67,10 @@ function accumulatorFloat(float $initial = 0): Closure
      * @return Closure(float|null):(Closure|float)|float
      */
     return function (?float $value = null) use ($initial) {
-        if ($value) {
+        if (null !== $value) {
             $initial += $value;
         }
-        return $value ? accumulatorFloat($initial) : $initial;
+        return null !== $value ? accumulatorFloat($initial) : $initial;
     };
 }
 
