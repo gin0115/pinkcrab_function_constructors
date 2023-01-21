@@ -908,4 +908,20 @@ class ArrayFunctionTests extends TestCase
         $this->assertEquals(array( 'a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5 ), $asort($foo));
         $this->assertEquals(array( 'a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5 ), $data);
     }
+
+    /** testdox It should be possible to use natcasesort with predefined flags and not have the original array changed */
+    public function testNatcasesort(): void
+    {
+        $data = array( 'a' => 'a', 'b' => 'B', 'c' => 'C', 'd' => 'd', 'e' => 'E' );
+
+        $natcasesort = Arr\natcasesort();
+        $this->assertEquals(array( 'a' => 'a', 'b' => 'B', 'c' => 'C', 'd' => 'd', 'e' => 'E' ), $natcasesort($data));
+        $this->assertEquals(array( 'a' => 'a', 'b' => 'B', 'c' => 'C', 'd' => 'd', 'e' => 'E' ), $data);
+
+        // Passed as reference
+        $natcasesort = Arr\natcasesort(true);
+        $foo = &$data;
+        $this->assertEquals(array( 'a' => 'a', 'b' => 'B', 'c' => 'C', 'd' => 'd', 'e' => 'E' ), $natcasesort($foo));
+        $this->assertEquals(array( 'a' => 'a', 'b' => 'B', 'c' => 'C', 'd' => 'd', 'e' => 'E' ), $data);
+    }
 }
