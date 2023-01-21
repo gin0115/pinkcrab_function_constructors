@@ -215,6 +215,13 @@ class ComparissonFunctionTest extends TestCase
         }
     }
 
+    /** @testdox Attempting to use isEqualIn where the item being compared is a resource or null, should return null */
+    public function testCanNotFindEqualToOrResource(): void
+    {
+        $this->assertNull(Comp\isEqualIn(array(1, 2, 3))(fopen('php://memory', 'r')));
+        $this->assertNull(Comp\isEqualIn(array(1, 2, 3))(null));
+    }
+
     /** AND */
 
     public function testCanGroupAndConditionalsWithArrays(): void
