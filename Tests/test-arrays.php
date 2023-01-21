@@ -696,4 +696,69 @@ class ArrayFunctionTests extends TestCase {
 		$this->assertEquals( 2, $countBb( $data ) );
 		$this->assertEquals( 3, $countVvvv( $data ) );
 	}
+
+	/** @testdox It should be possible to set public (writeable) properties of any object from indexes of an array. */
+	public function testSetPublicProperties(): void {
+		$data = array(
+			'name' => 'John',
+			'age'  => 30,
+		);
+
+		$object = new class() {
+			public $name;
+			public $age;
+		};
+
+		$objectPopulator = Arr\toObject( $object );
+		$populated       = $objectPopulator( $data );
+
+		$this->assertEquals( 'John', $populated->name );
+		$this->assertEquals( 30, $populated->age );
+
+		// If no object defined, use a StdClass
+		$objectPopulator = Arr\toObject();
+		$populated       = $objectPopulator( $data );
+
+		$this->assertEquals( 'John', $populated->name );
+		$this->assertEquals( 30, $populated->age );
+	}
+
+    /** @testdox Attempting to set a property that is private or protected should throw and exception */
+    public function testSetPublicPropertiesThrowsException(): void {
+        $this->expectException( InvalidArgumentException::class );
+
+        $data = array(
+            'name' => 'John',
+            'age'  => 30,
+        );
+
+        $object = new class() {
+            public $name;
+            private $age;
+        };
+
+        $objectPopulator = Arr\toObject( $object );
+        $populated       = $objectPopulator( $data );
+    }
+
+    /** @testdox When casting an array to an object, any numerical indexes should be skipped. */
+    public function testSetPublicPropertiesSkipsNumericIndexes(): void {
+        $data = array(
+            'name' => 'John',
+            'age'  => 35,
+            0      => 'foo',
+            '1'      => 'bar',
+        );
+
+        $object = new class() {
+            public $name;
+            public $age;
+        };
+
+        $objectPopulator = Arr\toObject( $object );
+        $populated       = $objectPopulator( $data );
+
+        $this->assertEquals( 'John', $populated->name );
+        $this->assertEquals( 35, $populated->age );
+    }
 }
