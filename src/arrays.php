@@ -742,7 +742,7 @@ function sumWhere(callable $function): Closure
  *
  * @param object|null $object The object to cast to, defaults to stdClass
  * @return Closure(mixed[]):object
- * @throws InvalidArgumentException If property does not exist or is not public.
+ * @throws \InvalidArgumentException If property does not exist or is not public.
  */
 function toObject($object = null): Closure
 {
