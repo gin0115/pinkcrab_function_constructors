@@ -828,4 +828,24 @@ class ArrayFunctionTests extends TestCase
         $jsonEncode = Arr\toJson(JSON_HEX_AMP);
         $this->assertEquals('{"name":"John \u0026 Sam","age":20}', $jsonEncode(['name' => 'John & Sam', 'age' => 20]));
     }
+
+    /** @testdox It should be possible to use rsort with predefined flags and not have the original array changed (immuteable) */
+    public function testRsort(): void
+    {
+        $data = array( 1, 2, 3, 4, 5 );
+
+        $rsort = Arr\rsort();
+        $this->assertEquals(array( 5, 4, 3, 2, 1 ), $rsort($data));
+        $this->assertEquals(array( 1, 2, 3, 4, 5 ), $data);
+
+        $rsort = Arr\rsort(SORT_NUMERIC);
+        $this->assertEquals(array( 5, 4, 3, 2, 1 ), $rsort($data));
+        $this->assertEquals(array( 1, 2, 3, 4, 5 ), $data);
+
+        // Passed as reference
+        $rsort = Arr\rsort(SORT_NUMERIC, true);
+        $foo = &$data;
+        $this->assertEquals(array( 5, 4, 3, 2, 1 ), $rsort($foo));
+        $this->assertEquals(array( 1, 2, 3, 4, 5 ), $data);
+    }
 }
