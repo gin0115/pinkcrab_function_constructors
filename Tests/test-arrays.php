@@ -12,13 +12,13 @@ require_once dirname(__FILE__, 2) . '/FunctionsLoader.php';
  */
 
 use PHPUnit\Framework\TestCase;
+use function PHPUnit\Framework\throwException;
 use PinkCrab\FunctionConstructors\Arrays as Arr;
 use PinkCrab\FunctionConstructors\Numbers as Num;
 use PinkCrab\FunctionConstructors\Strings as Str;
 use PinkCrab\FunctionConstructors\FunctionsLoader;
-use PinkCrab\FunctionConstructors\GeneralFunctions as Func;
 
-use function PHPUnit\Framework\throwException;
+use PinkCrab\FunctionConstructors\GeneralFunctions as Func;
 
 /**
  * ArrayFunction class.
@@ -757,6 +757,20 @@ class ArrayFunctionTests extends TestCase
 
         $this->assertEquals('John', $populated->name);
         $this->assertEquals(30, $populated->age);
+    }
+
+    /** @testdox Attempted to use a none object as the model to cast an array to, should result in an exception being thrown */
+    public function testSetPublicPropertiesThrowsExceptionWhenNotObject(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $data = array(
+            'name' => 'John',
+            'age'  => 30,
+        );
+
+        $objectPopulator = Arr\toObject('foo');
+        $populated       = $objectPopulator($data);
     }
 
     /** @testdox Attempting to set a property that is private or protected should throw and exception */

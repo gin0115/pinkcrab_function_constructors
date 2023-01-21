@@ -744,9 +744,14 @@ function sumWhere(callable $function): Closure
  * @return Closure(mixed[]):object
  * @throws InvalidArgumentException If property does not exist or is not public.
  */
-function toObject(?object $object = null): Closure
+function toObject($object = null): Closure
 {
     $object = $object ?? new stdClass();
+
+    // Throws an exception if $object is not an object.
+    if (! is_object($object)) {
+        throw new \InvalidArgumentException('Object must be an object.');
+    }
 
     /**
      * @param mixed[] $array
