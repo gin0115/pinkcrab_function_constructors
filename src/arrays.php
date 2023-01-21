@@ -757,7 +757,7 @@ function toObject($object = null): Closure
      * @param mixed[] $array
      * @return object
      */
-    return function (array $array) use ($object): object {
+    return function (array $array) use ($object) {
         foreach ($array as $key => $value) {
             // If key is not a string or numerical, skip it.
             if (! is_string($key) || is_numeric($key)) {
