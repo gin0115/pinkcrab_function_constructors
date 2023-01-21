@@ -472,8 +472,8 @@ class ArrayFunctionTests extends TestCase
             0
         );
 
-        $data = [1,3,4,1,5,9,2,6,5,3,5,8,9,7,9];
-        $expected = [0,1,3,4,4,5,9,9,9,9,9,9,9,9,9,9];
+        $data     = array( 1, 3, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8, 9, 7, 9 );
+        $expected = array( 0, 1, 3, 4, 4, 5, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9 );
         $this->assertEquals($expected, $max($data));
     }
 
@@ -496,15 +496,21 @@ class ArrayFunctionTests extends TestCase
     /** @testdox It should be possible to create a function, pre defined to perform fold/reduce on a given array. */
     public function testFold(): void
     {
-        $sumMe = [1,2,3,4,5,6,7,8,9,10];
-        $biggest = [1,5,6,7,10,2];
+        $sumMe   = array( 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 );
+        $biggest = array( 1, 5, 6, 7, 10, 2 );
 
-        $findSum = Arr\fold(function (int $carry, int $current) {
-            return $current + $carry;
-        }, 0);
-        $findBiggest = Arr\fold(function (int $carry, int $current) {
-            return max($current, $carry);
-        }, 0);
+        $findSum     = Arr\fold(
+            function (int $carry, int $current) {
+                return $current + $carry;
+            },
+            0
+        );
+        $findBiggest = Arr\fold(
+            function (int $carry, int $current) {
+                return max($current, $carry);
+            },
+            0
+        );
 
         $this->assertEquals(55, $findSum($sumMe));
         $this->assertEquals(10, $findBiggest($biggest));
@@ -513,23 +519,35 @@ class ArrayFunctionTests extends TestCase
     /** @testdox  It should be possible to create a function, pre defined to perform fold/reduce on a given array in reverse order. */
     public function testFoldR(): void
     {
-        $data = ['a', 'b', 'c', 'd'];
-        $joinArray = Arr\foldR(function (string $carry, string $value): string {
-            return $carry.$value;
-        }, '');
+        $data      = array( 'a', 'b', 'c', 'd' );
+        $joinArray = Arr\foldR(
+            function (string $carry, string $value): string {
+                return $carry . $value;
+            },
+            ''
+        );
         $this->assertEquals('dcba', $joinArray($data));
     }
 
     /** @testdox It should be possible to create a function will allows doing fold/reduce with access the array key also. */
     public function testFoldKeys(): void
     {
-        $data = [1 => 1, 3 => 3, 2 => 2, 5 => 5, 4 => 4, 0 => 0];
-        $expected = ["key-1::value-1", "key-3::value-3", "key-2::value-2", "key-5::value-5", "key-4::value-4", "key-0::value-0"];
+        $data     = array(
+            1 => 1,
+            3 => 3,
+            2 => 2,
+            5 => 5,
+            4 => 4,
+            0 => 0,
+        );
+        $expected = array( 'key-1::value-1', 'key-3::value-3', 'key-2::value-2', 'key-5::value-5', 'key-4::value-4', 'key-0::value-0' );
 
-        $foldWithKeys = Arr\foldKeys(function (array $carry, int $key, int $value): array {
-            $carry[] = "key-{$key}::value-{$value}";
-            return $carry;
-        });
+        $foldWithKeys = Arr\foldKeys(
+            function (array $carry, int $key, int $value): array {
+                $carry[] = "key-{$key}::value-{$value}";
+                return $carry;
+            }
+        );
 
         $this->assertEquals($expected, $foldWithKeys($data));
     }
@@ -537,17 +555,17 @@ class ArrayFunctionTests extends TestCase
     /** @testdox It should be possible to take n number of elements from an array using Arr\take() */
     public function testTake(): void
     {
-        $data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-        $expected = [1, 2, 3, 4, 5];
+        $data     = array( 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 );
+        $expected = array( 1, 2, 3, 4, 5 );
 
         $take5 = Arr\take(5);
         $this->assertEquals($expected, $take5($data));
 
         $take3 = Arr\take(3);
-        $this->assertEquals([1, 2, 3], $take3($data));
+        $this->assertEquals(array( 1, 2, 3 ), $take3($data));
 
         $take0 = Arr\take(0);
-        $this->assertEquals([], $take0($data));
+        $this->assertEquals(array(), $take0($data));
 
         $takeAll = Arr\take(count($data));
         $this->assertEquals($data, $takeAll($data));
@@ -559,23 +577,23 @@ class ArrayFunctionTests extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         $take = Arr\take(-1);
-        $take([]);
+        $take(array());
     }
 
     /** @testdox It should be possible to take n number of elements from an array using Arr\takeLast() */
     public function testTakeLast(): void
     {
-        $data = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-        $expected = [5, 6, 7, 8, 9];
+        $data     = array( 1, 2, 3, 4, 5, 6, 7, 8, 9 );
+        $expected = array( 5, 6, 7, 8, 9 );
 
         $take5 = Arr\takeLast(5);
         $this->assertEquals($expected, $take5($data));
 
         $take3 = Arr\takeLast(3);
-        $this->assertEquals([7, 8, 9], $take3($data));
+        $this->assertEquals(array( 7, 8, 9 ), $take3($data));
 
         $take0 = Arr\takeLast(0);
-        $this->assertEquals([], $take0($data));
+        $this->assertEquals(array(), $take0($data));
 
         $takeAll = Arr\takeLast(count($data));
         $this->assertEquals($data, $takeAll($data));
@@ -587,76 +605,128 @@ class ArrayFunctionTests extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         $take = Arr\takeLast(-1);
-        $take([]);
+        $take(array());
     }
 
     /** @testdox It should be possible return an array which includes all values until the callback returns true using Arr\takeUntil() */
     public function testTakeUntil(): void
     {
-        $data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-        $expected = [1, 2, 3, 4, 5, 6, 7, 8];
+        $data     = array( 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 );
+        $expected = array( 1, 2, 3, 4, 5, 6, 7, 8 );
 
-        $takeUntil = Arr\takeUntil(function ($value) {
-            return $value > 8;
-        });
+        $takeUntil = Arr\takeUntil(
+            function ($value) {
+                return $value > 8;
+            }
+        );
         $this->assertEquals($expected, $takeUntil($data));
 
-        $takeUntil = Arr\takeUntil(function ($value) {
-            return $value < 10;
-        });
-        $this->assertEquals([], $takeUntil($data));
+        $takeUntil = Arr\takeUntil(
+            function ($value) {
+                return $value < 10;
+            }
+        );
+        $this->assertEquals(array(), $takeUntil($data));
 
-        $takeUntil = Arr\takeUntil(function ($value) {
-            return $value > 100;
-        });
+        $takeUntil = Arr\takeUntil(
+            function ($value) {
+                return $value > 100;
+            }
+        );
         $this->assertEquals($data, $takeUntil($data));
     }
 
     /** @testdox It should be possible to return an array which includes all values until the callback returns false using Arr\takeWhile() */
     public function testTakeWhile(): void
     {
-        $data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-        $expected = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+        $data     = array( 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 );
+        $expected = array( 1, 2, 3, 4, 5, 6, 7, 8, 9 );
 
-        $takeWhile = Arr\takeWhile(function ($value) {
-            return $value < 10;
-        });
+        $takeWhile = Arr\takeWhile(
+            function ($value) {
+                return $value < 10;
+            }
+        );
         $this->assertEquals($expected, $takeWhile($data));
 
-        $takeWhile = Arr\takeWhile(function ($value) {
-            return $value < 5;
-        });
-        $this->assertEquals([1,2,3,4], $takeWhile($data));
+        $takeWhile = Arr\takeWhile(
+            function ($value) {
+                return $value < 5;
+            }
+        );
+        $this->assertEquals(array( 1, 2, 3, 4 ), $takeWhile($data));
 
-        $takeWhile = Arr\takeWhile(function ($value) {
-            return $value < 100;
-        });
+        $takeWhile = Arr\takeWhile(
+            function ($value) {
+                return $value < 100;
+            }
+        );
         $this->assertEquals($data, $takeWhile($data));
     }
 
     /** @testdox It should be possible to use Map() and have access to key and value. */
     public function testMapWithKeys(): void
     {
-        $data = ['a' => 'pple', 'b' => 'anana', 'c' => 'arrot'];
-        $expected = ['apple', 'banana', 'carrot'];
+        $data     = array(
+            'a' => 'pple',
+            'b' => 'anana',
+            'c' => 'arrot',
+        );
+        $expected = array( 'apple', 'banana', 'carrot' );
 
-        $map = Arr\mapWithKey(function (string $key, string $value) {
-            return $key . $value;
-        });
+        $map = Arr\mapWithKey(
+            function (string $key, string $value) {
+                return $key . $value;
+            }
+        );
         $this->assertEquals($expected, $map($data));
     }
 
     /** @testdox It should be possible to iterate over an array and have access to the key and value.  */
     public function testIterateWithKeys(): void
     {
-        $data = ['a' => 'pple', 'b' => 'anana', 'c' => 'arrot'];
+        $data = array(
+            'a' => 'pple',
+            'b' => 'anana',
+            'c' => 'arrot',
+        );
 
         $this->expectOutputString('applebananacarrot');
 
-        $iterate = Arr\each(function (string $key, string $value) {
-            echo $key . $value;
-        });
+        $iterate = Arr\each(
+            function (string $key, string $value) {
+                echo $key . $value;
+            }
+        );
 
         $iterate($data);
+    }
+
+    /** @testdox It should be possible to create a function that is populated with a filter predicate, which when used on an array will return a count of matching values. */
+    public function testCountBy(): void
+    {
+        $data = array( 'aa', 'aa', 'bb', 'bb', 'vvvv', 'vvvv', 'vvvv' );
+
+        $countAa = Arr\filterCount(
+            function (string $value) {
+                return $value === 'aa';
+            }
+        );
+
+        $countBb = Arr\filterCount(
+            function (string $value) {
+                return $value === 'bb';
+            }
+        );
+
+        $countVvvv = Arr\filterCount(
+            function (string $value) {
+                return $value === 'vvvv';
+            }
+        );
+
+        $this->assertEquals(2, $countAa($data));
+        $this->assertEquals(2, $countBb($data));
+        $this->assertEquals(3, $countVvvv($data));
     }
 }
