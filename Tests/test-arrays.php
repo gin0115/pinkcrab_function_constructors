@@ -830,7 +830,7 @@ class ArrayFunctionTests extends TestCase
     }
 
     /** @testdox It should be possible to use rsort with predefined flags and not have the original array changed (immuteable) */
-    public function testRsort(): void    {
+    public function testRsort(): void{
         $data = array( 1, 2, 3, 4, 5 );
 
         $rsort = Arr\rsort();
@@ -845,6 +845,5 @@ class ArrayFunctionTests extends TestCase
         $rsort = Arr\rsort(SORT_NUMERIC, true);
         $foo = &$data;
         $this->assertEquals(array( 5, 4, 3, 2, 1 ), $rsort($foo));
-        $this->assertEquals(array( 1, 2, 3, 4, 5 ), $data);
-    }
+        $this->assertEquals(array( 1, 2, 3, 4, 5 ), $data);}
 }
