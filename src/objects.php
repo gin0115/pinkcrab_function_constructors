@@ -35,7 +35,6 @@ namespace PinkCrab\FunctionConstructors\Objects;
 
 use Closure;
 use InvalidArgumentException;
-use PinkCrab\FunctionConstructors\Comparisons as C;
 
 /**
  * Returns a function for checking if the passed class or string-class-name matches
