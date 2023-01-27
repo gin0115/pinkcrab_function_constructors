@@ -111,6 +111,12 @@ class ComparissonFunctionTest extends TestCase
         }
     }
 
+    /** @testdox When using isEqualTo with a resourse, the response should always be false. */
+    public function testCanNotFindEqualToResource(): void
+    {
+        $this->assertFalse(Comp\isEqualTo(fopen('php://memory', 'r'))(fopen('php://memory', 'r')));
+    }
+
     public function testCanDoGreaterThan(): void
     {
         $this->assertFalse(Comp\isGreaterThan(12)(10));
@@ -207,6 +213,13 @@ class ComparissonFunctionTest extends TestCase
                 Comp\isEqualIn($condition['needles'])($condition['haystack'])
             );
         }
+    }
+
+    /** @testdox Attempting to use isEqualIn where the item being compared is a resource or null, should return null */
+    public function testCanNotFindEqualToOrResource(): void
+    {
+        $this->assertNull(Comp\isEqualIn(array(1, 2, 3))(fopen('php://memory', 'r')));
+        $this->assertNull(Comp\isEqualIn(array(1, 2, 3))(null));
     }
 
     /** AND */
@@ -306,5 +319,38 @@ class ComparissonFunctionTest extends TestCase
         $notEquals1 = Comp\not($function);
         $this->assertTrue($notEquals1(2));
         $this->assertFalse($notEquals1(1));
+    }
+
+    /** @testdox Using any() should act as an alias for groupor() */
+    public function testCanUseAny()
+    {
+        $isTrue = function ($a) {
+            return $a === true;
+        };
+
+        $isNotFalse = function ($a) {
+            return $a === false;
+        };
+
+        $this->assertEquals(
+            Comp\groupOr($isTrue, $isNotFalse)(true),
+            Comp\any($isTrue, $isNotFalse)(true)
+        );
+    }
+    /** @testdox Using all() should act as an alias for groupAnd() */
+    public function testCanUseAll()
+    {
+        $isTrue = function ($a) {
+            return $a === true;
+        };
+
+        $isNotFalse = function ($a) {
+            return $a !== false;
+        };
+
+        $this->assertEquals(
+            Comp\groupAnd($isTrue, $isNotFalse)(true),
+            Comp\all($isTrue, $isNotFalse)(true)
+        );
     }
 }
