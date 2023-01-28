@@ -522,10 +522,8 @@ class StringFunctionTest extends TestCase
         if (version_compare(\PHPUnit\Runner\Version::id(), '9.0.0', '>=')) {
             $this->expectDeprecation();
         } else {
-            $this->expectDeprecationMessage('The decimialNumber function is deprecated, use decimalNumber instead.');
+            $this->expectException(\PHPUnit\Framework\Error\Deprecated::class);
         }
-        // $this->expectDeprecation();
-        Str\decimialNumber('2');
         $result = Str\decimialNumber('2');
         $this->assertEquals('2', $result);
     }
