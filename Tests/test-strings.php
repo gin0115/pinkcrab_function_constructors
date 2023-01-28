@@ -517,7 +517,6 @@ class StringFunctionTest extends TestCase
     /** @testdox Calling decimialNumber should throw a deprecation notice */
     public function testDecimalNumberDeprecation(): void
     {
-        dump(\PHPUnit\Runner\Version::id());
         // If using PHPUnit 9, we need to use the expectDeprecation() method
         if (version_compare(\PHPUnit\Runner\Version::id(), '9.0.0', '>=')) {
             $this->expectDeprecation();
@@ -538,7 +537,12 @@ class StringFunctionTest extends TestCase
     /** @testdox Calling similarAsComparisson should throw a deprecation notice */
     public function testSimilarAsComparissonDeprecation(): void
     {
-        $this->expectDeprecation();
+        // If using PHPUnit 9, we need to use the expectDeprecation() method
+        if (version_compare(\PHPUnit\Runner\Version::id(), '9.0.0', '>=')) {
+            $this->expectDeprecation();
+        } else {
+            $this->expectException(\PHPUnit\Framework\Error\Deprecated::class);
+        }
         Str\similarAsComparisson('a');
     }
 
@@ -552,7 +556,12 @@ class StringFunctionTest extends TestCase
     /** @testdox Calling firstPosistion should throw a deprecation notice */
     public function testFirstPosistionDeprecation(): void
     {
-        $this->expectDeprecation();
+        // If using PHPUnit 9, we need to use the expectDeprecation() method
+        if (version_compare(\PHPUnit\Runner\Version::id(), '9.0.0', '>=')) {
+            $this->expectDeprecation();
+        } else {
+            $this->expectException(\PHPUnit\Framework\Error\Deprecated::class);
+        }
         Str\firstPosistion('a');
     }
 
@@ -567,7 +576,12 @@ class StringFunctionTest extends TestCase
     /** @testdox Calling lastPosistion should throw a deprecation notice */
     public function testLastPosistionDeprecation(): void
     {
-        $this->expectDeprecation();
+        // If using PHPUnit 9, we need to use the expectDeprecation() method
+        if (version_compare(\PHPUnit\Runner\Version::id(), '9.0.0', '>=')) {
+            $this->expectDeprecation();
+        } else {
+            $this->expectException(\PHPUnit\Framework\Error\Deprecated::class);
+        }
         Str\lastPosistion('s');
     }
 
