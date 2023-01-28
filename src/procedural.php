@@ -23,6 +23,8 @@
 
 declare(strict_types=1);
 
+use PinkCrab\FunctionConstructors\Arrays as Arr;
+
 if (! function_exists('stringContains')) {
     /**
      * Checks if a string contains a sub string
@@ -48,24 +50,7 @@ if (! function_exists('array_flatten')) {
      */
     function arrayFlatten(array $array, ?int $n = null): array
     {
-        return array_reduce(
-            $array,
-            function (array $carry, $element) use ($n): array {
-                // Remove empty arrays.
-                if (is_array($element) && empty($element)) {
-                    return $carry;
-                }
-                // If the element is an array and we are still flattening, call again
-                if (is_array($element) && (is_null($n) || $n > 0)) { // @phpstan-ignore-line
-                    $carry = array_merge($carry, arrayFlatten($element, $n ? $n - 1 : null));
-                } else {
-                    // Else just add the element.
-                    $carry[] = $element;
-                }
-                return $carry;
-            },
-            array()
-        );
+        return Arr\flattenByN($n)($array);
     }
 }
 
@@ -74,16 +59,11 @@ if (! function_exists('toObject')) {
      * Simple mapper for turning arrays into stdClass objects.
      *
      * @param array<string|int, mixed> $array
-     * @return stdClass
+     * @return object
      */
-    function toObject(array $array): object
+    function toObject(array $array)
     {
-        $object = new stdClass();
-        foreach ($array as $key => $value) {
-            $key            = is_string($key) ? $key : sprintf('__%s', (string) $key);
-            $object->{$key} = $value;
-        }
-        return $object;
+        return Arr\toObject(new stdClass())($array);
     }
 }
 
@@ -91,13 +71,13 @@ if (! function_exists('invokeCallable')) {
     /**
      * Used to invoke a callable.
      *
-     * @param callable(mixed ...$args):void $fn
+     * @param callable(mixed ...$args):mixed $fn
      * @param mixed ...$args
-     * @return void
+     * @return mixed
      */
-    function invokeCallable(callable $fn, ...$args): void
+    function invokeCallable(callable $fn, ...$args)
     {
-        $fn(...$args);
+        return $fn(...$args);
     }
 }
 
