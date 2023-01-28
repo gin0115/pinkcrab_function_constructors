@@ -1010,6 +1010,7 @@ function usort(callable $function): Closure
     };
 }
 
+
 /**
  * Returns a Closure for applying a function to every element of an array
  *

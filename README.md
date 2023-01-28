@@ -1,6 +1,6 @@
 # The PinkCrab FunctionConstructors library.
 
-![Unit Tests](https://github.com/gin0115/pinkcrab_function_constructors/workflows/PHP%20Composer/badge.svg?branch=develop) [![codecov](https://codecov.io/gh/gin0115/pinkcrab_function_constructors/branch/develop/graph/badge.svg?token=X4LS5961T1)](https://codecov.io/gh/gin0115/pinkcrab_function_constructors) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/gin0115/pinkcrab_function_constructors/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/gin0115/pinkcrab_function_constructors/?branch=master) ![Packagist Downloads](https://img.shields.io/packagist/dt/pinkcrab/function-constructors?label=Downloads) ![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/gin0115/pinkcrab_function_constructors?label=Latest)
+[![PHPUnit](https://github.com/gin0115/pinkcrab_function_constructors/actions/workflows/php.yml/badge.svg)](https://github.com/gin0115/pinkcrab_function_constructors/actions/workflows/php.yml) [![codecov](https://codecov.io/gh/gin0115/pinkcrab_function_constructors/branch/develop/graph/badge.svg?token=X4LS5961T1)](https://codecov.io/gh/gin0115/pinkcrab_function_constructors) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/gin0115/pinkcrab_function_constructors/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/gin0115/pinkcrab_function_constructors/?branch=master) ![Packagist Downloads](https://img.shields.io/packagist/dt/pinkcrab/function-constructors?label=Downloads) ![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/gin0115/pinkcrab_function_constructors?label=Latest)
 
 *******
 
@@ -31,6 +31,7 @@ use PinkCrab\FunctionConstructors\Numbers as Num;
 use PinkCrab\FunctionConstructors\Strings as Str;
 use PinkCrab\FunctionConstructors\Comparisons as C;
 use PinkCrab\FunctionConstructors\GeneralFunctions as F;
+use PinkCrab\FunctionConstructors\Objects as Obj;
 
 // Allowing for
 Arr\Map('esc_html') or Str\append('foo') or F\pipe($var, 'strtoupper', Str\append('foo'))
@@ -43,6 +44,8 @@ At its core, the Function Constructors library is designed to make using PHP eas
 ### Function Composition and Piping
 
 #### pipe()
+
+> PLEASE NOTE THIS HAS CHANGED IN VERSION 2.0.0, using `compose()` is now the preferred method.
 
 Using `pipe(mixed $value, callable ...$callables)` and [ `pipeR()` *](#pipe "Same as pipe(), but callables in reverse order"), allows you to pass a value through a chain of callables. The result of the 1st function, is passed as the input the 2nd and so on, until the end when the final result is returned.
 

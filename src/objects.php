@@ -161,7 +161,7 @@ function usesTrait(string $trait, bool $autoload = true): Closure
 function createWith(string $class, array $baseProperties = array()): Closure
 {
     // Get all expected constrcutor args as an array of keys with any default values.
-    $constructor = new \ReflectionClass($class);
+    $constructor     = new \ReflectionClass($class);
     $constructorArgs = $constructor->getConstructor() ? $constructor->getConstructor()->getParameters() : array();
     $constructorArgs = array_reduce(
         $constructorArgs,
@@ -193,7 +193,6 @@ function createWith(string $class, array $baseProperties = array()): Closure
             },
             array()
         );
-
 
         return new $class(...$constructorArgs);
     };
