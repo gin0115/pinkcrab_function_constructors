@@ -1,24 +1,22 @@
 ---
 layout: function
-title: Strings\wrap()
-subtitle: Allows you to create a function which wraps any passed string with opening and closing strings. These can either be used as part of a Higher Order Function such as array_map() or as part of a compiled/pipe function.
+title: Strings\prepend()
+subtitle: Allows you to create a function which can be used to prepend a sub string to a passed string. This can either be used as part of a Higher Order Function such as array_map() or as part of a compiled/pipe function.
 group: strings
 subgroup: string_manipulation
 definition: >
-
  /**
-   * @param string       $opening Added to the start of the string (and end, if no $closing supplied)
-   * @param string|null  $closing Added to the end of the string (optional)
+   * @param string $prepend
    * @return Closure(string):string
    */
-  Strings\wrap(string $opening, ?string $closing = null ): Closure
+  Strings\prepend(string $prepend): Closure
 closure: >
  /**
-   * @param string $toWrap  The string to be wrapped
-   * @return string         The wrapped string
+   * @param string $toPrependOnto  The string to have the sub string added to
+   * @return string                The sliced string
    * @psalm-pure
    */ 
- $function(string $toWrap): string
+ $function(string $toPrependOnto): string
 
 ---
 
@@ -31,15 +29,16 @@ closure: >
             This can be used to create a simple closure which can be used as a regular function.
         </p>
 {% highlight php %}
-// Create the closure to wrap any string with a <span> tag
-$makeSpan = Strings\wrap('<span>', '</span>');
+
+$prependFoo = Strings\prepend('foo');
 
 // Called as a function.
-echo $makeSpan('Hello'); // <span>Hello</span>
+echo $prependFoo('Hello'); // fooHello
 
 // Used in a higher order function.
-$array = array_map( $makeSpan, ['Hello', 'World']);
-print_r($array); // [<span>Hello</span>, <span>World</span>]
+$array = array_map( $prependFoo, ['Hello', 'World']);
+print_r($array); // [fooHello, fooWorld]
+
 {% endhighlight %}
     </div>
 </div>
@@ -51,7 +50,7 @@ print_r($array); // [<span>Hello</span>, <span>World</span>]
             You can use currying to directly define can call the function as it is, without defining the Closure first.
         </p>
 {% highlight php %}
-echo Strings\wrap('##')('Hello'); // ##Hello##
+echo Strings\prepend('foo')('Bar'); // fooBar
 {% endhighlight %}
     </div>
 </div>
@@ -64,10 +63,10 @@ echo Strings\wrap('##')('Hello'); // ##Hello##
         </p>
 {% highlight php %}
 $array = array_map(
-    Strings\wrap('<p>', '</p>'), 
-    ['Hello', 'World']
+    Strings\prepend('--'), 
+    ['foo', 'bar']
 );
-print_r($array); // [<p>Hello</p>, <p>World</p>]
+print_r($array); // ['--foo', '--bar']
 {% endhighlight %}
     </div>
 </div>

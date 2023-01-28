@@ -1,24 +1,22 @@
 ---
 layout: function
-title: Strings\wrap()
-subtitle: Allows you to create a function which wraps any passed string with opening and closing strings. These can either be used as part of a Higher Order Function such as array_map() or as part of a compiled/pipe function.
+title: Strings\vSprintf()
+subtitle: Allows you to create a function which allows for creating a Closure which is populated with a sprintf template. Which accepts the array of args to be used to populate the template. This can either be used as part of a Higher Order Function such as array_map() or as part of a compiled/pipe function.
 group: strings
 subgroup: string_manipulation
 definition: >
-
  /**
-   * @param string       $opening Added to the start of the string (and end, if no $closing supplied)
-   * @param string|null  $closing Added to the end of the string (optional)
-   * @return Closure(string):string
+   * @param string $template The sprintf template to use.
+   * @return Closure(array):string
    */
-  Strings\wrap(string $opening, ?string $closing = null ): Closure
+  Strings\vSprintf(string $template): Closure
 closure: >
  /**
-   * @param string $toWrap  The string to be wrapped
-   * @return string         The wrapped string
+   * @param mixed[] $values  The values to be used to populate the sprintf template.
+   * @return string          The formatted string
    * @psalm-pure
    */ 
- $function(string $toWrap): string
+ $function(array $values): string
 
 ---
 
@@ -31,15 +29,16 @@ closure: >
             This can be used to create a simple closure which can be used as a regular function.
         </p>
 {% highlight php %}
-// Create the closure to wrap any string with a <span> tag
-$makeSpan = Strings\wrap('<span>', '</span>');
+
+$nameAndAge = Strings\vSprintf('Hello %s you are %d years old.');
 
 // Called as a function.
-echo $makeSpan('Hello'); // <span>Hello</span>
+echo $nameAndAge(['Dave', 12]); // Hello Dave you are 12 years old.
 
 // Used in a higher order function.
-$array = array_map( $makeSpan, ['Hello', 'World']);
-print_r($array); // [<span>Hello</span>, <span>World</span>]
+$array = array_map( $nameAndAge, [['Dave', 12], ['Jane', 11]]);
+print_r($array); // [Hello Dave you are 12 years old., Hello Jane you are 11 years old.]
+
 {% endhighlight %}
     </div>
 </div>
@@ -51,7 +50,7 @@ print_r($array); // [<span>Hello</span>, <span>World</span>]
             You can use currying to directly define can call the function as it is, without defining the Closure first.
         </p>
 {% highlight php %}
-echo Strings\wrap('##')('Hello'); // ##Hello##
+echo Strings\vSprintf('%s-H')(['Bar']); // Bar-H
 {% endhighlight %}
     </div>
 </div>
@@ -64,10 +63,10 @@ echo Strings\wrap('##')('Hello'); // ##Hello##
         </p>
 {% highlight php %}
 $array = array_map(
-    Strings\wrap('<p>', '</p>'), 
-    ['Hello', 'World']
+    Strings\vSprintf('Hello %s you are %d years old.'), 
+    [['Dave', 12], ['Jane', 11]]
 );
-print_r($array); // [<p>Hello</p>, <p>World</p>]
+print_r($array); // [Hello Dave you are 12 years old., Hello Jane you are 11 years old.]
 {% endhighlight %}
     </div>
 </div>
