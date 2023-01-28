@@ -106,7 +106,6 @@ class ObjectTests extends TestCase
     /** @testdox  */
     public function testToArray(): void
     {
-
         // Create the simple to array wrapper.
         $toArrray = Obj\toArray();
 
@@ -218,5 +217,19 @@ class ObjectTests extends TestCase
         $this->assertEquals(2, $instance->b);
         $this->assertEquals(3.5, $instance->c);
         $this->assertInstanceOf(classWithConstructor::class, $instance);
+    }
+
+    /** @testdox Trying to find if an object in an instance of something that is not an object, should result in an invalid argument exception */
+    public function testObjectInstanceOfWithInvalidType(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        Obj\isInstanceOf('Not an object');
+    }
+
+    /** @testdox Trying to check any type that is not an object is an instance of a class, should result in an Invalid Argument Exception */
+    public function testObjectInstanceOfWithInvalidClass(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        Obj\isInstanceOf(new stdClass())('Not a class');
     }
 }

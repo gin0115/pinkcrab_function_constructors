@@ -16,6 +16,7 @@ use PinkCrab\FunctionConstructors\Numbers as Num;
 use PinkCrab\FunctionConstructors\Strings as Str;
 use PinkCrab\FunctionConstructors\FunctionsLoader;
 use PinkCrab\FunctionConstructors\GeneralFunctions as Func;
+use PinkCrab\FunctionConstructors\Tests\Providers\ObjectFactory;
 
 class ToArrayFixtureClass
 {
@@ -351,5 +352,155 @@ class GeneralFunctionTest extends TestCase
         $this->assertEquals('tree', $ifStringMakeTree('string'));
         $this->assertEquals('NOTSTRING', $ifStringMakeTree('NOTSTRING'));
         $this->assertEquals('NOTSTRING', $ifStringMakeTree('RRRRR'));
+    }
+
+    /** @testdox It should be possible to get a defined index/key from an array or object. */
+    public function testGetProperty(): void
+    {
+        $getFoo = Func\getProperty('foo');
+        // Array
+        $this->assertEquals('bar', $getFoo(array( 'foo' => 'bar' )));
+        $this->assertNull($getFoo(array( 'bar' => 'foo' )));
+        // Obejct
+        $this->assertEquals('bar', $getFoo((object) array( 'foo' => 'bar' )));
+        $this->assertNull($getFoo((object) array( 'bar' => 'foo' )));
+        // Invalid
+        $this->assertNull($getFoo('not array or obejct'));
+    }
+
+    /** @testdox It should be possible to check if  a defined index/key from an array or object exists. */
+    public function testHasProperty(): void
+    {
+        $hasFoo = Func\hasProperty('foo');
+        // Array
+        $this->assertTrue($hasFoo(array( 'foo' => 'bar' )));
+        $this->assertFalse($hasFoo(array( 'bar' => 'foo' )));
+        // Obejct
+        $this->assertTrue($hasFoo((object) array( 'foo' => 'bar' )));
+        $this->assertFalse($hasFoo((object) array( 'bar' => 'foo' )));
+        // Invalid
+        $this->assertFalse($hasFoo('not array or obejct'));
+    }
+
+    /** @testdox Attempting to set a property on a none object or array type should throw a TypeError*/
+    public function testSetPropertyThrowsTypeError(): void
+    {
+        $this->expectException(TypeError::class);
+        Func\setProperty('foo', 'bar')('not object or array');
+    }
+
+    /** @testdox It should be possible to set a property to an array or object that implements array access. */
+    public function testSetProperty(): void
+    {
+        // Array
+        $setName = Func\setProperty(array('id' => 1), 'name');
+        $this->assertEquals(array( 'id'=>1,'name' => 'bar' ), $setName('bar'));
+
+        // Object with ArrayAccess
+        $instance = ObjectFactory::arrayAccess();
+        $setPropC = Func\setProperty($instance, 'propC');
+        $withBar = $setPropC('bar');
+        $this->assertEquals('bar', $withBar['propC']);
+
+        // ArrayObject with ArrayAccess
+        $intance = new ArrayObject([], ArrayObject::ARRAY_AS_PROPS);
+        $setName = Func\setProperty($intance, 'name');
+        $withBar = $setName('bar');
+        $this->assertEquals('bar', $withBar['name']);
+
+        // ArrayObject with ObjectAccess
+        $ObjectAccess = new ArrayObject((object)['id'=> 12, 'name' => null], ArrayObject::STD_PROP_LIST);
+        $setName = Func\setProperty($ObjectAccess, 'name');
+        $ObjectAccess = $setName('bar');
+        $this->assertEquals('bar', $ObjectAccess['name']);
+
+
+        // Obejct
+        $intance = new ToArrayFixtureClass();
+        $setPropC = Func\setProperty($intance, 'propC');
+        $withBar = $setPropC('bar');
+        $this->assertEquals('bar', $withBar->propC);
+    }
+
+    /** @testdox It should be possible to create a record encoder, that can populate an array using a function of defined setters. */
+    public function testRecordEncoderToArray(): void
+    {
+        // Create a record encoder that will take an array and return a new array with the properties set.
+        $encoder = Func\recordEncoder([]);
+
+        // Add the setters and functionlity to get vaules from the source array.
+        $encoder = $encoder(
+            Func\encodeProperty('id', Func\getProperty('userId')),
+            Func\encodeProperty('name', Func\getProperty('userName'))
+        );
+
+        $this->assertEquals(
+            array( 'id' => 1, 'name' => 'foo' ),
+            $encoder(array( 'userId' => 1, 'userName' => 'foo' ))
+        );
+    }
+
+    /** @testdox It should be possible to create a record encoder, that can populate an object using a function of defined setters. */
+    public function testRecordEncoderToObject(): void
+    {
+        // Create a record encoder that will take an array and return a new array with the properties set.
+        $encoder = Func\recordEncoder(new stdClass());
+
+        // Add the setters and functionlity to get vaules from the source array.
+        $encoder = $encoder(
+            Func\encodeProperty('id', Func\getProperty('userId')),
+            Func\encodeProperty('name', Func\getProperty('userName'))
+        );
+
+        $new = $encoder(array( 'userId' => 1, 'userName' => 'foo' ));
+
+        $this->assertEquals(1, $new->id);
+        $this->assertEquals('foo', $new->name);
+    }
+
+    /** @testdox It should be possible to create a record encoder, that can populate an ArrayObject object using a function of defined setters. */
+    public function testRecordEncoderToArrayObject(): void
+    {
+        // Create a record encoder that will take an array and return a new array with the properties set.
+        $encoder = Func\recordEncoder(new ArrayObject([], ArrayObject::ARRAY_AS_PROPS));
+
+        // Add the setters and functionlity to get vaules from the source array.
+        $encoder = $encoder(
+            Func\encodeProperty('id', Func\getProperty('userId')),
+            Func\encodeProperty('name', Func\getProperty('userName'))
+        );
+
+        $new = $encoder((object) array( 'userId' => 1, 'userName' => 'foo' ));
+
+        $this->assertEquals(1, $new['id']);
+        $this->assertEquals('foo', $new['name']);
+    }
+
+    /** @testdox It should be possible to create a record encoder, that can populate an ArrayAccess object using a function of defined setters. */
+    public function testRecordEncoderToArrayAccess(): void
+    {
+        // Create a record encoder that will take an array and return a new array with the properties set.
+        $encoder = Func\recordEncoder(ObjectFactory::arrayAccess());
+
+        // Add the setters and functionlity to get vaules from the source array.
+        $encoder = $encoder(
+            Func\encodeProperty('id', Func\getProperty('userId')),
+            Func\encodeProperty('name', Func\getProperty('userName'))
+        );
+
+        $new = $encoder((object) array( 'userId' => 1, 'userName' => 'foo' ));
+
+        $this->assertEquals(1, $new['id']);
+        $this->assertEquals('foo', $new['name']);
+    }
+
+    /** @testdox Attempting to set a recordEncoder using a numerical index, willthrow a TyprError */
+    public function testRecordEncoderThrowsTypeError(): void
+    {
+        $this->expectException(TypeError::class);
+
+        $encoder = Func\recordEncoder(new stdClass());
+        $encoder = $encoder(Func\encodeProperty('0', Func\getProperty('userId')));
+        $encoder(array( 'userId' => 1, 'userName' => 'foo' ));
     }
 }
