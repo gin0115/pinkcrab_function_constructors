@@ -517,7 +517,14 @@ class StringFunctionTest extends TestCase
     /** @testdox Calling decimialNumber should throw a deprecation notice */
     public function testDecimalNumberDeprecation(): void
     {
-        $this->expectDeprecation();
+        dump(\PHPUnit\Runner\Version::id());
+        // If using PHPUnit 9, we need to use the expectDeprecation() method
+        if (version_compare(\PHPUnit\Runner\Version::id(), '9.0.0', '>=')) {
+            $this->expectDeprecation();
+        } else {
+            $this->expectDeprecationMessage('The decimialNumber function is deprecated, use decimalNumber instead.');
+        }
+        // $this->expectDeprecation();
         Str\decimialNumber('2');
         $result = Str\decimialNumber('2');
         $this->assertEquals('2', $result);
