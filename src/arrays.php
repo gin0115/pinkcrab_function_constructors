@@ -742,19 +742,33 @@ function sumWhere(callable $function): Closure
  *
  * @param object|null $object The object to cast to, defaults to stdClass
  * @return Closure(mixed[]):object
+ * @throws \InvalidArgumentException If property does not exist or is not public.
  */
-function toObject(?object $object = null): Closure
+function toObject($object = null): Closure
 {
     $object = $object ?? new stdClass();
+
+    // Throws an exception if $object is not an object.
+    if (! is_object($object)) {
+        throw new \InvalidArgumentException('Object must be an object.');
+    }
 
     /**
      * @param mixed[] $array
      * @return object
      */
-    return function (array $array) use ($object): object {
+    return function (array $array) use ($object) {
         foreach ($array as $key => $value) {
-            $key            = is_string($key) ? $key : (string) $key;
-            $object->{$key} = $value;
+            // If key is not a string or numerical, skip it.
+            if (! is_string($key) || is_numeric($key)) {
+                continue;
+            }
+
+            try {
+                $object->{$key} = $value;
+            } catch (\Throwable $th) {
+                throw new \InvalidArgumentException("Property {$key} does not exist or is not public.");
+            }
         }
         return $object;
     };

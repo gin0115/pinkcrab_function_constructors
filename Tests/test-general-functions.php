@@ -16,12 +16,13 @@ use PinkCrab\FunctionConstructors\Numbers as Num;
 use PinkCrab\FunctionConstructors\Strings as Str;
 use PinkCrab\FunctionConstructors\FunctionsLoader;
 use PinkCrab\FunctionConstructors\GeneralFunctions as Func;
+use PinkCrab\FunctionConstructors\Tests\Providers\ObjectFactory;
 
 class ToArrayFixtureClass
 {
-    private $propA = 1;
+    private $propA   = 1;
     protected $propB = 2;
-    public $propC = 3;
+    public $propC    = 3;
 }
 
 
@@ -115,6 +116,22 @@ class GeneralFunctionTest extends TestCase
         );
     }
 
+    /** @testdox When using composeTypeSafe if the validator returns null before the callable is run, it should bail and return null */
+    public function testTypeSafeFunctionalComposerReturnsNull(): void
+    {
+        $function = Func\composeTypeSafe(
+            function ($e) {
+                return false;
+            },
+            Str\replaceWith('3344', '*\/*'),
+            Str\replaceWith('5566', '=/\='),
+            Str\prepend('00'),
+            Str\append('99')
+        );
+
+        $this->assertNull($function('1122334455667788'));
+    }
+
     public function testAlwaysReturns()
     {
         $alwaysHappy = Func\always('Happy');
@@ -150,18 +167,18 @@ class GeneralFunctionTest extends TestCase
 
     public function testCanUsePluckProperty()
     {
-        $data = (object)[
-            'alpha' => [
-                'bravo' => (object)[
-                    'charlie' => [
-                        'delta' => 'SPOONS'
-                    ]
-                ]
-            ]
-        ];
+        $data = (object) array(
+            'alpha' => array(
+                'bravo' => (object) array(
+                    'charlie' => array(
+                        'delta' => 'SPOONS',
+                    ),
+                ),
+            ),
+        );
 
         $getSpoons = Func\pluckProperty('alpha', 'bravo', 'charlie', 'delta');
-        $getDelta = Func\pluckProperty('alpha', 'bravo', 'charlie');
+        $getDelta  = Func\pluckProperty('alpha', 'bravo', 'charlie');
         $this->assertEquals('SPOONS', $getSpoons($data));
         $this->assertArrayHasKey('delta', $getDelta($data));
         $this->assertContains('SPOONS', $getDelta($data));
@@ -169,44 +186,44 @@ class GeneralFunctionTest extends TestCase
 
     public function testCanUseRecordEncoder()
     {
-        $data = (object)[
-            'post' => (object)[
-                'id' => 123,
-                'title' => 'Lorem ipsum dolor',
+        $data = (object) array(
+            'post'     => (object) array(
+                'id'      => 123,
+                'title'   => 'Lorem ipsum dolor',
                 'content' => 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique iste voluptatum sequi. Officia dignissimos minus ipsum odit, facilis voluptatibus veniam enim molestiae ipsam quae temporibus porro necessitatibus quia non mollitia!',
-                'date' => (new DateTime())->format('d/m/yy H:m'),
-                'author' => (object)[
-                    'userName' => 'someUser12',
-                    'displayName' => 'Sam Smith'
-                ],
-                'url' => 'https://www.url.tld/post/123/lorem-ipsum-dolor'
-            ],
-            'comments' => [
-                (object)[
-                    'post' => 123,
-                    'author' => (object)[
-                    'userName' => 'someUser2',
-                    'displayName' => 'Jane Jameson',
-                    'comment' => 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Hic, illo tempore repudiandae quos vero, vitae aut ullam tenetur officiis accusantium dolor animi ipsa omnis impedit, saepe est harum quisquam sit.',
-                    'date' => (new DateTime('yesterday'))->format('d/m/yy H:m'),
-                    ]
-                ],
-                (object)[
-                    'post' => 123,
-                    'author' => (object)[
-                    'userName' => 'someUser22',
-                    'displayName' => 'Barry Burton',
-                    'comment' => 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Hic, illo tempore repudiandae quos vero, vitae aut ullam tenetur officiis accusantium dolor animi ipsa omnis impedit, saepe est harum quisquam sit.',
-                    'date' => (new DateTime('yesterday'))->format('d/m/yy H:m'),
-                    ]
-                ]
-            ],
-            'shares' => [
-                'facebook' => 125,
-                'twitter' => 1458,
-                'instagram' => 8
-            ]
-        ];
+                'date'    => ( new DateTime() )->format('d/m/yy H:m'),
+                'author'  => (object) array(
+                    'userName'    => 'someUser12',
+                    'displayName' => 'Sam Smith',
+                ),
+                'url'     => 'https://www.url.tld/post/123/lorem-ipsum-dolor',
+            ),
+            'comments' => array(
+                (object) array(
+                    'post'   => 123,
+                    'author' => (object) array(
+                        'userName'    => 'someUser2',
+                        'displayName' => 'Jane Jameson',
+                        'comment'     => 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Hic, illo tempore repudiandae quos vero, vitae aut ullam tenetur officiis accusantium dolor animi ipsa omnis impedit, saepe est harum quisquam sit.',
+                        'date'        => ( new DateTime('yesterday') )->format('d/m/yy H:m'),
+                    ),
+                ),
+                (object) array(
+                    'post'   => 123,
+                    'author' => (object) array(
+                        'userName'    => 'someUser22',
+                        'displayName' => 'Barry Burton',
+                        'comment'     => 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Hic, illo tempore repudiandae quos vero, vitae aut ullam tenetur officiis accusantium dolor animi ipsa omnis impedit, saepe est harum quisquam sit.',
+                        'date'        => ( new DateTime('yesterday') )->format('d/m/yy H:m'),
+                    ),
+                ),
+            ),
+            'shares'   => array(
+                'facebook'  => 125,
+                'twitter'   => 1458,
+                'instagram' => 8,
+            ),
+        );
 
         // Simplified post encoder
         $encoder = array(
@@ -221,16 +238,15 @@ class GeneralFunctionTest extends TestCase
 
         // Create a generic stdClass encoder.
         $objectBuilder = Func\recordEncoder(new stdClass());
-        $arrayBuilder = Func\recordEncoder([]);
-
+        $arrayBuilder  = Func\recordEncoder(array());
 
         // Populte builders with the encoder.
         $simplePostCreatorObject = $objectBuilder(...$encoder);
-        $simplePostCreatorArray = $arrayBuilder(...$encoder);
+        $simplePostCreatorArray  = $arrayBuilder(...$encoder);
 
         // Build the final array/object
         $simpleObject = $simplePostCreatorObject($data);
-        $simpleArray = $simplePostCreatorArray($data);
+        $simpleArray  = $simplePostCreatorArray($data);
 
         $this->assertEquals(123, $simpleObject->id);
         $this->assertEquals(123, $simpleArray['id']);
@@ -261,11 +277,13 @@ class GeneralFunctionTest extends TestCase
      */
     public function testCanInvokeCallables()
     {
-        $doubleAnyNumber = Func\invoker(Func\compose(
-            Num\sum(12),
-            Num\multiply(4),
-            Num\subtract(7)
-        ));
+        $doubleAnyNumber = Func\invoker(
+            Func\compose(
+                Num\sum(12),
+                Num\multiply(4),
+                Num\subtract(7)
+            )
+        );
 
         $this->assertEquals(69, $doubleAnyNumber(7));
     }
@@ -276,7 +294,7 @@ class GeneralFunctionTest extends TestCase
         $toArrray = Func\toArray();
 
         // Test with valid stdClass.
-        $obj = new stdClass();
+        $obj        = new stdClass();
         $obj->propA = 1;
         $obj->propB = 2;
         $this->assertArrayHasKey('propA', $toArrray($obj));
@@ -294,7 +312,7 @@ class GeneralFunctionTest extends TestCase
         // Check it returns blank array if any other value passed.
         $this->assertEmpty($toArrray(false));
         $this->assertEmpty($toArrray(null));
-        $this->assertEmpty($toArrray([1,2,3,4]));
+        $this->assertEmpty($toArrray(array( 1, 2, 3, 4 )));
         $this->assertEmpty($toArrray(1));
         $this->assertEmpty($toArrray(2.5));
         $this->assertEmpty($toArrray('STRING'));
@@ -334,5 +352,155 @@ class GeneralFunctionTest extends TestCase
         $this->assertEquals('tree', $ifStringMakeTree('string'));
         $this->assertEquals('NOTSTRING', $ifStringMakeTree('NOTSTRING'));
         $this->assertEquals('NOTSTRING', $ifStringMakeTree('RRRRR'));
+    }
+
+    /** @testdox It should be possible to get a defined index/key from an array or object. */
+    public function testGetProperty(): void
+    {
+        $getFoo = Func\getProperty('foo');
+        // Array
+        $this->assertEquals('bar', $getFoo(array( 'foo' => 'bar' )));
+        $this->assertNull($getFoo(array( 'bar' => 'foo' )));
+        // Obejct
+        $this->assertEquals('bar', $getFoo((object) array( 'foo' => 'bar' )));
+        $this->assertNull($getFoo((object) array( 'bar' => 'foo' )));
+        // Invalid
+        $this->assertNull($getFoo('not array or obejct'));
+    }
+
+    /** @testdox It should be possible to check if  a defined index/key from an array or object exists. */
+    public function testHasProperty(): void
+    {
+        $hasFoo = Func\hasProperty('foo');
+        // Array
+        $this->assertTrue($hasFoo(array( 'foo' => 'bar' )));
+        $this->assertFalse($hasFoo(array( 'bar' => 'foo' )));
+        // Obejct
+        $this->assertTrue($hasFoo((object) array( 'foo' => 'bar' )));
+        $this->assertFalse($hasFoo((object) array( 'bar' => 'foo' )));
+        // Invalid
+        $this->assertFalse($hasFoo('not array or obejct'));
+    }
+
+    /** @testdox Attempting to set a property on a none object or array type should throw a TypeError*/
+    public function testSetPropertyThrowsTypeError(): void
+    {
+        $this->expectException(TypeError::class);
+        Func\setProperty('foo', 'bar')('not object or array');
+    }
+
+    /** @testdox It should be possible to set a property to an array or object that implements array access. */
+    public function testSetProperty(): void
+    {
+        // Array
+        $setName = Func\setProperty(array('id' => 1), 'name');
+        $this->assertEquals(array( 'id'=>1,'name' => 'bar' ), $setName('bar'));
+
+        // Object with ArrayAccess
+        $instance = ObjectFactory::arrayAccess();
+        $setPropC = Func\setProperty($instance, 'propC');
+        $withBar = $setPropC('bar');
+        $this->assertEquals('bar', $withBar['propC']);
+
+        // ArrayObject with ArrayAccess
+        $intance = new ArrayObject([], ArrayObject::ARRAY_AS_PROPS);
+        $setName = Func\setProperty($intance, 'name');
+        $withBar = $setName('bar');
+        $this->assertEquals('bar', $withBar['name']);
+
+        // ArrayObject with ObjectAccess
+        $ObjectAccess = new ArrayObject((object)['id'=> 12, 'name' => null], ArrayObject::STD_PROP_LIST);
+        $setName = Func\setProperty($ObjectAccess, 'name');
+        $ObjectAccess = $setName('bar');
+        $this->assertEquals('bar', $ObjectAccess['name']);
+
+
+        // Obejct
+        $intance = new ToArrayFixtureClass();
+        $setPropC = Func\setProperty($intance, 'propC');
+        $withBar = $setPropC('bar');
+        $this->assertEquals('bar', $withBar->propC);
+    }
+
+    /** @testdox It should be possible to create a record encoder, that can populate an array using a function of defined setters. */
+    public function testRecordEncoderToArray(): void
+    {
+        // Create a record encoder that will take an array and return a new array with the properties set.
+        $encoder = Func\recordEncoder([]);
+
+        // Add the setters and functionlity to get vaules from the source array.
+        $encoder = $encoder(
+            Func\encodeProperty('id', Func\getProperty('userId')),
+            Func\encodeProperty('name', Func\getProperty('userName'))
+        );
+
+        $this->assertEquals(
+            array( 'id' => 1, 'name' => 'foo' ),
+            $encoder(array( 'userId' => 1, 'userName' => 'foo' ))
+        );
+    }
+
+    /** @testdox It should be possible to create a record encoder, that can populate an object using a function of defined setters. */
+    public function testRecordEncoderToObject(): void
+    {
+        // Create a record encoder that will take an array and return a new array with the properties set.
+        $encoder = Func\recordEncoder(new stdClass());
+
+        // Add the setters and functionlity to get vaules from the source array.
+        $encoder = $encoder(
+            Func\encodeProperty('id', Func\getProperty('userId')),
+            Func\encodeProperty('name', Func\getProperty('userName'))
+        );
+
+        $new = $encoder(array( 'userId' => 1, 'userName' => 'foo' ));
+
+        $this->assertEquals(1, $new->id);
+        $this->assertEquals('foo', $new->name);
+    }
+
+    /** @testdox It should be possible to create a record encoder, that can populate an ArrayObject object using a function of defined setters. */
+    public function testRecordEncoderToArrayObject(): void
+    {
+        // Create a record encoder that will take an array and return a new array with the properties set.
+        $encoder = Func\recordEncoder(new ArrayObject([], ArrayObject::ARRAY_AS_PROPS));
+
+        // Add the setters and functionlity to get vaules from the source array.
+        $encoder = $encoder(
+            Func\encodeProperty('id', Func\getProperty('userId')),
+            Func\encodeProperty('name', Func\getProperty('userName'))
+        );
+
+        $new = $encoder((object) array( 'userId' => 1, 'userName' => 'foo' ));
+
+        $this->assertEquals(1, $new['id']);
+        $this->assertEquals('foo', $new['name']);
+    }
+
+    /** @testdox It should be possible to create a record encoder, that can populate an ArrayAccess object using a function of defined setters. */
+    public function testRecordEncoderToArrayAccess(): void
+    {
+        // Create a record encoder that will take an array and return a new array with the properties set.
+        $encoder = Func\recordEncoder(ObjectFactory::arrayAccess());
+
+        // Add the setters and functionlity to get vaules from the source array.
+        $encoder = $encoder(
+            Func\encodeProperty('id', Func\getProperty('userId')),
+            Func\encodeProperty('name', Func\getProperty('userName'))
+        );
+
+        $new = $encoder((object) array( 'userId' => 1, 'userName' => 'foo' ));
+
+        $this->assertEquals(1, $new['id']);
+        $this->assertEquals('foo', $new['name']);
+    }
+
+    /** @testdox Attempting to set a recordEncoder using a numerical index, willthrow a TyprError */
+    public function testRecordEncoderThrowsTypeError(): void
+    {
+        $this->expectException(TypeError::class);
+
+        $encoder = Func\recordEncoder(new stdClass());
+        $encoder = $encoder(Func\encodeProperty('0', Func\getProperty('userId')));
+        $encoder(array( 'userId' => 1, 'userName' => 'foo' ));
     }
 }

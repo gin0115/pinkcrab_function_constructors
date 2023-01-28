@@ -33,7 +33,7 @@ class RecordEncoderProvider
                 'broken' => [
                     'data' => (object)[
                         'date' => time(),
-                        'content' => null
+                        'content' => \INF
                     ]
                 ]
             ],
@@ -45,7 +45,7 @@ class RecordEncoderProvider
                     'active' => true,
                     'name' => 'Bob Flemming',
                     'tags' => 3,
-                    'brokenContent' => null,
+                    'brokenContent' => \INF,
                     'recordCount' => 21
                 ]
             ]

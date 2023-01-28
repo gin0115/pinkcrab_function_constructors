@@ -270,7 +270,6 @@ function propertyEquals(string $property, $value): Closure
  */
 function setProperty($store, string $property): Closure
 {
-
     // If passed store is not an array or object, throw exception.
     if (! isArrayAccess($store) && ! is_object($store)) {
         throw new TypeError('Only objects or arrays can be constructed using setProperty.');
@@ -333,7 +332,7 @@ function recordEncoder($dataType): Closure
             foreach ($encoders as $encoder) {
                 $key = array_keys($encoder($data))[0];
                 // throw exception if key is int
-                if (is_int($key)) {
+                if (\is_numeric($key)) {
                     throw new TypeError('Encoders must user an array with a string key.');
                 }
 

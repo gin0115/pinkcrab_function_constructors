@@ -7,3 +7,4 @@ wiki/
 .php-cs-fixer.cache
 clover.xml
 coverage-report/
+.vscode

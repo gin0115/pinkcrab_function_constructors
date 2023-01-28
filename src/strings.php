@@ -331,7 +331,7 @@ function split(string $separator, int $limit = PHP_INT_MAX): Closure
      */
     return function (string $string) use ($separator, $limit): array {
         $chunks = explode($separator, $string, $limit);
-        return is_array($chunks) ? $chunks : []; // @phpstan-ignore-line, inconsistent errors with differing php versions.
+        return is_array($chunks) ? $chunks : array(); // @phpstan-ignore-line, inconsistent errors with differing php versions.
     };
 }
 
@@ -661,7 +661,6 @@ function lastPosition(string $needle, int $offset = 0, int $flags = STRINGS_CASE
  */
 function firstSubString(string $needle, int $flags = STRINGS_CASE_SENSITIVE | STRINGS_AFTER_NEEDLE): Closure
 {
-
     // Decode flags, only look for none defaults.
     $beforeNeedle  = (bool) ($flags & STRINGS_BEFORE_NEEDLE);
     $caseSensitive = ! (bool) ($flags & STRINGS_CASE_INSENSITIVE); // Assumes true unless INSESNITVE passed
@@ -788,8 +787,10 @@ function isBlank($value): bool
 
 /**
  * See decimalNumber()
+ * This function will be removed in later versions.
  *
  * @deprecated Use decimalNumber() instead.
+ *
  * @param int $precision
  * @param string $point
  * @param string $thousands
@@ -797,6 +798,7 @@ function isBlank($value): bool
  */
 function decimialNumber($precision = 2, $point = '.', $thousands = ''): Closure
 {
+    trigger_error('Deprecated function called. Please use decimalNumber. This function will be removed in later versions.', E_USER_DEPRECATED);
     return decimalNumber($precision, $point, $thousands);
 }
 
@@ -810,6 +812,7 @@ function decimialNumber($precision = 2, $point = '.', $thousands = ''): Closure
  */
 function similarAsComparisson(string $comparisonString, bool $asPc = false): Closure
 {
+    trigger_error('Deprecated function called. Please use similarAsComparison. This function will be removed in later versions.', E_USER_DEPRECATED);
     return similarAsComparison($comparisonString, $asPc);
 }
 
@@ -824,6 +827,7 @@ function similarAsComparisson(string $comparisonString, bool $asPc = false): Clo
  */
 function firstPosistion(string $needle, int $offset = 0, int $flags = STRINGS_CASE_SENSITIVE): Closure
 {
+    trigger_error('Deprecated function called. Please use firstPosition. This function will be removed in later versions.', E_USER_DEPRECATED);
     return firstPosition($needle, $offset, $flags);
 }
 
@@ -838,5 +842,6 @@ function firstPosistion(string $needle, int $offset = 0, int $flags = STRINGS_CA
  */
 function lastPosistion(string $needle, int $offset = 0, int $flags = STRINGS_CASE_SENSITIVE): Closure
 {
+    trigger_error('Deprecated function called. Please use lastPosition. This function will be removed in later versions.', E_USER_DEPRECATED);
     return lastPosition($needle, $offset, $flags);
 }
