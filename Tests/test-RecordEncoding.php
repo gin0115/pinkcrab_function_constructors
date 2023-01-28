@@ -6,9 +6,9 @@ namespace PinkCrab\FunctionConstructors\Tests;
 
 use stdClass;
 use PHPUnit\Framework\TestCase;
+use PinkCrab\FunctionConstructors\Objects as O;
 use PinkCrab\FunctionConstructors\Arrays as Arr;
 use PinkCrab\FunctionConstructors\Numbers as Num;
-use PinkCrab\FunctionConstructors\Strings as Str;
 use PinkCrab\FunctionConstructors\GeneralFunctions as F;
 use PinkCrab\FunctionConstructors\Tests\Providers\RecordEncoderProvider;
 
@@ -25,7 +25,7 @@ class RecordEncoderTests extends TestCase
             F\encodeProperty('active', F\pluckProperty('active')),
             F\encodeProperty('name', F\composeR(
                 Arr\toString(' '),
-                F\toArray(),
+                O\toArray(),
                 F\pluckProperty('name')
             )),
             F\encodeProperty('tags', F\composeR('count', F\pluckProperty('tags'))),

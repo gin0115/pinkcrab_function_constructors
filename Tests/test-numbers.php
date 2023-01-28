@@ -151,7 +151,21 @@ class NumberFunctionTest extends TestCase
         $this->assertEquals(10, $divideInto2($b));
     }
 
+    /** @testdox Attempting to pass anything but a numerical value as the dividend to divideBy should throw an InvalidArgumentException */
+    public function testDivideByThrowsNoneNumError()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $acc = Num\divideBy(array(array('0'), false));
+        // Throws InvalidArgumentException.
+    }
 
+    /** @testdox Attempting to pass anything but a numerical value as the dividend to divideInto should throw an InvalidArgumentException */
+    public function testDivideIntoThrowsNoneNumError()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $acc = Num\divideInto(array(array('0'), false));
+        // Throws InvalidArgumentException.
+    }
 
     public function testCanRemainderByAndInto()
     {
@@ -161,6 +175,21 @@ class NumberFunctionTest extends TestCase
 
         $remainderInto2 = Num\remainderInto(2);
         $this->assertEquals(2, $remainderInto2(10)); // 2 / 10 = 0.2
+    }
+
+    /** @testdox Attempting to pass anything but a numerical value as the dividend to remainderInto should throw an InvalidArgumentException */
+    public function testRemainderIntoThrowsNoneNumError()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $acc = Num\remainderInto(array(array('0'), false));
+        // Throws InvalidArgumentException.
+    }
+
+    public function testRemainderByThrowsNoneNumError()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $acc = Num\remainderBy(array(array('0'), false));
+        // Throws InvalidArgumentException.
     }
 
     public function testCanRoundFloatsAndInts()

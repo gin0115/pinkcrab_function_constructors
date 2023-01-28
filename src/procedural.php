@@ -111,10 +111,6 @@ if (! function_exists('isArrayAccess')) {
      */
     function isArrayAccess($var)
     {
-        return is_array($var) ||
-           ($var instanceof \ArrayAccess &&
-            $var instanceof \Traversable &&
-            $var instanceof \Serializable &&
-            $var instanceof \Countable);
+        return is_array($var) || $var instanceof \ArrayAccess;
     }
 }

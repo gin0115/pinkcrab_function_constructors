@@ -46,7 +46,6 @@ use InvalidArgumentException;
  */
 function isInstanceOf($class): Closure
 {
-
     // If we have an object, get full name.
     if (is_object($class)) {
         $class = get_class($class);
@@ -105,7 +104,6 @@ function toArray(): Closure
      * @return array<string, mixed>
      */
     return function ($object): array {
-
         // If not object, return empty array.
         if (! is_object($object)) {
             return array();

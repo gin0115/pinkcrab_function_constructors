@@ -38,7 +38,6 @@ class FunctionConstantsTest extends TestCase
     /** @testdox It should be possible to use a constant for Comparisons\isTrue() as a callable */
     public function testIsTrue(): void
     {
-
         // Only a true should pass
         $this->assertTrue(call_user_func(Functions::IS_TRUE, true));
 
@@ -60,7 +59,6 @@ class FunctionConstantsTest extends TestCase
     /** @testdox It should be possible to use a constant for Comparisons\isFalse() as a callable */
     public function testIsFalse(): void
     {
-
         // Only a false should pass
         $this->assertTrue(call_user_func(Functions::IS_FALSE, false));
 
@@ -81,7 +79,6 @@ class FunctionConstantsTest extends TestCase
     /** @testdox It should be possible to use a constant for Comparisons\isNumber() as a callable */
     public function testIsNumber(): void
     {
-
         // Only a number should pass
         $this->assertTrue(call_user_func(Functions::IS_NUMBER, 1));
         $this->assertTrue(call_user_func(Functions::IS_NUMBER, 1.0));
