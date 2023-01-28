@@ -34,6 +34,7 @@ namespace PinkCrab\FunctionConstructors\GeneralFunctions;
 use Closure;
 use TypeError;
 use ArrayObject;
+use PinkCrab\FunctionConstructors\Objects as Objects;
 
 /**
  * Composes a function based on a set of callbacks.
@@ -248,9 +249,10 @@ function propertyEquals(string $property, $value): Closure
      */
     return function ($data) use ($property, $value): bool {
         return pipe(
+            $data,
             getProperty($property),
             \PinkCrab\FunctionConstructors\Comparisons\isEqualTo($value)
-        )($data);
+        );
     };
 }
 
@@ -263,22 +265,21 @@ function propertyEquals(string $property, $value): Closure
  * Only works for public or dynamic properties.
  *
  * @param array<string,mixed>|ArrayObject<string,mixed>|object $store
- * @return Closure(string,mixed):(array<string,mixed>|ArrayObject<string,mixed>|object)
+     * @param string $property The property key.
+ * @return Closure(mixed):(array<string,mixed>|ArrayObject<string,mixed>|object)
  */
-function setProperty($store): Closure
+function setProperty($store, string $property): Closure
 {
-
     // If passed store is not an array or object, throw exception.
     if (! isArrayAccess($store) && ! is_object($store)) {
         throw new TypeError('Only objects or arrays can be constructed using setProperty.');
     }
 
     /**
-     * @param string $property The property key.
      * @param mixed $value The value to set to keu.
      * @return array<string,mixed>|ArrayObject<string,mixed>|object The datastore.
      */
-    return function (string $property, $value) use ($store) {
+    return function ($value) use ($store, $property) {
         if (isArrayAccess($store)) {
             /** @phpstan-ignore-next-line */
             $store[ $property ] = $value;
@@ -331,14 +332,11 @@ function recordEncoder($dataType): Closure
             foreach ($encoders as $encoder) {
                 $key = array_keys($encoder($data))[0];
                 // throw exception if key is int
-                if (is_int($key)) {
+                if (\is_numeric($key)) {
                     throw new TypeError('Encoders must user an array with a string key.');
                 }
 
-                $dataType = setProperty($dataType)(
-                    $key,
-                    array_values($encoder($data))[0]
-                );
+                $dataType = setProperty($dataType, $key)(array_values($encoder($data))[0]);
             }
             return $dataType;
         };
@@ -383,29 +381,58 @@ function always($value): Closure
  * Returns a function for turning objects into arrays.
  * Only takes public properties.
  *
+ * This has been moved to PinkCrab\FunctionConstructors\Objects\toArray()
+ *
+ * This will be removed in later versions.
+ *
  * @return Closure(object):array<string, mixed>
+ * @deprecated 0.2.0 Use PinkCrab\FunctionConstructors\Objects\toArray()
  */
 function toArray(): Closure
 {
+    return Objects\toArray();
+}
+
+/**
+ * Creates a function which will validate the data through a condition callable, then return
+ * the results of passing the data through the callback.
+ *
+ * @param callable(mixed):bool  $condition
+ * @param callable(mixed):mixed $then
+ * @return \Closure(mixed):mixed
+ */
+function ifThen(callable $condition, callable $then): Closure
+{
     /**
-     * @param object $object
-     * @return array<string, mixed>
+     * @param  mixed $value
+     * @return mixed
      */
-    return function ($object): array {
+    return function ($value) use ($condition, $then) {
+        return true === (bool) $condition($value)
+            ? $then($value)
+            : $value;
+    };
+}
 
-        // If not object, return empty array.
-        if (! is_object($object)) {
-            return array();
-        }
-
-        $objectVars = get_object_vars($object);
-        return array_reduce(
-            array_keys($objectVars),
-            function (array $array, $key) use ($objectVars): array {
-                $array[ ltrim((string) $key, '_') ] = $objectVars[ $key ];
-                return $array;
-            },
-            array()
-        );
+/**
+ * Creates a function which will validate the data through a condition callable, then return
+ * the results of passing the data through the callback.
+ * Has a required callback required for failing condition.
+ *
+ * @param callable(mixed):bool  $condition
+ * @param callable(mixed):mixed $then
+ * @param callable(mixed):mixed $else
+ * @return \Closure
+ */
+function ifElse(callable $condition, callable $then, callable $else): Closure
+{
+    /**
+     * @param  mixed $value
+     * @return mixed
+     */
+    return function ($value) use ($condition, $then, $else) {
+        return true === (bool) $condition($value)
+            ? $then($value)
+            : $else($value);
     };
 }

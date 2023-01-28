@@ -235,7 +235,6 @@ function filterKey(callable $callable): Closure
     };
 }
 
-
 /**
  * Creates a Closure for running an array through various callbacks for all true response.
  * Wrapper for creating a AND group of callbacks and running through array filter.
@@ -375,8 +374,50 @@ function partition(callable $function): Closure
     };
 }
 
+/**
+ * Returns a closure for checking all elements pass a filter.
+ *
+ * @param callable(mixed):bool $function
+ * @return Closure(mixed[]):bool
+ */
+function filterAll(callable $function): Closure
+{
+    /**
+     * @param mixed[] $array
+     * @return bool
+     */
+    return function (array $array) use ($function): bool {
+        foreach ($array as $value) {
+            if (false === $function($value)) {
+                return false;
+            }
+        }
+        return true;
+    };
+}
 
 
+/**
+ * Returns a closure for checking any elements pass a filter.
+ *
+ * @param callable(mixed):bool $function
+ * @return Closure(mixed[]):bool
+ */
+function filterAny(callable $function): Closure
+{
+    /**
+     * @param mixed[] $array
+     * @return bool
+     */
+    return function (array $array) use ($function): bool {
+        foreach ($array as $value) {
+            if (true === $function($value)) {
+                return true;
+            }
+        }
+        return false;
+    };
+}
 
 
 /*
@@ -447,6 +488,52 @@ function mapWith(callable $func, ...$data): Closure
             function ($e) use ($data, $func) {
                 return $func($e, ...$data);
             },
+            $array
+        );
+    };
+}
+
+/**
+ * Returns a Closure for mapping an array with access to value and key.
+ *
+ * @param callable(int|string $key, mixed $value):mixed $func
+ * @return Closure(mixed[]):mixed[]
+ */
+function mapWithKey(callable $func): Closure
+{
+    /**
+     * @param mixed[] $array The array to map
+     * @return mixed[]
+     */
+    return function (array $array) use ($func): array {
+        return array_map(
+            function ($key, $value) use ($func) {
+                return $func($value, $key);
+            },
+            $array,
+            array_keys($array)
+        );
+    };
+}
+
+/**
+ * Returns a Closure foreaching over an array
+ *
+ * @param callable(int|string $key, mixed $value):void $func
+ * @return Closure(mixed[]):void
+ */
+function each(callable $func): Closure
+{
+    /**
+     * @param mixed[] $array The array to map
+     * @return void
+     */
+    return function (array $array) use ($func): void {
+        array_map(
+            function ($key, $value) use ($func) {
+                $func($key, $value);
+            },
+            array_keys($array),
             $array
         );
     };
@@ -655,19 +742,33 @@ function sumWhere(callable $function): Closure
  *
  * @param object|null $object The object to cast to, defaults to stdClass
  * @return Closure(mixed[]):object
+ * @throws \InvalidArgumentException If property does not exist or is not public.
  */
-function toObject(?object $object = null): Closure
+function toObject($object = null): Closure
 {
     $object = $object ?? new stdClass();
+
+    // Throws an exception if $object is not an object.
+    if (! is_object($object)) {
+        throw new \InvalidArgumentException('Object must be an object.');
+    }
 
     /**
      * @param mixed[] $array
      * @return object
      */
-    return function (array $array) use ($object): object {
+    return function (array $array) use ($object) {
         foreach ($array as $key => $value) {
-            $key            = is_string($key) ? $key : (string) $key;
-            $object->{$key} = $value;
+            // If key is not a string or numerical, skip it.
+            if (! is_string($key) || is_numeric($key)) {
+                continue;
+            }
+
+            try {
+                $object->{$key} = $value;
+            } catch (\Throwable $th) {
+                throw new \InvalidArgumentException("Property {$key} does not exist or is not public.");
+            }
         }
         return $object;
     };
@@ -906,5 +1007,205 @@ function usort(callable $function): Closure
     return function (array $array) use ($function) {
         \usort($array, $function);
         return $array;
+    };
+}
+
+
+/**
+ * Returns a Closure for applying a function to every element of an array
+ *
+ * @param callable(mixed $carry, mixed $value):mixed $function
+ * @param mixed $initialValue
+ * @return Closure(mixed[]):mixed[]
+ */
+function scan(callable $function, $initialValue): Closure
+{
+    return function (array $array) use ($function, $initialValue) {
+        $carry[] = $initialValue;
+        foreach ($array as $key => $value) {
+            $initialValue = $function($initialValue, $value);
+            $carry[]      = $initialValue;
+        }
+        return $carry;
+    };
+}
+
+/**
+ * Returns a Closure for applying a function to every element of an array
+ *
+ * @param callable(mixed $carry, mixed $value):mixed $function
+ * @param mixed $initialValue
+ * @return Closure(mixed[]):mixed[]
+ */
+function scanR(callable $function, $initialValue): Closure
+{
+    return function (array $array) use ($function, $initialValue) {
+        $carry[] = $initialValue;
+        foreach (array_reverse($array) as $key => $value) {
+            $initialValue = $function($initialValue, $value);
+            $carry[]      = $initialValue;
+        }
+        return \array_reverse($carry);
+    };
+}
+
+/**
+ * Creates a function for defining the callback and initial for reduce/fold
+ *
+ * @param callable(mixed $carry, mixed $value): mixed $callable
+ * @param mixed $initial
+ * @return Closure(mixed[]):mixed
+ */
+function fold(callable $callable, $initial = array()): Closure
+{
+    /**
+     * @param mixed[] $array
+     * @return mixed
+     */
+    return function (array $array) use ($callable, $initial) {
+        return array_reduce($array, $callable, $initial);
+    };
+}
+
+/**
+ * Creates a function for defining the callback and initial for reduce/fold
+ *
+ * @param callable(mixed $carry, mixed $value): mixed $callable
+ * @param mixed $initial
+ * @return Closure(mixed[]):mixed
+ */
+function foldR(callable $callable, $initial = array()): Closure
+{
+    /**
+     * @param mixed[] $array
+     * @return mixed
+     */
+    return function (array $array) use ($callable, $initial) {
+        return array_reduce(\array_reverse($array), $callable, $initial);
+    };
+}
+
+/**
+ * Creates a function for defining the callback and initial for reduce/fold, with the key
+ * also passed to the callback.
+ *
+ * @param callable(mixed $carry, int|string $key, mixed $value): mixed $callable
+ * @param mixed $initial
+ * @return Closure(mixed[]):mixed
+ */
+function foldKeys(callable $callable, $initial = array()): Closure
+{
+    /**
+     * @param mixed[] $array
+     * @return mixed
+     */
+    return function (array $array) use ($callable, $initial) {
+        foreach ($array as $key => $value) {
+            $initial = $callable($initial, $key, $value);
+        }
+        return $initial;
+    };
+}
+
+/**
+ * Creates a function which takes the first n elements from an array
+ *
+ * @param int $count
+ * @return Closure(mixed[]):mixed[]
+ * @throws \InvalidArgumentException if count is negative
+ */
+function take(int $count = 1): Closure
+{
+    // throw InvalidArgumentException if count is negative
+    if ($count < 0) {
+        throw new \InvalidArgumentException(__FUNCTION__ . ' count must be greater than or equal to 0');
+    }
+
+    /**
+     * @param mixed[] $array
+     * @return mixed[]
+     */
+    return function (array $array) use ($count) {
+        return \array_slice($array, 0, $count);
+    };
+}
+
+/**
+ * Creates a function which takes the last n elements from an array
+ *
+ * @param int $count
+ * @return Closure(mixed[]):mixed[]
+ * @throws \InvalidArgumentException if count is negative
+ */
+function takeLast(int $count = 1): Closure
+{
+    // throw InvalidArgumentException if count is negative
+    if ($count < 0) {
+        throw new \InvalidArgumentException(__FUNCTION__ . ' count must be greater than or equal to 0');
+    }
+
+    // If count is 0, return an empty array
+    if ($count === 0) {
+        return function (array $array) {
+            return array();
+        };
+    }
+
+    /**
+     * @param mixed[] $array
+     * @return mixed[]
+     */
+    return function (array $array) use ($count) {
+        return \array_slice($array, - $count);
+    };
+}
+
+/**
+ * Creates a function that allows you to take a slice of an array until the passed conditional
+ * returns true.
+ *
+ * @param callable(mixed): bool $conditional
+ * @return Closure(mixed[]):mixed[]
+ */
+function takeUntil(callable $conditional): Closure
+{
+    /**
+     * @param mixed[] $array
+     * @return mixed[]
+     */
+    return function (array $array) use ($conditional) {
+        $carry = array();
+        foreach ($array as $key => $value) {
+            if (true === $conditional($value)) {
+                break;
+            }
+            $carry[ $key ] = $value;
+        }
+        return $carry;
+    };
+}
+
+/**
+ * Creates a function that allows you to take a slice of an array until the passed conditional
+ * returns false.
+ *
+ * @param callable(mixed): bool $conditional
+ * @return Closure(mixed[]):mixed[]
+ */
+function takeWhile(callable $conditional): Closure
+{
+    /**
+     * @param mixed[] $array
+     * @return mixed[]
+     */
+    return function (array $array) use ($conditional) {
+        $carry = array();
+        foreach ($array as $key => $value) {
+            if (false === $conditional($value)) {
+                break;
+            }
+            $carry[ $key ] = $value;
+        }
+        return $carry;
     };
 }

@@ -58,4 +58,28 @@ class ProceduralFunctionsTest extends TestCase
         $this->assertTrue(stringContains('--True', '--'));
         $this->assertFalse(stringContains('++False', '--'));
     }
+
+    /** @testdox It should be possible to cast an array to an object using a procedural function. */
+    public function testCanCastArrayToObject()
+    {
+        $array  = array(
+            'a' => 1,
+            'b' => 2,
+            'c' => 3,
+        );
+        $object = toObject($array);
+        $this->assertEquals(1, $object->a);
+        $this->assertEquals(2, $object->b);
+        $this->assertEquals(3, $object->c);
+    }
+
+    /** @testdox It should be possible to invoke a callable with args */
+    public function testCanInvokeCallableWithArgs()
+    {
+        $func = function ($a, $b, $c) {
+            return $a + $b + $c;
+        };
+
+        $this->assertEquals(6, invokeCallable($func, 1, 2, 3));
+    }
 }

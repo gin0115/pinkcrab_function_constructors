@@ -47,10 +47,10 @@ function accumulatorInt(int $initial = 0): Closure
      * @return Closure(int|null):(Closure|int)|int
      */
     return function (?int $value = null) use ($initial) {
-        if ($value) {
+        if (null !== $value) {
             $initial += $value;
         }
-        return $value ? accumulatorInt($initial) : $initial;
+        return null !== $value ? accumulatorInt($initial) : $initial;
     };
 }
 
@@ -67,10 +67,10 @@ function accumulatorFloat(float $initial = 0): Closure
      * @return Closure(float|null):(Closure|float)|float
      */
     return function (?float $value = null) use ($initial) {
-        if ($value) {
+        if (null !== $value) {
             $initial += $value;
         }
-        return $value ? accumulatorFloat($initial) : $initial;
+        return null !== $value ? accumulatorFloat($initial) : $initial;
     };
 }
 
@@ -84,7 +84,7 @@ function accumulatorFloat(float $initial = 0): Closure
 function sum($initial = 0): Closure
 {
     if (! C\isNumber($initial)) {
-        throw new InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
+        throw new InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int)');
     }
 
     /**
@@ -107,7 +107,7 @@ function sum($initial = 0): Closure
 function subtract($initial = 0): Closure
 {
     if (! C\isNumber($initial)) {
-        throw new InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
+        throw new InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int)');
     }
 
     /**
@@ -130,7 +130,7 @@ function subtract($initial = 0): Closure
 function multiply($initial = 1): Closure
 {
     if (! C\isNumber($initial)) {
-        throw new InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
+        throw new InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int)');
     }
 
     /**
@@ -149,11 +149,12 @@ function multiply($initial = 1): Closure
  *
  * @param float $divisor The value to divide the passed value by
  * @return Closure(Number):float
+ * @throws InvalidArgumentException If neither int or float passed.
  */
 function divideBy($divisor = 1): Closure
 {
     if (! C\isNumber($divisor)) {
-        throw new \InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
+        throw new \InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int)');
     }
 
     /**
@@ -170,11 +171,12 @@ function divideBy($divisor = 1): Closure
  *
  * @param float $dividend The value to divide the passed value by
  * @return Closure(Number):float
+ * @throws InvalidArgumentException If neither int or float passed.
  */
 function divideInto($dividend = 1): Closure
 {
     if (! C\isNumber($dividend)) {
-        throw new \InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
+        throw new \InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int)');
     }
 
     /**
@@ -191,11 +193,12 @@ function divideInto($dividend = 1): Closure
  *
  * @param float $divisor
  * @return Closure(Number):float
+ * @throws InvalidArgumentException If neither int or float passed.
  */
 function remainderBy($divisor = 1): Closure
 {
     if (! C\isNumber($divisor)) {
-        throw new \InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
+        throw new \InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int)');
     }
 
     /**
@@ -212,11 +215,12 @@ function remainderBy($divisor = 1): Closure
  *
  * @param float $dividend
  * @return Closure(Number):float
+ * @throws InvalidArgumentException If neither int or float passed.
  */
 function remainderInto($dividend = 1): Closure
 {
     if (! C\isNumber($dividend)) {
-        throw new \InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
+        throw new \InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int)');
     }
 
     /**
@@ -229,25 +233,135 @@ function remainderInto($dividend = 1): Closure
 }
 
 /**
+ * Returns a function for checking if a number is multiple of the pre defined value.
+ *
+ * @param Number $multiple
+ * @return Closure(Number):bool
+ * @throws InvalidArgumentException If neither int or float passed.
+ */
+function isMultipleOf($multiple): Closure
+{
+    if (! C\isNumber($multiple)) {
+        throw new \InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int)');
+    }
+
+    /**
+     * @param Number $value
+     * @return bool
+     * @throws InvalidArgumentException If neither int or float passed.
+     */
+    return function ($value) use ($multiple): bool {
+        if (! C\isNumber($value)) {
+            throw new \InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int)');
+        }
+
+        // Return false if 0
+        if ($value === 0) {
+            return false;
+        }
+
+        return $value % $multiple === 0;
+    };
+}
+
+/**
+ * Returns a function for checking if a number has a factor of another number.
+ *
+ * @param int $factor
+ * @return Closure(int):bool
+ */
+function isFactorOf(int $factor): Closure
+{
+    /**
+     * @param int $value
+     * @return bool
+     * @throws InvalidArgumentException If neither int or float passed.
+     */
+    return function (int $value) use ($factor): bool {
+        // Return false if 0
+        if ($value === 0) {
+            return false;
+        }
+
+        return $factor % $value === 0;
+    };
+}
+
+
+/**
  * Returns a function for getting the remainder with a fixed dividend.
  *
  * @param int $precision Number of decimal places.
  * @return Closure(Number):float
+ * @throws InvalidArgumentException If neither int or float passed.
  */
 function round($precision = 1): Closure
 {
     if (! C\isNumber($precision)) {
-        throw new \InvalidArgumentException(__FUNCTION__ . "only accepts a Number (Float or Int)");
+        throw new \InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int)');
     }
 
     /**
      * @param Number $value
      * @return float
+     * @throws InvalidArgumentException If neither int or float passed.
      */
     return function ($value) use ($precision): float {
         if (! C\isNumber($value)) {
             throw new \InvalidArgumentException("Num\\round() only accepts a valid Number ( Int|Float -> Float )");
         }
         return \round(\floatval($value), $precision);
+    };
+}
+
+/**
+ * Returns a closure for raising the power of the passed by value, by a pre defined exponent.
+ *
+ * @param Number $exponent
+ * @return Closure(Number):Number
+ * @throws InvalidArgumentException If neither int or float passed.
+ */
+function power($exponent): Closure
+{
+    if (! C\isNumber($exponent)) {
+        throw new \InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int) for the exponent');
+    }
+
+    /**
+     * @param Number $value
+     * @return Number
+     * @throws InvalidArgumentException If neither int or float passed.
+     */
+    return function ($value) use ($exponent) {
+        if (! C\isNumber($value)) {
+            throw new \InvalidArgumentException('Num\\power() only accepts a valid Number ( Int|Float )');
+        }
+        return \pow($value, $exponent);
+    };
+}
+
+/**
+ * Returns closure for getting the pre defined root of a passed value.
+ *
+ * @param Number $root
+ * @return Closure(Number):Number
+ * @throws InvalidArgumentException If neither int or float passed.
+ */
+function root($root): Closure
+{
+    if (! C\isNumber($root)) {
+        throw new \InvalidArgumentException(__FUNCTION__ . 'only accepts a Number (Float or Int) for the root');
+    }
+
+    /**
+     * @param Number $value
+     * @return Number
+     * @throws InvalidArgumentException If neither int or float passed.
+     */
+    return function ($value) use ($root) {
+        if (! C\isNumber($value)) {
+            throw new \InvalidArgumentException('Num\\root() only accepts a valid Number ( Int|Float )');
+        }
+        return pow($value, (1 / $root));
     };
 }

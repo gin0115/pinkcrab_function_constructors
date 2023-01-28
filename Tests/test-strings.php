@@ -17,16 +17,6 @@ class StringFunctionTest extends TestCase
         FunctionsLoader::include();
     }
 
-    public function testCanWrapStringWithHTMLTags(): void
-    {
-        $asDiv = Str\tagWrap('div class="test"', 'div');
-        $this->assertEquals('<div class="test">HI</div>', $asDiv('HI'));
-        $this->assertEquals('<div class="test">123</div>', $asDiv('123'));
-
-        $asLi = Str\tagWrap('li');
-        $this->assertEquals('<li>HI</li>', $asLi('HI'));
-        $this->assertEquals('<li>123</li>', $asLi('123'));
-    }
 
     public function testCanWrapString(): void
     {
@@ -39,19 +29,15 @@ class StringFunctionTest extends TestCase
         $this->assertEquals('\/123\/', $bar('123'));
     }
 
-    public function testCanMakeUrl(): void
+    /** @testdox It should be possible to split a string by defining a start point with an optional length. */
+    public function testCanSliceString(): void
     {
-        $makeUrl = Str\asUrl('http://test.com');
-        $this->assertEquals(
-            "<a href='http://test.com'>test</a>",
-            $makeUrl('test')
-        );
+        $first5 = Str\slice(0, 5);
+        $this->assertEquals('Hello', $first5('Hello World'));
+        $this->assertEquals('He', $first5('He'));
 
-        $makeUrlBlank = Str\asUrl('http://test.com', '_blank');
-        $this->assertEquals(
-            "<a href='http://test.com' target='_blank'>test</a>",
-            $makeUrlBlank('test')
-        );
+        $skip5 = Str\slice(5);
+        $this->assertEquals('WorldBar', $skip5('HelloWorldBar'));
     }
 
     public function testCanPrependString(): void
@@ -104,11 +90,11 @@ class StringFunctionTest extends TestCase
 
     public function testCanReplaceSubStrings()
     {
-        $atStart = Str\replaceSubString('PHP');
-        $startAt10 = Str\replaceSubString('PHP', 10);
+        $atStart       = Str\replaceSubString('PHP');
+        $startAt10     = Str\replaceSubString('PHP', 10);
         $startAt10For5 = Str\replaceSubString('PHP', 10, 5);
 
-        $string = "abcdefghijklmnopqrstuvwxyz";
+        $string = 'abcdefghijklmnopqrstuvwxyz';
 
         $this->assertEquals('PHP', $atStart($string));
         $this->assertEquals('abcdefghijPHP', $startAt10($string));
@@ -149,10 +135,10 @@ class StringFunctionTest extends TestCase
 
     public function testCanSplitStringWithPattern()
     {
-        $splitter = Str\splitPattern("/-/");
-        $date1 = "1970-01-01";
-        $date2 = "2020-11-11";
-        $dateFail = "RETURNED1";
+        $splitter = Str\splitPattern('/-/');
+        $date1    = '1970-01-01';
+        $date2    = '2020-11-11';
+        $dateFail = 'RETURNED1';
 
         $this->assertEquals('1970', $splitter($date1)[0]);
         $this->assertEquals('01', $splitter($date1)[1]);
@@ -167,12 +153,12 @@ class StringFunctionTest extends TestCase
 
     public function testCanFormatDecimalNumber()
     {
-        $eightDecimalPlaces = Str\decimalNumber(8);
-        $tenDecimalPlaces = Str\decimalNumber(10);
+        $eightDecimalPlaces  = Str\decimalNumber(8);
+        $tenDecimalPlaces    = Str\decimalNumber(10);
         $doubleDecimalPlaces = Str\decimalNumber(2);
 
         $this->assertEquals('3.50000000', $eightDecimalPlaces(3.5));
-        $this->assertEquals('2.6580000000', $tenDecimalPlaces("2.658"));
+        $this->assertEquals('2.6580000000', $tenDecimalPlaces('2.658'));
         $this->assertEquals('3.14', $doubleDecimalPlaces(M_PI));
 
         // With thousand separator
@@ -223,7 +209,7 @@ class StringFunctionTest extends TestCase
             Str\append('99')
         );
 
-        $results = array_map($function, array('1a2', '1b3', '1t4'));
+        $results = array_map($function, array( '1a2', '1b3', '1t4' ));
         $this->assertEquals('001_a_299', $results[0]);
         $this->assertEquals('001b399', $results[1]);
         $this->assertEquals('001-t-499', $results[2]);
@@ -238,11 +224,33 @@ class StringFunctionTest extends TestCase
         $this->assertEquals('h\appy \d\ays', $slashAD('happy days'));
     }
 
-    public function testCanSplitString()
+    public function testCanSplitStringByLength()
     {
-        $splitIntoFours = Str\split(4);
+        $splitIntoFours = Str\splitByLength(4);
 
         $split = $splitIntoFours('AAAABBBBCCCCDDDD');
+        $this->assertEquals('AAAA', $split[0]);
+        $this->assertEquals('BBBB', $split[1]);
+        $this->assertEquals('CCCC', $split[2]);
+        $this->assertEquals('DDDD', $split[3]);
+    }
+
+    /** @testdox It should be possible to split a string into an array using a define separator and using the limit */
+    public function testCanSplitStringBySeperatorAndLimit()
+    {
+        $splitByComma = Str\split(',', 2);
+
+        $split = $splitByComma('AAAA,BBBB,CCCC,DDDD');
+        $this->assertEquals('AAAA', $split[0]);
+        $this->assertEquals('BBBB,CCCC,DDDD', $split[1]);
+    }
+
+    /** @testdox It should be possible to split a string into an array using a defined separator with an unlimited limit.  */
+    public function testCanSplitStringBySeperatorAndUnlimitedLimit()
+    {
+        $splitByComma = Str\split(',');
+
+        $split = $splitByComma('AAAA,BBBB,CCCC,DDDD');
         $this->assertEquals('AAAA', $split[0]);
         $this->assertEquals('BBBB', $split[1]);
         $this->assertEquals('CCCC', $split[2]);
@@ -266,50 +274,49 @@ class StringFunctionTest extends TestCase
     public function testCanwordWrap()
     {
         $loose10 = Str\wordWrap(10, '--');
-        $tight5 = Str\wordWrap(5, '--', true);
+        $tight5  = Str\wordWrap(5, '--', true);
 
-        $string = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        $string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $this->assertEquals('ABCDEFGHIJKLMNOPQRSTUVWXYZ', $loose10($string));
         $this->assertEquals('ABCDE--FGHIJ--KLMNO--PQRST--UVWXY--Z', $tight5($string));
 
-        $string = "ABCDEF GHIJK LMN OPQ RST UV WX YZ";
+        $string = 'ABCDEF GHIJK LMN OPQ RST UV WX YZ';
         $this->assertEquals('ABCDEF--GHIJK LMN--OPQ RST UV--WX YZ', $loose10($string));
         $this->assertEquals('ABCDE--F--GHIJK--LMN--OPQ--RST--UV WX--YZ', $tight5($string));
     }
 
     public function testCanDoTrim()
     {
-        $trimZ = Str\trim("zZ");
-        $this->assertEquals('44455', $trimZ("zzzz44455ZZZZZZZZZ"));
+        $trimZ = Str\trim('zZ');
+        $this->assertEquals('44455', $trimZ('zzzz44455ZZZZZZZZZ'));
 
+        $trimAB = Str\lTrim('AB');
+        $this->assertEquals('STD', $trimAB('ABSTD'));
+        $this->assertEquals('HFJKGHDJKGHFJKFGJKFGJK', $trimAB('ABHFJKGHDJKGHFJKFGJKFGJK'));
 
-        $trimAB = Str\lTrim("AB");
-        $this->assertEquals('STD', $trimAB("ABSTD"));
-        $this->assertEquals('HFJKGHDJKGHFJKFGJKFGJK', $trimAB("ABHFJKGHDJKGHFJKFGJKFGJK"));
-
-        $trimIU = Str\trim("IU");
-        $this->assertEquals('RESSTD', $trimIU("IURESSTDIU"));
-        $this->assertEquals('TREHFJKGHDJKGHFJKFGJKFGJK', $trimIU("IUIUIUTREHFJKGHDJKGHFJKFGJKFGJKIUIUIUIUIUIUIUIUIUIU"));
+        $trimIU = Str\trim('IU');
+        $this->assertEquals('RESSTD', $trimIU('IURESSTDIU'));
+        $this->assertEquals('TREHFJKGHDJKGHFJKFGJKFGJK', $trimIU('IUIUIUTREHFJKGHDJKGHFJKFGJKFGJKIUIUIUIUIUIUIUIUIUIU'));
 
         $this->assertEquals('CLEAR', Str\trim()("\t\nCLEAR\r\0"));
 
-        $trimYZ = Str\rTrim("YZ");
-        $this->assertEquals('STD', $trimYZ("STDYZ"));
-        $this->assertEquals('ABHFJKGHDJKGHFJKFGJKFGJK', $trimYZ("ABHFJKGHDJKGHFJKFGJKFGJKYZ"));
+        $trimYZ = Str\rTrim('YZ');
+        $this->assertEquals('STD', $trimYZ('STDYZ'));
+        $this->assertEquals('ABHFJKGHDJKGHFJKFGJKFGJK', $trimYZ('ABHFJKGHDJKGHFJKFGJKFGJKYZ'));
     }
 
     public function testCanDosimilarAsBase()
     {
-        $compareTheBaseAsChars = Str\similarAsBase("THE BASE");
-        $compareTheBaseAsPC = Str\similarAsBase("THE BASE", true);
+        $compareTheBaseAsChars = Str\similarAsBase('THE BASE');
+        $compareTheBaseAsPC    = Str\similarAsBase('THE BASE', true);
         $this->assertEquals(4, $compareTheBaseAsChars('BASE'));
-        $this->assertEquals((6 / 9) * 100, $compareTheBaseAsPC('BASE'));
+        $this->assertEquals(round((6 / 9), 4) * 100, round($compareTheBaseAsPC('BASE'), 2));
     }
 
     public function testCanDosimilarAsComparisson()
     {
-        $compareTheBaseAsChars = Str\similarAsComparison("BASE");
-        $compareTheBaseAsPC = Str\similarAsComparison("BASE", true);
+        $compareTheBaseAsChars = Str\similarAsComparison('BASE');
+        $compareTheBaseAsPC    = Str\similarAsComparison('BASE', true);
         $this->assertEquals(4, $compareTheBaseAsChars('THE BASE'));
 
         // This is not the calc done in the fucntion, but give the desired answer simpler!
@@ -318,9 +325,9 @@ class StringFunctionTest extends TestCase
 
     public function testCanPadStrings()
     {
-        $padLeft10 = Str\pad(10, '.', STR_PAD_LEFT);
+        $padLeft10  = Str\pad(10, '.', STR_PAD_LEFT);
         $padRight10 = Str\pad(10, '_', STR_PAD_RIGHT);
-        $padBoth10 = Str\pad(10, '\'', STR_PAD_BOTH);
+        $padBoth10  = Str\pad(10, '\'', STR_PAD_BOTH);
 
         $this->assertEquals('........HI', $padLeft10('HI'));
         $this->assertEquals('HI________', $padRight10('HI'));
@@ -350,12 +357,16 @@ class StringFunctionTest extends TestCase
         $this->assertEquals('HI', $wordListPositions[0]);
         $this->assertEquals('BYE', $wordListPositions[3]);
         $this->assertEquals('MAYBE', $wordListPositions[7]);
+
+        // Count words in sub string.
+        $hiCount = Str\wordCount(WORD_COUNT_NUMBER_OF_WORDS, '£')('HI BYE MAY£E');
+        $this->assertEquals(3, $hiCount);
     }
 
     public function testCanCountSubStrings()
     {
-        $findNemoAll = Str\countSubString('Nemo');
-        $findNemoAllAfter20 = Str\countSubString('Nemo', 20);
+        $findNemoAll                     = Str\countSubString('Nemo');
+        $findNemoAllAfter20              = Str\countSubString('Nemo', 20);
         $findNemoAllAfter20OnlyFor40More = Str\countSubString('Nemo', 20, 40);
 
         $haystack1 = str_repeat('Nemo is a fish.', 11); // 15 chars
@@ -373,7 +384,7 @@ class StringFunctionTest extends TestCase
 
     public function testCanStripTags()
     {
-        $allTags = Str\stripTags();
+        $allTags    = Str\stripTags();
         $allowPTags = Str\stripTags('<p><a>');
 
         $this->assertEquals('1Stuff', $allTags('1<p>Stuff</p>'));
@@ -406,10 +417,10 @@ class StringFunctionTest extends TestCase
 
     public function testCanFindSubStrings()
     {
-        $caseSenseBefore = Str\firstSubString('abc', STRINGS_BEFORE_NEEDLE);
-        $caseSenseAfter = Str\firstSubString('abc');
+        $caseSenseBefore   = Str\firstSubString('abc', STRINGS_BEFORE_NEEDLE);
+        $caseSenseAfter    = Str\firstSubString('abc');
         $caseInsenseBefore = Str\firstSubString('aBc', STRINGS_BEFORE_NEEDLE | STRINGS_CASE_INSENSITIVE);
-        $caseInsenseAfter = Str\firstSubString('abC', STRINGS_CASE_INSENSITIVE);
+        $caseInsenseAfter  = Str\firstSubString('abC', STRINGS_CASE_INSENSITIVE);
 
         $this->assertEquals('abcefg', $caseSenseAfter('qwertabcefg'));
         $this->assertEquals('qwert', $caseSenseBefore('qwertabcefg'));
@@ -418,7 +429,6 @@ class StringFunctionTest extends TestCase
         $this->assertNotNull($caseSenseAfter('QWERTABCEFG')); // Uppercase
         $this->assertEquals('', $caseSenseAfter('rutoiuerot'));// No match
         $this->assertEquals('', $caseSenseAfter('QWERTABCEFG'));// Uppercase
-
 
         $this->assertEquals('ABCEFG', $caseInsenseAfter('QWERTABCEFG'));
         $this->assertEquals('QWERT', $caseInsenseBefore('QWERTABCEFG'));
@@ -444,11 +454,13 @@ class StringFunctionTest extends TestCase
 
     public function testCanTranslateSubString()
     {
-        $rosStone = Str\translateWith([
-            'Hi' => 'Hello',
-            'Yeah' => 'Yes',
-            'Sod' => 'XXX',
-        ]);
+        $rosStone = Str\translateWith(
+            array(
+                'Hi'   => 'Hello',
+                'Yeah' => 'Yes',
+                'Sod'  => 'XXX',
+            )
+        );
 
         $this->assertEquals('Hello you', $rosStone('Hi you'));
         $this->assertEquals('Hello Hello', $rosStone('Hi Hi'));
@@ -460,8 +472,8 @@ class StringFunctionTest extends TestCase
 
     public function testCanUseVSprintf()
     {
-        $formatter = Str\vSprintf(['alpha', '12', '12.5']);
-        $this->assertEquals('12alpha34-12-12.5-f', $formatter('12%s34-%s-%s-f'));
+        $formatter = Str\vSprintf('12%s34-%s-%s-f');
+        $this->assertEquals('12alpha34-12-12.5-f', $formatter(array( 'alpha', '12', '12.5' )));
     }
 
     /** @testdox It should be possible to check if a value is a string and is blank */
@@ -487,5 +499,96 @@ class StringFunctionTest extends TestCase
 
         $this->assertFalse(call_user_func(Functions::IS_BLANK, true));
         $this->assertFalse(call_user_func(Functions::IS_BLANK, false));
+    }
+
+    /** @testdox Checking if a string ends with a blank string, will always return true, without checking. */
+    public function testEndsWithBlank(): void
+    {
+        $this->assertTrue(Str\endsWith('')('fffff'));
+    }
+
+    /** @testdox Using an invalid mode for countChar should result in an InvalidArgumentexception being thrown */
+    public function testCountCharInvalidMode(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        Str\countChars(23);
+    }
+
+    /** @testdox Calling decimialNumber should throw a deprecation notice */
+    public function testDecimalNumberDeprecation(): void
+    {
+        // If using PHPUnit 9, we need to use the expectDeprecation() method
+        if (version_compare(\PHPUnit\Runner\Version::id(), '9.0.0', '>=')) {
+            $this->expectDeprecation();
+        } else {
+            $this->expectException(\PHPUnit\Framework\Error\Deprecated::class);
+        }
+        $result = Str\decimialNumber('2');
+        $this->assertEquals('2', $result);
+    }
+
+    /** @testdox Even though decimialNumber throws a deprecation notice, it should still work. */
+    public function testDecimalNumber(): void
+    {
+        $result = @Str\decimialNumber(2, '.', '|');
+        $this->assertEquals('123|456|789.12', $result(123456789.123456));
+    }
+
+    /** @testdox Calling similarAsComparisson should throw a deprecation notice */
+    public function testSimilarAsComparissonDeprecation(): void
+    {
+        // If using PHPUnit 9, we need to use the expectDeprecation() method
+        if (version_compare(\PHPUnit\Runner\Version::id(), '9.0.0', '>=')) {
+            $this->expectDeprecation();
+        } else {
+            $this->expectException(\PHPUnit\Framework\Error\Deprecated::class);
+        }
+        Str\similarAsComparisson('a');
+    }
+
+    /** @testdox similarAsComparisson should still function even though it throws */
+    public function testSimilarAsComparisson(): void
+    {
+        $compareTheBaseAsChars = @Str\similarAsComparisson('BASE');
+        $this->assertEquals(4, $compareTheBaseAsChars('THE BASE'));
+    }
+
+    /** @testdox Calling firstPosistion should throw a deprecation notice */
+    public function testFirstPosistionDeprecation(): void
+    {
+        // If using PHPUnit 9, we need to use the expectDeprecation() method
+        if (version_compare(\PHPUnit\Runner\Version::id(), '9.0.0', '>=')) {
+            $this->expectDeprecation();
+        } else {
+            $this->expectException(\PHPUnit\Framework\Error\Deprecated::class);
+        }
+        Str\firstPosistion('a');
+    }
+
+    /** @testdox firstPosistion should still function even though it throws */
+    public function testFirstPosistion(): void
+    {
+        $findAppleCaseSense = @Str\firstPosistion('Apple');
+        $this->assertEquals(0, $findAppleCaseSense('Apple are tasty'));
+    }
+
+
+    /** @testdox Calling lastPosistion should throw a deprecation notice */
+    public function testLastPosistionDeprecation(): void
+    {
+        // If using PHPUnit 9, we need to use the expectDeprecation() method
+        if (version_compare(\PHPUnit\Runner\Version::id(), '9.0.0', '>=')) {
+            $this->expectDeprecation();
+        } else {
+            $this->expectException(\PHPUnit\Framework\Error\Deprecated::class);
+        }
+        Str\lastPosistion('s');
+    }
+
+    /** @testdox lastPosistion should still function even though it throws */
+    public function testLastPosistion(): void
+    {
+        $findAppleCaseSense = @Str\lastPosistion('Apple');
+        $this->assertEquals(23, $findAppleCaseSense('Apple are tasty i like Apples'));
     }
 }

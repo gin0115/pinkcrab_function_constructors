@@ -28,56 +28,61 @@ class ArrayFilterAndMapTests extends TestCase
 
     public function testCanUseFilter()
     {
-        $names = ["James Smith", "Betty Jones", "Sam Power", "Rebecca Smith"];
+        $names = array( 'James Smith', 'Betty Jones', 'Sam Power', 'Rebecca Smith' );
 
         $isASmith = Arr\filter(Str\contains('Smith'));
 
-        $this->assertContains("James Smith", $isASmith($names));
-        $this->assertContains("Rebecca Smith", $isASmith($names));
-        $this->assertNotContains("Betty Jones", $isASmith($names));
-        $this->assertNotContains("Sam Power", $isASmith($names));
+        $this->assertContains('James Smith', $isASmith($names));
+        $this->assertContains('Rebecca Smith', $isASmith($names));
+        $this->assertNotContains('Betty Jones', $isASmith($names));
+        $this->assertNotContains('Sam Power', $isASmith($names));
     }
 
     public function testCanUseFilterKey()
     {
-        $names = ['name10' => "James Smith", 'name20' => "Betty Jones", 'name21' => "Sam Power", 'name38' => "Rebecca Smith"];
+        $names = array(
+            'name10' => 'James Smith',
+            'name20' => 'Betty Jones',
+            'name21' => 'Sam Power',
+            'name38' => 'Rebecca Smith',
+        );
 
         $isASmith = Arr\filterKey(Str\contains('name2'));
 
-        $this->assertNotContains("James Smith", $isASmith($names));
-        $this->assertNotContains("Rebecca Smith", $isASmith($names));
-        $this->assertContains("Betty Jones", $isASmith($names));
-        $this->assertContains("Sam Power", $isASmith($names));
+        $this->assertNotContains('James Smith', $isASmith($names));
+        $this->assertNotContains('Rebecca Smith', $isASmith($names));
+        $this->assertContains('Betty Jones', $isASmith($names));
+        $this->assertContains('Sam Power', $isASmith($names));
     }
 
     public function testCanFilterOr()
     {
-        $names = ["James Smith", "Betty Jones", "Sam Power", "Rebecca Smith"];
+        $names = array( 'James Smith', 'Betty Jones', 'Sam Power', 'Rebecca Smith' );
 
         $isSmithOrJones = Arr\filterOr(
             Str\contains('Smith'),
             Str\contains('Jones')
         );
 
-        $this->assertContains("James Smith", $isSmithOrJones($names));
-        $this->assertContains("Rebecca Smith", $isSmithOrJones($names));
-        $this->assertContains("Betty Jones", $isSmithOrJones($names));
-        $this->assertNotContains("Sam Power", $isSmithOrJones($names));
+        $this->assertContains('James Smith', $isSmithOrJones($names));
+        $this->assertContains('Rebecca Smith', $isSmithOrJones($names));
+        $this->assertContains('Betty Jones', $isSmithOrJones($names));
+        $this->assertNotContains('Sam Power', $isSmithOrJones($names));
     }
 
     public function testCanFilterAnd()
     {
-        $names = ["James Smith", "Betty Jones", "Sam Power", "Rebecca Smith"];
+        $names = array( 'James Smith', 'Betty Jones', 'Sam Power', 'Rebecca Smith' );
 
         $isSamAndPower = Arr\filterAnd(
             Str\contains('Power'),
             Str\contains('Sam')
         );
 
-        $this->assertNotContains("James Smith", $isSamAndPower($names));
-        $this->assertNotContains("Rebecca Smith", $isSamAndPower($names));
-        $this->assertNotContains("Betty Jones", $isSamAndPower($names));
-        $this->assertContains("Sam Power", $isSamAndPower($names));
+        $this->assertNotContains('James Smith', $isSamAndPower($names));
+        $this->assertNotContains('Rebecca Smith', $isSamAndPower($names));
+        $this->assertNotContains('Betty Jones', $isSamAndPower($names));
+        $this->assertContains('Sam Power', $isSamAndPower($names));
     }
 
     public function testCanFilterLast(): void
@@ -106,7 +111,7 @@ class ArrayFilterAndMapTests extends TestCase
 
     public function testCanFilterMap()
     {
-        $nums = [1,2,3,4,5,6,7,8,9,10];
+        $nums               = array( 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 );
         $doubledEvenNumbers = Arr\filterMap(
             function ($a) {
                 // is even
@@ -131,12 +136,47 @@ class ArrayFilterAndMapTests extends TestCase
         $this->assertArrayNotHasKey(8, $doubledEvenNumbers($nums));
     }
 
+    /** @testdox It should be possible to check if all values of an array pass a filter */
+    public function testCanFilterAll()
+    {
+        $nums = array( 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 );
+        $this->assertTrue(Arr\filterAll('is_numeric')($nums));
+        $this->assertFalse(
+            Arr\filterAll(
+                function ($a) {
+                    return $a !== 2;
+                }
+            )($nums)
+        );
+    }
+
+    /** @testdox It should be possible to check if any value of an array passes a filter */
+    public function testCanFilterAny()
+    {
+        $nums = array( 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 );
+        $this->assertTrue(Arr\filterAny('is_numeric')($nums));
+        $this->assertTrue(
+            Arr\filterAny(
+                function ($a) {
+                    return $a === 2;
+                }
+            )($nums)
+        );
+        $this->assertFalse(
+            Arr\filterAny(
+                function ($a) {
+                    return $a === 20;
+                }
+            )($nums)
+        );
+    }
+
     public function testCanMapArrayKeys(): void
     {
         $origArray = array(
-        'a' => 'aa',
-        'b' => 'bb',
-        'c' => 'cc',
+            'a' => 'aa',
+            'b' => 'bb',
+            'c' => 'cc',
         );
 
         $capitaliseKeys = Arr\mapKey('strtoupper');
@@ -193,22 +233,22 @@ class ArrayFilterAndMapTests extends TestCase
     public function testCanUseFlatMap(): void
     {
         $array = array(
-           0,
-           1,
-           2,
-           array( 3, 4 ),
-           array(
-               array(),
-               5,
-               6,
-               7,
-               8,
-               array(
-                   9,
-                   10,
-                   array( 11, 12, 13 ),
-               ),
-           ),
+            0,
+            1,
+            2,
+            array( 3, 4 ),
+            array(
+                array(),
+                5,
+                6,
+                7,
+                8,
+                array(
+                    9,
+                    10,
+                    array( 11, 12, 13 ),
+                ),
+            ),
         );
 
         $doubleNFlattenIt = Arr\flatMap(

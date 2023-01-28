@@ -54,55 +54,6 @@ function wrap(string $opening, ?string $closing = null): Closure
 }
 
 /**
- * Creates a callable for wrapping a string with html/xml style tags.
- * By defaults uses opening as closing, if no closing defined.
- *
- * @param string $openingTag
- * @param string|null $closingTag
- * @return Closure(string):string
- */
-function tagWrap(string $openingTag, ?string $closingTag = null): Closure
-{
-    /**
-     * @param string $string
-     * @return string
-     */
-    return function (string $string) use ($openingTag, $closingTag): string {
-        return \sprintf('<%s>%s</%s>', $openingTag, $string, $closingTag ?? $openingTag);
-    };
-}
-
-/**
- * Creates a callable for turning a string into a url.
- *
- * @param string $url
- * @param string|null $target
- * @return Closure(string):string
- */
-function asUrl(string $url, ?string $target = null): Closure
-{
-    /**
-     * @param string $string
-     * @return string
-     */
-    return function (string $string) use ($url, $target): string {
-        return $target ?
-            \sprintf(
-                "<a href='%s' target='%s'>%s</a>",
-                $url,
-                $target,
-                $string
-            ) :
-            \sprintf(
-                "<a href='%s'>%s</a>",
-                $url,
-                $string
-            );
-    };
-}
-
-
-/**
  * Creates a callable for slicing a string
  *
  * Uses substr()
@@ -161,18 +112,17 @@ function append(string $append): Closure
 /**
  * Returns a callable for formatting a string with a defined set of rules
  *
- * @param array<string, mixed> $args
- * @return Closure(string):string
+ * @param string $template
+ * @return Closure(array<string, mixed>):string
  */
-function vSprintf(array $args = array()): Closure
+function vSprintf(string $template): Closure
 {
     /**
-     * @param string $string
+     * @param array<string, mixed> $values
      * @return string Will return original string if false.
      */
-    return function (string $string) use ($args): string {
-        $result = \vsprintf($string, $args);
-        return ! C\isFalse($result) ? $result : $string;
+    return function (array $values = array()) use ($template): string {
+        return \vsprintf($template, $values);
     };
 }
 
@@ -180,7 +130,7 @@ function vSprintf(array $args = array()): Closure
  * Creates a double curried find to replace.
  *
  * @param string $find Value to look for
- * @return Closure(string):Closure(string):string
+ * @return Closure(string):Closure
  */
 function findToReplace(string $find): Closure
 {
@@ -369,10 +319,29 @@ function addSlashes(string $charList): Closure
 /**
  * Returns a callable for splitting a string by a set amount.
  *
+ * @param non-empty-string $separator The char to split by.
+ * @param int $limit The number of groups to split into.
+ * @return Closure(string):array<string> The parts.
+ */
+function split(string $separator, int $limit = PHP_INT_MAX): Closure
+{
+    /**
+     * @param string $string The string to be split
+     * @return array<int, string>
+     */
+    return function (string $string) use ($separator, $limit): array {
+        $chunks = explode($separator, $string, $limit);
+        return is_array($chunks) ? $chunks : array(); // @phpstan-ignore-line, inconsistent errors with differing php versions.
+    };
+}
+
+/**
+ * Returns a callable for splitting a string by a set amount.
+ *
  * @param int $length The length to split the string up with.
  * @return Closure(string):array<string> The parts.
  */
-function split(int $length): Closure
+function splitByLength(int $length): Closure
 {
     /**
      * @param string $string The string to be split
@@ -382,6 +351,7 @@ function split(int $length): Closure
         return \str_split($string, max(1, $length)) ?: array(); // @phpstan-ignore-line, inconsistent errors with differing php versions.
     };
 }
+
 
 /**
  * Returns a callback for splitting a string into chunks.
@@ -691,7 +661,6 @@ function lastPosition(string $needle, int $offset = 0, int $flags = STRINGS_CASE
  */
 function firstSubString(string $needle, int $flags = STRINGS_CASE_SENSITIVE | STRINGS_AFTER_NEEDLE): Closure
 {
-
     // Decode flags, only look for none defaults.
     $beforeNeedle  = (bool) ($flags & STRINGS_BEFORE_NEEDLE);
     $caseSensitive = ! (bool) ($flags & STRINGS_CASE_INSENSITIVE); // Assumes true unless INSESNITVE passed
@@ -818,8 +787,10 @@ function isBlank($value): bool
 
 /**
  * See decimalNumber()
+ * This function will be removed in later versions.
  *
  * @deprecated Use decimalNumber() instead.
+ *
  * @param int $precision
  * @param string $point
  * @param string $thousands
@@ -827,6 +798,7 @@ function isBlank($value): bool
  */
 function decimialNumber($precision = 2, $point = '.', $thousands = ''): Closure
 {
+    trigger_error('Deprecated function called. Please use decimalNumber. This function will be removed in later versions.', E_USER_DEPRECATED);
     return decimalNumber($precision, $point, $thousands);
 }
 
@@ -840,6 +812,7 @@ function decimialNumber($precision = 2, $point = '.', $thousands = ''): Closure
  */
 function similarAsComparisson(string $comparisonString, bool $asPc = false): Closure
 {
+    trigger_error('Deprecated function called. Please use similarAsComparison. This function will be removed in later versions.', E_USER_DEPRECATED);
     return similarAsComparison($comparisonString, $asPc);
 }
 
@@ -854,6 +827,7 @@ function similarAsComparisson(string $comparisonString, bool $asPc = false): Clo
  */
 function firstPosistion(string $needle, int $offset = 0, int $flags = STRINGS_CASE_SENSITIVE): Closure
 {
+    trigger_error('Deprecated function called. Please use firstPosition. This function will be removed in later versions.', E_USER_DEPRECATED);
     return firstPosition($needle, $offset, $flags);
 }
 
@@ -868,5 +842,6 @@ function firstPosistion(string $needle, int $offset = 0, int $flags = STRINGS_CA
  */
 function lastPosistion(string $needle, int $offset = 0, int $flags = STRINGS_CASE_SENSITIVE): Closure
 {
+    trigger_error('Deprecated function called. Please use lastPosition. This function will be removed in later versions.', E_USER_DEPRECATED);
     return lastPosition($needle, $offset, $flags);
 }

@@ -28,7 +28,7 @@ class FunctionsLoader
 {
 
     /**
-     * Loads all supplimentry function files.
+     * Loads all supplementary function files.
      *
      * @author Glynn Quelch <glynn.quelch@gmail.com>
      * @since 0.1.0
@@ -43,5 +43,6 @@ class FunctionsLoader
         require_once('src/arrays.php');
         require_once('src/strings.php');
         require_once('src/numbers.php');
+        require_once('src/objects.php');
     }
 }

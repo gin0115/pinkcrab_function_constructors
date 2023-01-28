@@ -32,7 +32,8 @@
             "src/comparisons.php",
             "src/general.php",
             "src/strings.php",
-            "src/numbers.php"
+            "src/numbers.php",
+            "src/objects.php"
         ]
     },
     "autoload-dev": {
@@ -41,7 +42,7 @@
         }
     },
     "require-dev": {
-        "phpunit/phpunit": "^7.0 || ^8.0",
+        "phpunit/phpunit": "^7.0 || ^9.0",
         "phpstan/phpstan": "^1.0",
         "yoast/phpunit-polyfills": "^1.0.0",
         "friendsofphp/php-cs-fixer": "^3"
@@ -56,5 +57,10 @@
         "all": "composer test && composer analyse && php-cs-fixer fix --diff --dry-run --rules=@PSR12 --show-progress=dots --stop-on-violation",
         "fixer": "php-cs-fixer fix --diff --rules=@PSR12 --show-progress=dots",
         "lint": "php-cs-fixer fix --diff --dry-run --rules=@PSR12"
+    },
+    "config": {
+        "allow-plugins": {
+            "infection/extension-installer": false
+        }
     }
 }
