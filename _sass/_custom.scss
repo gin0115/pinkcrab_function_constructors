@@ -134,3 +134,29 @@ h2.page-title {
         }
     }
 }
+
+.notice {
+    h3,
+    p {
+        margin-top: 0%;
+    }
+}
+
+.img-logo {
+    height: 20px;
+}
+
+.function__details,
+.function__releated-group,
+.function__releated-subgroup {
+    ul {
+        column-count: 2;
+    }
+}
+
+code.inline {
+    font-size: initial;
+    padding: 1px 5px;
+    color: #eeffff;
+    background: #263238;
+}

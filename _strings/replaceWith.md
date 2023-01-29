@@ -1,72 +1,54 @@
 ---
 layout: function
+
 title: Strings\replaceWith()
-subtitle: Allows you to create a function which allows for creating a Closure which is populated with a sprintf template. Which accepts the array of args to accept. This can either be used as part of a Higher Order Function such as array_map() or as part of a compiled/pipe function.
+subtitle: Creates a function that can be used to replace any instance of a sub string, with a defined value. The created function can then reused over any string, or used as part of a Higher Order Function such as array_map().
+
 group: strings
 subgroup: string_manipulation
+
+source: https://github.com/gin0115/pinkcrab_function_constructors/blob/master/src/strings.php#L159
+namespace: PinkCrab\FunctionConstructors\Strings
+since: 0.1.0
+
 definition: >
  /**
-   * @param string $template The sprintf template to use.
-   * @return Closure(array):string
+   * @param string  $find
+   * @param string  $replace
+   * @return Closure(string):string
    */
-  Strings\vSprintf(string $template): Closure
+ Strings\replaceWith(string $find, string $replace): Closure
+
 closure: >
  /**
-   * @param mixed[] $values  The values to be used to populate the sprintf template.
-   * @return string          The formatted string
-   * @psalm-pure
-   */ 
- $function(array $values): string
+   * @param string $source
+   * @return string
+   */
+ $function ($source): string
+
+examplePartial: >
+ // Creates the Closure.
+
+ $fooToBar = Strings\replaceWith('foo', 'bar');  
+
+
+ // Called as a function.  
+
+ echo $fooToBar('This is foo'); // This is bar  
+
+
+ // Used in a higher order function.  
+
+ $array = array_map( $fooToBar, ['Its foo', 'The foo is']);  
+
+ print_r($array); // ['Its bar', 'The bar is']  
+
+exampleCurried: >
+ echo Strings\replaceWith('Hi', 'Hello')('Hi im an example'); // Hello im an example
+exampleInline: >
+ $array = array_map( Strings\replaceWith('foo', 'bar'), ['Its foo', 'The foo is'] );
+
+ print_r($array); // ['Its bar', 'The bar is'] 
+
 
 ---
-
-### Examples
-
-<div class="panel">
-    <h4 class="panel__title">        Partial Application</h4>
-    <div class="panel__content">
-        <p>
-            This can be used to create a simple closure which can be used as a regular function.
-        </p>
-{% highlight php %}
-
-$nameAndAge = Strings\vSprintf('Hello %s you are %d years old.');
-
-// Called as a function.
-echo $nameAndAge(['Dave', 12]); // Hello Dave you are 12 years old.
-
-// Used in a higher order function.
-$array = array_map( $nameAndAge, [['Dave', 12], ['Jane', 11]]);
-print_r($array); // [Hello Dave you are 12 years old., Hello Jane you are 11 years old.]
-
-{% endhighlight %}
-    </div>
-</div>
-
-<div class="panel">
-    <h4 class="panel__title">        Curried</h4>
-    <div class="panel__content">
-        <p>
-            You can use currying to directly define can call the function as it is, without defining the Closure first.
-        </p>
-{% highlight php %}
-echo Strings\vSprintf('%s-H')(['Bar']); // Bar-H
-{% endhighlight %}
-    </div>
-</div>
-    
-<div class="panel">
-    <h4 class="panel__title">        Inlined with Higher Order Function</h4>
-    <div class="panel__content">
-        <p>
-            If you are not planning on reusing the Closure created, you can just call it inline with a higher order function as its callable.
-        </p>
-{% highlight php %}
-$array = array_map(
-    Strings\vSprintf('Hello %s you are %d years old.'), 
-    [['Dave', 12], ['Jane', 11]]
-);
-print_r($array); // [Hello Dave you are 12 years old., Hello Jane you are 11 years old.]
-{% endhighlight %}
-    </div>
-</div>

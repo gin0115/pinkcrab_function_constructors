@@ -4,9 +4,21 @@ layout: default
 
 <h1 class="page-title">{{ page.title }}</h1>
 
+{%if page.deprecated%}
+    <div class="notice notice--danger">
+        <p>
+            {{ page.title}} has been deprecated. 
+            {%if page.alternative %}
+                <a href="{{ page.alternative }}" target="_blank">Alternative Function</a>
+            {% endif %}
+        </p>
+    </div>
+{% endif %}
+
 <div class="breadcrumbs">
   <a href="{{ site.url | absolute_url  }}">Home</a> 
   >> <a href="{{ site.url | absolute_url }}/{{page.group}}.html">{{page.group | capitalize}}</a>
+  >> <a href="{{ page.url }}">{{page.title}}</a>
 </div>
 
 <div class="function__subtitle">
@@ -31,7 +43,7 @@ layout: default
     <div class="panel">
         <h3 class="panel__title">Returned Closure</h3>
         <div class="panel__content">
-            <p class="small-desciption">The closure returned by this function is used to call the function.</p>
+            <p class="small-desciption">When <code class="inline">{{ page.title }}</code> is called, it returns the following Closure which can be used like a regular function.</p>
 {% highlight php %}
 {{ page.closure }}
 {% endhighlight %}
@@ -39,8 +51,80 @@ layout: default
     </div>
 {% endif %}
 
+<!-- Page Content -->
 <div class="function__content">
     {{content}}
+</div>
+
+<!-- EXAMPLES -->
+<h3 id="examples">Examples</h3>
+
+<!-- Partial Application -->
+{% if page.examplePartial %} 
+<div class="panel">
+    <h4 class="panel__title">Partial Application</h4>
+    <div class="panel__content">
+        <p>
+            This can be used to create a simple closure which can be used as a regular function.
+        </p>
+{% highlight php %}
+{{ page.examplePartial }}
+{% endhighlight %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Curried -->
+{% if page.exampleCurried %} 
+<div class="panel">
+    <h4 class="panel__title">Curried</h4>
+    <div class="panel__content">
+        <p>
+            This can be called inline using currying.
+        </p>
+{% highlight php %}
+{{ page.exampleCurried }}
+{% endhighlight %}
+    </div>
+</div>
+{% endif %}
+
+
+<!-- Inline -->
+{% if page.exampleInline %} 
+<div class="panel">
+    <h4 class="panel__title">Inlined with Higher Order Function</h4>
+    <div class="panel__content">
+        <p>
+            If you are not planning on reusing the Closure created, you can just call it inline with a higher order function as its callable.
+        </p>
+{% highlight php %}
+{{ page.exampleInline }}
+{% endhighlight %}
+    </div>
+</div>
+{% endif %}
+
+<hr>
+
+<div class="function__details">
+    <h3>Details</h3>
+    <ul>
+        <li><strong>Group:</strong> {{ page.group | capitalize }}</li>
+        <li><strong>Subgroup:</strong> {{ page.subgroup | capitalize | replace: "_", " "  }}</li>
+        <li><strong>Since:</strong> {{ page.since }}</li>
+        <li><strong>Source:</strong> <a href="{{ page.source }}" target="_blank"><img class="img-logo" src="{{site.url}}/img/github-logo.png" alt="Link to Github"></a></li>
+        {% if page.deprecated %}  
+            <li><strong>Deprecated:</strong> {{ pagee.title}} has been deprecated</li>
+            {%if page.alternative %}
+                <li><strong>Alternative:</strong> <a href="{{ page.alternative }}" target="_blank">Alternative Function</a></li>
+            {% endif %}
+        {% else %}
+            {%if page.alternative %}
+                <li><strong>Alternative:</strong> <a href="{{ page.alternative }}" target="_blank">Alternative Function</a></li>
+            {% endif %}
+        {% endif %}
+    </ul>
 </div>
 
 <div class="function__releated-group">

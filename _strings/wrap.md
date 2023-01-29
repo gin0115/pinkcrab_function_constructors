@@ -1,9 +1,18 @@
 ---
-layout: function
 title: Strings\wrap()
 subtitle: Allows you to create a function which wraps any passed string with opening and closing strings. These can either be used as part of a Higher Order Function such as array_map() or as part of a compiled/pipe function.
+
+layout: function
 group: strings
 subgroup: string_manipulation
+
+source: https://github.com/gin0115/pinkcrab_function_constructors/blob/master/src/strings.php#45
+namespace: PinkCrab\FunctionConstructors\Strings
+since: 0.1.0
+
+deprecated: false
+alternative: false
+
 definition: >
 
  /**
@@ -20,54 +29,33 @@ closure: >
    */ 
  $function(string $toWrap): string
 
----
 
-### Examples
+examplePartial: >
+ // Create the closure to wrap any string with a <span> tag
 
-<div class="panel">
-    <h4 class="panel__title">        Partial Application</h4>
-    <div class="panel__content">
-        <p>
-            This can be used to create a simple closure which can be used as a regular function.
-        </p>
-{% highlight php %}
-// Create the closure to wrap any string with a <span> tag
-$makeSpan = Strings\wrap('<span>', '</span>');
+ $makeSpan = Strings\wrap('<span>', '</span>');
 
-// Called as a function.
-echo $makeSpan('Hello'); // <span>Hello</span>
 
-// Used in a higher order function.
-$array = array_map( $makeSpan, ['Hello', 'World']);
-print_r($array); // [<span>Hello</span>, <span>World</span>]
-{% endhighlight %}
-    </div>
-</div>
+ // Called as a function.
+ 
+ echo $makeSpan('Hello'); // <span>Hello</span>
+ 
 
-<div class="panel">
-    <h4 class="panel__title">        Curried</h4>
-    <div class="panel__content">
-        <p>
-            You can use currying to directly define can call the function as it is, without defining the Closure first.
-        </p>
-{% highlight php %}
-echo Strings\wrap('##')('Hello'); // ##Hello##
-{% endhighlight %}
-    </div>
-</div>
-    
-<div class="panel">
-    <h4 class="panel__title">        Inlined with Higher Order Function</h4>
-    <div class="panel__content">
-        <p>
-            If you are not planning on reusing the Closure created, you can just call it inline with a higher order function as its callable.
-        </p>
-{% highlight php %}
-$array = array_map(
+ // Used in a higher order function.
+
+ $array = array_map( $makeSpan, ['Hello', 'World']);
+ 
+ print_r($array); // [<span>Hello</span>, <span>World</span>]
+
+exampleCurried: >
+ echo Strings\wrap('##')('Hello'); // ##Hello##
+
+exampleInline: >
+ $array = array_map(
     Strings\wrap('<p>', '</p>'), 
     ['Hello', 'World']
-);
-print_r($array); // [<p>Hello</p>, <p>World</p>]
-{% endhighlight %}
-    </div>
-</div>
+ );
+
+ print_r($array); // [<p>Hello</p>, <p>World</p>] 
+
+---
