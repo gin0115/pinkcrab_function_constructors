@@ -18,7 +18,7 @@ layout: default
 <div class="breadcrumbs">
   <a href="{{ site.url | absolute_url  }}">Home</a> 
   >> <a href="{{ site.url | absolute_url }}/{{page.group}}.html">{{page.group | capitalize}}</a>
-  >> <a href="{{ page.url }}">{{page.title}}</a>
+  >> <a href="{{ site.url | absolute_url }}/{{ page.url }}">{{page.title}}</a>
 </div>
 
 <div class="function__subtitle">
@@ -144,7 +144,7 @@ layout: default
     <ul> 
         {% for related in site.strings %}
         {% if related.subgroup == page.subgroup and related.title != page.title  %}
-            <li><a href="{{ site.url | absolute_url }}{{related.url}}">{{ related.title }}{{related.url}}</a></li>
+            <li><a href="{{ site.url | absolute_url }}{{related.url}}">{{ related.title }}</a></li>
         {% endif %}
         {% endfor %}
     </ul>
