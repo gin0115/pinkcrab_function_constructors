@@ -112,6 +112,9 @@ layout: default
     <ul>
         <li><strong>Group:</strong> {{ page.group | capitalize }}</li>
         <li><strong>Subgroup:</strong> {{ page.subgroup | capitalize | replace: "_", " "  }}</li>
+        {% if page.coreFunctions %}  
+            <li><strong>Core Functions:</strong> {{ page.coreFunctions | join: ", " }}</li>
+        {% endif %}
         <li><strong>Since:</strong> {{ page.since }}</li>
         <li><strong>Source:</strong> <a href="{{ page.source }}" target="_blank"><img class="img-logo" src="{{site.url}}/img/github-logo.png" alt="Link to Github"></a></li>
         {% if page.deprecated %}  
@@ -131,7 +134,7 @@ layout: default
     <h3><em>{{ page.group | capitalize }}</em> Functions</h3>
     <ul>
         {% for related in site.strings %}
-            <li><a href="{{ related.url | absolute_url }}">{{ related.title }}</a></li>
+            <li><a href="{{ site.url | absolute_url }}{{related.url}}">{{ related.title }}</a></li>
         {% endfor %}
     </ul>
 </div>
@@ -141,7 +144,7 @@ layout: default
     <ul> 
         {% for related in site.strings %}
         {% if related.subgroup == page.subgroup and related.title != page.title  %}
-            <li><a href="{{ related.url | absolute_url }}">{{ related.title }}</a></li>
+            <li><a href="{{ site.url | absolute_url }}{{related.url}}">{{ related.title }}{{related.url}}</a></li>
         {% endif %}
         {% endfor %}
     </ul>
