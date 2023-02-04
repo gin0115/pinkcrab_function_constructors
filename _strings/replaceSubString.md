@@ -9,7 +9,7 @@ coreFunctions:
     - substr_replace()
 
 source: https://github.com/gin0115/pinkcrab_function_constructors/blob/master/src/strings.php#L178
-namespace: PinkCrab\FunctionConstructors\xx
+namespace: PinkCrab\FunctionConstructors\Strings
 since: 0.1.0
 
 deprecated: false

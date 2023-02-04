@@ -4,6 +4,7 @@
 github_username: gin0115
 minimal_mistakes_skin: default
 search: true
+search_provider: algolia
 
 plugins:
   - jekyll-paginate
@@ -12,6 +13,13 @@ plugins:
   - jekyll-feed
   - jemoji
   - jekyll-include-cache
+  - jekyll-algolia
+
+algolia:
+  application_id: 3I9M0779FL
+  index_name: function_constructors
+  search_only_api_key: 58762fb92611153c3fe4d65d0215ef0f
+  powered_by: false
 
 # Build settings
 remote_theme: mmistakes/minimal-mistakes
