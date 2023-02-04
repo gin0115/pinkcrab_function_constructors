@@ -5,6 +5,7 @@ subtitle: Allows you to create a function which can be used to prepend a sub str
 
 group: strings
 subgroup: string_manipulation
+categories: [strings, string manipulation]
 
 source: https://github.com/gin0115/pinkcrab_function_constructors/blob/master/src/strings.php#L84
 namespace: PinkCrab\FunctionConstructors\Strings

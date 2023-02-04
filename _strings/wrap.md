@@ -5,6 +5,7 @@ subtitle: Allows you to create a function which wraps any passed string with ope
 layout: function
 group: strings
 subgroup: string_manipulation
+categories: [strings, string manipulation]
 
 source: https://github.com/gin0115/pinkcrab_function_constructors/blob/master/src/strings.php#45
 namespace: PinkCrab\FunctionConstructors\Strings

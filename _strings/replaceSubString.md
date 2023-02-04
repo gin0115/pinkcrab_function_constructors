@@ -4,7 +4,8 @@ subtitle: Creates a function which allows for the replacing of part of string wi
 
 layout: function
 group: strings
-subgroup: string_manipulation
+subgroup: string_predicate
+categories: [strings, string manipulation]
 coreFunctions: 
     - substr_replace()
 

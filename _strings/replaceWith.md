@@ -6,6 +6,7 @@ subtitle: Creates a function that can be used to replace any instance of a sub s
 
 group: strings
 subgroup: string_manipulation
+categories: [strings, string manipulation]
 
 source: https://github.com/gin0115/pinkcrab_function_constructors/blob/master/src/strings.php#L159
 namespace: PinkCrab\FunctionConstructors\Strings

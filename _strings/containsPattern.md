@@ -5,6 +5,7 @@ subtitle: Returns a function which can be used to check if a string contains a d
 layout: function
 group: strings
 subgroup: string_predicate
+categories: [strings, string_predicate, predicate]
 coreFunctions: 
     - preg_match()
 

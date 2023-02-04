@@ -10,6 +10,7 @@ source: https://github.com/gin0115/pinkcrab_function_constructors/blob/master/sr
 namespace: PinkCrab\FunctionConstructors\Strings
 since: 0.1.0
 
+categories: [strings, string manipulation]
 deprecated: false
 alternative: false
 

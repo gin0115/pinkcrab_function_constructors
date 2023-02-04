@@ -10,6 +10,7 @@ subtitle: Allows you to create a function which can be used to split a string wi
 source: https://github.com/gin0115/pinkcrab_function_constructors/blob/master/src/strings.php#L65
 namespace: PinkCrab\FunctionConstructors\Strings
 since: 0.1.0
+categories: [strings, string manipulation]
 
 deprecated: false
 alternative: false
