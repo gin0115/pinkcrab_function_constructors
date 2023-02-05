@@ -109,6 +109,17 @@ layout: default
 
 <hr>
 
+{%if page.deprecated%}
+    <div class="notice notice--danger">
+        <p>
+            {{ page.title}} has been deprecated. 
+            {%if page.alternative %}
+                <a href="{{ site.url | absolute_url }}/{{ page.alternative }}">Alternative Function</a>
+            {% endif %}
+        </p>
+    </div>
+{% endif %}
+
 <div class="function__details">
     <h3>Details</h3>
     <ul>
@@ -120,9 +131,8 @@ layout: default
         <li><strong>Since:</strong> {{ page.since }}</li>
         <li><strong>Source:</strong> <a href="{{ page.source }}" target="_blank"><img class="img-logo" src="{{site.url}}/img/github-logo.png" alt="Link to Github"></a></li>
         {% if page.deprecated %}  
-            <li><strong>{{ page.title}} has been deprecated</strong></li>
             {%if page.alternative %}
-                <li><strong><a href="{{ site.url | absolute_url }}/{{ page.alternative }}">Replacement Function</a></strong></li>
+                <li><strong>Deprecated: </strong><a href="{{ site.url | absolute_url }}/{{ page.alternative }}">Suggested alternative</a></li>
             {% endif %}
         {% else %}
             {%if page.alternative %}
