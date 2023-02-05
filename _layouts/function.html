@@ -122,11 +122,11 @@ layout: default
         {% if page.deprecated %}  
             <li><strong>{{ page.title}} has been deprecated</strong></li>
             {%if page.alternative %}
-                <li><strong><a href="{{ page.alternative }}" target="_blank">Alternative Function</a></strong></li>
+                <li><strong><a href="{{ site.url | absolute_url }}/{{ page.alternative }}">Replacement Function</a></strong></li>
             {% endif %}
         {% else %}
             {%if page.alternative %}
-                <li><strong><a href="{{ page.alternative }}" target="_blank">Alternative Function</a></strong></li>
+                <li><strong><a href="{{ site.url | absolute_url }}/{{ page.alternative }}">Alternative Function</a></strong></li>
             {% endif %}
         {% endif %}
     </ul>
