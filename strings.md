@@ -19,9 +19,11 @@ subtitle: Archive of all functions in the Strings namespace.
 <div class="container">
     <div class="grid all-functions">
     {% for function in site.strings %}
+        {% if true != function.deprecated %} 
         <div class="col-12 col-md-4">
             <a href="{{ site.url }}{{ function.url}}">{{ function.title }}</a>
         </div>
+        {% endif %}
     {% endfor %} 
     </div>
 </div>

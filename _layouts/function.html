@@ -9,7 +9,7 @@ layout: default
         <p>
             {{ page.title}} has been deprecated. 
             {%if page.alternative %}
-                <a href="{{ page.alternative }}" target="_blank">Alternative Function</a>
+                <a href="{{ site.url | absolute_url }}/{{ page.alternative }}">Alternative Function</a>
             {% endif %}
         </p>
     </div>
@@ -134,7 +134,9 @@ layout: default
     <h3><em>{{ page.group | capitalize }}</em> Functions</h3>
     <ul>
         {% for related in site.strings %}
-            <li><a href="{{ site.url | absolute_url }}{{related.url}}">{{ related.title }}</a></li>
+            {% if true != related.deprecated %} 
+                <li><a href="{{ site.url | absolute_url }}{{related.url}}">{{ related.title }}</a></li>
+            {% endif %}
         {% endfor %}
     </ul>
 </div>
@@ -143,7 +145,7 @@ layout: default
     <h3>Releated <em>{{ page.subgroup | capitalize | replace: "_", " "  }}</em> Functions</h3>
     <ul> 
         {% for related in site.strings %}
-        {% if related.subgroup == page.subgroup and related.title != page.title  %}
+        {% if related.subgroup == page.subgroup and related.title != page.title and true != related.deprecated %}
             <li><a href="{{ site.url | absolute_url }}{{related.url}}">{{ related.title }}</a></li>
         {% endif %}
         {% endfor %}

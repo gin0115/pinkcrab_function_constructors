@@ -18,10 +18,10 @@ alternative: false
 
 definition: >
  /**
-   * @param string $find The pattern to look for.
+   * @param string $pattern The pattern to look for.
    * @return Closure(string):bool
    */
-  Strings\containsPattern(string $find): Closure
+  Strings\containsPattern(string $pattern): Closure
 
 closure: >
  /**

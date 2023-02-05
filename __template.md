@@ -5,6 +5,7 @@ subtitle: xx
 layout: function
 group: xx
 subgroup: xx
+categories: [xx]
 
 source: xx
 namespace: PinkCrab\FunctionConstructors\xx
