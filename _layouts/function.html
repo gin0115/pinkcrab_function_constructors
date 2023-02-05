@@ -4,6 +4,14 @@ layout: default
 
 <h1 class="page-title">{{ page.title }}</h1>
 
+
+<div class="breadcrumbs">
+  <a href="{{ site.url | absolute_url  }}">Home</a> 
+  >> <a href="{{ site.url | absolute_url }}/{{page.group}}.html">{{page.group | capitalize}}</a>
+  >> <a href="{{ site.url | absolute_url }}/{{ page.url }}">{{page.title}}</a>
+</div>
+
+
 {%if page.deprecated%}
     <div class="notice notice--danger">
         <p>
@@ -14,12 +22,6 @@ layout: default
         </p>
     </div>
 {% endif %}
-
-<div class="breadcrumbs">
-  <a href="{{ site.url | absolute_url  }}">Home</a> 
-  >> <a href="{{ site.url | absolute_url }}/{{page.group}}.html">{{page.group | capitalize}}</a>
-  >> <a href="{{ site.url | absolute_url }}/{{ page.url }}">{{page.title}}</a>
-</div>
 
 <div class="function__subtitle">
     <p>  
@@ -118,13 +120,13 @@ layout: default
         <li><strong>Since:</strong> {{ page.since }}</li>
         <li><strong>Source:</strong> <a href="{{ page.source }}" target="_blank"><img class="img-logo" src="{{site.url}}/img/github-logo.png" alt="Link to Github"></a></li>
         {% if page.deprecated %}  
-            <li><strong>Deprecated:</strong> {{ pagee.title}} has been deprecated</li>
+            <li><strong>{{ page.title}} has been deprecated</strong></li>
             {%if page.alternative %}
-                <li><strong>Alternative:</strong> <a href="{{ page.alternative }}" target="_blank">Alternative Function</a></li>
+                <li><strong><a href="{{ page.alternative }}" target="_blank">Alternative Function</a></strong></li>
             {% endif %}
         {% else %}
             {%if page.alternative %}
-                <li><strong>Alternative:</strong> <a href="{{ page.alternative }}" target="_blank">Alternative Function</a></li>
+                <li><strong><a href="{{ page.alternative }}" target="_blank">Alternative Function</a></strong></li>
             {% endif %}
         {% endif %}
     </ul>

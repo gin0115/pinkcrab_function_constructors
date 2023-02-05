@@ -69,25 +69,4 @@ exampleCurried: >
  echo Strings\decimalNumber(2, ',', '.')(1234); // 1.234,00
 
 
-
-exampleInline: >
-    $array = array_map( Strings\replaceSubString('...', 3), ['This is an example', 'Another example'] );
-    
-    print_r($array); // ['Thi...', 'Ano...']
-
-    
-    $array = array_map( Strings\replaceSubString('...', -3), ['This is an example', 'Another example'] );
-    
-    print_r($array); // ['This is an ex...', 'Another ex...']
-
-    
-    $array = array_map( Strings\replaceSubString('...', 5, 2), ['This is an example', 'Another example'] );
-    
-    print_r($array); // ['This ... an example', 'Another ... an example']
-    
-    
-    $array = array_map( Strings\replaceSubString('...', 5, 0), ['This is an example', 'Another example'] );
-    
-    print_r($array); // ['This ... is an example', 'Another ... is an example']
-
 ---
