@@ -1,7 +1,7 @@
 ---
 layout: function
 group: strings
-subgroup: string_transform
+subgroup: string_analysis
 
 
 title: Strings\countChars()
@@ -10,7 +10,7 @@ subtitle: Allows you to create a function which can be used to split into groups
 source: https://github.com/gin0115/pinkcrab_function_constructors/blob/master/src/strings.php#L400
 namespace: PinkCrab\FunctionConstructors\Strings
 since: 0.1.0
-categories: [strings, string transform]
+categories: [strings, string analysis]
 coreFunctions: 
     - count_chars()
 
