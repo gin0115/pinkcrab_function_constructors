@@ -58,3 +58,10 @@ exampleInline: >
  
  print_r($array); // ['Hi', 'Bye']
 ---
+
+Related Functions
+<ul>
+  <!-- <li><a href="{{ site.url }}/strings/trim">Strings\trim()</a></li> -->
+  <li><a href="{{ site.url }}/strings/lTrim">Strings\lTrim()</a></li>
+  <li><a href="{{ site.url }}/strings/rTrim">Strings\rTrim()</a></li>
+</ul>
