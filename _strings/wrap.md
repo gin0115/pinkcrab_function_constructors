@@ -1,6 +1,7 @@
 ---
 title: Strings\wrap()
-subtitle: Allows you to create a function which wraps any passed string with opening and closing strings. These can either be used as part of a Higher Order Function such as array_map() or as part of a compiled/pipe function.
+subtitle: >
+ Allows you to create a function which wraps any passed string with opening and closing strings. These can either be used as part of a Higher Order Function such as array_map() or as part of a compiled/pipe function.
 
 layout: function
 group: strings

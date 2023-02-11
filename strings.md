@@ -1,7 +1,8 @@
 ---
 layout: base
 title: Strings
-subtitle: Archive of all functions in the Strings namespace.
+subtitle: >
+ Archive of all functions in the Strings namespace.
 ---
 
 <h1 class="page-title">{{ page.title }}</h1>

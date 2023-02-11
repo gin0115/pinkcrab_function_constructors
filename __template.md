@@ -1,6 +1,7 @@
 ---
 title: xx
-subtitle: xx
+subtitle: >
+ xx
 
 layout: function
 group: xx

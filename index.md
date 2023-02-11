@@ -1,7 +1,8 @@
 ---
 layout: base
 title: Home
-subtitle: This is where I will tell my friends way too much about me
+subtitle: >
+ This is where I will tell my friends way too much about me
 ---
 
 <div class="function__releated-group">

@@ -2,7 +2,8 @@
 layout: function
 
 title: Strings\replaceWith()
-subtitle: Creates a function that can be used to replace any instance of a sub string, with a defined value. The created function can then reused over any string, or used as part of a Higher Order Function such as array_map().
+subtitle: >
+ Creates a function that can be used to replace any instance of a sub string, with a defined value. The created function can then reused over any string, or used as part of a Higher Order Function such as array_map().
 
 group: strings
 subgroup: string_manipulation

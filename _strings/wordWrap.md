@@ -5,9 +5,10 @@ subgroup: string_manipulation
 
 
 title: Strings\wordWrap()
-subtitle: Allows you to create a function which can be used to break a string with a maximum width, respecting word boundaries. These can either be used as part of a Higher Order Function such as array_map() or as part of a compiled/pipe function.
+subtitle: >
+ Allows you to create a function which can be used to break a string with a maximum width, respecting word boundaries. These can either be used as part of a Higher Order Function such as array_map() or as part of a compiled/pipe function.
 
-source: https://github.com/gin0115/pinkcrab_function_constructors/blob/master/src/strings.php#L363
+source: https://github.com/gin0115/pinkcrab_function_constructors/blob/master/src/strings.php#L382
 namespace: PinkCrab\FunctionConstructors\Strings
 since: 0.1.0
 categories: [strings, string manipulation]

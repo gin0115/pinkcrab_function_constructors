@@ -5,7 +5,8 @@ subgroup: string_manipulation
 
 
 title: Strings\slice()
-subtitle: Allows you to create a function which can be used to split a string with a defined starting and ending char index. These can either be used as part of a Higher Order Function such as array_map() or as part of a compiled/pipe function.
+subtitle: >
+ Allows you to create a function which can be used to split a string with a defined starting and ending char index. These can either be used as part of a Higher Order Function such as array_map() or as part of a compiled/pipe function.
 
 source: https://github.com/gin0115/pinkcrab_function_constructors/blob/master/src/strings.php#L65
 namespace: PinkCrab\FunctionConstructors\Strings

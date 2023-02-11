@@ -5,7 +5,8 @@ subgroup: string_analysis
 
 
 title: Strings\countSubString()
-subtitle: Allows you to create a function which can be used to count the occurrence of a substring in a string. Allowing for the setting of an optional offset and limit. These can either be used as part of a Higher Order Function such as array_map() or as part of a compiled/pipe function.
+subtitle: >
+ Allows you to create a function which can be used to count the occurrence of a substring in a string. Allowing for the setting of an optional offset and limit. These can either be used as part of a Higher Order Function such as array_map() or as part of a compiled/pipe function.
 
 source: https://github.com/gin0115/pinkcrab_function_constructors/blob/master/src/strings.php#L424
 namespace: PinkCrab\FunctionConstructors\Strings

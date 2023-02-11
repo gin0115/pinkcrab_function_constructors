@@ -5,7 +5,8 @@ subgroup: string_manipulation
 
 
 title: Strings\rTrim()
-subtitle: Allows you to create a function which can be used to trim any matches from a mask. Trims the matching values from the end only These can either be used as part of a Higher Order Function such as array_map() or as part of a compiled/pipe function.
+subtitle: >
+ Allows you to create a function which can be used to trim any matches from a mask. Trims the matching values from the end only These can either be used as part of a Higher Order Function such as array_map() or as part of a compiled/pipe function.
 
 source: https://github.com/gin0115/pinkcrab_function_constructors/blob/master/src/strings.php#L477
 namespace: PinkCrab\FunctionConstructors\Strings
