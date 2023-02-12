@@ -284,7 +284,7 @@ function splitPattern(string $pattern): Closure
  * @param string $thousands The thousand separator.
  * @return Closure(string|int|float):string
  */
-function decimalNumber($precision = 2, $point = '.', $thousands = ''): Closure
+function digit($precision = 2, $point = '.', $thousands = ''): Closure
 {
     /**
      * @param string|int|float $number
@@ -798,8 +798,22 @@ function isBlank($value): bool
  */
 function decimialNumber($precision = 2, $point = '.', $thousands = ''): Closure
 {
-    trigger_error('Deprecated function called. Please use decimalNumber. This function will be removed in later versions.', E_USER_DEPRECATED);
-    return decimalNumber($precision, $point, $thousands);
+    trigger_error('Deprecated function called. Please use digit. This function will be removed in later versions.', E_USER_DEPRECATED);
+    return digit($precision, $point, $thousands);
+}
+
+/**
+ * Converts a number (loose type) to a string representation of a float.
+ *
+ * @param string|int|float $precision Number of decimal places
+ * @param string $point The decimal separator
+ * @param string $thousands The thousand separator.
+ * @return Closure(string|int|float):string
+ */
+function decimalNumber($precision = 2, $point = '.', $thousands = ''): Closure
+{
+    trigger_error('Deprecated function called. Please use digit. This function will be removed in later versions.', E_USER_DEPRECATED);
+    return digit($precision, $point, $thousands);
 }
 
 /**

@@ -153,16 +153,16 @@ class StringFunctionTest extends TestCase
 
     public function testCanFormatDecimalNumber()
     {
-        $eightDecimalPlaces  = Str\decimalNumber(8);
-        $tenDecimalPlaces    = Str\decimalNumber(10);
-        $doubleDecimalPlaces = Str\decimalNumber(2);
+        $eightDecimalPlaces  = Str\digit(8);
+        $tenDecimalPlaces    = Str\digit(10);
+        $doubleDecimalPlaces = Str\digit(2);
 
         $this->assertEquals('3.50000000', $eightDecimalPlaces(3.5));
         $this->assertEquals('2.6580000000', $tenDecimalPlaces('2.658'));
         $this->assertEquals('3.14', $doubleDecimalPlaces(M_PI));
 
         // With thousand separator
-        $withPipe = Str\decimalNumber(2, '.', '|');
+        $withPipe = Str\digit(2, '.', '|');
         $this->assertEquals('123|456|789.12', $withPipe(123456789.123456));
     }
 
@@ -531,6 +531,19 @@ class StringFunctionTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
         Str\countChars(23);
+    }
+
+    /** @testdox Calling decimialNumber should throw a deprecation notice */
+    public function testDecimialNumberDeprecation(): void
+    {
+        // If using PHPUnit 9, we need to use the expectDeprecation() method
+        if (version_compare(\PHPUnit\Runner\Version::id(), '9.0.0', '>=')) {
+            $this->expectDeprecation();
+        } else {
+            $this->expectException(\PHPUnit\Framework\Error\Deprecated::class);
+        }
+        $result = Str\decimialNumber('2');
+        $this->assertEquals('2', $result);
     }
 
     /** @testdox Calling decimialNumber should throw a deprecation notice */
