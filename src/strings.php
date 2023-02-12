@@ -70,8 +70,8 @@ function slice(int $start, ?int $finish = null): Closure
      */
     return function (string $string) use ($start, $finish): string {
         return ! $finish
-            ? substr($string, $start)
-            : substr($string, $start, $finish);
+            ? mb_substr($string, $start)
+            : mb_substr($string, $start, $finish);
     };
 }
 
