@@ -8,5 +8,4 @@ wiki/
 clover.xml
 coverage-report/
 .vscode
-.php-cs-fixer.php
 phpunit_9.xml
