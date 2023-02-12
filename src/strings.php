@@ -218,10 +218,10 @@ function endsWith(string $find): Closure
      * @return bool
      */
     return function (string $source) use ($find): bool {
-        if (\strlen($find) === 0) {
+        if (\mb_strlen($find) === 0) {
             return true;
         }
-        return (\substr($source, -\strlen($find)) === $find);
+        return (\mb_substr($source, -\mb_strlen($find)) === $find);
     };
 }
 
