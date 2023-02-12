@@ -531,11 +531,9 @@ class DocsExampleTest extends TestCase
     /** @testdox - Github Page Docs : String\replaceSubString() */
     public function testStringReplaceSubString(): void
     {
-        $replace = Str\replaceSubString('foo', 'bar');
-
         $this->assertSame('Thi...', Str\replaceSubString('...', 3)('This is an example'));
-        $this->assertSame('This is an ex...', Str\replaceSubString('...', -3)('This is an example'));
+        $this->assertSame('This is an exam...', Str\replaceSubString('...', -3)('This is an example'));
         $this->assertSame('This ... an example', Str\replaceSubString('...', 5, 2)('This is an example'));
-        $this->assertSame('This ... is an example', Str\replaceSubString('...', 5, 0)('This is an example'));
+        $this->assertSame('This ...', Str\replaceSubString('...', 5, 0)('This is an example'));
     }
 }
