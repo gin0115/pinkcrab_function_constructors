@@ -271,6 +271,25 @@ class StringFunctionTest extends TestCase
         $this->assertCount(8, $getOccurances('asfetwafgh'));
     }
 
+    /** @testdox It should be possible to use constants for the countChars modes */
+    public function testCanCountCharsInStringUsingConstants()
+    {
+        $this->assertTrue(defined('CHAR_COUNT_ARRAY'));
+        $this->assertEquals(0, CHAR_COUNT_ARRAY);
+
+        $this->assertTrue(defined('CHAR_COUNT_ARRAY_UNIQUE'));
+        $this->assertEquals(1, CHAR_COUNT_ARRAY_UNIQUE);
+
+        $this->assertTrue(defined('CHAR_COUNT_ARRAY_UNUSED'));
+        $this->assertEquals(2, CHAR_COUNT_ARRAY_UNUSED);
+
+        $this->assertTrue(defined('CHAR_COUNT_STRING_UNIQUE'));
+        $this->assertEquals(3, CHAR_COUNT_STRING_UNIQUE);
+
+        $this->assertTrue(defined('CHAR_COUNT_STRING_UNUSED'));
+        $this->assertEquals(4, CHAR_COUNT_STRING_UNUSED);
+    }
+
     public function testCanwordWrap()
     {
         $loose10 = Str\wordWrap(10, '--');
