@@ -348,7 +348,7 @@ function splitByLength(int $length): Closure
      * @return array<int, string>
      */
     return function (string $string) use ($length): array {
-        return \str_split($string, max(1, $length)) ?: array(); // @phpstan-ignore-line, inconsistent errors with differing php versions.
+        return \mb_str_split($string, max(1, $length)) ?: array(); // @phpstan-ignore-line, inconsistent errors with differing php versions.
     };
 }
 
