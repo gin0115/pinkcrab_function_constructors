@@ -546,6 +546,15 @@ class StringFunctionTest extends TestCase
         $this->assertEquals('2', $result);
     }
 
+
+    /** @testdox Even though decimialNumber throws a deprecation notice, it should still work. */
+    public function testDecimialNumber(): void
+    {
+        $result = @Str\decimialNumber(2, '.', '|');
+        $this->assertEquals('123|456|789.12', $result(123456789.123456));
+    }
+
+
     /** @testdox Calling decimialNumber should throw a deprecation notice */
     public function testDecimalNumberDeprecation(): void
     {
@@ -559,10 +568,11 @@ class StringFunctionTest extends TestCase
         $this->assertEquals('2', $result);
     }
 
-    /** @testdox Even though decimialNumber throws a deprecation notice, it should still work. */
+
+        /** @testdox Even though decimialNumber throws a deprecation notice, it should still work. */
     public function testDecimalNumber(): void
     {
-        $result = @Str\decimialNumber(2, '.', '|');
+        $result = @Str\decimalNumber(2, '.', '|');
         $this->assertEquals('123|456|789.12', $result(123456789.123456));
     }
 
