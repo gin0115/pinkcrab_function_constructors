@@ -326,16 +326,16 @@ class StringFunctionTest extends TestCase
 
     public function testCanDosimilarAsBase()
     {
-        $compareTheBaseAsChars = Str\similarAsBase('THE BASE');
-        $compareTheBaseAsPC    = Str\similarAsBase('THE BASE', true);
+        $compareTheBaseAsChars = Str\similar('THE BASE');
+        $compareTheBaseAsPC    = Str\similar('THE BASE', true);
         $this->assertEquals(4, $compareTheBaseAsChars('BASE'));
         $this->assertEquals(round((6 / 9), 4) * 100, round($compareTheBaseAsPC('BASE'), 2));
     }
 
     public function testCanDosimilarAsComparisson()
     {
-        $compareTheBaseAsChars = Str\similarAsComparison('BASE');
-        $compareTheBaseAsPC    = Str\similarAsComparison('BASE', true);
+        $compareTheBaseAsChars = Str\similar('BASE');
+        $compareTheBaseAsPC    = Str\similar('BASE', true);
         $this->assertEquals(4, $compareTheBaseAsChars('THE BASE'));
 
         // This is not the calc done in the fucntion, but give the desired answer simpler!

@@ -14,7 +14,6 @@ class DeprecatedTest extends TestCase
     }
 
 
-
     /** @testdox Calling decimialNumber should throw a deprecation notice */
     public function testDecimialNumberDeprecation(): void
     {
@@ -114,5 +113,55 @@ class DeprecatedTest extends TestCase
     {
         $findAppleCaseSense = @Str\lastPosistion('Apple');
         $this->assertEquals(23, $findAppleCaseSense('Apple are tasty i like Apples'));
+    }
+
+    /**
+     *
+     *    Strings\similarAsComparison
+     *
+     */
+
+    /** @testdox Calling similarAsComparison should throw a deprecation notice */
+    public function testSimilarAsComparison(): void
+    {
+        // If using PHPUnit 9, we need to use the expectDeprecation() method
+        if (version_compare(\PHPUnit\Runner\Version::id(), '9.0.0', '>=')) {
+            $this->expectDeprecation();
+        } else {
+            $this->expectException(\PHPUnit\Framework\Error\Deprecated::class);
+        }
+        Str\similarAsComparison('a');
+    }
+
+    /** @testdox similarAsComparisson should still function even though it throws */
+    public function testSimilarAsComparisonUsage(): void
+    {
+        $compareTheBaseAsChars = @Str\similarAsComparison('BASE');
+        $this->assertEquals(4, $compareTheBaseAsChars('THE BASE'));
+    }
+
+    /**
+     *
+     *    Strings\similarAsBase
+     *
+     */
+
+    /** @testdox Calling similarAsBase should throw a deprecation notice */
+    public function testSimilarAsBase(): void
+    {
+        // If using PHPUnit 9, we need to use the expectDeprecation() method
+        if (version_compare(\PHPUnit\Runner\Version::id(), '9.0.0', '>=')) {
+            $this->expectDeprecation();
+        } else {
+            $this->expectException(\PHPUnit\Framework\Error\Deprecated::class);
+        }
+        Str\similarAsBase('a');
+    }
+
+    /** @testdox similarAsComparisson should still function even though it throws */
+    public function testSimilarAsBaseUsage(): void
+    {
+        $compareTheBaseAsChars = @Str\similarAsBase('BASE');
+        $this->assertEquals(4, $compareTheBaseAsChars('THE BASE'));
     }
 }
