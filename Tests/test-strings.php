@@ -569,7 +569,7 @@ class StringFunctionTest extends TestCase
     }
 
 
-        /** @testdox Even though decimialNumber throws a deprecation notice, it should still work. */
+    /** @testdox Even though decimialNumber throws a deprecation notice, it should still work. */
     public function testDecimalNumber(): void
     {
         $result = @Str\decimalNumber(2, '.', '|');
