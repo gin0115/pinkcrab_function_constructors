@@ -555,7 +555,7 @@ class StringFunctionTest extends TestCase
         } else {
             $this->expectException(\PHPUnit\Framework\Error\Deprecated::class);
         }
-        $result = Str\decimialNumber('2');
+        $result = Str\decimalNumber('2');
         $this->assertEquals('2', $result);
     }
 
