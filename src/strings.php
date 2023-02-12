@@ -201,7 +201,7 @@ function startsWith(string $find): Closure
      * @return bool
      */
     return function (string $source) use ($find): bool {
-        return (\substr($source, 0, \strlen($find)) === $find);
+        return (\mb_substr($source, 0, \mb_strlen($find)) === $find);
     };
 }
 
