@@ -36,7 +36,7 @@ closure: >
 examplePartial: >
  // Create a closure which will count chars in a string as an array.
 
- $countToArray = Strings\countChars(CHAR_COUNT_ARRAY_BYTE); // $mode = 0
+ $countToArray = Strings\countChars(CHAR_COUNT_ARRAY); // $mode = 0
 
 
  // Create a closure which will count chars in a string as a string.
@@ -69,7 +69,7 @@ exampleInline: >
 
  // Can be piped with char() to cast BYTE to string.
 
- $count = GeneralFunctions\pipe('AABBCC', Strings\countChars(CHAR_COUNT_ARRAY_BYTE), 'char');
+ $count = GeneralFunctions\pipe('AABBCC', Strings\countChars(CHAR_COUNT_ARRAY), 'char');
 
  print_r($count); // [A => 2, B => 2, C => 2]
 
@@ -78,9 +78,9 @@ exampleInline: >
 You can use the following constants to define the mode of the function:
 
 
-- <code class="inline">CHAR_COUNT_ARRAY_ALL</code> :: an array with the byte-value as key and the frequency of every byte as value.
-- <code class="inline">CHAR_COUNT_ARRAY_BYTE</code> :: same as CHAR_COUNT_ARRAY_KEYED but only byte-values with a frequency greater than zero are listed.
-- <code class="inline">CHAR_COUNT_ARRAY_ZERO_BYTE</code> :: same as CHAR_COUNT_ARRAY_KEYED but only byte-values with a frequency equal to zero are listed.
+- <code class="inline">CHAR_COUNT_ARRAY</code> :: an array with the byte-value as key and the frequency of every byte as value.
+- <code class="inline">CHAR_COUNT_ARRAY_UNIQUE</code> :: same as CHAR_COUNT_ARRAY_KEYED but only byte-values with a frequency greater than zero are listed.
+- <code class="inline">CHAR_COUNT_ARRAY_UNUSED</code> :: same as CHAR_COUNT_ARRAY_KEYED but only byte-values with a frequency equal to zero are listed.
 - <code class="inline">CHAR_COUNT_STRING_UNIQUE</code> :: a string containing all unique characters is returned.
 - <code class="inline">CHAR_COUNT_STRING_UNUSED</code> :: a string containing all not used characters is returned.
 

@@ -11,7 +11,9 @@ subtitle: >
 source: https://github.com/gin0115/pinkcrab_function_constructors/blob/master/src/strings.php#L65
 namespace: PinkCrab\FunctionConstructors\Strings
 since: 0.1.0
-categories: [strings, string manipulation]
+categories: [strings, string transform]
+coreFunctions: 
+    - mb_substr()
 
 deprecated: false
 alternative: false
