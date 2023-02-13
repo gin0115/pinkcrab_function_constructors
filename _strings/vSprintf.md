@@ -4,7 +4,7 @@ group: strings
 subgroup: string_manipulation
 
 title: Strings\vSprintf()
-subtitle: >
+description: >
  Allows you to create a function which allows for creating a Closure which is populated with a sprintf template. Which accepts the array of args to be used to populate the template. This can either be used as part of a Higher Order Function such as array_map() or as part of a compiled/pipe function.
 
 source: https://github.com/gin0115/pinkcrab_function_constructors/blob/master/src/strings.php#L118

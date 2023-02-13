@@ -1,7 +1,7 @@
 ---
 layout: base
 title: Strings
-subtitle: >
+description: >
  Archive of all functions in the Strings namespace.
 ---
 

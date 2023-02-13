@@ -5,7 +5,7 @@ subgroup: string_analysis
 
 
 title: Strings\similar()
-subtitle: >
+description: >
  Allows you to create a function which can be used to compute a metric of similarity between two strings. The metric is based on the number of characters that are the same in the two strings. The metric is either returned as numerical value of matching chars or as a percentage. These can either be used as part of a Higher Order Function such as array_map() or as part of a compiled/pipe function.
 
 source: https://github.com/gin0115/pinkcrab_function_constructors/blob/master/src/strings.php#L496

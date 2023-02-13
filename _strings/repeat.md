@@ -5,7 +5,7 @@ subgroup: string_manipulation
 
 
 title: Strings\repeat()
-subtitle: >
+description: >
  Allows you to create a function which can be used to repeat a string by a pre defined number. These can either be used as part of a Higher Order Function such as array_map() or as part of a compiled/pipe function.
 
 source: https://github.com/gin0115/pinkcrab_function_constructors/blob/master/src/strings.php#L535

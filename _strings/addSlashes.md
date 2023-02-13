@@ -1,6 +1,6 @@
 ---
 title: Strings\addSlashes()
-subtitle: >
+description: >
  Creates a function which allows for adding slashes to a string. The created function can then reused over any string, or used as part of a Higher Order Function such as array_map().
 
 layout: function

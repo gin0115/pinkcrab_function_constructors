@@ -1,6 +1,6 @@
 ---
 title: Strings\startsWith()
-subtitle: >
+description: >
  Returns a function which can be used to check if a string starts with a defined sub string. The created function can then reused over any string, or used as part of a Higher Order Function such as array_filter().
 
 layout: function

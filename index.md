@@ -1,7 +1,7 @@
 ---
 layout: base
 title: Home
-subtitle: >
+description: >
  This is where I will tell my friends way too much about me
 ---
 
