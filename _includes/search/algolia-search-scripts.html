@@ -18,7 +18,7 @@ const search = instantsearch({
       'categories',
       'subgroup',
       'collection',
-      'subtitle',
+      'description',
       'coreFunctions'
     ]
   }
@@ -28,7 +28,7 @@ const hitTemplate = function(hit) {
   const url = hit.url;
   const hightlight = hit._highlightResult;
   const title = hightlight.title && hightlight.title.value  || "";
-  const content = hightlight.content && hightlight.content.value  || hit.subtitle || "";
+  const content = hightlight.content && hightlight.content.value  || hit.description || "";
     console.log(hit);
   return `
     <div class="list__item">
