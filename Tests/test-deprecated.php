@@ -133,7 +133,7 @@ class DeprecatedTest extends TestCase
         Str\similarAsComparison('a');
     }
 
-    /** @testdox similarAsComparisson should still function even though it throws */
+    /** @testdox similarAsComparison should still function even though it throws */
     public function testSimilarAsComparisonUsage(): void
     {
         $compareTheBaseAsChars = @Str\similarAsComparison('BASE');
@@ -158,7 +158,7 @@ class DeprecatedTest extends TestCase
         Str\similarAsBase('a');
     }
 
-    /** @testdox similarAsComparisson should still function even though it throws */
+    /** @testdox similarAsBase should still function even though it throws */
     public function testSimilarAsBaseUsage(): void
     {
         $compareTheBaseAsChars = @Str\similarAsBase('BASE');
