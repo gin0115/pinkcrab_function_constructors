@@ -562,6 +562,16 @@ If you would like to contribute to this project, please feel to fork the project
 
 ## Changes
 
+* 0.3.0 -
+  * **New Functions**
+  * `Strings\digit()`
+  * `Strings\compare()` 
+  * `Strings\countChars()` now has mode constants.
+  * **Breaking Changes**
+  * `Strings\decimalNumber()` has been deprecated in favour of `Strings\digit()`
+  * `Strings\similarAsBase()` and `Strings\similarAsComparison()` have been deprecated in favour of `Strings\similar()`
+
+
 * 0.2.0 - 
    * **New Functions**
    * `Numbers\isMultipleOf()`
