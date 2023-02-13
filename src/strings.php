@@ -487,13 +487,13 @@ function rTrim(string $mask = "\t\n\r\0\x0B"): Closure
 
 /**
  * Returns a callable for finding the similarities between 2 string.
- * This sets the defined value as the base (similar_text as first)
+ *
  *
  * @param string $base The string to act as the base.
  * @param bool $asPc If set to true will return the percentage match, rather than char count.
  * @return Closure(string):Number
  */
-function similarAsBase(string $base, bool $asPc = false): Closure
+function similar(string $base, bool $asPc = false): Closure
 {
     /**
      * @param string $comparisonString The string to compare against base.
@@ -506,26 +506,6 @@ function similarAsBase(string $base, bool $asPc = false): Closure
     };
 }
 
-/**
- * Returns a callable for finding the similarities between 2 string.
- * This sets the defined value as the comparisonString (similar_text as second)
- *
- * @param string $comparisonString The string to compare against base.
- * @param bool $asPc If set to true will return the percentage match, rather than char count.
- * @return Closure(string):Number
- */
-function similarAsComparison(string $comparisonString, bool $asPc = false): Closure
-{
-    /**
-     * @param string $comparisonString The string to act as the base.
-     * @return Number
-     */
-    return function (string $base) use ($comparisonString, $asPc) {
-        $pc       = 0.00;
-        $matching = similar_text($base, $comparisonString, $pc);
-        return $asPc ? $pc : $matching;
-    };
-}
 
 /**
  * Returns a callable for padding out a string.
@@ -819,7 +799,7 @@ function decimalNumber($precision = 2, $point = '.', $thousands = ''): Closure
 /**
  * See similarAsComparison()
  *
- * @deprecated Use similarAsComparison() instead.
+ * @deprecated Use similar() instead.
  * @param string $comparisonString
  * @param bool $asPc
  * @return Closure
@@ -827,7 +807,38 @@ function decimalNumber($precision = 2, $point = '.', $thousands = ''): Closure
 function similarAsComparisson(string $comparisonString, bool $asPc = false): Closure
 {
     trigger_error('Deprecated function called. Please use similarAsComparison. This function will be removed in later versions.', E_USER_DEPRECATED);
-    return similarAsComparison($comparisonString, $asPc);
+    return similar($comparisonString, $asPc);
+}
+
+
+/**
+ * Returns a callable for finding the similarities between 2 string.
+ * This sets the defined value as the base (similar_text as first)
+ *
+ * @deprecated Use similar() instead.
+ * @param string $base The string to act as the base.
+ * @param bool $asPc If set to true will return the percentage match, rather than char count.
+ * @return Closure(string):Number
+ */
+function similarAsBase(string $base, bool $asPc = false): Closure
+{
+    trigger_error('Deprecated function called. Please use similar. This function will be removed in later versions.', E_USER_DEPRECATED);
+    return similar($base, $asPc);
+}
+
+/**
+ * Returns a callable for finding the similarities between 2 string.
+ * This sets the defined value as the comparisonString (similar_text as second)
+ *
+ * @deprecated Use similar() instead.
+ * @param string $comparisonString The string to compare against base.
+ * @param bool $asPc If set to true will return the percentage match, rather than char count.
+ * @return Closure(string):Number
+ */
+function similarAsComparison(string $comparisonString, bool $asPc = false): Closure
+{
+    trigger_error('Deprecated function called. Please use similar. This function will be removed in later versions.', E_USER_DEPRECATED);
+    return similar($comparisonString, $asPc);
 }
 
 /**
