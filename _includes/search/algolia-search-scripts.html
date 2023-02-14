@@ -28,7 +28,7 @@ const hitTemplate = function(hit) {
   const url = hit.url;
   const hightlight = hit._highlightResult;
   const title = hightlight.title && hightlight.title.value  || "";
-  const content = hightlight.content && hightlight.content.value  || hit.description || "";
+  const content = hit.description || hightlight.content && hightlight.content.value  || "";
     console.log(hit);
   return `
     <div class="list__item">
