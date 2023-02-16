@@ -26,7 +26,7 @@ definition: >
 closure: >
  /**
   * @param string $string The string to have char, slash escaped.
-     * @return string
+  * @return string
   */
  $function (string $string): string
 

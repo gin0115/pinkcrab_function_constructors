@@ -5,7 +5,7 @@ description: >
 
 layout: function
 group: strings
-subgroup: string_predicate
+subgroup: string_manipulation
 categories: [strings, string manipulation]
 coreFunctions: 
     - substr_replace()
