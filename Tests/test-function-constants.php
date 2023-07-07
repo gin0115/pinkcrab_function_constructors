@@ -13,7 +13,7 @@ class FunctionConstantsTest extends TestCase
     public function testNotEmptyConstant()
     {
         // With arrays
-        $this->assertTrue(call_user_func(Functions::NOT_EMPTY, array( 'test' )));
+        $this->assertTrue(call_user_func(Functions::NOT_EMPTY, array('test')));
         $this->assertFalse(call_user_func(Functions::NOT_EMPTY, array()));
 
         // With strings
@@ -24,15 +24,15 @@ class FunctionConstantsTest extends TestCase
     /** @testdox It should be possible to use a constant for Arrays\head() as a callable */
     public function testArrayHead(): void
     {
-        $this->assertEquals('1', call_user_func(Functions::ARRAY_HEAD, array( '1', '2' )));
+        $this->assertEquals('1', call_user_func(Functions::ARRAY_HEAD, array('1', '2')));
         $this->assertNull(call_user_func(Functions::ARRAY_HEAD, array()));
     }
 
-    /** @testdox It should be possible to use a constant for Arrays\tail() as a callable */
-    public function testArrayTail(): void
+    /** @testdox It should be possible to use a constant for Arrays\last() as a callable */
+    public function testArrayLast(): void
     {
-        $this->assertEquals('2', call_user_func(Functions::ARRAY_TAIL, array( '1', '2' )));
-        $this->assertNull(call_user_func(Functions::ARRAY_TAIL, array()));
+        $this->assertEquals('2', call_user_func(Functions::ARRAY_LAST, array('1', '2')));
+        $this->assertNull(call_user_func(Functions::ARRAY_LAST, array()));
     }
 
     /** @testdox It should be possible to use a constant for Comparisons\isTrue() as a callable */
@@ -51,7 +51,7 @@ class FunctionConstantsTest extends TestCase
         $this->assertFalse(call_user_func(Functions::IS_TRUE, '1'));
 
         $this->assertFalse(call_user_func(Functions::IS_TRUE, array()));
-        $this->assertFalse(call_user_func(Functions::IS_TRUE, array( 1, 2, 3 )));
+        $this->assertFalse(call_user_func(Functions::IS_TRUE, array(1, 2, 3)));
 
         $this->assertFalse(call_user_func(Functions::IS_TRUE, null));
     }
@@ -91,7 +91,7 @@ class FunctionConstantsTest extends TestCase
         $this->assertFalse(call_user_func(Functions::IS_NUMBER, '1.1'));
 
         $this->assertFalse(call_user_func(Functions::IS_NUMBER, array()));
-        $this->assertFalse(call_user_func(Functions::IS_NUMBER, array( 1, 2, 3 )));
+        $this->assertFalse(call_user_func(Functions::IS_NUMBER, array(1, 2, 3)));
 
         $this->assertFalse(call_user_func(Functions::IS_NUMBER, null));
     }

@@ -78,7 +78,18 @@ function pushTail(array $array): Closure
  */
 function head(array $array)
 {
-    return ! empty($array) ? array_values($array)[0] : null;
+    return !empty($array) ? array_values($array)[0] : null;
+}
+
+/**
+ * Gets the last value from an array.
+ *
+ * @param array<int|string, mixed> $array The array.
+ * @return mixed Will return the last value is array is not empty, else null.
+ */
+function last(array $array)
+{
+    return !empty($array) ? array_reverse($array, false)[0] : null;
 }
 
 /**
@@ -89,7 +100,14 @@ function head(array $array)
  */
 function tail(array $array)
 {
-    return ! empty($array) ? array_reverse($array, false)[0] : null;
+    // Return null if empty.
+    if (empty($array)) {
+        return null;
+    }
+
+    // Remove the first item from the array.
+    array_shift($array);
+    return $array;
 }
 
 
@@ -128,8 +146,8 @@ function zip(array $additional, $default = null): Closure
             array_keys($array),
             function ($carry, $key) use ($array, $additional, $default): array {
                 $carry[] = array(
-                    $array[ $key ],
-                    array_key_exists($key, $additional) ? $additional[ $key ] : $default,
+                    $array[$key],
+                    array_key_exists($key, $additional) ? $additional[$key] : $default,
                 );
                 return $carry;
             },
@@ -163,7 +181,7 @@ function arrayCompiler(array $inital = array()): Closure
         if ($value) {
             $inital[] = $value;
         }
-        return ! is_null($value) ? arrayCompiler($inital) : $inital;
+        return !is_null($value) ? arrayCompiler($inital) : $inital;
     };
 }
 
@@ -185,10 +203,10 @@ function arrayCompilerTyped(callable $validator, array $inital = array()): Closu
      * @return mixed[]|Closure
      */
     return function ($value = null) use ($validator, $inital) {
-        if (! is_null($value) && $validator($value)) {
+        if (!is_null($value) && $validator($value)) {
             $inital[] = $value;
         }
-        return ! is_null($value) ? arrayCompilerTyped($validator, $inital) : $inital;
+        return !is_null($value) ? arrayCompilerTyped($validator, $inital) : $inital;
     };
 }
 
@@ -301,7 +319,7 @@ function filterLast(callable $func): Closure
      * @return mixed|null The last element from the filtered array.
      */
     return function (array $array) use ($func) {
-        return tail(array_filter($array, $func));
+        return last(array_filter($array, $func));
     };
 }
 
@@ -366,10 +384,10 @@ function partition(callable $function): Closure
              */
             function ($carry, $element) use ($function): array {
                 $key             = (bool) $function($element) ? 1 : 0;
-                $carry[ $key ][] = $element;
+                $carry[$key][] = $element;
                 return $carry;
             },
-            array( array(), array() )
+            array(array(), array())
         );
     };
 }
@@ -462,7 +480,7 @@ function mapKey(callable $func): Closure
         return array_reduce(
             array_keys($array),
             function ($carry, $key) use ($func, $array) {
-                $carry[ $func($key) ] = $array[ $key ];
+                $carry[$func($key)] = $array[$key];
                 return $carry;
             },
             array()
@@ -601,7 +619,7 @@ function groupBy(callable $function): Closure
              * @return mixed[]
              */
             function ($carry, $item) use ($function): array {
-                $carry[ call_user_func($function, $item) ][] = $item;
+                $carry[call_user_func($function, $item)][] = $item;
                 return $carry;
             },
             array()
@@ -749,7 +767,7 @@ function toObject($object = null): Closure
     $object = $object ?? new stdClass();
 
     // Throws an exception if $object is not an object.
-    if (! is_object($object)) {
+    if (!is_object($object)) {
         throw new \InvalidArgumentException('Object must be an object.');
     }
 
@@ -760,7 +778,7 @@ function toObject($object = null): Closure
     return function (array $array) use ($object) {
         foreach ($array as $key => $value) {
             // If key is not a string or numerical, skip it.
-            if (! is_string($key) || is_numeric($key)) {
+            if (!is_string($key) || is_numeric($key)) {
                 continue;
             }
 
@@ -1156,7 +1174,7 @@ function takeLast(int $count = 1): Closure
      * @return mixed[]
      */
     return function (array $array) use ($count) {
-        return \array_slice($array, - $count);
+        return \array_slice($array, -$count);
     };
 }
 
@@ -1179,7 +1197,7 @@ function takeUntil(callable $conditional): Closure
             if (true === $conditional($value)) {
                 break;
             }
-            $carry[ $key ] = $value;
+            $carry[$key] = $value;
         }
         return $carry;
     };
@@ -1204,7 +1222,7 @@ function takeWhile(callable $conditional): Closure
             if (false === $conditional($value)) {
                 break;
             }
-            $carry[ $key ] = $value;
+            $carry[$key] = $value;
         }
         return $carry;
     };
