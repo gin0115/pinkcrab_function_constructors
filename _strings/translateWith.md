@@ -28,7 +28,7 @@ closure: >
  $function ($haystack): string
 
 examplePartial: >
- // Creates the Closure to repalce foo with bar and hi with hello
+ // Creates the Closure to replace foo with bar and hi with hello
 
  $replace = Strings\translateWith(['foo' => 'bar', 'hi' => 'hello']);
 
