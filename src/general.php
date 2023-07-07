@@ -46,7 +46,7 @@ use PinkCrab\FunctionConstructors\Objects as Objects;
 function compose(callable ...$callables): Closure
 {
     /**
-     * @param mixed The value passed into the functions
+     * @param mixed $e The value passed into the functions
      * @return mixed The final result.
      */
     return function ($e) use ($callables) {
@@ -67,7 +67,7 @@ function compose(callable ...$callables): Closure
 function composeR(callable ...$callables): Closure
 {
     /**
-     * @param mixed The value passed into the functions
+     * @param mixed $e The value passed into the functions
      * @return mixed The final result.
      */
     return function ($e) use ($callables) {
@@ -88,12 +88,12 @@ function composeR(callable ...$callables): Closure
 function composeSafe(callable ...$callables): Closure
 {
     /**
-     * @param mixed The value passed into the functions
+     * @param mixed $e The value passed into the functions
      * @return mixed|null The final result or null.
      */
     return function ($e) use ($callables) {
         foreach ($callables as $callable) {
-            if (! is_null($e)) {
+            if (!is_null($e)) {
                 $e = $callable($e);
             }
         }
@@ -119,14 +119,14 @@ function composeTypeSafe(callable $validator, callable ...$callables): Closure
     return function ($e) use ($validator, $callables) {
         foreach ($callables as $callable) {
             // If invalid, abort and return null
-            if (! $validator($e)) {
+            if (!$validator($e)) {
                 return null;
             }
             // Run through callable.
             $e = $callable($e);
 
             // Check results and bail if invalid type.
-            if (! $validator($e)) {
+            if (!$validator($e)) {
                 return null;
             }
         }
@@ -174,7 +174,7 @@ function getProperty(string $property): Closure
      */
     return function ($data) use ($property) {
         if (is_array($data)) {
-            return array_key_exists($property, $data) ? $data[ $property ] : null;
+            return array_key_exists($property, $data) ? $data[$property] : null;
         } elseif (is_object($data)) {
             return property_exists($data, $property) ? $data->{$property} : null;
         } else {
@@ -265,13 +265,13 @@ function propertyEquals(string $property, $value): Closure
  * Only works for public or dynamic properties.
  *
  * @param array<string,mixed>|ArrayObject<string,mixed>|object $store
-     * @param string $property The property key.
+ * @param string $property The property key.
  * @return Closure(mixed):(array<string,mixed>|ArrayObject<string,mixed>|object)
  */
 function setProperty($store, string $property): Closure
 {
     // If passed store is not an array or object, throw exception.
-    if (! isArrayAccess($store) && ! is_object($store)) {
+    if (!isArrayAccess($store) && !is_object($store)) {
         throw new TypeError('Only objects or arrays can be constructed using setProperty.');
     }
 
@@ -282,7 +282,7 @@ function setProperty($store, string $property): Closure
     return function ($value) use ($store, $property) {
         if (isArrayAccess($store)) {
             /** @phpstan-ignore-next-line */
-            $store[ $property ] = $value;
+            $store[$property] = $value;
         } else {
             $store->{$property} = $value;
         }
@@ -306,7 +306,7 @@ function encodeProperty(string $key, callable $value): Closure
      * @return array
      */
     return function ($data) use ($key, $value): array {
-        return array( $key => $value($data) );
+        return array($key => $value($data));
     };
 }
 

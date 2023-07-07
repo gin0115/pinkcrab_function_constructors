@@ -46,7 +46,7 @@ function isEqualTo($a): Closure
      * @return bool
      */
     return function ($b) use ($a): bool {
-        if (! sameScalar($b, $a)) {
+        if (!sameScalar($b, $a)) {
             return false;
         }
 
@@ -84,7 +84,7 @@ function isNotEqualTo($a): Closure
      * @return bool
      */
     return function ($b) use ($a): bool {
-        return ! isEqualTo($a)($b);
+        return !isEqualTo($a)($b);
     };
 }
 
@@ -102,7 +102,7 @@ function isGreaterThan($a): Closure
      * @return bool
      */
     return function ($b) use ($a): bool {
-        return isEqualIn(array( 'integer', 'double' ))(gettype($b))
+        return isEqualIn(array('integer', 'double'))(gettype($b))
             ? $a < $b : false;
     };
 }
@@ -121,7 +121,7 @@ function isLessThan($a): Closure
      * @return bool
      */
     return function ($b) use ($a): bool {
-        return isEqualIn(array( 'integer', 'double' ))(gettype($b))
+        return isEqualIn(array('integer', 'double'))(gettype($b))
             ? $a > $b : false;
     };
 }
@@ -206,7 +206,7 @@ function isEqualIn(array $a): Closure
  */
 function notEmpty($value): bool
 {
-    return ! empty($value);
+    return !empty($value);
 }
 
 /**
@@ -298,7 +298,7 @@ function sameScalar(...$variables): bool
 function allTrue(bool ...$variables): bool
 {
     foreach ($variables as $value) {
-        if (! is_bool($value) || $value !== true) {
+        if ($value !== true) {
             return false;
         }
     }
@@ -314,7 +314,7 @@ function allTrue(bool ...$variables): bool
 function anyTrue(bool ...$variables): bool
 {
     foreach ($variables as $value) {
-        if (is_bool($value) && $value === true) {
+        if ($value === true) {
             return true;
         }
     }
@@ -389,6 +389,6 @@ function not(callable $callable): Closure
      * @return bool
      */
     return function ($value) use ($callable): bool {
-        return ! (bool) $callable($value);
+        return !(bool) $callable($value);
     };
 }
