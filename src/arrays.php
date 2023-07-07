@@ -122,7 +122,7 @@ function toString(?string $glue = null): Closure
 {
     /**
      * @param array<int|string, mixed> $array Array join
-     * @return string.
+     * @return string
      */
     return function (array $array) use ($glue): string {
         return $glue ? \join($glue, $array) : \join($array);
