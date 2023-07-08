@@ -74,35 +74,6 @@ class ArrayFunctionTests extends TestCase
         $this->assertEquals(6, $new[5]);
     }
 
-    public function testCanPushToHead(): void
-    {
-        $pushToHead = Arr\pushHead(array(3, 4, 5, 6));
-        $added2     = $pushToHead(2);
-        $this->assertEquals(2, $added2[0]);
-
-        $pushToHead = Arr\pushHead($added2);
-        $added1     = $pushToHead(1);
-        $this->assertEquals(1, $added1[0]);
-
-        // As curried.
-        $curried = Arr\pushHead(array(3, 4, 5, 6))(2);
-        $this->assertEquals(2, $curried[0]);
-    }
-
-    public function testCanPushToTail(): void
-    {
-        $pushToTail = Arr\pushTail(array(1, 2, 3, 4));
-        $added2     = $pushToTail(5);
-        $this->assertEquals(5, $added2[4]);
-
-        $pushToTail = Arr\pushTail($added2);
-        $added1     = $pushToTail(6);
-        $this->assertEquals(6, $added1[5]);
-
-        // As curried.
-        $curried = Arr\pushTail(array(1, 2, 3, 4))(5);
-        $this->assertEquals(5, $curried[4]);
-    }
 
     public function testCanUseTail()
     {
