@@ -413,6 +413,11 @@ class StringFunctionTest extends TestCase
     /** @testdox It should be possible to strip tags, passing the tags as an array. This should also work for pre PHP7.4 */
     public function testCanStripTagsWithArray()
     {
+        // Skip if being called on php7.3 or before.
+        if (version_compare(PHP_VERSION, '7.4.0', '<')) {
+            $this->markTestSkipped('PHP 7.4 or greater required for array tags.');
+        }
+
         $allTags    = Str\stripTags();
         $allowPTags = Str\stripTags(array('p', 'a'));
 
