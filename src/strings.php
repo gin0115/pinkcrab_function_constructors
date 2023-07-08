@@ -592,7 +592,7 @@ function stripTags($allowedTags = null): Closure
      */
     return function (string $string) use ($allowedTags): string {
         return $allowedTags
-            ? \strip_tags($string, $allowedTags)
+            ? \strip_tags($string, $allowedTags) // @phpstan-ignore-line
             : \strip_tags($string);
     };
 }
