@@ -42,6 +42,38 @@ class ArrayFunctionTests extends TestCase
         FunctionsLoader::include();
     }
 
+    /** @testdox It should be possible to prepend and item to an array. */
+    public function testCanPrependToArray(): void
+    {
+        $array = array(1, 2, 3, 4, 5);
+
+        $prepend0 = Arr\prepend(0);
+        $new = $prepend0($array);
+
+        $this->assertEquals(0, $new[0]);
+        $this->assertEquals(1, $new[1]);
+        $this->assertEquals(2, $new[2]);
+        $this->assertEquals(3, $new[3]);
+        $this->assertEquals(4, $new[4]);
+        $this->assertEquals(5, $new[5]);
+    }
+
+    /** @testdox It should be possible to append and item to an array. */
+    public function testCanAppendToArray(): void
+    {
+        $array = array(1, 2, 3, 4, 5);
+
+        $append6 = Arr\append(6);
+        $new = $append6($array);
+
+        $this->assertEquals(1, $new[0]);
+        $this->assertEquals(2, $new[1]);
+        $this->assertEquals(3, $new[2]);
+        $this->assertEquals(4, $new[3]);
+        $this->assertEquals(5, $new[4]);
+        $this->assertEquals(6, $new[5]);
+    }
+
     public function testCanPushToHead(): void
     {
         $pushToHead = Arr\pushHead(array(3, 4, 5, 6));

@@ -35,6 +35,42 @@ use stdClass;
 use PinkCrab\FunctionConstructors\Comparisons as Comp;
 
 /**
+ * Returns a Closure for appending a value to an array.
+ *
+ * @param mixed $value
+ * @return Closure(array<int|string, mixed>):array<int|string, mixed>
+ */
+function append($value): Closure
+{
+    /**
+     * @param array<int|string, mixed> $array
+     * @return array<int|string, mixed>
+     */
+    return function (array $array) use ($value): array {
+        $array[] = $value;
+        return $array;
+    };
+}
+
+/**
+ * Returns a Closure for prepending a value to an array.
+ *
+ * @param mixed $value
+ * @return Closure(array<int|string, mixed>):array<int|string, mixed>
+ */
+function prepend($value): Closure
+{
+    /**
+     * @param array<int|string, mixed> $array
+     * @return array<int|string, mixed>
+     */
+    return function (array $array) use ($value): array {
+        array_unshift($array, $value);
+        return $array;
+    };
+}
+
+/**
  * Returns a Closure for pushing a value to the head of an array
  *
  * @param array<int|string, mixed> $array
