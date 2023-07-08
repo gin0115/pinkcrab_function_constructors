@@ -35,13 +35,51 @@ use stdClass;
 use PinkCrab\FunctionConstructors\Comparisons as Comp;
 
 /**
+ * Returns a Closure for appending a value to an array.
+ *
+ * @param mixed $value
+ * @return Closure(array<int|string, mixed>):array<int|string, mixed>
+ */
+function append($value): Closure
+{
+    /**
+     * @param array<int|string, mixed> $array
+     * @return array<int|string, mixed>
+     */
+    return function (array $array) use ($value): array {
+        $array[] = $value;
+        return $array;
+    };
+}
+
+/**
+ * Returns a Closure for prepending a value to an array.
+ *
+ * @param mixed $value
+ * @return Closure(array<int|string, mixed>):array<int|string, mixed>
+ */
+function prepend($value): Closure
+{
+    /**
+     * @param array<int|string, mixed> $array
+     * @return array<int|string, mixed>
+     */
+    return function (array $array) use ($value): array {
+        array_unshift($array, $value);
+        return $array;
+    };
+}
+
+/**
  * Returns a Closure for pushing a value to the head of an array
  *
  * @param array<int|string, mixed> $array
  * @return Closure(mixed):array<int|string, mixed>
+ * @deprecated 0.3.0 Use prepend() instead.
  */
 function pushHead(array $array): Closure
 {
+    trigger_error('Deprecated function called. This function will be removed in later versions.', E_USER_DEPRECATED);
     /**
      * @param mixed $value Adds value start of array.
      * @return array New array with value on head.
@@ -57,9 +95,11 @@ function pushHead(array $array): Closure
  *
  * @param array<int|string, mixed> $array
  * @return Closure(mixed):array<int|string, mixed>
+ * @deprecated 0.3.0 Use append() instead.
  */
 function pushTail(array $array): Closure
 {
+    trigger_error('Deprecated function called. This function will be removed in later versions.', E_USER_DEPRECATED);
     /**
      * @param mixed $value Adds value end of array.
      * @return array<int|string, mixed> New array with value on tail.

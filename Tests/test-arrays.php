@@ -42,35 +42,38 @@ class ArrayFunctionTests extends TestCase
         FunctionsLoader::include();
     }
 
-    public function testCanPushToHead(): void
+    /** @testdox It should be possible to prepend and item to an array. */
+    public function testCanPrependToArray(): void
     {
-        $pushToHead = Arr\pushHead(array(3, 4, 5, 6));
-        $added2     = $pushToHead(2);
-        $this->assertEquals(2, $added2[0]);
+        $array = array(1, 2, 3, 4, 5);
 
-        $pushToHead = Arr\pushHead($added2);
-        $added1     = $pushToHead(1);
-        $this->assertEquals(1, $added1[0]);
+        $prepend0 = Arr\prepend(0);
+        $new = $prepend0($array);
 
-        // As curried.
-        $curried = Arr\pushHead(array(3, 4, 5, 6))(2);
-        $this->assertEquals(2, $curried[0]);
+        $this->assertEquals(0, $new[0]);
+        $this->assertEquals(1, $new[1]);
+        $this->assertEquals(2, $new[2]);
+        $this->assertEquals(3, $new[3]);
+        $this->assertEquals(4, $new[4]);
+        $this->assertEquals(5, $new[5]);
     }
 
-    public function testCanPushToTail(): void
+    /** @testdox It should be possible to append and item to an array. */
+    public function testCanAppendToArray(): void
     {
-        $pushToTail = Arr\pushTail(array(1, 2, 3, 4));
-        $added2     = $pushToTail(5);
-        $this->assertEquals(5, $added2[4]);
+        $array = array(1, 2, 3, 4, 5);
 
-        $pushToTail = Arr\pushTail($added2);
-        $added1     = $pushToTail(6);
-        $this->assertEquals(6, $added1[5]);
+        $append6 = Arr\append(6);
+        $new = $append6($array);
 
-        // As curried.
-        $curried = Arr\pushTail(array(1, 2, 3, 4))(5);
-        $this->assertEquals(5, $curried[4]);
+        $this->assertEquals(1, $new[0]);
+        $this->assertEquals(2, $new[1]);
+        $this->assertEquals(3, $new[2]);
+        $this->assertEquals(4, $new[3]);
+        $this->assertEquals(5, $new[4]);
+        $this->assertEquals(6, $new[5]);
     }
+
 
     public function testCanUseTail()
     {
