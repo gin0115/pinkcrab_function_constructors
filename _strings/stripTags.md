@@ -36,9 +36,11 @@ closure: >
 examplePartial: >
  // Create a function that strips all tags from a string except <p> and <a>
 
- $stripTags = Strings\stripTags(['p', 'a']); // For PHP7.4+
+ $stripTags = Strings\stripTags(['p', 'a']); 
 
- $stripTags = Strings\stripTags('<p><a>'); // For PHP7.3 and below
+ // OR  
+ 
+ $stripTags = Strings\stripTags('<p><a>'); 
 
 
  // Called as a function.
