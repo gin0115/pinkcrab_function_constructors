@@ -79,7 +79,6 @@ function prepend($value): Closure
  */
 function pushHead(array $array): Closure
 {
-
     trigger_error('Deprecated function called. This function will be removed in later versions.', E_USER_DEPRECATED);
     /**
      * @param mixed $value Adds value start of array.
