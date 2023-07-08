@@ -92,7 +92,7 @@ $callback = F\compose(
    'trim',                                   // Remove all whitespace
    Str\slice(0, 20),                         // Remove all but first 20 chars          
    'ucfirst',                                // Uppercase each word
-   Str\prepend('...')                        // End the string with ...
+   Str\append('...')                        // End the string with ...
 );
 
 $results = array_map($callback, $data);
@@ -575,6 +575,7 @@ If you would like to contribute to this project, please feel to fork the project
   * `Strings\similarAsBase()` and `Strings\similarAsComparison()` have been deprecated in favour of `Strings\similar()`
   * `Arrays\tail()` now works as expected, returning the array without the first element.
   * `Arrays\pushHead()` and `Arrays\pushTail()` have been deprecated in favour of `Arrays\prepend()` and `Arrays\append()`
+  * `Strings\allowTags()` now accepts an array of allowed tags even for pre PHP7.4
 
 
 * 0.2.0 - 
