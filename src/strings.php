@@ -577,7 +577,7 @@ function stripTags($allowedTags = null): Closure
     }
 
     // If using pre php7.4, cast to string.
-    if (version_compare(PHP_VERSION, '7.4.0') <= 0 && is_array($allowedTags)) {
+    if (version_compare(PHP_VERSION, '7.4.0') >= 0 && is_array($allowedTags)) {
         $allowedTags = implode('', array_map(function ($tag) {
             return "<{$tag}>"; // @phpstan-ignore-line
         }, array_filter($allowedTags, 'is_string')));
