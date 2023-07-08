@@ -567,9 +567,11 @@ If you would like to contribute to this project, please feel to fork the project
   * `Strings\digit()`
   * `Strings\compare()` 
   * `Strings\countChars()` now has mode constants.
+  * `Arrays\last()` will return the last element of an array.
   * **Breaking Changes**
   * `Strings\decimalNumber()` has been deprecated in favour of `Strings\digit()`
   * `Strings\similarAsBase()` and `Strings\similarAsComparison()` have been deprecated in favour of `Strings\similar()`
+  * `Arrays\tail()` now works as expected, returning the array without the first element.
 
 
 * 0.2.0 - 

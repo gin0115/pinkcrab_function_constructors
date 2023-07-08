@@ -63,9 +63,9 @@ class Functions
     public const ARRAY_HEAD = 'PinkCrab\FunctionConstructors\Arrays\head';
 
     /**
-     * Constants used for PinkCrab\FunctionConstructors\Arrays\tail(array $array):?mixed
+     * Constants used for PinkCrab\FunctionConstructors\Arrays\last(array $array):?mixed
      */
-    public const ARRAY_TAIL = 'PinkCrab\FunctionConstructors\Arrays\tail';
+    public const ARRAY_LAST = 'PinkCrab\FunctionConstructors\Arrays\last';
 
     ## String ##
 
