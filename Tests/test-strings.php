@@ -209,7 +209,7 @@ class StringFunctionTest extends TestCase
             Str\append('99')
         );
 
-        $results = array_map($function, array( '1a2', '1b3', '1t4' ));
+        $results = array_map($function, array('1a2', '1b3', '1t4'));
         $this->assertEquals('001_a_299', $results[0]);
         $this->assertEquals('001b399', $results[1]);
         $this->assertEquals('001-t-499', $results[2]);
@@ -410,6 +410,16 @@ class StringFunctionTest extends TestCase
         $this->assertEquals('1<p>Stuff</p>', $allowPTags('1<p>Stuff</p>'));
     }
 
+    /** @testdox It should be possible to strip tags, passing the tags as an array. This should also work for pre PHP7.4 */
+    public function testCanStripTagsWithArray()
+    {
+        $allTags    = Str\stripTags();
+        $allowPTags = Str\stripTags(array('p', 'a'));
+
+        $this->assertEquals('1Stuff', $allTags('1<p>Stuff</p>'));
+        $this->assertEquals('1<p>Stuff</p>', $allowPTags('1<div><p>Stuff</p></div>'));
+    }
+
     public function testCanFindFirstPosition()
     {
         $findAppleCaseSense = Str\firstPosition('Apple');
@@ -420,6 +430,35 @@ class StringFunctionTest extends TestCase
         $findAppleCaseInsense = Str\firstPosition('ApPle', 10, STRINGS_CASE_INSENSITIVE);
         $this->assertNull($findAppleCaseInsense('Hmm yes, APPLES are really tasty'));
         $this->assertEquals(19, $findAppleCaseInsense('I really dont like APplE Tree'));
+    }
+
+    /** @testdox Attempting to call strip tag with the incorrect type for tags, should throw and exception
+     * @dataProvider invalidTags
+     */
+    public function testStripTagsInvalidTags($tags, bool $result): void
+    {
+        // If result is true, we expect no exception.
+        if ($result) {
+            $this->expectNotToPerformAssertions();
+            return;
+        }
+
+        $this->expectException(\InvalidArgumentException::class);
+        Str\stripTags($tags);
+    }
+
+    public function invalidTags(): array
+    {
+        return array(
+            'int' => array(1, false),
+            'float' => array(1.0, false),
+            'bool' => array(false, false),
+            'object' => array(new \stdClass(), false),
+            'arrayEmpty' => array(array(), true),
+            'arrayStrings' => array(array('a', 'b', 'c'), true),
+            'string' => array('<p><a>', true),
+            'null' => array(null, true)
+        );
     }
 
     public function testCanFindLastPosition()
@@ -446,8 +485,8 @@ class StringFunctionTest extends TestCase
 
         $this->assertNotNull($caseSenseAfter('rutoiuerot')); // No match
         $this->assertNotNull($caseSenseAfter('QWERTABCEFG')); // Uppercase
-        $this->assertEquals('', $caseSenseAfter('rutoiuerot'));// No match
-        $this->assertEquals('', $caseSenseAfter('QWERTABCEFG'));// Uppercase
+        $this->assertEquals('', $caseSenseAfter('rutoiuerot')); // No match
+        $this->assertEquals('', $caseSenseAfter('QWERTABCEFG')); // Uppercase
 
         $this->assertEquals('ABCEFG', $caseInsenseAfter('QWERTABCEFG'));
         $this->assertEquals('QWERT', $caseInsenseBefore('QWERTABCEFG'));
@@ -492,7 +531,7 @@ class StringFunctionTest extends TestCase
     public function testCanUseVSprintf()
     {
         $formatter = Str\vSprintf('12%s34-%s-%s-f');
-        $this->assertEquals('12alpha34-12-12.5-f', $formatter(array( 'alpha', '12', '12.5' )));
+        $this->assertEquals('12alpha34-12-12.5-f', $formatter(array('alpha', '12', '12.5')));
     }
 
     /** @testdox It should be possible to check if a value is a string and is blank */

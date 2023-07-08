@@ -69,7 +69,7 @@ function slice(int $start, ?int $finish = null): Closure
      * @return string
      */
     return function (string $string) use ($start, $finish): string {
-        return ! $finish
+        return !$finish
             ? substr($string, $start)
             : substr($string, $start, $finish);
     };
@@ -400,7 +400,7 @@ function wordWrap(int $width, string $break = "\n", bool $cut = false): Closure
 function countChars(int $mode = 1): Closure
 {
     // Throw an exception if the mode is not supported.
-    if (! in_array($mode, array( 0, 1, 2, 3, 4 ), true)) {
+    if (!in_array($mode, array(0, 1, 2, 3, 4), true)) {
         throw new \InvalidArgumentException('Invalid mode');
     }
 
@@ -566,11 +566,26 @@ function wordCount(int $format = WORD_COUNT_NUMBER_OF_WORDS, ?string $charList =
 /**
  * Creates a function for stripping tags with a defined set of allowed tags.
  *
- * @param string|null $allowedTags The allowed tags, pass null or leave blank for none.
+ * @param string|null|string[] $allowedTags The allowed tags, pass null or leave blank for none.
  * @return Closure(string):string
  */
-function stripTags(?string $allowedTags = null): Closure
+function stripTags($allowedTags = null): Closure
 {
+    // Only allow null|string|string[]
+    if (!is_null($allowedTags) && !is_string($allowedTags) && !is_array($allowedTags)) {
+        throw new \InvalidArgumentException('Invalid allowed tags, must be null, string or array.');
+    }
+
+    // If using pre php7.4, cast to string.
+    if (version_compare(PHP_VERSION, '7.4.0') <= 0 && is_array($allowedTags)) {
+        $allowedTags = implode('', array_map(function ($tag) {
+            return "<{$tag}>"; // @phpstan-ignore-line
+        }, array_filter($allowedTags, 'is_string')));
+    }
+
+    // If empty string, set to null.
+    $allowedTags = $allowedTags === '' ? null : $allowedTags;
+
     /**
      * @param string $string The string to strip tags from.
      * @return string
@@ -592,7 +607,7 @@ function stripTags(?string $allowedTags = null): Closure
  */
 function firstPosition(string $needle, int $offset = 0, int $flags = STRINGS_CASE_SENSITIVE): Closure
 {
-    $caseSensitive = ! (bool) ($flags & STRINGS_CASE_INSENSITIVE); // Assumes true unless INSESNITVE passed
+    $caseSensitive = !(bool) ($flags & STRINGS_CASE_INSENSITIVE); // Assumes true unless INSESNITVE passed
 
     /**
      * @param string $haystack The haystack to look through.
@@ -616,7 +631,7 @@ function firstPosition(string $needle, int $offset = 0, int $flags = STRINGS_CAS
  */
 function lastPosition(string $needle, int $offset = 0, int $flags = STRINGS_CASE_SENSITIVE): Closure
 {
-    $caseSensitive = ! (bool) ($flags & STRINGS_CASE_INSENSITIVE); // Assumes true unless INSESNITVE passed
+    $caseSensitive = !(bool) ($flags & STRINGS_CASE_INSENSITIVE); // Assumes true unless INSESNITVE passed
 
     /**
      * @param string $haystack The haystack to look through.
@@ -643,7 +658,7 @@ function firstSubString(string $needle, int $flags = STRINGS_CASE_SENSITIVE | ST
 {
     // Decode flags, only look for none defaults.
     $beforeNeedle  = (bool) ($flags & STRINGS_BEFORE_NEEDLE);
-    $caseSensitive = ! (bool) ($flags & STRINGS_CASE_INSENSITIVE); // Assumes true unless INSESNITVE passed
+    $caseSensitive = !(bool) ($flags & STRINGS_CASE_INSENSITIVE); // Assumes true unless INSESNITVE passed
 
     /**
      * @param string $haystack The haystack to look through.
