@@ -15,3 +15,13 @@ description: >
         {% endfor %}
     </ul>
 </div>
+<div class="function__releated-group">
+    <h3><a href="{{ site.url | absolute_url }}/arrays.html">
+        <em>Array</em> Functions
+    </a></h3>
+    <ul>
+        {% for related in arrays.strings %}
+            <li><a href="{{ site.url | absolute_url }}{{related.url}}">{{ related.title }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
