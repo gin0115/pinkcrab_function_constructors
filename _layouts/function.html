@@ -145,21 +145,35 @@ layout: default
 <div class="function__releated-group">
     <h3><em>{{ page.group | capitalize }}</em> Functions</h3>
     <ul>
-        {% for related in site.strings %}
-            {% if true != related.deprecated %} 
-                <li><a href="{{ site.url | absolute_url }}{{related.url}}">{{ related.title }}</a></li>
+        {% for colff in site.collections %}
+            {% if colff.label == page.group %}
+                {%for related in colff.docs %}
+                    {% if true != related.deprecated %}
+                        <li><a href="{{ site.url | absolute_url }}{{related.url}}">{{ related.title }}</a></li>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+        
+
+    </ul>
+</div>
+
+
+<div class="function__releated-subgroup">
+    <h3>Releated <em>{{ page.subgroup | capitalize | replace: "_", " "  }}</em> Functions</h3>
+    <ul> 
+        {% for colff in site.collections %}
+            {% if colff.label == page.group %}
+                {%for related in colff.docs %}
+                   {% if related.subgroup == page.subgroup and related.title != page.title and true != related.deprecated %}
+                        <li><a href="{{ site.url | absolute_url }}{{related.url}}">{{ related.title }}</a></li>
+                    {% endif %}
+                {% endfor %}
             {% endif %}
         {% endfor %}
     </ul>
 </div>
 
-<div class="function__releated-subgroup">
-    <h3>Releated <em>{{ page.subgroup | capitalize | replace: "_", " "  }}</em> Functions</h3>
-    <ul> 
-        {% for related in site.strings %}
-        {% if related.subgroup == page.subgroup and related.title != page.title and true != related.deprecated %}
-            <li><a href="{{ site.url | absolute_url }}{{related.url}}">{{ related.title }}</a></li>
-        {% endif %}
-        {% endfor %}
-    </ul>
-</div>
+
+

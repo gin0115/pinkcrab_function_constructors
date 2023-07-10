@@ -20,7 +20,7 @@ description: >
         <em>Array</em> Functions
     </a></h3>
     <ul>
-        {% for related in arrays.strings %}
+        {% for related in site.arrays %}
             <li><a href="{{ site.url | absolute_url }}{{related.url}}">{{ related.title }}</a></li>
         {% endfor %}
     </ul>

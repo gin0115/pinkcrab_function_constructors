@@ -12,7 +12,7 @@ coreFunctions:
 
 source: https://github.com/gin0115/pinkcrab_function_constructors/blob/master/src/arrays.php#L43
 namespace: PinkCrab\FunctionConstructors\Arrays
-since: 0.1.0
+since: 0.3.0
 
 deprecated: false
 alternative: false

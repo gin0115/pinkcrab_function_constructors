@@ -42,3 +42,6 @@ collections:
   strings:
     output: true
     permalink: /strings/:title.html
+  arrays:
+    output: true
+    permalink: /arrays/:title.html
