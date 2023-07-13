@@ -3,6 +3,8 @@ title: Arrays\zip()
 description: >
  Creates a function which casts an array to a string using the defined glue.
 
+ <blockquote> Please note all arrays with keys will be converted to an indexed array/list.</blockquote>
+
 layout: function
 group: arrays
 subgroup: array_transformation
