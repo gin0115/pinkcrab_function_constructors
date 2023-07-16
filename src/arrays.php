@@ -342,7 +342,12 @@ function filterFirst(callable $func): Closure
      * @return mixed|null The first element from the filtered array or null if filter returns empty
      */
     return function (array $array) use ($func) {
-        return head(array_filter($array, $func));
+        foreach ($array as $value) {
+            $result = $func($value);
+            if (\is_bool($result) && $result) {
+                return $value;
+            }
+        }
     };
 }
 
@@ -359,7 +364,12 @@ function filterLast(callable $func): Closure
      * @return mixed|null The last element from the filtered array.
      */
     return function (array $array) use ($func) {
-        return last(array_filter($array, $func));
+        while ($value = array_pop($array)) {
+            $result = $func($value);
+            if (\is_bool($result) && $result) {
+                return $value;
+            }
+        }
     };
 }
 
