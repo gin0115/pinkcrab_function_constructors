@@ -3,7 +3,7 @@ title: Strings\append()
 description: >
  Allows you to create a function which can be used to append a sub string to a passed string. This can either be used as part of a Higher Order Function such as array_map() or as part of a compiled/pipe function.
 
-layout: function
+layout: composable_function
 group: strings
 subgroup: string_manipulation
 categories: [strings, string manipulation]

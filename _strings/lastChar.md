@@ -3,7 +3,7 @@ title: Strings\lastChar()
 description: >
  Returns a function which can be used to get the contents of a string before (and including) the occurrence of a defined char. The created function can then reused over any string, or used as part of a Higher Order Function such as array_map().
 
-layout: function
+layout: composable_function
 group: strings
 subgroup: string_manipulation
 categories: [strings, string_manipulation]

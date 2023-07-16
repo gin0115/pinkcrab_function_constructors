@@ -5,7 +5,7 @@ description: >
 
  <blockquote> Please note all arrays with keys will be converted to an indexed array/list.</blockquote>
 
-layout: function
+layout: composable_function
 group: arrays
 subgroup: array_transformation
 categories: [array, array transformation]

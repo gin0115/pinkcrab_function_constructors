@@ -3,7 +3,7 @@ title: Arrays\toString()
 description: >
  Creates a function which casts an array to a string using the defined glue.
 
-layout: function
+layout: composable_function
 group: arrays
 subgroup: array_transformation
 categories: [array, array transformation]
@@ -56,7 +56,7 @@ exampleInline: >
     ['Once', 'upon', 'time'],
     ['Find', 'the', 'time']
  ]);
- 
+
 
  print_r($array); // ['Once---upon---time', 'Find---the---time']
 

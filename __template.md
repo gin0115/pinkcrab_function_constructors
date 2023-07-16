@@ -3,7 +3,7 @@ title: xx
 description: >
  xx
 
-layout: function
+layout: composable_function
 group: xx
 subgroup: xx
 categories: [xx]

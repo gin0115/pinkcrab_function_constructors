@@ -3,7 +3,7 @@ title: Strings\containsPattern()
 description: >
  Returns a function which can be used to check if a string contains a defined regex expression. The created function can then reused over any string, or used as part of a Higher Order Function such as array_filter().
 
-layout: function
+layout: composable_function
 group: strings
 subgroup: string_predicate
 categories: [strings, string_predicate, predicate]

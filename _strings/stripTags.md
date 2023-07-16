@@ -1,5 +1,5 @@
 ---
-layout: function
+layout: composable_function
 group: strings
 subgroup: string_manipulation
 
@@ -39,7 +39,7 @@ examplePartial: >
  $stripTags = Strings\stripTags(['p', 'a']); 
 
  // OR  
- 
+
  $stripTags = Strings\stripTags('<p><a>'); 
 
 

@@ -1,5 +1,5 @@
 ---
-layout: function
+layout: composable_function
 
 title: Strings\replaceWith()
 description: >

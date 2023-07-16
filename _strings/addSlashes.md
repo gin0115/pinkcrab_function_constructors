@@ -3,7 +3,7 @@ title: Strings\addSlashes()
 description: >
  Creates a function which allows for adding slashes to a string. The created function can then reused over any string, or used as part of a Higher Order Function such as array_map().
 
-layout: function
+layout: composable_function
 group: strings
 subgroup: string_manipulation
 categories: [strings, string manipulation]

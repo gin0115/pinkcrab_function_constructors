@@ -3,7 +3,7 @@ title: Arrays\append()
 description: >
  Creates a function which adds the defined values to the end of an array.
 
-layout: function
+layout: composable_function
 group: arrays
 subgroup: array_manipulation
 categories: [array, array manipulation]

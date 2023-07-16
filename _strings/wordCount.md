@@ -1,5 +1,5 @@
 ---
-layout: function
+layout: composable_function
 group: strings
 subgroup: string_analysis
 

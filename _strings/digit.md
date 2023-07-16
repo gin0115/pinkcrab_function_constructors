@@ -3,7 +3,7 @@ title: Strings\digit()
 description: >
  Creates a function which allows for the casting of a string to a decimal number. The created function can then reused over any string, or used as part of a Higher Order Function such as array_map().
 
-layout: function
+layout: composable_function
 group: strings
 subgroup: string_transform
 categories: [strings, string transform, numbers]
