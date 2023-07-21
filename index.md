@@ -125,13 +125,6 @@ $array = $setKeyOfSArray('new value');
 // [key => "new value"]
 {% endhighlight %}
 
-*****
-
-### String Functions
-
-
-
-> See more of the Strings functions [on the wiki](../../../../pinkcrab_function_constructors/wiki/Strings)
 
 *****
 
