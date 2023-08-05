@@ -133,10 +133,10 @@ function last(array $array)
 }
 
 /**
- * Gets the last value from an array.
+ * Gets the remainder values from an array, after first item removed.
  *
  * @param array<int|string, mixed> $array
- * @return mixed Will return the last value is array is not empty, else null.
+ * @return array<int|string, mixed>|null Will return the first value is array is not empty, else null.
  */
 function tail(array $array)
 {
