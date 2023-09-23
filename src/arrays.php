@@ -1277,3 +1277,20 @@ function takeWhile(callable $conditional): Closure
         return $carry;
     };
 }
+
+/**
+ * Picks selected indexes from an array
+ *
+ * @param string ...$indexes
+ * @return Closure(mixed[]):mixed[]
+ */
+function pick(string ...$indexes): Closure
+{
+    /**
+     * @param mixed[] $array
+     * @return mixed[]
+     */
+    return function (array $array) use ($indexes) {
+        return array_intersect_key($array, array_flip($indexes));
+    };
+}

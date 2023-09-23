@@ -45,10 +45,10 @@ class ArrayFunctionTests extends TestCase
     /** @testdox It should be possible to prepend and item to an array. */
     public function testCanPrependToArray(): void
     {
-        $array = array(1, 2, 3, 4, 5);
+        $array = array( 1, 2, 3, 4, 5 );
 
         $prepend0 = Arr\prepend(0);
-        $new = $prepend0($array);
+        $new      = $prepend0($array);
 
         $this->assertEquals(0, $new[0]);
         $this->assertEquals(1, $new[1]);
@@ -61,10 +61,10 @@ class ArrayFunctionTests extends TestCase
     /** @testdox It should be possible to append and item to an array. */
     public function testCanAppendToArray(): void
     {
-        $array = array(1, 2, 3, 4, 5);
+        $array = array( 1, 2, 3, 4, 5 );
 
         $append6 = Arr\append(6);
-        $new = $append6($array);
+        $new     = $append6($array);
 
         $this->assertEquals(1, $new[0]);
         $this->assertEquals(2, $new[1]);
@@ -77,9 +77,9 @@ class ArrayFunctionTests extends TestCase
 
     public function testCanUseTail()
     {
-        $names = array('Sam Smith', 'Barry Smith', 'Sam Power', 'Rebecca Smith');
+        $names = array( 'Sam Smith', 'Barry Smith', 'Sam Power', 'Rebecca Smith' );
         $this->assertEquals(
-            array('Barry Smith', 'Sam Power', 'Rebecca Smith'),
+            array( 'Barry Smith', 'Sam Power', 'Rebecca Smith' ),
             Arr\tail($names)
         );
         // Check returns null if empty.
@@ -89,7 +89,7 @@ class ArrayFunctionTests extends TestCase
     /** @testdox It should be possible to get the last item from an array */
     public function testCanUseLast()
     {
-        $names = array('Sam Smith', 'Barry Smith', 'Sam Power', 'Rebecca Smith');
+        $names = array( 'Sam Smith', 'Barry Smith', 'Sam Power', 'Rebecca Smith' );
         $this->assertEquals('Rebecca Smith', Arr\last($names));
         // Check returns null if empty.
         $this->assertNull(Arr\last(array()));
@@ -97,7 +97,7 @@ class ArrayFunctionTests extends TestCase
 
     public function testCanUseHead()
     {
-        $names = array('Sam Smith', 'Barry Smith', 'Sam Power', 'Rebecca Smith');
+        $names = array( 'Sam Smith', 'Barry Smith', 'Sam Power', 'Rebecca Smith' );
         $this->assertEquals('Sam Smith', Arr\head($names));
         // Check returns null if empty.
         $this->assertNull(Arr\head(array()));
@@ -126,7 +126,7 @@ class ArrayFunctionTests extends TestCase
         $arrayCompiler = Arr\arrayCompilerTyped('is_string');
         $arrayCompiler = $arrayCompiler('Hello');
         $arrayCompiler = $arrayCompiler('ERROR');
-        $arrayCompiler = $arrayCompiler(array('ERROR'));
+        $arrayCompiler = $arrayCompiler(array( 'ERROR' ));
         $this->assertCount(2, $arrayCompiler());
 
         $arrayCompiler = $arrayCompiler('Hello')(1)(NAN)('so 4?');
@@ -137,7 +137,7 @@ class ArrayFunctionTests extends TestCase
     {
         $groupByPerfectNumbers = Arr\groupBy(
             function ($e) {
-                return in_array($e, array(1, 2, 3, 6, 12)) ? 'Perfect' : 'Not Perfect';
+                return in_array($e, array( 1, 2, 3, 6, 12 )) ? 'Perfect' : 'Not Perfect';
             }
         );
 
@@ -163,7 +163,7 @@ class ArrayFunctionTests extends TestCase
 
         // Check that keys are retained.
         $chunkInPairs = Arr\chunk(2, true);
-        $chunkedNames = $chunkInPairs(array('Jim', 'Bob', 'Gem', 'Fay'));
+        $chunkedNames = $chunkInPairs(array( 'Jim', 'Bob', 'Gem', 'Fay' ));
         $this->assertCount(2, $chunkedNames);
         $this->assertEquals('Bob', $chunkedNames[0][1]);
         $this->assertEquals('Fay', $chunkedNames[1][3]);
@@ -171,18 +171,18 @@ class ArrayFunctionTests extends TestCase
 
     public function testCanUseZip()
     {
-        $array = ['a', 'b', 'c'];
+        $array = array( 'a', 'b', 'c' );
 
         // Missing Key.
-        $arrayMissing = ['A', 'B'];
-        $expectedMissing = [['a', 'A'], ['b', 'B'], ['c', 'FALLBACK']];
-        $resultMissing = Arr\zip($arrayMissing, 'FALLBACK')($array);
+        $arrayMissing    = array( 'A', 'B' );
+        $expectedMissing = array( array( 'a', 'A' ), array( 'b', 'B' ), array( 'c', 'FALLBACK' ) );
+        $resultMissing   = Arr\zip($arrayMissing, 'FALLBACK')($array);
         $this->assertSame($resultMissing, $expectedMissing);
 
         // Matching length.
-        $arrayFull = ['A', 'B', 'C'];
-        $expectedFull = [['a', 'A'], ['b', 'B'], ['c', 'C']];
-        $resultFull = Arr\zip($arrayFull, 'FALLBACK')($array);
+        $arrayFull    = array( 'A', 'B', 'C' );
+        $expectedFull = array( array( 'a', 'A' ), array( 'b', 'B' ), array( 'c', 'C' ) );
+        $resultFull   = Arr\zip($arrayFull, 'FALLBACK')($array);
         $this->assertSame($resultFull, $expectedFull);
     }
 
@@ -252,7 +252,7 @@ class ArrayFunctionTests extends TestCase
             1,
             2,
             array(),
-            array(3, 4),
+            array( 3, 4 ),
             array(
                 5,
                 6,
@@ -261,7 +261,7 @@ class ArrayFunctionTests extends TestCase
                 array(
                     9,
                     10,
-                    array(11, 12, 13),
+                    array( 11, 12, 13 ),
                 ),
             ),
         );
@@ -281,12 +281,12 @@ class ArrayFunctionTests extends TestCase
 
     public function testCanUseReplace()
     {
-        $base          = array('orange', 'banana', 'apple', 'raspberry');
+        $base          = array( 'orange', 'banana', 'apple', 'raspberry' );
         $replacements  = array(
             0 => 'pineapple',
             4 => 'cherry',
         );
-        $replacements2 = array(0 => 'grape');
+        $replacements2 = array( 0 => 'grape' );
 
         $replaceItems = Arr\replace($replacements, $replacements2);
 
@@ -300,13 +300,13 @@ class ArrayFunctionTests extends TestCase
     public function testCanUseReplaceRecursive(): void
     {
         $base = array(
-            'citrus'  => array('orange'),
-            'berries' => array('apple', 'raspberry'),
+            'citrus'  => array( 'orange' ),
+            'berries' => array( 'apple', 'raspberry' ),
         );
 
         $replacements = array(
-            'citrus'  => array('pineapple'),
-            'berries' => array('blueberry'),
+            'citrus'  => array( 'pineapple' ),
+            'berries' => array( 'blueberry' ),
         );
 
         $replaceItems = Arr\replaceRecursive($replacements);
@@ -352,7 +352,7 @@ class ArrayFunctionTests extends TestCase
 
     public function testCanSortArray(): void
     {
-        $array         = array('b', 'c', 'a', 'f', 'd', 'z', 'g');
+        $array         = array( 'b', 'c', 'a', 'f', 'd', 'z', 'g' );
         $sortAsStrings = Arr\sort(SORT_STRING);
 
         $sortedArray = $sortAsStrings($array);
@@ -404,7 +404,7 @@ class ArrayFunctionTests extends TestCase
 
     public function testCanDoUsortOnArray(): void
     {
-        $array = array(3, 2, 5, 6, 1);
+        $array = array( 3, 2, 5, 6, 1 );
 
         $lowestFirstCallback = function ($a, $b) {
             if ($a == $b) {
@@ -432,7 +432,7 @@ class ArrayFunctionTests extends TestCase
 
         $sortByOddEven = Arr\partition($isEven);
 
-        $data = array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        $data = array( 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 );
 
         $sorted = $sortByOddEven($data);
         $this->assertCount(5, $sorted[0]);
@@ -469,8 +469,8 @@ class ArrayFunctionTests extends TestCase
     /** @testdox It should be possible to create a function which allows for calling scan on a passed array */
     public function testScanL(): void
     {
-        $initial  = array(1, 2, 3, 4, 5);
-        $expected = array(0, 1, 3, 6, 10, 15);
+        $initial  = array( 1, 2, 3, 4, 5 );
+        $expected = array( 0, 1, 3, 6, 10, 15 );
 
         $scan = Arr\scan(
             function ($carry, $item) {
@@ -489,16 +489,16 @@ class ArrayFunctionTests extends TestCase
             0
         );
 
-        $data     = array(1, 3, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8, 9, 7, 9);
-        $expected = array(0, 1, 3, 4, 4, 5, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9);
+        $data     = array( 1, 3, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8, 9, 7, 9 );
+        $expected = array( 0, 1, 3, 4, 4, 5, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9 );
         $this->assertEquals($expected, $max($data));
     }
 
     /** @testdox It should be possible to create a function which allows for calling scanr on a passed array.     */
     public function testScanR(): void
     {
-        $initial  = array(1, 2, 3);
-        $expected = array(6, 5, 3, 0);
+        $initial  = array( 1, 2, 3 );
+        $expected = array( 6, 5, 3, 0 );
 
         $scanR = Arr\scanR(
             function ($carry, $item) {
@@ -513,8 +513,8 @@ class ArrayFunctionTests extends TestCase
     /** @testdox It should be possible to create a function, pre defined to perform fold/reduce on a given array. */
     public function testFold(): void
     {
-        $sumMe   = array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-        $biggest = array(1, 5, 6, 7, 10, 2);
+        $sumMe   = array( 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 );
+        $biggest = array( 1, 5, 6, 7, 10, 2 );
 
         $findSum     = Arr\fold(
             function (int $carry, int $current) {
@@ -536,7 +536,7 @@ class ArrayFunctionTests extends TestCase
     /** @testdox  It should be possible to create a function, pre defined to perform fold/reduce on a given array in reverse order. */
     public function testFoldR(): void
     {
-        $data      = array('a', 'b', 'c', 'd');
+        $data      = array( 'a', 'b', 'c', 'd' );
         $joinArray = Arr\foldR(
             function (string $carry, string $value): string {
                 return $carry . $value;
@@ -557,7 +557,7 @@ class ArrayFunctionTests extends TestCase
             4 => 4,
             0 => 0,
         );
-        $expected = array('key-1::value-1', 'key-3::value-3', 'key-2::value-2', 'key-5::value-5', 'key-4::value-4', 'key-0::value-0');
+        $expected = array( 'key-1::value-1', 'key-3::value-3', 'key-2::value-2', 'key-5::value-5', 'key-4::value-4', 'key-0::value-0' );
 
         $foldWithKeys = Arr\foldKeys(
             function (array $carry, int $key, int $value): array {
@@ -572,14 +572,14 @@ class ArrayFunctionTests extends TestCase
     /** @testdox It should be possible to take n number of elements from an array using Arr\take() */
     public function testTake(): void
     {
-        $data     = array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-        $expected = array(1, 2, 3, 4, 5);
+        $data     = array( 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 );
+        $expected = array( 1, 2, 3, 4, 5 );
 
         $take5 = Arr\take(5);
         $this->assertEquals($expected, $take5($data));
 
         $take3 = Arr\take(3);
-        $this->assertEquals(array(1, 2, 3), $take3($data));
+        $this->assertEquals(array( 1, 2, 3 ), $take3($data));
 
         $take0 = Arr\take(0);
         $this->assertEquals(array(), $take0($data));
@@ -600,14 +600,14 @@ class ArrayFunctionTests extends TestCase
     /** @testdox It should be possible to take n number of elements from an array using Arr\takeLast() */
     public function testTakeLast(): void
     {
-        $data     = array(1, 2, 3, 4, 5, 6, 7, 8, 9);
-        $expected = array(5, 6, 7, 8, 9);
+        $data     = array( 1, 2, 3, 4, 5, 6, 7, 8, 9 );
+        $expected = array( 5, 6, 7, 8, 9 );
 
         $take5 = Arr\takeLast(5);
         $this->assertEquals($expected, $take5($data));
 
         $take3 = Arr\takeLast(3);
-        $this->assertEquals(array(7, 8, 9), $take3($data));
+        $this->assertEquals(array( 7, 8, 9 ), $take3($data));
 
         $take0 = Arr\takeLast(0);
         $this->assertEquals(array(), $take0($data));
@@ -628,8 +628,8 @@ class ArrayFunctionTests extends TestCase
     /** @testdox It should be possible return an array which includes all values until the callback returns true using Arr\takeUntil() */
     public function testTakeUntil(): void
     {
-        $data     = array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-        $expected = array(1, 2, 3, 4, 5, 6, 7, 8);
+        $data     = array( 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 );
+        $expected = array( 1, 2, 3, 4, 5, 6, 7, 8 );
 
         $takeUntil = Arr\takeUntil(
             function ($value) {
@@ -656,8 +656,8 @@ class ArrayFunctionTests extends TestCase
     /** @testdox It should be possible to return an array which includes all values until the callback returns false using Arr\takeWhile() */
     public function testTakeWhile(): void
     {
-        $data     = array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-        $expected = array(1, 2, 3, 4, 5, 6, 7, 8, 9);
+        $data     = array( 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 );
+        $expected = array( 1, 2, 3, 4, 5, 6, 7, 8, 9 );
 
         $takeWhile = Arr\takeWhile(
             function ($value) {
@@ -671,7 +671,7 @@ class ArrayFunctionTests extends TestCase
                 return $value < 5;
             }
         );
-        $this->assertEquals(array(1, 2, 3, 4), $takeWhile($data));
+        $this->assertEquals(array( 1, 2, 3, 4 ), $takeWhile($data));
 
         $takeWhile = Arr\takeWhile(
             function ($value) {
@@ -689,7 +689,7 @@ class ArrayFunctionTests extends TestCase
             'b' => 'anana',
             'c' => 'arrot',
         );
-        $expected = array('apple', 'banana', 'carrot');
+        $expected = array( 'apple', 'banana', 'carrot' );
 
         $map = Arr\mapWithKey(
             function (string $key, string $value) {
@@ -722,7 +722,7 @@ class ArrayFunctionTests extends TestCase
     /** @testdox It should be possible to create a function that is populated with a filter predicate, which when used on an array will return a count of matching values. */
     public function testCountBy(): void
     {
-        $data = array('aa', 'aa', 'bb', 'bb', 'vvvv', 'vvvv', 'vvvv');
+        $data = array( 'aa', 'aa', 'bb', 'bb', 'vvvv', 'vvvv', 'vvvv' );
 
         $countAa = Arr\filterCount(
             function (string $value) {
@@ -814,7 +814,7 @@ class ArrayFunctionTests extends TestCase
             'name' => 'John',
             'age'  => 35,
             0      => 'foo',
-            '1'      => 'bar',
+            '1'    => 'bar',
         );
 
         $object = new class () {
@@ -841,119 +841,421 @@ class ArrayFunctionTests extends TestCase
         $this->assertEquals('{"name":"John","age":30}', $jsonEncode($data));
 
         $jsonEncode = Arr\toJson(JSON_HEX_AMP);
-        $this->assertEquals('{"name":"John \u0026 Sam","age":20}', $jsonEncode(['name' => 'John & Sam', 'age' => 20]));
+        $this->assertEquals(
+            '{"name":"John \u0026 Sam","age":20}',
+            $jsonEncode(
+                array(
+                    'name' => 'John & Sam',
+                    'age'  => 20,
+                )
+            )
+        );
     }
 
     /** @testdox It should be possible to use rsort with predefined flags and not have the original array changed (immuteable) */
     public function testRsort(): void
     {
-        $data = array(1, 2, 3, 4, 5);
+        $data = array( 1, 2, 3, 4, 5 );
 
         $rsort = Arr\rsort();
-        $this->assertEquals(array(5, 4, 3, 2, 1), $rsort($data));
-        $this->assertEquals(array(1, 2, 3, 4, 5), $data);
+        $this->assertEquals(array( 5, 4, 3, 2, 1 ), $rsort($data));
+        $this->assertEquals(array( 1, 2, 3, 4, 5 ), $data);
 
         $rsort = Arr\rsort(SORT_NUMERIC);
-        $this->assertEquals(array(5, 4, 3, 2, 1), $rsort($data));
-        $this->assertEquals(array(1, 2, 3, 4, 5), $data);
+        $this->assertEquals(array( 5, 4, 3, 2, 1 ), $rsort($data));
+        $this->assertEquals(array( 1, 2, 3, 4, 5 ), $data);
 
         // Passed as reference
         $rsort = Arr\rsort(SORT_NUMERIC);
-        $foo = &$data;
-        $this->assertEquals(array(5, 4, 3, 2, 1), $rsort($foo));
-        $this->assertEquals(array(1, 2, 3, 4, 5), $data);
+        $foo   = &$data;
+        $this->assertEquals(array( 5, 4, 3, 2, 1 ), $rsort($foo));
+        $this->assertEquals(array( 1, 2, 3, 4, 5 ), $data);
     }
 
     /** testdox It should be possible to use krsort with predefined flags and not have the original array changed */
     public function testKrsort(): void
     {
-        $data = array('a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5);
+        $data = array(
+            'a' => 1,
+            'b' => 2,
+            'c' => 3,
+            'd' => 4,
+            'e' => 5,
+        );
 
         $krsort = Arr\krsort();
-        $this->assertEquals(array('e' => 5, 'd' => 4, 'c' => 3, 'b' => 2, 'a' => 1), $krsort($data));
-        $this->assertEquals(array('a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5), $data);
+        $this->assertEquals(
+            array(
+                'e' => 5,
+                'd' => 4,
+                'c' => 3,
+                'b' => 2,
+                'a' => 1,
+            ),
+            $krsort($data)
+        );
+        $this->assertEquals(
+            array(
+                'a' => 1,
+                'b' => 2,
+                'c' => 3,
+                'd' => 4,
+                'e' => 5,
+            ),
+            $data
+        );
 
         $krsort = Arr\krsort(SORT_NUMERIC);
-        $this->assertEquals(array('e' => 5, 'd' => 4, 'c' => 3, 'b' => 2, 'a' => 1), $krsort($data));
-        $this->assertEquals(array('a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5), $data);
+        $this->assertEquals(
+            array(
+                'e' => 5,
+                'd' => 4,
+                'c' => 3,
+                'b' => 2,
+                'a' => 1,
+            ),
+            $krsort($data)
+        );
+        $this->assertEquals(
+            array(
+                'a' => 1,
+                'b' => 2,
+                'c' => 3,
+                'd' => 4,
+                'e' => 5,
+            ),
+            $data
+        );
 
         // Passed as reference
         $krsort = Arr\krsort(SORT_NUMERIC);
-        $foo = &$data;
-        $this->assertEquals(array('e' => 5, 'd' => 4, 'c' => 3, 'b' => 2, 'a' => 1), $krsort($foo));
-        $this->assertEquals(array('a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5), $data);
+        $foo    = &$data;
+        $this->assertEquals(
+            array(
+                'e' => 5,
+                'd' => 4,
+                'c' => 3,
+                'b' => 2,
+                'a' => 1,
+            ),
+            $krsort($foo)
+        );
+        $this->assertEquals(
+            array(
+                'a' => 1,
+                'b' => 2,
+                'c' => 3,
+                'd' => 4,
+                'e' => 5,
+            ),
+            $data
+        );
     }
 
     /** testdox It should be possible to use arsort with predefined flags and not have the original array changed */
     public function testArsort(): void
     {
-        $data = array('a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5);
+        $data = array(
+            'a' => 1,
+            'b' => 2,
+            'c' => 3,
+            'd' => 4,
+            'e' => 5,
+        );
 
         $arsort = Arr\arsort();
-        $this->assertEquals(array('e' => 5, 'd' => 4, 'c' => 3, 'b' => 2, 'a' => 1), $arsort($data));
-        $this->assertEquals(array('a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5), $data);
+        $this->assertEquals(
+            array(
+                'e' => 5,
+                'd' => 4,
+                'c' => 3,
+                'b' => 2,
+                'a' => 1,
+            ),
+            $arsort($data)
+        );
+        $this->assertEquals(
+            array(
+                'a' => 1,
+                'b' => 2,
+                'c' => 3,
+                'd' => 4,
+                'e' => 5,
+            ),
+            $data
+        );
 
         $arsort = Arr\arsort(SORT_NUMERIC);
-        $this->assertEquals(array('e' => 5, 'd' => 4, 'c' => 3, 'b' => 2, 'a' => 1), $arsort($data));
-        $this->assertEquals(array('a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5), $data);
+        $this->assertEquals(
+            array(
+                'e' => 5,
+                'd' => 4,
+                'c' => 3,
+                'b' => 2,
+                'a' => 1,
+            ),
+            $arsort($data)
+        );
+        $this->assertEquals(
+            array(
+                'a' => 1,
+                'b' => 2,
+                'c' => 3,
+                'd' => 4,
+                'e' => 5,
+            ),
+            $data
+        );
 
         // Passed as reference
         $arsort = Arr\arsort(SORT_NUMERIC);
-        $foo = &$data;
-        $this->assertEquals(array('e' => 5, 'd' => 4, 'c' => 3, 'b' => 2, 'a' => 1), $arsort($foo));
-        $this->assertEquals(array('a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5), $data);
+        $foo    = &$data;
+        $this->assertEquals(
+            array(
+                'e' => 5,
+                'd' => 4,
+                'c' => 3,
+                'b' => 2,
+                'a' => 1,
+            ),
+            $arsort($foo)
+        );
+        $this->assertEquals(
+            array(
+                'a' => 1,
+                'b' => 2,
+                'c' => 3,
+                'd' => 4,
+                'e' => 5,
+            ),
+            $data
+        );
     }
 
     /** testdox It should be possible to use asort with predefined flags and not have the original array changed */
     public function testAsort(): void
     {
-        $data = array('a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5);
+        $data = array(
+            'a' => 1,
+            'b' => 2,
+            'c' => 3,
+            'd' => 4,
+            'e' => 5,
+        );
 
         $asort = Arr\asort();
-        $this->assertEquals(array('a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5), $asort($data));
-        $this->assertEquals(array('a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5), $data);
+        $this->assertEquals(
+            array(
+                'a' => 1,
+                'b' => 2,
+                'c' => 3,
+                'd' => 4,
+                'e' => 5,
+            ),
+            $asort($data)
+        );
+        $this->assertEquals(
+            array(
+                'a' => 1,
+                'b' => 2,
+                'c' => 3,
+                'd' => 4,
+                'e' => 5,
+            ),
+            $data
+        );
 
         $asort = Arr\asort(SORT_NUMERIC);
-        $this->assertEquals(array('a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5), $asort($data));
-        $this->assertEquals(array('a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5), $data);
+        $this->assertEquals(
+            array(
+                'a' => 1,
+                'b' => 2,
+                'c' => 3,
+                'd' => 4,
+                'e' => 5,
+            ),
+            $asort($data)
+        );
+        $this->assertEquals(
+            array(
+                'a' => 1,
+                'b' => 2,
+                'c' => 3,
+                'd' => 4,
+                'e' => 5,
+            ),
+            $data
+        );
 
         // Passed as reference
         $asort = Arr\asort(SORT_NUMERIC);
-        $foo = &$data;
-        $this->assertEquals(array('a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5), $asort($foo));
-        $this->assertEquals(array('a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5), $data);
+        $foo   = &$data;
+        $this->assertEquals(
+            array(
+                'a' => 1,
+                'b' => 2,
+                'c' => 3,
+                'd' => 4,
+                'e' => 5,
+            ),
+            $asort($foo)
+        );
+        $this->assertEquals(
+            array(
+                'a' => 1,
+                'b' => 2,
+                'c' => 3,
+                'd' => 4,
+                'e' => 5,
+            ),
+            $data
+        );
     }
 
     /** testdox It should be possible to use natcasesort with predefined flags and not have the original array changed */
     public function testNatcasesort(): void
     {
-        $data = array('a' => 'a', 'b' => 'B', 'c' => 'C', 'd' => 'd', 'e' => 'E');
+        $data = array(
+            'a' => 'a',
+            'b' => 'B',
+            'c' => 'C',
+            'd' => 'd',
+            'e' => 'E',
+        );
 
         $natcasesort = Arr\natcasesort();
-        $this->assertEquals(array('a' => 'a', 'b' => 'B', 'c' => 'C', 'd' => 'd', 'e' => 'E'), $natcasesort($data));
-        $this->assertEquals(array('a' => 'a', 'b' => 'B', 'c' => 'C', 'd' => 'd', 'e' => 'E'), $data);
+        $this->assertEquals(
+            array(
+                'a' => 'a',
+                'b' => 'B',
+                'c' => 'C',
+                'd' => 'd',
+                'e' => 'E',
+            ),
+            $natcasesort($data)
+        );
+        $this->assertEquals(
+            array(
+                'a' => 'a',
+                'b' => 'B',
+                'c' => 'C',
+                'd' => 'd',
+                'e' => 'E',
+            ),
+            $data
+        );
 
         // Passed as reference
         $natcasesort = Arr\natcasesort();
-        $foo = &$data;
-        $this->assertEquals(array('a' => 'a', 'b' => 'B', 'c' => 'C', 'd' => 'd', 'e' => 'E'), $natcasesort($foo));
-        $this->assertEquals(array('a' => 'a', 'b' => 'B', 'c' => 'C', 'd' => 'd', 'e' => 'E'), $data);
+        $foo         = &$data;
+        $this->assertEquals(
+            array(
+                'a' => 'a',
+                'b' => 'B',
+                'c' => 'C',
+                'd' => 'd',
+                'e' => 'E',
+            ),
+            $natcasesort($foo)
+        );
+        $this->assertEquals(
+            array(
+                'a' => 'a',
+                'b' => 'B',
+                'c' => 'C',
+                'd' => 'd',
+                'e' => 'E',
+            ),
+            $data
+        );
     }
 
     /** testdox It should be possible to use uksort with predefined flags and not have the original array changed */
     public function testUksort(): void
     {
-        $data = array('a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5);
+        $data          = array(
+            'a' => 1,
+            'b' => 2,
+            'c' => 3,
+            'd' => 4,
+            'e' => 5,
+        );
         $sortHighToLow = function ($a, $b) {
             return $b <=> $a;
         };
 
         $uksort = Arr\uksort($sortHighToLow);
-        $this->assertEquals(array('e' => 5, 'd' => 4, 'c' => 3, 'b' => 2, 'a' => 1), $uksort($data));
+        $this->assertEquals(
+            array(
+                'e' => 5,
+                'd' => 4,
+                'c' => 3,
+                'b' => 2,
+                'a' => 1,
+            ),
+            $uksort($data)
+        );
 
         // Passed as reference
         $uksort = Arr\uksort($sortHighToLow);
-        $foo = &$data;
-        $this->assertEquals(array('e' => 5, 'd' => 4, 'c' => 3, 'b' => 2, 'a' => 1), $uksort($foo));
+        $foo    = &$data;
+        $this->assertEquals(
+            array(
+                'e' => 5,
+                'd' => 4,
+                'c' => 3,
+                'b' => 2,
+                'a' => 1,
+            ),
+            $uksort($foo)
+        );
+    }
+
+    /** @testdox it should be possible to select which indexes from an array are returned in a new array. */
+    public function testPick(): void
+    {
+        $data = array(
+            'name' => 'John',
+            'age'  => 30,
+            'foo'  => 'bar',
+        );
+
+        $pick = Arr\pick('name', 'age');
+        $this->assertEquals(
+            array(
+                'name' => 'John',
+                'age'  => 30,
+            ),
+            $pick($data)
+        );
+
+        $pick = Arr\pick('name', 'foo');
+        $this->assertEquals(
+            array(
+                'name' => 'John',
+                'foo'  => 'bar',
+            ),
+            $pick($data)
+        );
+
+        $pick = Arr\pick('name', 'foo', 'age');
+        $this->assertEquals(
+            array(
+                'name' => 'John',
+                'age'  => 30,
+                'foo'  => 'bar',
+            ),
+            $pick($data)
+        );
+
+        $pick = Arr\pick('name', 'foo', 'age', 'foo');
+        $this->assertEquals(
+            array(
+                'name' => 'John',
+                'age'  => 30,
+                'foo'  => 'bar',
+            ),
+            $pick($data)
+        );
     }
 }
