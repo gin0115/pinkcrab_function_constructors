@@ -76,6 +76,7 @@ function prepend($value): Closure
  * @param array<int|string, mixed> $array
  * @return Closure(mixed):array<int|string, mixed>
  * @deprecated 0.3.0 Use prepend() instead.
+ * @codeCoverageIgnore
  */
 function pushHead(array $array): Closure
 {
@@ -96,6 +97,7 @@ function pushHead(array $array): Closure
  * @param array<int|string, mixed> $array
  * @return Closure(mixed):array<int|string, mixed>
  * @deprecated 0.3.0 Use append() instead.
+ * @codeCoverageIgnore
  */
 function pushTail(array $array): Closure
 {
@@ -1275,5 +1277,22 @@ function takeWhile(callable $conditional): Closure
             $carry[$key] = $value;
         }
         return $carry;
+    };
+}
+
+/**
+ * Picks selected indexes from an array
+ *
+ * @param string ...$indexes
+ * @return Closure(mixed[]):mixed[]
+ */
+function pick(string ...$indexes): Closure
+{
+    /**
+     * @param mixed[] $array
+     * @return mixed[]
+     */
+    return function (array $array) use ($indexes) {
+        return array_intersect_key($array, array_flip($indexes));
     };
 }

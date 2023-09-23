@@ -4,6 +4,7 @@
 	<description>Use PSR12 Rules</description>
 
 	<exclude-pattern>/vendor/*</exclude-pattern>
+	<exclude-pattern>/Tests/*</exclude-pattern>
 
 	<!-- Include the PSR12 Rules. -->
 	<rule ref="PSR12"></rule>
