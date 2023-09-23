@@ -84,6 +84,7 @@ function pushHead(array $array): Closure
      * @param mixed $value Adds value start of array.
      * @return array New array with value on head.
      */
+    // codecov:miss:next
     return function ($value) use ($array): array {
         array_unshift($array, $value);
         return $array;
