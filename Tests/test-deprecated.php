@@ -25,7 +25,6 @@ class DeprecatedTest extends TestCase
                 E_ALL
             );
         }
-
     }
 
     public function tearDown(): void
