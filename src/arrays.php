@@ -76,6 +76,7 @@ function prepend($value): Closure
  * @param array<int|string, mixed> $array
  * @return Closure(mixed):array<int|string, mixed>
  * @deprecated 0.3.0 Use prepend() instead.
+ * @codeCoverageIgnore
  */
 function pushHead(array $array): Closure
 {
@@ -84,12 +85,10 @@ function pushHead(array $array): Closure
      * @param mixed $value Adds value start of array.
      * @return array New array with value on head.
      */
-    // codecov:ignore:start --t (Will be removed in 0.3.0)
     return function ($value) use ($array): array {
         array_unshift($array, $value);
         return $array;
     };
-    // codecov:ignore:end
 }
 
 /**
@@ -98,6 +97,7 @@ function pushHead(array $array): Closure
  * @param array<int|string, mixed> $array
  * @return Closure(mixed):array<int|string, mixed>
  * @deprecated 0.3.0 Use append() instead.
+ * @codeCoverageIgnore
  */
 function pushTail(array $array): Closure
 {
