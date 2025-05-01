@@ -376,8 +376,8 @@ class GeneralFunctionTest extends TestCase
         $this->assertTrue($hasFoo(array( 'foo' => 'bar' )));
         $this->assertFalse($hasFoo(array( 'bar' => 'foo' )));
         // Obejct
-        $this->assertTrue($hasFoo((object) array( 'foo' => 'bar' )));
-        $this->assertFalse($hasFoo((object) array( 'bar' => 'foo' )));
+        $this->assertTrue($hasFoo((object) array( 'foo' => 'bar')));
+        $this->assertFalse($hasFoo((object) array( 'bar' => 'foo')));
         // Invalid
         $this->assertFalse($hasFoo('not array or obejct'));
     }
@@ -394,7 +394,7 @@ class GeneralFunctionTest extends TestCase
     {
         // Array
         $setName = Func\setProperty(array('id' => 1), 'name');
-        $this->assertEquals(array('id' => 1, 'name' => 'bar'), $setName('bar'));
+        $this->assertEquals(array( 'id' => 1,'name' => 'bar' ), $setName('bar'));
 
         // Object with ArrayAccess
         $instance = ObjectFactory::arrayAccess();
@@ -435,8 +435,8 @@ class GeneralFunctionTest extends TestCase
         );
 
         $this->assertEquals(
-            array('id' => 1, 'name' => 'foo'),
-            $encoder(array('userId' => 1, 'userName' => 'foo'))
+            array( 'id' => 1, 'name' => 'foo' ),
+            $encoder(array( 'userId' => 1, 'userName' => 'foo' ))
         );
     }
 
@@ -452,7 +452,7 @@ class GeneralFunctionTest extends TestCase
             Func\encodeProperty('name', Func\getProperty('userName'))
         );
 
-        $new = $encoder(array('userId' => 1, 'userName' => 'foo'));
+        $new = $encoder(array( 'userId' => 1, 'userName' => 'foo' ));
 
         $this->assertEquals(1, $new->id);
         $this->assertEquals('foo', $new->name);
@@ -470,7 +470,7 @@ class GeneralFunctionTest extends TestCase
             Func\encodeProperty('name', Func\getProperty('userName'))
         );
 
-        $new = $encoder((object) array('userId' => 1, 'userName' => 'foo'));
+        $new = $encoder((object) array( 'userId' => 1, 'userName' => 'foo' ));
 
         $this->assertEquals(1, $new['id']);
         $this->assertEquals('foo', $new['name']);
@@ -488,7 +488,7 @@ class GeneralFunctionTest extends TestCase
             Func\encodeProperty('name', Func\getProperty('userName'))
         );
 
-        $new = $encoder((object) array('userId' => 1, 'userName' => 'foo'));
+        $new = $encoder((object) array( 'userId' => 1, 'userName' => 'foo' ));
 
         $this->assertEquals(1, $new['id']);
         $this->assertEquals('foo', $new['name']);
@@ -497,7 +497,7 @@ class GeneralFunctionTest extends TestCase
     /** @testdox Attempting to set a recordEncoder using a numerical index, willthrow a TyprError */
     public function testRecordEncoderThrowsTypeError(): void
     {
-        $this->expectexception(typeerror::class);
+        $this->expectException(typeerror::class);
 
         $encoder = func\recordencoder(new stdclass());
         $encoder = $encoder(func\encodeproperty('0', func\getproperty('userid')));
