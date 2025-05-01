@@ -447,12 +447,12 @@ function ifElse(callable $condition, callable $then, callable $else): Closure
 function sideEffect($interceptor): Closure
 {
     if (is_string($interceptor)) {
-        return function ($value) use ($interceptor): Closure {
+        return function ($value) use ($interceptor) {
             call_user_func($interceptor, $value);
             return $value;
         };
     } else if (is_callable($interceptor)) {
-        return function ($value) use ($interceptor): Closure {
+        return function ($value) use ($interceptor) {
             $interceptor($value);
             return $value;
         };
