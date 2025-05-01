@@ -442,21 +442,21 @@ function ifElse(callable $condition, callable $then, callable $else): Closure
  * 
  * @param string|Closure $interceptor A string function name or a callable to be executed as a side effect.
  * @return Closure A function that calls the interceptor and returns the original input value.
- * @throws \InvalidArgumentException If the interceptor is not a string or callable.
+ * @throws \TypeError If the interceptor is not a string or callable.
  */
 function sideEffect($interceptor): Closure
 {
     if (is_string($interceptor)) {
-        return function ($value) use ($interceptor): mixed {
+        return function ($value) use ($interceptor): Closure {
             call_user_func($interceptor, $value);
             return $value;
         };
     } else if (is_callable($interceptor)) {
-        return function ($value) use ($interceptor): mixed {
+        return function ($value) use ($interceptor): Closure {
             $interceptor($value);
             return $value;
         };
     } else {
-        throw new \InvalidArgumentException('Interceptor must be a string or callable');
+        throw new \TypeError('Interceptor must be a string or callable');
     }
 }
