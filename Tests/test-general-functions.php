@@ -499,9 +499,9 @@ class GeneralFunctionTest extends TestCase
     {
         $this->expectException(TypeError::class);
 
-        $encoder = Func\recordencoder(new stdclass());
-        $encoder = $encoder(Func\encodeproperty('0', Func\getproperty('userid')));
-        $encoder(array('userid' => 1, 'username' => 'foo'));
+        $encoder = Func\recordEncoder(new stdclass());
+        $encoder = $encoder(Func\encodeProperty('0', Func\getProperty('userid')));
+        $encoder(array( 'userid' => 1, 'username' => 'foo' ));
     }
 
     /** @testdox it should be possible to send an anonymous that produces a side effect. */
