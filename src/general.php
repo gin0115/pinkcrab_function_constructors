@@ -444,7 +444,7 @@ function ifElse(callable $condition, callable $then, callable $else): Closure
  * @return Closure A function that calls the interceptor and returns the original input value.
  * @throws \InvalidArgumentException If the interceptor is not a string or callable.
  */
-function sideEffect(string|Closure $interceptor): Closure
+function sideEffect($interceptor): Closure
 {
     if (is_string($interceptor)) {
         return function ($value) use ($interceptor): mixed {
