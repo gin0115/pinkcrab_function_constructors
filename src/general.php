@@ -457,6 +457,6 @@ function sideEffect($interceptor): Closure
             return $value;
         };
     } else {
-        throw new \TypeError('Interceptor must be a string or callable');
+        throw new TypeError('Interceptor must be a string or callable');
     }
 }
