@@ -499,8 +499,8 @@ class GeneralFunctionTest extends TestCase
     {
         $this->expectException(TypeError::class);
 
-        $encoder = func\recordencoder(new stdclass());
-        $encoder = $encoder(func\encodeproperty('0', func\getproperty('userid')));
+        $encoder = Func\recordencoder(new stdclass());
+        $encoder = $encoder(Func\encodeproperty('0', Func\getproperty('userid')));
         $encoder(array('userid' => 1, 'username' => 'foo'));
     }
 
