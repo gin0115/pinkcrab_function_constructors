@@ -497,7 +497,7 @@ class GeneralFunctionTest extends TestCase
     /** @testdox Attempting to set a recordEncoder using a numerical index, willthrow a TyprError */
     public function testRecordEncoderThrowsTypeError(): void
     {
-        $this->expectException(typeerror::class);
+        $this->expectException(TypeError::class);
 
         $encoder = func\recordencoder(new stdclass());
         $encoder = $encoder(func\encodeproperty('0', func\getproperty('userid')));
