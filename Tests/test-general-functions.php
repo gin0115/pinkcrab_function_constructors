@@ -394,7 +394,7 @@ class GeneralFunctionTest extends TestCase
     {
         // Array
         $setName = Func\setProperty(array('id' => 1), 'name');
-        $this->assertEquals(array( 'id'=>1,'name' => 'bar' ), $setName('bar'));
+        $this->assertEquals(array( 'id' => 1,'name' => 'bar' ), $setName('bar'));
 
         // Object with ArrayAccess
         $instance = ObjectFactory::arrayAccess();
@@ -409,7 +409,7 @@ class GeneralFunctionTest extends TestCase
         $this->assertEquals('bar', $withBar['name']);
 
         // ArrayObject with ObjectAccess
-        $ObjectAccess = new ArrayObject((object)['id'=> 12, 'name' => null], ArrayObject::STD_PROP_LIST);
+        $ObjectAccess = new ArrayObject((object)['id' => 12, 'name' => null], ArrayObject::STD_PROP_LIST);
         $setName = Func\setProperty($ObjectAccess, 'name');
         $ObjectAccess = $setName('bar');
         $this->assertEquals('bar', $ObjectAccess['name']);
@@ -503,4 +503,37 @@ class GeneralFunctionTest extends TestCase
         $encoder = $encoder(Func\encodeProperty('0', Func\getProperty('userId')));
         $encoder(array( 'userId' => 1, 'userName' => 'foo' ));
     }
+
+    /** @testdox it should be possible to send an anonymous that produces a side effect. */
+    public function testCanUseSideEffectWithAnonymousFunction()
+    {
+        $sideEffect = Func\sideEffect(function ($e)
+        {
+            var_dump($e);
+        });
+
+        $this->assertEquals('bar', $sideEffect('bar'));
+        $this->assertEquals(1, $sideEffect(1));
+        $this->assertEquals(2.5, $sideEffect(2.5));
+        $this->assertEquals(array(1, 2, 3), $sideEffect(array(1, 2, 3)));
+    }
+
+    /** @testdox it should be possible to send a built in function that produces a side effect. */
+    public function testCanUseSideEffectWithBuiltInFunction()
+    {
+        $sideEffect = Func\sideEffect('print_r');
+
+        $this->assertEquals('bar', $sideEffect('bar'));
+        $this->assertEquals(1, $sideEffect(1));
+        $this->assertEquals(2.5, $sideEffect(2.5));
+        $this->assertEquals(array(1, 2, 3), $sideEffect(array(1, 2, 3)));
+    }
+
+    public function testSideEffectThrowsTypeError()
+    {
+        $this->expectException(TypeError::class);
+        $sideEffect = Func\sideEffect(123);
+        $sideEffect('bar');
+    }
+
 }
