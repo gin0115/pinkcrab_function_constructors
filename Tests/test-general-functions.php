@@ -376,8 +376,8 @@ class GeneralFunctionTest extends TestCase
         $this->assertTrue($hasFoo(array( 'foo' => 'bar' )));
         $this->assertFalse($hasFoo(array( 'bar' => 'foo' )));
         // Obejct
-        $this->assertTrue($hasFoo((object) array( 'foo' => 'bar')));
-        $this->assertFalse($hasFoo((object) array( 'bar' => 'foo')));
+        $this->assertTrue($hasFoo((object) array( 'foo' => 'bar' )));
+        $this->assertFalse($hasFoo((object) array( 'bar' => 'foo' )));
         // Invalid
         $this->assertFalse($hasFoo('not array or obejct'));
     }
