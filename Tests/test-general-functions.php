@@ -16,6 +16,7 @@ use PinkCrab\FunctionConstructors\Numbers as Num;
 use PinkCrab\FunctionConstructors\Strings as Str;
 use PinkCrab\FunctionConstructors\FunctionsLoader;
 use PinkCrab\FunctionConstructors\GeneralFunctions as Func;
+use PinkCrab\FunctionConstructors\Experimental as Exp;
 use PinkCrab\FunctionConstructors\Tests\Providers\ObjectFactory;
 
 class ToArrayFixtureClass
@@ -86,7 +87,8 @@ class GeneralFunctionTest extends TestCase
 
     public function testFunctionCompseSafeHandlesNull(): void
     {
-        $reutrnsNull = function ($e) {
+        $reutrnsNull = function ($e)
+        {
             return null;
         };
 
@@ -120,7 +122,8 @@ class GeneralFunctionTest extends TestCase
     public function testTypeSafeFunctionalComposerReturnsNull(): void
     {
         $function = Func\composeTypeSafe(
-            function ($e) {
+            function ($e)
+            {
                 return false;
             },
             Str\replaceWith('3344', '*\/*'),
@@ -191,7 +194,7 @@ class GeneralFunctionTest extends TestCase
                 'id'      => 123,
                 'title'   => 'Lorem ipsum dolor',
                 'content' => 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique iste voluptatum sequi. Officia dignissimos minus ipsum odit, facilis voluptatibus veniam enim molestiae ipsam quae temporibus porro necessitatibus quia non mollitia!',
-                'date'    => ( new DateTime() )->format('d/m/yy H:m'),
+                'date'    => (new DateTime())->format('d/m/yy H:m'),
                 'author'  => (object) array(
                     'userName'    => 'someUser12',
                     'displayName' => 'Sam Smith',
@@ -205,7 +208,7 @@ class GeneralFunctionTest extends TestCase
                         'userName'    => 'someUser2',
                         'displayName' => 'Jane Jameson',
                         'comment'     => 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Hic, illo tempore repudiandae quos vero, vitae aut ullam tenetur officiis accusantium dolor animi ipsa omnis impedit, saepe est harum quisquam sit.',
-                        'date'        => ( new DateTime('yesterday') )->format('d/m/yy H:m'),
+                        'date'        => (new DateTime('yesterday'))->format('d/m/yy H:m'),
                     ),
                 ),
                 (object) array(
@@ -214,7 +217,7 @@ class GeneralFunctionTest extends TestCase
                         'userName'    => 'someUser22',
                         'displayName' => 'Barry Burton',
                         'comment'     => 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Hic, illo tempore repudiandae quos vero, vitae aut ullam tenetur officiis accusantium dolor animi ipsa omnis impedit, saepe est harum quisquam sit.',
-                        'date'        => ( new DateTime('yesterday') )->format('d/m/yy H:m'),
+                        'date'        => (new DateTime('yesterday'))->format('d/m/yy H:m'),
                     ),
                 ),
             ),
@@ -312,7 +315,7 @@ class GeneralFunctionTest extends TestCase
         // Check it returns blank array if any other value passed.
         $this->assertEmpty($toArrray(false));
         $this->assertEmpty($toArrray(null));
-        $this->assertEmpty($toArrray(array( 1, 2, 3, 4 )));
+        $this->assertEmpty($toArrray(array(1, 2, 3, 4)));
         $this->assertEmpty($toArrray(1));
         $this->assertEmpty($toArrray(2.5));
         $this->assertEmpty($toArrray('STRING'));
@@ -322,10 +325,12 @@ class GeneralFunctionTest extends TestCase
     public function testIfThen(): void
     {
         $ifStringMakeTree = Func\ifThen(
-            function ($e) {
+            function ($e)
+            {
                 return $e === 'string';
             },
-            function ($e) {
+            function ($e)
+            {
                 return 'tree';
             }
         );
@@ -338,13 +343,16 @@ class GeneralFunctionTest extends TestCase
     public function testIfElse(): void
     {
         $ifStringMakeTree = Func\ifElse(
-            function ($e) {
+            function ($e)
+            {
                 return $e === 'string';
             },
-            function ($e) {
+            function ($e)
+            {
                 return 'tree';
             },
-            function ($e) {
+            function ($e)
+            {
                 return 'NOTSTRING';
             }
         );
@@ -359,11 +367,11 @@ class GeneralFunctionTest extends TestCase
     {
         $getFoo = Func\getProperty('foo');
         // Array
-        $this->assertEquals('bar', $getFoo(array( 'foo' => 'bar' )));
-        $this->assertNull($getFoo(array( 'bar' => 'foo' )));
+        $this->assertEquals('bar', $getFoo(array('foo' => 'bar')));
+        $this->assertNull($getFoo(array('bar' => 'foo')));
         // Obejct
-        $this->assertEquals('bar', $getFoo((object) array( 'foo' => 'bar' )));
-        $this->assertNull($getFoo((object) array( 'bar' => 'foo' )));
+        $this->assertEquals('bar', $getFoo((object) array('foo' => 'bar')));
+        $this->assertNull($getFoo((object) array('bar' => 'foo')));
         // Invalid
         $this->assertNull($getFoo('not array or obejct'));
     }
@@ -373,11 +381,11 @@ class GeneralFunctionTest extends TestCase
     {
         $hasFoo = Func\hasProperty('foo');
         // Array
-        $this->assertTrue($hasFoo(array( 'foo' => 'bar' )));
-        $this->assertFalse($hasFoo(array( 'bar' => 'foo' )));
+        $this->assertTrue($hasFoo(array('foo' => 'bar')));
+        $this->assertFalse($hasFoo(array('bar' => 'foo')));
         // Obejct
-        $this->assertTrue($hasFoo((object) array( 'foo' => 'bar' )));
-        $this->assertFalse($hasFoo((object) array( 'bar' => 'foo' )));
+        $this->assertTrue($hasFoo((object) array('foo' => 'bar')));
+        $this->assertFalse($hasFoo((object) array('bar' => 'foo')));
         // Invalid
         $this->assertFalse($hasFoo('not array or obejct'));
     }
@@ -394,7 +402,7 @@ class GeneralFunctionTest extends TestCase
     {
         // Array
         $setName = Func\setProperty(array('id' => 1), 'name');
-        $this->assertEquals(array( 'id'=>1,'name' => 'bar' ), $setName('bar'));
+        $this->assertEquals(array('id' => 1, 'name' => 'bar'), $setName('bar'));
 
         // Object with ArrayAccess
         $instance = ObjectFactory::arrayAccess();
@@ -409,7 +417,7 @@ class GeneralFunctionTest extends TestCase
         $this->assertEquals('bar', $withBar['name']);
 
         // ArrayObject with ObjectAccess
-        $ObjectAccess = new ArrayObject((object)['id'=> 12, 'name' => null], ArrayObject::STD_PROP_LIST);
+        $ObjectAccess = new ArrayObject((object)['id' => 12, 'name' => null], ArrayObject::STD_PROP_LIST);
         $setName = Func\setProperty($ObjectAccess, 'name');
         $ObjectAccess = $setName('bar');
         $this->assertEquals('bar', $ObjectAccess['name']);
@@ -435,8 +443,8 @@ class GeneralFunctionTest extends TestCase
         );
 
         $this->assertEquals(
-            array( 'id' => 1, 'name' => 'foo' ),
-            $encoder(array( 'userId' => 1, 'userName' => 'foo' ))
+            array('id' => 1, 'name' => 'foo'),
+            $encoder(array('userId' => 1, 'userName' => 'foo'))
         );
     }
 
@@ -452,7 +460,7 @@ class GeneralFunctionTest extends TestCase
             Func\encodeProperty('name', Func\getProperty('userName'))
         );
 
-        $new = $encoder(array( 'userId' => 1, 'userName' => 'foo' ));
+        $new = $encoder(array('userId' => 1, 'userName' => 'foo'));
 
         $this->assertEquals(1, $new->id);
         $this->assertEquals('foo', $new->name);
@@ -470,7 +478,7 @@ class GeneralFunctionTest extends TestCase
             Func\encodeProperty('name', Func\getProperty('userName'))
         );
 
-        $new = $encoder((object) array( 'userId' => 1, 'userName' => 'foo' ));
+        $new = $encoder((object) array('userId' => 1, 'userName' => 'foo'));
 
         $this->assertEquals(1, $new['id']);
         $this->assertEquals('foo', $new['name']);
@@ -488,7 +496,7 @@ class GeneralFunctionTest extends TestCase
             Func\encodeProperty('name', Func\getProperty('userName'))
         );
 
-        $new = $encoder((object) array( 'userId' => 1, 'userName' => 'foo' ));
+        $new = $encoder((object) array('userId' => 1, 'userName' => 'foo'));
 
         $this->assertEquals(1, $new['id']);
         $this->assertEquals('foo', $new['name']);
@@ -497,10 +505,43 @@ class GeneralFunctionTest extends TestCase
     /** @testdox Attempting to set a recordEncoder using a numerical index, willthrow a TyprError */
     public function testRecordEncoderThrowsTypeError(): void
     {
-        $this->expectException(TypeError::class);
+        $this->expectexception(typeerror::class);
 
-        $encoder = Func\recordEncoder(new stdClass());
-        $encoder = $encoder(Func\encodeProperty('0', Func\getProperty('userId')));
-        $encoder(array( 'userId' => 1, 'userName' => 'foo' ));
+        $encoder = func\recordencoder(new stdclass());
+        $encoder = $encoder(func\encodeproperty('0', func\getproperty('userid')));
+        $encoder(array('userid' => 1, 'username' => 'foo'));
     }
+
+    /** @testdox it should be possible to send an anonymous that produces a side effect. */
+    public function testCanUseSideEffectWithAnonymousFunction()
+    {
+        $sideEffect = Func\sideEffect(function ($e)
+        {
+            var_dump($e);
+        });
+
+        $this->assertEquals('bar', $sideEffect('bar'));
+        $this->assertEquals(1, $sideEffect(1));
+        $this->assertEquals(2.5, $sideEffect(2.5));
+        $this->assertEquals(array(1, 2, 3), $sideEffect(array(1, 2, 3)));
+    }
+
+    /** @testdox it should be possible to send a built in function that produces a side effect. */
+    public function testCanUseSideEffectWithBuiltInFunction()
+    {
+        $sideEffect = Func\sideEffect('print_r');
+
+        $this->assertEquals('bar', $sideEffect('bar'));
+        $this->assertEquals(1, $sideEffect(1));
+        $this->assertEquals(2.5, $sideEffect(2.5));
+        $this->assertEquals(array(1, 2, 3), $sideEffect(array(1, 2, 3)));
+    }
+
+    public function testSideEffectThrowsTypeError()
+    {
+        $this->expectException(TypeError::class);
+        $sideEffect = Func\sideEffect(123);
+        $sideEffect('bar');
+    }
+
 }
