@@ -436,6 +436,7 @@ function ifElse(callable $condition, callable $then, callable $else): Closure
             : $else($value);
     };
 }
+
 /**
  * Creates a side effect interceptor function that executes a given interceptor without modifying the input value.
  * 
