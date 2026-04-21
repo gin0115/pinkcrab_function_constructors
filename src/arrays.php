@@ -167,19 +167,20 @@ function tail(iterable $source)
 
 
 /**
- * Creates a Closure for concatenating arrays with a defined glue.
+ * Creates a Closure for joining an array or iterable into a string with a glue.
+ * Terminal: Generator input is materialised before joining.
  *
  * @param string|null $glue The string to join each element. If null, will be no separation between elements.
- * @return Closure(array<int|string, mixed>):string
- *
+ * @return Closure(iterable<int|string, mixed>):string
  */
 function toString(?string $glue = null): Closure
 {
     /**
-     * @param array<int|string, mixed> $array Array join
+     * @param iterable<int|string, mixed> $source
      * @return string
      */
-    return function (array $array) use ($glue): string {
+    return function (iterable $source) use ($glue): string {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         return $glue ? \join($glue, $array) : \join($array);
     };
 }
@@ -403,18 +404,21 @@ function filterFirst(callable $func): Closure
 }
 
 /**
- * Creates a Closure for running array filter and getting the last value.
+ * Creates a Closure that returns the last element matching a predicate.
+ * Accepts any iterable. Terminal — for a Generator, the whole source is
+ * consumed (there is no way to find "last" without doing so).
  *
  * @param callable $func
- * @return Closure(array<int|string, mixed>):?mixed
+ * @return Closure(iterable<int|string, mixed>):?mixed
  */
 function filterLast(callable $func): Closure
 {
     /**
-     * @param array<int|string, mixed> $array The array to filter
-     * @return mixed|null The last element from the filtered array.
+     * @param iterable<int|string, mixed> $source The array or iterable to scan.
+     * @return mixed|null The last matching value, or null if no match.
      */
-    return function (array $array) use ($func) {
+    return function (iterable $source) use ($func) {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         while ($value = array_pop($array)) {
             $result = $func($value);
             if (\is_bool($result) && $result) {
@@ -455,37 +459,41 @@ function filterMap(callable $filter, callable $map): Closure
 }
 
 /**
- * Runs an array through a filters, returns the total count of true
+ * Returns a Closure that counts the elements of an array or iterable matching
+ * a predicate. Terminal — Generator input is consumed.
  *
  * @param callable $function
- * @return Closure(array<int|string, mixed>):int
+ * @return Closure(iterable<int|string, mixed>):int
  */
 function filterCount(callable $function): Closure
 {
     /**
-     * @param array<int|string, mixed> $array
+     * @param iterable<int|string, mixed> $source
      * @return int Count
      */
-    return function (array $array) use ($function) {
+    return function (iterable $source) use ($function) {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         return count(array_filter($array, $function));
     };
 }
 
 /**
- * Returns a Closure for partitioning an array based
- * on the results of a filter type function.
- * Callable will be cast to a bool, if truthy will be listed under 1 key, else 0 for falsey
+ * Returns a Closure for partitioning an array or iterable into two buckets by
+ * a predicate. Terminal — Generator input is consumed fully.
+ *
+ * Callable will be cast to a bool, if truthy will be listed under key 1, else 0.
  *
  * @param callable(mixed):(bool|int) $function
- * @return Closure(mixed[]):array{0:mixed[], 1:mixed[]}
+ * @return Closure(iterable<int|string, mixed>):array{0:mixed[], 1:mixed[]}
  */
 function partition(callable $function): Closure
 {
     /**
-     * @param mixed[] $array
+     * @param iterable<int|string, mixed> $source
      * @return array{0:mixed[], 1:mixed[]}
      */
-    return function (array $array) use ($function): array {
+    return function (iterable $source) use ($function): array {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         /** @var array{0:mixed[], 1:mixed[]} $result */
         $result = array_reduce(
             $array,
@@ -781,18 +789,20 @@ function flatMap(callable $function, ?int $n = null): Closure
 
 
 /**
- * Creates a Closure for grouping an array.
+ * Creates a Closure for grouping an array or iterable by a key-producing fn.
+ * Terminal — Generator input is consumed fully.
  *
  * @param callable(mixed):(string|int) $function The function to group by.
- * @return Closure(mixed):mixed[]
+ * @return Closure(iterable<int|string, mixed>):mixed[]
  */
 function groupBy(callable $function): Closure
 {
     /**
-     * @param mixed[] $array The array to be grouped
+     * @param iterable<int|string, mixed> $source The array or iterable to be grouped.
      * @return mixed[] Grouped array.
      */
-    return function (array $array) use ($function): array {
+    return function (iterable $source) use ($function): array {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         return array_reduce(
             $array,
             /**
@@ -962,64 +972,70 @@ function flattenByN(?int $n = null): Closure
 }
 
 /**
- * Returns a closure for recursively changing values in an array.
+ * Returns a closure for recursively replacing values in an array or iterable.
+ * Terminal — Generator input is materialised first.
  *
  * @param mixed[] ...$with The array values to replace with
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):mixed[]
  */
 function replaceRecursive(array ...$with): Closure
 {
     /**
-     * @param mixed[] $array The array to have elements replaced from.
+     * @param iterable<int|string, mixed> $source
      * @return mixed[] Array with replacements.
      */
-    return function (array $array) use ($with): array {
+    return function (iterable $source) use ($with): array {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         return array_replace_recursive($array, ...$with);
     };
 }
 
 /**
- * Returns a Closure for changing all values in a flat array, based on key.
+ * Returns a Closure for changing values in a flat array or iterable, based on key.
+ * Terminal — Generator input is materialised first.
  *
  * @param mixed[] ...$with Array with values to replace with, must have matching key with base array.
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):mixed[]
  */
 function replace(array ...$with): Closure
 {
     /**
-     * @param mixed[] $array The array to have elements replaced from.
+     * @param iterable<int|string, mixed> $source
      * @return mixed[] Array with replacements.
      */
-    return function (array $array) use ($with): array {
+    return function (iterable $source) use ($with): array {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         return array_replace($array, ...$with);
     };
 }
 
 /**
- * Returns a Closure for doing array_sum with the results of a function/expression.
+ * Returns a Closure for summing the result of a callback applied to each element
+ * of an array or iterable. Terminal — Generator input is materialised.
  *
- * @param callable(mixed):Number $function The function to return the value for array sum
- * @return Closure(mixed[]):Number
+ * @param callable(mixed):Number $function Applied to each value before summing.
+ * @return Closure(iterable<int|string, mixed>):Number
  */
 function sumWhere(callable $function): Closure
 {
     /**
-     * @param mixed[] $array Array to do sum() on.
+     * @param iterable<int|string, mixed> $source
      * @return Number The total.
      */
-    return function (array $array) use ($function) {
+    return function (iterable $source) use ($function) {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         return array_sum(array_map($function, $array));
     };
 }
 
 /**
- * Creates a closure for casting an array to an object.
- * Assumed all properties are public
- * None existing properties will be set as dynamic properties.
+ * Creates a closure for casting an array or iterable into an object.
+ * Assumes all properties are public; non-existing properties are set dynamically.
+ * Terminal — Generator input is materialised first.
  *
- * @param object|null $object The object to cast to, defaults to stdClass
+ * @param object|null $object The object to cast to, defaults to stdClass.
  * @phpstan-param mixed $object
- * @return Closure(mixed[]):object
+ * @return Closure(iterable<int|string, mixed>):object
  * @throws \InvalidArgumentException If property does not exist or is not public.
  */
 function toObject($object = null): Closure
@@ -1032,10 +1048,11 @@ function toObject($object = null): Closure
     }
 
     /**
-     * @param mixed[] $array
+     * @param iterable<int|string, mixed> $source
      * @return object
      */
-    return function (array $array) use ($object) {
+    return function (iterable $source) use ($object) {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         foreach ($array as $key => $value) {
             // If key is not a string or numerical, skip it.
             if (!is_string($key) || is_numeric($key)) {
@@ -1468,10 +1485,12 @@ function take(int $count = 1): Closure
 }
 
 /**
- * Creates a function which takes the last n elements from an array
+ * Creates a function which takes the last N elements from an array or iterable.
+ * Terminal — Generator input is materialised fully (the last N is only
+ * knowable once the source has been consumed).
  *
  * @param int $count
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):mixed[]
  * @throws \InvalidArgumentException if count is negative
  */
 function takeLast(int $count = 1): Closure
@@ -1481,18 +1500,19 @@ function takeLast(int $count = 1): Closure
         throw new \InvalidArgumentException(__FUNCTION__ . ' count must be greater than or equal to 0');
     }
 
-    // If count is 0, return an empty array
+    // If count is 0, return an empty array for any input.
     if ($count === 0) {
-        return function (array $array) {
+        return function (iterable $source) {
             return array();
         };
     }
 
     /**
-     * @param mixed[] $array
+     * @param iterable<int|string, mixed> $source
      * @return mixed[]
      */
-    return function (array $array) use ($count) {
+    return function (iterable $source) use ($count) {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         return \array_slice($array, -$count);
     };
 }
@@ -1576,18 +1596,20 @@ function takeWhile(callable $conditional): Closure
 }
 
 /**
- * Picks selected indexes from an array
+ * Picks selected indexes from an array or iterable.
+ * Terminal — Generator input is materialised first.
  *
  * @param string ...$indexes
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):mixed[]
  */
 function pick(string ...$indexes): Closure
 {
     /**
-     * @param mixed[] $array
+     * @param iterable<int|string, mixed> $source
      * @return mixed[]
      */
-    return function (array $array) use ($indexes) {
+    return function (iterable $source) use ($indexes) {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         return array_intersect_key($array, array_flip($indexes));
     };
 }

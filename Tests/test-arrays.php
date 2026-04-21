@@ -1514,4 +1514,98 @@ class ArrayFunctionTests extends TestCase
             $pick($data)
         );
     }
+
+    /*
+     * B10 — TERMINAL shim tests.
+     *
+     * These fns don't return a Generator, but they accept one now. Each test
+     * asserts Generator input produces the same result as array input.
+     */
+
+    /** @testdox toString() accepts any iterable and joins values with the glue. */
+    public function testToStringAcceptsGenerator(): void
+    {
+        $this->assertSame('1-2-3', Arr\toString('-')(self::gen(array(1, 2, 3))));
+        $this->assertSame('abc', Arr\toString()(self::gen(array('a', 'b', 'c'))));
+    }
+
+    /** @testdox filterCount() accepts any iterable and returns the number of matches. */
+    public function testFilterCountAcceptsGenerator(): void
+    {
+        $this->assertSame(3, Arr\filterCount(fn ($v) => $v % 2 === 0)(self::gen(array(1, 2, 3, 4, 5, 6))));
+    }
+
+    /** @testdox filterLast() accepts any iterable and returns the last matching value. */
+    public function testFilterLastAcceptsGenerator(): void
+    {
+        $this->assertSame(6, Arr\filterLast(fn ($v) => $v % 2 === 0)(self::gen(array(1, 3, 4, 6))));
+        $this->assertNull(Arr\filterLast(fn ($v) => $v > 100)(self::gen(array(1, 2, 3))));
+    }
+
+    /** @testdox partition() accepts any iterable and returns the [truthy, falsy] buckets. */
+    public function testPartitionAcceptsGenerator(): void
+    {
+        $result = Arr\partition(fn ($v) => $v > 2)(self::gen(array(1, 2, 3, 4, 5)));
+        $this->assertSame(array(array(1, 2), array(3, 4, 5)), $result);
+    }
+
+    /** @testdox groupBy() accepts any iterable and groups by the key-producing callback. */
+    public function testGroupByAcceptsGenerator(): void
+    {
+        $src = self::gen(array('apple', 'avocado', 'banana', 'blueberry'));
+        $byFirstChar = Arr\groupBy(fn ($v) => $v[0])($src);
+        $this->assertSame(
+            array('a' => array('apple', 'avocado'), 'b' => array('banana', 'blueberry')),
+            $byFirstChar
+        );
+    }
+
+    /** @testdox sumWhere() accepts any iterable and sums the callback outputs. */
+    public function testSumWhereAcceptsGenerator(): void
+    {
+        $src = self::gen(array(array('qty' => 2), array('qty' => 3), array('qty' => 5)));
+        $this->assertSame(10, Arr\sumWhere(fn ($row) => $row['qty'])($src));
+    }
+
+    /** @testdox toObject() accepts any iterable and casts it into the given object. */
+    public function testToObjectAcceptsGenerator(): void
+    {
+        $src = self::gen(array('a' => 1, 'b' => 2));
+        $obj = Arr\toObject()($src);
+        $this->assertSame(1, $obj->a);
+        $this->assertSame(2, $obj->b);
+    }
+
+    /** @testdox replace() accepts any iterable and replaces matching keys. */
+    public function testReplaceAcceptsGenerator(): void
+    {
+        $src = self::gen(array(0 => 'a', 1 => 'b', 2 => 'c'));
+        $this->assertSame(
+            array(0 => 'A', 1 => 'b', 2 => 'c'),
+            Arr\replace(array(0 => 'A'))($src)
+        );
+    }
+
+    /** @testdox replaceRecursive() accepts any iterable and deep-replaces matching keys. */
+    public function testReplaceRecursiveAcceptsGenerator(): void
+    {
+        $src = self::gen(array('a' => array('x' => 1, 'y' => 2), 'b' => 3));
+        $this->assertSame(
+            array('a' => array('x' => 9, 'y' => 2), 'b' => 3),
+            Arr\replaceRecursive(array('a' => array('x' => 9)))($src)
+        );
+    }
+
+    /** @testdox takeLast() accepts any iterable and returns the final N elements (materialises the source). */
+    public function testTakeLastAcceptsGenerator(): void
+    {
+        $this->assertSame(array(3, 4, 5), array_values(Arr\takeLast(3)(self::gen(array(1, 2, 3, 4, 5)))));
+    }
+
+    /** @testdox pick() accepts any iterable and returns only the requested keys. */
+    public function testPickAcceptsGenerator(): void
+    {
+        $src = self::gen(array('a' => 1, 'b' => 2, 'c' => 3));
+        $this->assertSame(array('a' => 1, 'c' => 3), Arr\pick('a', 'c')($src));
+    }
 }
