@@ -949,16 +949,18 @@ function flattenByN(?int $n = null): Closure
         }
         return (function () use ($source, $n) {
             foreach ($source as $element) {
-                if (is_array($element) && empty($element)) {
-                    continue;
-                }
-                if (is_array($element) && (is_null($n) || $n > 0)) { // @phpstan-ignore-line
-                    foreach (flattenByN($n ? $n - 1 : null)($element) as $sub) {
-                        yield $sub;
+                if (is_array($element)) {
+                    if (empty($element)) {
+                        continue;
                     }
-                } else {
-                    yield $element;
+                    if (is_null($n) || $n > 0) {
+                        foreach (flattenByN($n ? $n - 1 : null)($element) as $sub) {
+                            yield $sub;
+                        }
+                        continue;
+                    }
                 }
+                yield $element;
             }
         })();
     };
