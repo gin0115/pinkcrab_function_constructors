@@ -220,73 +220,91 @@ function arrayCompilerTyped(callable $validator, array $inital = array()): Closu
 
 
 /**
- * Created a Closure for filtering an array.
+ * Created a Closure for filtering an array or iterable.
  *
- * @param callable $callable The function to apply to the array.
- * @return Closure(array<int|string, mixed>):array<int|string, mixed>
+ * - Array in  → array out (eager, unchanged behaviour).
+ * - Generator/Traversable in → Generator out (lazy; keys preserved).
+ *
+ * @param callable $callable The function to apply to each value.
+ * @return Closure(iterable<int|string, mixed>):(array<int|string, mixed>|\Generator<int|string, mixed>)
  */
 function filter(callable $callable): Closure
 {
     /**
-     * @param array<int|string, mixed> $source Array to filter
-     * @return array<int|string, mixed> Filtered array.
+     * @param iterable<int|string, mixed> $source Array or iterable to filter.
+     * @return array<int|string, mixed>|\Generator<int|string, mixed>
      */
-    return function (array $source) use ($callable): array {
-        return array_filter($source, $callable);
+    return function (iterable $source) use ($callable) {
+        if (is_array($source)) {
+            return array_filter($source, $callable);
+        }
+        return (function () use ($source, $callable) {
+            foreach ($source as $key => $value) {
+                if ($callable($value)) {
+                    yield $key => $value;
+                }
+            }
+        })();
     };
 }
 
 /**
- * Create a Closure for filtering an array by a key.
+ * Create a Closure for filtering an array or iterable by its keys.
  *
- * @param callable $callable The function to apply to the array.
- * @return Closure(array<int|string, mixed>):array<int|string, mixed>
+ * - Array in  → array out (eager, unchanged behaviour).
+ * - Generator/Traversable in → Generator out (lazy; keys preserved).
+ *
+ * @param callable $callable The function to apply to each key.
+ * @return Closure(iterable<int|string, mixed>):(array<int|string, mixed>|\Generator<int|string, mixed>)
  */
 function filterKey(callable $callable): Closure
 {
     /**
-     * @param array<int|string, mixed> $source Array to filter
-     * @return array<int|string, mixed> Filtered array.
+     * @param iterable<int|string, mixed> $source Array or iterable to filter.
+     * @return array<int|string, mixed>|\Generator<int|string, mixed>
      */
-    return function (array $source) use ($callable): array {
-        return array_filter($source, $callable, \ARRAY_FILTER_USE_KEY);
+    return function (iterable $source) use ($callable) {
+        if (is_array($source)) {
+            return array_filter($source, $callable, \ARRAY_FILTER_USE_KEY);
+        }
+        return (function () use ($source, $callable) {
+            foreach ($source as $key => $value) {
+                if ($callable($key)) {
+                    yield $key => $value;
+                }
+            }
+        })();
     };
 }
 
 /**
- * Creates a Closure for running an array through various callbacks for all true response.
- * Wrapper for creating a AND group of callbacks and running through array filter.
+ * Creates a Closure applying an AND group of predicates.
+ *
+ * - Array in  → array out (eager, unchanged behaviour).
+ * - Generator/Traversable in → Generator out (lazy; keys preserved).
  *
  * @param callable ...$callables
- * @return Closure(array<int|string, mixed>):array<int|string, mixed>
+ * @return Closure(iterable<int|string, mixed>):(array<int|string, mixed>|\Generator<int|string, mixed>)
  */
 function filterAnd(callable ...$callables): Closure
 {
-    /**
-     * @param array<int|string, mixed> $source Array to filter
-     * @return array<int|string, mixed> Filtered array.
-     */
-    return function (array $source) use ($callables): array {
-        return array_filter($source, Comp\groupAnd(...$callables));
-    };
+    $predicate = Comp\groupAnd(...$callables);
+    return filter($predicate);
 }
 
 /**
- * Creates a Closure for running an array through various callbacks for any true response.
- * Wrapper for creating a OR group of callbacks and running through array filter.
+ * Creates a Closure applying an OR group of predicates.
+ *
+ * - Array in  → array out (eager, unchanged behaviour).
+ * - Generator/Traversable in → Generator out (lazy; keys preserved).
  *
  * @param callable ...$callables
- * @return Closure(array<int|string, mixed>):array<int|string, mixed>
+ * @return Closure(iterable<int|string, mixed>):(array<int|string, mixed>|\Generator<int|string, mixed>)
  */
 function filterOr(callable ...$callables): Closure
 {
-    /**
-     * @param array<int|string, mixed> $source Array to filter
-     * @return array<int|string, mixed> Filtered array.
-     */
-    return function (array $source) use ($callables): array {
-        return array_filter($source, Comp\groupOr(...$callables));
-    };
+    $predicate = Comp\groupOr(...$callables);
+    return filter($predicate);
 }
 
 /**
@@ -334,22 +352,32 @@ function filterLast(callable $func): Closure
 }
 
 /**
- * Creates a Closure which takes an array, applies a filter, then maps the
- * results of the map.
+ * Creates a Closure which filters then maps over the results.
  *
+ * - Array in  → array out (eager, unchanged behaviour).
+ * - Generator/Traversable in → Generator out (lazy; keys preserved).
  *
- * @param callable(mixed):bool $filter Function to of filter contents
- * @param callable(mixed):mixed $map Function to map results of filter function.
- * @return Closure(array<int|string, mixed>):array<int|string, mixed>
+ * @param callable(mixed):bool $filter Predicate used to include values.
+ * @param callable(mixed):mixed $map Transformation applied to included values.
+ * @return Closure(iterable<int|string, mixed>):(array<int|string, mixed>|\Generator<int|string, mixed>)
  */
 function filterMap(callable $filter, callable $map): Closure
 {
     /**
-     * @param array<int|string, mixed> $array The array to filter then map.
-     * @return array<int|string, mixed>
+     * @param iterable<int|string, mixed> $source Array or iterable to filter+map.
+     * @return array<int|string, mixed>|\Generator<int|string, mixed>
      */
-    return function (array $array) use ($filter, $map): array {
-        return array_map($map, array_filter($array, $filter));
+    return function (iterable $source) use ($filter, $map) {
+        if (is_array($source)) {
+            return array_map($map, array_filter($source, $filter));
+        }
+        return (function () use ($source, $filter, $map) {
+            foreach ($source as $key => $value) {
+                if ($filter($value)) {
+                    yield $key => $map($value);
+                }
+            }
+        })();
     };
 }
 
@@ -488,73 +516,110 @@ function map(callable $func): Closure
 }
 
 /**
- * Returns a Closure for mapping of an arrays keys.
+ * Returns a Closure for transforming the keys of an array or iterable.
  * Setting the key to an existing index will overwrite the current value at same index.
  *
- * @param callable $func
- * @return Closure(mixed[]):mixed[]
+ * - Array in  → array out (eager, unchanged behaviour).
+ * - Generator/Traversable in → Generator out (lazy; transformed keys preserved).
+ *
+ * @param callable $func Callback applied to each key.
+ * @return Closure(iterable<int|string, mixed>):(array<int|string, mixed>|\Generator<int|string, mixed>)
  */
 function mapKey(callable $func): Closure
 {
     /**
-     * @param mixed[] $array The array to map
-     * @return mixed[]
+     * @param iterable<int|string, mixed> $source Array or iterable whose keys are transformed.
+     * @return array<int|string, mixed>|\Generator<int|string, mixed>
      */
-    return function (array $array) use ($func): array {
-        return array_reduce(
-            array_keys($array),
-            function ($carry, $key) use ($func, $array) {
-                $carry[$func($key)] = $array[$key];
-                return $carry;
-            },
-            array()
-        );
+    return function (iterable $source) use ($func) {
+        if (is_array($source)) {
+            return array_reduce(
+                array_keys($source),
+                function ($carry, $key) use ($func, $source) {
+                    $carry[$func($key)] = $source[$key];
+                    return $carry;
+                },
+                array()
+            );
+        }
+        return (function () use ($source, $func) {
+            foreach ($source as $key => $value) {
+                yield $func($key) => $value;
+            }
+        })();
     };
 }
 
 /**
- * Returns a Closure for mapping an array with additional data.
+ * Returns a Closure for mapping an array or iterable with additional data arguments
+ * passed to the callback alongside each element's value.
  *
- * @param callable(mixed ...$a):mixed $func
- * @param mixed ...$data
- * @return Closure(mixed[]):mixed[]
+ * - Array in  → array out (eager, unchanged behaviour).
+ * - Generator/Traversable in → Generator out (lazy; keys preserved).
+ *
+ * @param callable(mixed ...$a):mixed $func Callback invoked as `$func($value, ...$data)`.
+ * @param mixed ...$data Extra arguments threaded into each invocation of `$func`.
+ * @return Closure(iterable<int|string, mixed>):(array<int|string, mixed>|\Generator<int|string, mixed>)
  */
 function mapWith(callable $func, ...$data): Closure
 {
     /**
-     * @param mixed[] $array The array to map
-     * @return mixed[]
+     * @param iterable<int|string, mixed> $source Array or iterable to map.
+     * @return array<int|string, mixed>|\Generator<int|string, mixed>
      */
-    return function (array $array) use ($func, $data): array {
-        return array_map(
-            function ($e) use ($data, $func) {
-                return $func($e, ...$data);
-            },
-            $array
-        );
+    return function (iterable $source) use ($func, $data) {
+        if (is_array($source)) {
+            return array_map(
+                function ($e) use ($data, $func) {
+                    return $func($e, ...$data);
+                },
+                $source
+            );
+        }
+        return (function () use ($source, $func, $data) {
+            foreach ($source as $key => $value) {
+                yield $key => $func($value, ...$data);
+            }
+        })();
     };
 }
 
 /**
- * Returns a Closure for mapping an array with access to value and key.
+ * Returns a Closure for mapping over an array or iterable with access to both value
+ * and key in the callback: `$func($value, $key)`.
  *
- * @param callable(int|string $key, mixed $value):mixed $func
- * @return Closure(mixed[]):mixed[]
+ * Note on keys: for parity with the existing array-path behaviour (which uses
+ * `array_map` with two arrays — causing the result to be numerically re-indexed),
+ * the Generator path also yields sequential integer keys starting at 0.
+ *
+ * - Array in  → array out with sequential numeric keys (unchanged behaviour).
+ * - Generator/Traversable in → Generator out with sequential numeric keys.
+ *
+ * @param callable(mixed $value, int|string $key):mixed $func
+ * @return Closure(iterable<int|string, mixed>):(array<int, mixed>|\Generator<int, mixed>)
  */
 function mapWithKey(callable $func): Closure
 {
     /**
-     * @param mixed[] $array The array to map
-     * @return mixed[]
+     * @param iterable<int|string, mixed> $source Array or iterable to map.
+     * @return array<int, mixed>|\Generator<int, mixed>
      */
-    return function (array $array) use ($func): array {
-        return array_map(
-            function ($key, $value) use ($func) {
-                return $func($value, $key);
-            },
-            $array,
-            array_keys($array)
-        );
+    return function (iterable $source) use ($func) {
+        if (is_array($source)) {
+            return array_map(
+                function ($key, $value) use ($func) {
+                    return $func($value, $key);
+                },
+                $source,
+                array_keys($source)
+            );
+        }
+        return (function () use ($source, $func) {
+            $i = 0;
+            foreach ($source as $key => $value) {
+                yield $i++ => $func($value, $key);
+            }
+        })();
     };
 }
 

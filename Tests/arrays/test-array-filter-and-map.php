@@ -313,6 +313,97 @@ class ArrayFilterAndMapTests extends TestCase
         $this->assertSame('B', $second);
     }
 
+    /** @testdox filter() should return a lazy Generator preserving keys when given a Generator. */
+    public function testFilterReturnsGeneratorForGeneratorInput(): void
+    {
+        $src    = self::gen(array('a' => 1, 'b' => 2, 'c' => 3, 'd' => 4));
+        $result = Arr\filter(fn ($x) => $x % 2 === 0)($src);
+
+        $this->assertInstanceOf(\Generator::class, $result);
+        $this->assertSame(array('b' => 2, 'd' => 4), iterator_to_array($result));
+    }
+
+    /** @testdox filterKey() should return a lazy Generator filtering on keys when given a Generator. */
+    public function testFilterKeyReturnsGeneratorForGeneratorInput(): void
+    {
+        $src    = self::gen(array('keep_a' => 1, 'drop_b' => 2, 'keep_c' => 3));
+        $result = Arr\filterKey(fn ($k) => strpos($k, 'keep_') === 0)($src);
+
+        $this->assertInstanceOf(\Generator::class, $result);
+        $this->assertSame(array('keep_a' => 1, 'keep_c' => 3), iterator_to_array($result));
+    }
+
+    /** @testdox filterAnd() should return a lazy Generator applying an AND group of predicates to a Generator source. */
+    public function testFilterAndReturnsGeneratorForGeneratorInput(): void
+    {
+        $src    = self::gen(array(1, 2, 3, 4, 5, 6));
+        $result = Arr\filterAnd(
+            fn ($x) => $x > 2,
+            fn ($x) => $x % 2 === 0
+        )($src);
+
+        $this->assertInstanceOf(\Generator::class, $result);
+        $this->assertSame(array(3 => 4, 5 => 6), iterator_to_array($result));
+    }
+
+    /** @testdox filterOr() should return a lazy Generator applying an OR group of predicates to a Generator source. */
+    public function testFilterOrReturnsGeneratorForGeneratorInput(): void
+    {
+        $src    = self::gen(array(1, 2, 3, 4, 5));
+        $result = Arr\filterOr(
+            fn ($x) => $x === 1,
+            fn ($x) => $x === 5
+        )($src);
+
+        $this->assertInstanceOf(\Generator::class, $result);
+        $this->assertSame(array(0 => 1, 4 => 5), iterator_to_array($result));
+    }
+
+    /** @testdox filterMap() should return a lazy Generator filter-then-mapping over a Generator source. */
+    public function testFilterMapReturnsGeneratorForGeneratorInput(): void
+    {
+        $src    = self::gen(array(1, 2, 3, 4, 5));
+        $result = Arr\filterMap(
+            fn ($x) => $x % 2 === 0,
+            fn ($x) => $x * 10
+        )($src);
+
+        $this->assertInstanceOf(\Generator::class, $result);
+        $this->assertSame(array(1 => 20, 3 => 40), iterator_to_array($result));
+    }
+
+    /** @testdox mapKey() should return a lazy Generator transforming keys when given a Generator. */
+    public function testMapKeyReturnsGeneratorForGeneratorInput(): void
+    {
+        $src    = self::gen(array('a' => 1, 'b' => 2));
+        $result = Arr\mapKey('strtoupper')($src);
+
+        $this->assertInstanceOf(\Generator::class, $result);
+        $this->assertSame(array('A' => 1, 'B' => 2), iterator_to_array($result));
+    }
+
+    /** @testdox mapWith() should return a lazy Generator applying the callback with extra data when given a Generator. */
+    public function testMapWithReturnsGeneratorForGeneratorInput(): void
+    {
+        $src    = self::gen(array('a' => 1, 'b' => 2));
+        $result = Arr\mapWith(fn ($v, $suffix) => "{$v}{$suffix}", '!')($src);
+
+        $this->assertInstanceOf(\Generator::class, $result);
+        $this->assertSame(array('a' => '1!', 'b' => '2!'), iterator_to_array($result));
+    }
+
+    /** @testdox mapWithKey() should return a lazy Generator supplying (value, key) to the callback; keys re-index to match the array path. */
+    public function testMapWithKeyReturnsGeneratorForGeneratorInput(): void
+    {
+        $src    = self::gen(array('a' => 1, 'b' => 2));
+        $result = Arr\mapWithKey(fn ($v, $k) => "{$k}:{$v}")($src);
+
+        $this->assertInstanceOf(\Generator::class, $result);
+        // array path returns [0 => 'a:1', 1 => 'b:2'] because array_map with
+        // multiple arrays re-indexes — Generator path matches that shape.
+        $this->assertSame(array(0 => 'a:1', 1 => 'b:2'), iterator_to_array($result));
+    }
+
     public function testCanUseFlatMap(): void
     {
         $array = array(
