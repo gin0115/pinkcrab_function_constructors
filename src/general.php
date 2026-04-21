@@ -378,22 +378,6 @@ function always($value): Closure
 }
 
 /**
- * Returns a function for turning objects into arrays.
- * Only takes public properties.
- *
- * This has been moved to PinkCrab\FunctionConstructors\Objects\toArray()
- *
- * This will be removed in later versions.
- *
- * @return Closure(object):array<string, mixed>
- * @deprecated 0.2.0 Use PinkCrab\FunctionConstructors\Objects\toArray()
- */
-function toArray(): Closure
-{
-    return Objects\toArray();
-}
-
-/**
  * Creates a function which will validate the data through a condition callable, then return
  * the results of passing the data through the callback.
  *

@@ -288,36 +288,6 @@ class GeneralFunctionTest extends TestCase
         $this->assertEquals(69, $doubleAnyNumber(7));
     }
 
-    public function testCanUseToArrayForObjects()
-    {
-        // Create the simple to array wrapper.
-        $toArrray = Func\toArray();
-
-        // Test with valid stdClass.
-        $obj        = new stdClass();
-        $obj->propA = 1;
-        $obj->propB = 2;
-        $this->assertArrayHasKey('propA', $toArrray($obj));
-        $this->assertEquals(1, $toArrray($obj)['propA']);
-        $this->assertArrayHasKey('propB', $toArrray($obj));
-        $this->assertEquals(2, $toArrray($obj)['propB']);
-
-        // Test only valid public properties.
-        $obj = new ToArrayFixtureClass();
-        $this->assertArrayNotHasKey('propA', $toArrray($obj));
-        $this->assertArrayNotHasKey('propB', $toArrray($obj));
-        $this->assertArrayHasKey('propC', $toArrray($obj));
-        $this->assertEquals(3, $toArrray($obj)['propC']);
-
-        // Check it returns blank array if any other value passed.
-        $this->assertEmpty($toArrray(false));
-        $this->assertEmpty($toArrray(null));
-        $this->assertEmpty($toArrray(array( 1, 2, 3, 4 )));
-        $this->assertEmpty($toArrray(1));
-        $this->assertEmpty($toArrray(2.5));
-        $this->assertEmpty($toArrray('STRING'));
-    }
-
     /** @testdox It should be possible to create a simple if statement, which can be preloaded and used as part of currying */
     public function testIfThen(): void
     {

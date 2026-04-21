@@ -564,24 +564,30 @@ If you would like to contribute to this project, please feel to fork the project
 
 * 1.0.0
   * **New Functions**
-  * `Strings\digit()` — replaces `Strings\decimalNumber()`
-  * `Strings\compare()`
-  * `Strings\countChars()` now has mode constants.
+  * `Strings\digit()` — replaces `Strings\decimalNumber()`.
+  * `Strings\similar()` — replaces `Strings\similarAsBase()` / `Strings\similarAsComparison()`.
+  * `Strings\compare()`.
+  * `Strings\countChars()` now has mode constants (`CHAR_COUNT_ARRAY`, `CHAR_COUNT_ARRAY_UNIQUE`, `CHAR_COUNT_ARRAY_UNUSED`).
   * `Arrays\last()` — returns the last element of an array.
-  * `Arrays\append()` — appends a value to the end of an array.
-  * `Arrays\prepend()` — prepends a value to the start of an array.
+  * `Arrays\append()` — replaces `Arrays\pushTail()`.
+  * `Arrays\prepend()` — replaces `Arrays\pushHead()`.
   * `Arrays\pick()` — picks a subset of keys from an array.
-  * **Breaking Changes**
-  * Removed deprecated typo-alias functions. Use the correctly-spelled versions:
-    * `Strings\decimialNumber()` → `Strings\digit()` (superseding the earlier `decimalNumber` rename)
-    * `Strings\similarAsComparisson()` → `Strings\similar()` (superseding the earlier `similarAsComparison` rename)
-    * `Strings\firstPosistion()` → `Strings\firstPosition()`
-    * `Strings\lastPosistion()` → `Strings\lastPosition()`
-  * `Strings\decimalNumber()` has been deprecated in favour of `Strings\digit()`
-  * `Strings\similarAsBase()` and `Strings\similarAsComparison()` have been deprecated in favour of `Strings\similar()`
+  * `GeneralFunctions\sideEffect()` — runs a callable for its side effect and returns the input unchanged; handy for debug/log taps in compose/pipe chains.
+  * **Breaking Changes — all deprecated functions removed**
+  * Typo-alias functions removed:
+    * `Strings\decimialNumber()` → use `Strings\digit()`
+    * `Strings\similarAsComparisson()` → use `Strings\similar()`
+    * `Strings\firstPosistion()` → use `Strings\firstPosition()`
+    * `Strings\lastPosistion()` → use `Strings\lastPosition()`
+  * Previously-deprecated functions removed:
+    * `Strings\decimalNumber()` → use `Strings\digit()`
+    * `Strings\similarAsBase()` → use `Strings\similar()`
+    * `Strings\similarAsComparison()` → use `Strings\similar()`
+    * `Arrays\pushHead()` → use `Arrays\prepend()`
+    * `Arrays\pushTail()` → use `Arrays\append()`
+    * `GeneralFunctions\toArray()` → use `Objects\toArray()`
   * `Arrays\tail()` now works as expected, returning the array without the first element.
-  * `Arrays\pushHead()` and `Arrays\pushTail()` have been deprecated in favour of `Arrays\prepend()` and `Arrays\append()`
-  * `Strings\allowTags()` now accepts an array of allowed tags even for pre PHP7.4
+  * `Strings\allowTags()` now accepts an array of allowed tags even for pre PHP 7.4.
   * **Other Changes**
   * Made `Arrays\filterFirst()` and `Arrays\filterLast()` more efficient.
   * Bumped dev deps: phpstan `^1.0 || ^2.0`, phpunit `^7.5 || ^8.5 || ^9.6`, phpunit-polyfills `^1.0 || ^2.0 || ^4.0`.

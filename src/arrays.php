@@ -71,48 +71,6 @@ function prepend($value): Closure
 }
 
 /**
- * Returns a Closure for pushing a value to the head of an array
- *
- * @param array<int|string, mixed> $array
- * @return Closure(mixed):array<int|string, mixed>
- * @deprecated 0.3.0 Use prepend() instead.
- * @codeCoverageIgnore
- */
-function pushHead(array $array): Closure
-{
-    trigger_error('Deprecated function called. This function will be removed in later versions.', E_USER_DEPRECATED);
-    /**
-     * @param mixed $value Adds value start of array.
-     * @return array New array with value on head.
-     */
-    return function ($value) use ($array): array {
-        array_unshift($array, $value);
-        return $array;
-    };
-}
-
-/**
- * Returns a Closure for pushing a value to the head of an array
- *
- * @param array<int|string, mixed> $array
- * @return Closure(mixed):array<int|string, mixed>
- * @deprecated 0.3.0 Use append() instead.
- * @codeCoverageIgnore
- */
-function pushTail(array $array): Closure
-{
-    trigger_error('Deprecated function called. This function will be removed in later versions.', E_USER_DEPRECATED);
-    /**
-     * @param mixed $value Adds value end of array.
-     * @return array<int|string, mixed> New array with value on tail.
-     */
-    return function ($value) use ($array): array {
-        $array[] = $value;
-        return $array;
-    };
-}
-
-/**
  * Gets the first value from an array.
  *
  * @param array<int|string, mixed> $array The array.
