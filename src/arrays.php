@@ -35,38 +35,62 @@ use stdClass;
 use PinkCrab\FunctionConstructors\Comparisons as Comp;
 
 /**
- * Returns a Closure for appending a value to an array.
+ * Returns a Closure for appending a value to the end of an array or iterable.
+ *
+ * - Array in  → array out with the value pushed on the end (unchanged behaviour).
+ * - Generator/Traversable in → Generator out that first yields every source
+ *   element, then yields the new value.
  *
  * @param mixed $value
- * @return Closure(array<int|string, mixed>):array<int|string, mixed>
+ * @return Closure(iterable<int|string, mixed>):(array<int|string, mixed>|\Generator<int|string, mixed>)
  */
 function append($value): Closure
 {
     /**
-     * @param array<int|string, mixed> $array
-     * @return array<int|string, mixed>
+     * @param iterable<int|string, mixed> $source
+     * @return array<int|string, mixed>|\Generator<int|string, mixed>
      */
-    return function (array $array) use ($value): array {
-        $array[] = $value;
-        return $array;
+    return function (iterable $source) use ($value) {
+        if (is_array($source)) {
+            $source[] = $value;
+            return $source;
+        }
+        return (function () use ($source, $value) {
+            foreach ($source as $key => $v) {
+                yield $key => $v;
+            }
+            yield $value;
+        })();
     };
 }
 
 /**
- * Returns a Closure for prepending a value to an array.
+ * Returns a Closure for prepending a value to the start of an array or iterable.
+ *
+ * - Array in  → array out with the value unshifted onto the front (unchanged behaviour).
+ * - Generator/Traversable in → Generator out that first yields the new value, then
+ *   yields every source element.
  *
  * @param mixed $value
- * @return Closure(array<int|string, mixed>):array<int|string, mixed>
+ * @return Closure(iterable<int|string, mixed>):(array<int|string, mixed>|\Generator<int|string, mixed>)
  */
 function prepend($value): Closure
 {
     /**
-     * @param array<int|string, mixed> $array
-     * @return array<int|string, mixed>
+     * @param iterable<int|string, mixed> $source
+     * @return array<int|string, mixed>|\Generator<int|string, mixed>
      */
-    return function (array $array) use ($value): array {
-        array_unshift($array, $value);
-        return $array;
+    return function (iterable $source) use ($value) {
+        if (is_array($source)) {
+            array_unshift($source, $value);
+            return $source;
+        }
+        return (function () use ($source, $value) {
+            yield $value;
+            foreach ($source as $key => $v) {
+                yield $key => $v;
+            }
+        })();
     };
 }
 

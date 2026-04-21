@@ -42,6 +42,38 @@ class ArrayFunctionTests extends TestCase
         FunctionsLoader::include();
     }
 
+    /**
+     * Helper: wraps an array in a one-shot Generator so tests can exercise the
+     * iterable branch of the Arrays\* fns.
+     *
+     * @param array<int|string, mixed> $data
+     * @return \Generator<int|string, mixed>
+     */
+    private static function gen(array $data): \Generator
+    {
+        foreach ($data as $k => $v) {
+            yield $k => $v;
+        }
+    }
+
+    /**
+     * Helper: Generator that throws the moment the consumer asks for the
+     * element at index $throwOn. Used to prove a lazy fn does NOT consume
+     * past its short-circuit point.
+     *
+     * @param array<int|string, mixed> $data
+     */
+    private static function genThrowAt(array $data, int $throwOn): \Generator
+    {
+        $i = 0;
+        foreach ($data as $k => $v) {
+            if ($i++ === $throwOn) {
+                throw new \RuntimeException('Generator consumed past the short-circuit point');
+            }
+            yield $k => $v;
+        }
+    }
+
     /** @testdox It should be possible to prepend and item to an array. */
     public function testCanPrependToArray(): void
     {
@@ -74,6 +106,43 @@ class ArrayFunctionTests extends TestCase
         $this->assertEquals(6, $new[5]);
     }
 
+    /** @testdox prepend() should lazily yield the new value before the source Generator's elements. */
+    public function testPrependReturnsGeneratorForGeneratorInput(): void
+    {
+        $src    = self::gen(array(1, 2, 3));
+        $result = Arr\prepend(0)($src);
+
+        $this->assertInstanceOf(\Generator::class, $result);
+        $this->assertSame(array(0, 1, 2, 3), iterator_to_array($result, false));
+    }
+
+    /** @testdox append() should lazily yield the new value after the source Generator's elements. */
+    public function testAppendReturnsGeneratorForGeneratorInput(): void
+    {
+        $src    = self::gen(array(1, 2, 3));
+        $result = Arr\append(4)($src);
+
+        $this->assertInstanceOf(\Generator::class, $result);
+        $this->assertSame(array(1, 2, 3, 4), iterator_to_array($result, false));
+    }
+
+    /** @testdox prepend() over an empty Generator should yield only the new value. */
+    public function testPrependEmptyGeneratorYieldsOnlyTheValue(): void
+    {
+        $result = Arr\prepend('only')(self::gen(array()));
+
+        $this->assertInstanceOf(\Generator::class, $result);
+        $this->assertSame(array('only'), iterator_to_array($result, false));
+    }
+
+    /** @testdox append() over an empty Generator should yield only the new value. */
+    public function testAppendEmptyGeneratorYieldsOnlyTheValue(): void
+    {
+        $result = Arr\append('only')(self::gen(array()));
+
+        $this->assertInstanceOf(\Generator::class, $result);
+        $this->assertSame(array('only'), iterator_to_array($result, false));
+    }
 
     public function testCanUseTail()
     {
