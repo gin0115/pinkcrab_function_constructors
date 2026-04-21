@@ -50,7 +50,8 @@ if (! function_exists('array_flatten')) {
      */
     function arrayFlatten(array $array, ?int $n = null): array
     {
-        return Arr\flattenByN($n)($array);
+        $result = Arr\flattenByN($n)($array);
+        return is_array($result) ? $result : iterator_to_array($result);
     }
 }
 

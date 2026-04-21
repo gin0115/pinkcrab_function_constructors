@@ -32,26 +32,50 @@ declare(strict_types=1);
  * Constants used for Str\wordCount() => str_word_count()
  * https://www.php.net/manual/en/function.str-word-count.php
  */
-if (!defined('WORD_COUNT_NUMBER_OF_WORDS')) {
+if (! defined('WORD_COUNT_NUMBER_OF_WORDS')) {
     define('WORD_COUNT_NUMBER_OF_WORDS', 0);
 }
-if (!defined('WORD_COUNT_ARRAY')) {
+if (! defined('WORD_COUNT_ARRAY')) {
     define('WORD_COUNT_ARRAY', 1);
 }
-if (!defined('WORD_COUNT_ASSOCIATIVE_ARRAY')) {
+if (! defined('WORD_COUNT_ASSOCIATIVE_ARRAY')) {
     define('WORD_COUNT_ASSOCIATIVE_ARRAY', 2);
 }
 
+/**
+ * Constants used for Strings\countChars() => count_chars()
+ * https://www.php.net/manual/en/function.count-chars.php
+ */
+if (! defined('CHAR_COUNT_ARRAY')) {
+    define('CHAR_COUNT_ARRAY', 0);
+}
+
+if (! defined('CHAR_COUNT_ARRAY_UNIQUE')) {
+    define('CHAR_COUNT_ARRAY_UNIQUE', 1);
+}
+
+if (! defined('CHAR_COUNT_ARRAY_UNUSED')) {
+    define('CHAR_COUNT_ARRAY_UNUSED', 2);
+}
+
+if (! defined('CHAR_COUNT_STRING_UNIQUE')) {
+    define('CHAR_COUNT_STRING_UNIQUE', 3);
+}
+
+if (! defined('CHAR_COUNT_STRING_UNUSED')) {
+    define('CHAR_COUNT_STRING_UNUSED', 4);
+}
+
 // String function flags
-if (!defined('STRINGS_CASE_INSENSITIVE')) {
+if (! defined('STRINGS_CASE_INSENSITIVE')) {
     define('STRINGS_CASE_INSENSITIVE', 0x1);
 }
-if (!defined('STRINGS_CASE_SENSITIVE')) {
+if (! defined('STRINGS_CASE_SENSITIVE')) {
     define('STRINGS_CASE_SENSITIVE', 0x2);
 }
-if (!defined('STRINGS_BEFORE_NEEDLE')) {
+if (! defined('STRINGS_BEFORE_NEEDLE')) {
     define('STRINGS_BEFORE_NEEDLE', 0x4);
 }
-if (!defined('STRINGS_AFTER_NEEDLE')) {
+if (! defined('STRINGS_AFTER_NEEDLE')) {
     define('STRINGS_AFTER_NEEDLE', 0x8);
 }

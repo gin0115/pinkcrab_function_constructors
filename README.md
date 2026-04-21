@@ -92,7 +92,7 @@ $callback = F\compose(
    'trim',                                   // Remove all whitespace
    Str\slice(0, 20),                         // Remove all but first 20 chars          
    'ucfirst',                                // Uppercase each word
-   Str\prepend('...')                        // End the string with ...
+   Str\append('...')                        // End the string with ...
 );
 
 $results = array_map($callback, $data);
@@ -552,6 +552,47 @@ $sortBookByAuthor($dataBooks);
 ```
 ****
 
+### Iterable support (v1.0.0+)
+
+From `1.0.0` onwards, every data-transforming function in the `Arrays\` namespace accepts any `iterable` — arrays, `Generator`s, `Iterator`s, and any other `Traversable`. Two output contracts apply:
+
+- **Array in → array out.** Existing call sites keep returning arrays with identical shape. No breakage.
+- **Generator (or other Traversable) in → Generator out** for the *lazy* functions; *materialised* result (array / int / bool / string / object) for *terminal* functions.
+
+This lets you feed a `compose` / `pipe` chain a lazy source and keep it lazy end-to-end, until a terminal step collapses it:
+
+```php
+$pipeline = Func\compose(
+    Arr\filter(fn($x) => $x > 0),
+    Arr\map(fn($x) => $x * 10),
+    Arr\take(5)
+);
+
+// Array → array, unchanged:
+$pipeline([1, -2, 3, -4, 5, 6, 7]);        // [10, 30, 50, 60, 70]
+
+// Generator → Generator, lazy; source is only pulled far enough to yield 5 values:
+$bigStream = (function () { $i = 1; while (true) { yield $i++; } })();
+foreach ($pipeline($bigStream) as $v) { echo "$v\n"; } // 10, 20, 30, 40, 50
+```
+
+#### Which functions are lazy?
+
+| Category | Functions |
+|---|---|
+| **Lazy** (yield Generator for iterable input) | `append`, `prepend`, `tail`, `head` (early-exit), `map`, `mapKey`, `mapWith`, `mapWithKey`, `filter`, `filterKey`, `filterAnd`, `filterOr`, `filterMap`, `take`, `takeUntil`, `takeWhile`, `zip`, `chunk`, `column`, `flatMap`, `flattenByN`, `scan`, `scanR` |
+| **Short-circuit terminal** (don't fully consume when they can bail early) | `filterFirst`, `filterAll`, `filterAny`, `head` |
+| **Full-consume terminal** (materialise to produce a result) | `last`, `takeLast`, `filterLast`, `filterCount`, `partition`, `groupBy`, `toString`, `toObject`, `toJson`, `sumWhere`, `pick`, `replace`, `replaceRecursive`, `fold`, `foldR`, `foldKeys`, all `sort` variants |
+
+#### Caveats
+
+1. **Generators are single-shot.** Once exhausted they cannot be rewound. Iterating a pipeline result twice yields empty on the second pass — this is a PHP Generator fact of life, not a library choice.
+2. **Infinite Generators work with early-exit pipelines** (`head`, `take`, `filterFirst`, `filterAll` on first false, `filterAny` on first true). They hang forever with full-consume terminals (`sort`, `fold`, `groupBy`, etc.) — that's your call, not ours.
+3. **Key collisions** when materialising a Generator to an array (inside terminal fns) follow PHP's native behaviour: duplicate keys overwrite earlier values.
+4. **`tail` on an empty Generator** yields an empty Generator rather than returning `null` (the array-path behaviour for empty input). The array path is unchanged.
+
+****
+
 ### Contributions
 
 If you would like to contribute to this project, please feel to fork the project on github and submit a pull request.
@@ -563,12 +604,38 @@ If you would like to contribute to this project, please feel to fork the project
 ## Changes
 
 * 1.0.0
-   * **Breaking Changes**
-   * Removed deprecated typo-alias functions. Use the correctly-spelled versions:
-     * `Strings\decimialNumber()` → `Strings\decimalNumber()`
-     * `Strings\similarAsComparisson()` → `Strings\similarAsComparison()`
-     * `Strings\firstPosistion()` → `Strings\firstPosition()`
-     * `Strings\lastPosistion()` → `Strings\lastPosition()`
+  * **New Functions**
+  * `Strings\digit()` — replaces `Strings\decimalNumber()`.
+  * `Strings\similar()` — replaces `Strings\similarAsBase()` / `Strings\similarAsComparison()`.
+  * `Strings\compare()`.
+  * `Strings\countChars()` now has mode constants (`CHAR_COUNT_ARRAY`, `CHAR_COUNT_ARRAY_UNIQUE`, `CHAR_COUNT_ARRAY_UNUSED`).
+  * `Arrays\last()` — returns the last element of an array.
+  * `Arrays\append()` — replaces `Arrays\pushTail()`.
+  * `Arrays\prepend()` — replaces `Arrays\pushHead()`.
+  * `Arrays\pick()` — picks a subset of keys from an array.
+  * `GeneralFunctions\sideEffect()` — runs a callable for its side effect and returns the input unchanged; handy for debug/log taps in compose/pipe chains.
+  * **Breaking Changes — all deprecated functions removed**
+  * Typo-alias functions removed:
+    * `Strings\decimialNumber()` → use `Strings\digit()`
+    * `Strings\similarAsComparisson()` → use `Strings\similar()`
+    * `Strings\firstPosistion()` → use `Strings\firstPosition()`
+    * `Strings\lastPosistion()` → use `Strings\lastPosition()`
+  * Previously-deprecated functions removed:
+    * `Strings\decimalNumber()` → use `Strings\digit()`
+    * `Strings\similarAsBase()` → use `Strings\similar()`
+    * `Strings\similarAsComparison()` → use `Strings\similar()`
+    * `Arrays\pushHead()` → use `Arrays\prepend()`
+    * `Arrays\pushTail()` → use `Arrays\append()`
+    * `GeneralFunctions\toArray()` → use `Objects\toArray()`
+  * `Arrays\tail()` now works as expected, returning the array without the first element.
+  * `Strings\allowTags()` now accepts an array of allowed tags even for pre PHP 7.4.
+  * **Iterable support**
+  * Every data-transforming `Arrays\*` function now accepts any `iterable` — arrays, `Generator`s, `Iterator`s, any `Traversable` — not just `array`. See the "Iterable support" section above for the full contract, the lazy/terminal classification, and the gotchas (single-shot Generators, infinite streams, key collisions, `tail` on empty).
+  * Lazy functions (`map`, `filter`, `take`, `chunk`, `zip`, `flatMap`, `scan`, …) return a `Generator` for `Traversable` input and an `array` for `array` input — pipelines stay lazy end-to-end when the source is lazy, and fully backward-compatible when the source is an array.
+  * **Other Changes**
+  * Made `Arrays\filterFirst()` and `Arrays\filterLast()` more efficient.
+  * Bumped dev deps: phpstan `^1.0 || ^2.0`, phpunit `^7.5 || ^8.5 || ^9.6`, phpunit-polyfills `^1.0 || ^2.0 || ^4.0`.
+  * CI matrix expanded to PHP 7.1 through 8.5; Codecov upload restricted to the PHP 8.5 job.
 
 * 0.2.0 - 
    * **New Functions**

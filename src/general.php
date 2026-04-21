@@ -93,7 +93,7 @@ function composeSafe(callable ...$callables): Closure
      */
     return function ($e) use ($callables) {
         foreach ($callables as $callable) {
-            if (! is_null($e)) {
+            if (!is_null($e)) {
                 $e = $callable($e);
             }
         }
@@ -119,14 +119,14 @@ function composeTypeSafe(callable $validator, callable ...$callables): Closure
     return function ($e) use ($validator, $callables) {
         foreach ($callables as $callable) {
             // If invalid, abort and return null
-            if (! $validator($e)) {
+            if (!$validator($e)) {
                 return null;
             }
             // Run through callable.
             $e = $callable($e);
 
             // Check results and bail if invalid type.
-            if (! $validator($e)) {
+            if (!$validator($e)) {
                 return null;
             }
         }
@@ -174,7 +174,7 @@ function getProperty(string $property): Closure
      */
     return function ($data) use ($property) {
         if (is_array($data)) {
-            return array_key_exists($property, $data) ? $data[ $property ] : null;
+            return array_key_exists($property, $data) ? $data[$property] : null;
         } elseif (is_object($data)) {
             return property_exists($data, $property) ? $data->{$property} : null;
         } else {
@@ -265,13 +265,13 @@ function propertyEquals(string $property, $value): Closure
  * Only works for public or dynamic properties.
  *
  * @param array<string,mixed>|ArrayObject<string,mixed>|object $store
-     * @param string $property The property key.
+ * @param string $property The property key.
  * @return Closure(mixed):(array<string,mixed>|ArrayObject<string,mixed>|object)
  */
 function setProperty($store, string $property): Closure
 {
     // If passed store is not an array or object, throw exception.
-    if (! isArrayAccess($store) && ! is_object($store)) {
+    if (!isArrayAccess($store) && !is_object($store)) {
         throw new TypeError('Only objects or arrays can be constructed using setProperty.');
     }
 
@@ -282,7 +282,7 @@ function setProperty($store, string $property): Closure
     return function ($value) use ($store, $property) {
         if (isArrayAccess($store)) {
             /** @phpstan-ignore-next-line */
-            $store[ $property ] = $value;
+            $store[$property] = $value;
         } else {
             $store->{$property} = $value;
         }
@@ -306,7 +306,7 @@ function encodeProperty(string $key, callable $value): Closure
      * @return array
      */
     return function ($data) use ($key, $value): array {
-        return array( $key => $value($data) );
+        return array($key => $value($data));
     };
 }
 
@@ -378,22 +378,6 @@ function always($value): Closure
 }
 
 /**
- * Returns a function for turning objects into arrays.
- * Only takes public properties.
- *
- * This has been moved to PinkCrab\FunctionConstructors\Objects\toArray()
- *
- * This will be removed in later versions.
- *
- * @return Closure(object):array<string, mixed>
- * @deprecated 0.2.0 Use PinkCrab\FunctionConstructors\Objects\toArray()
- */
-function toArray(): Closure
-{
-    return Objects\toArray();
-}
-
-/**
  * Creates a function which will validate the data through a condition callable, then return
  * the results of passing the data through the callback.
  *
@@ -434,5 +418,29 @@ function ifElse(callable $condition, callable $then, callable $else): Closure
         return true === (bool) $condition($value)
             ? $then($value)
             : $else($value);
+    };
+}
+
+/**
+ * Creates a closure that calls the given interceptor for its side effect
+ * and returns the original input value unchanged. Useful for inserting
+ * debug or logging steps into a compose/pipe chain without breaking it.
+ *
+ * @param mixed $interceptor Any callable — string function name, Closure, array callable, or invokable object.
+ * @return Closure A closure that applies $interceptor to the value and returns the value unchanged.
+ * @throws \TypeError If $interceptor is not callable.
+ */
+function sideEffect($interceptor): Closure
+{
+    if (! is_callable($interceptor)) {
+        throw new \TypeError('sideEffect interceptor must be callable');
+    }
+    /**
+     * @param  mixed $value
+     * @return mixed
+     */
+    return function ($value) use ($interceptor) {
+        $interceptor($value);
+        return $value;
     };
 }

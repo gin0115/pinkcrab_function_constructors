@@ -40,7 +40,7 @@ class DocsExampleTest extends TestCase
         // we know that the indexes, but maybe not values, match.
         // compare the values between the two arrays
         foreach ($a as $k => $v) {
-            if ($v !== $b[$k]) {
+            if ($v !== $b[ $k ]) {
                 return false;
             }
         }
@@ -52,7 +52,7 @@ class DocsExampleTest extends TestCase
     /** @testdox README : Pipe Example -- Remove all odd numbers, sort in an acceding order and double the value. */
     public function testReadmePipeArrayOfInts(): void
     {
-        $data = array(0, 3, 4, 5, 6, 8, 4, 6, 8, 1, 3, 4);
+        $data = array( 0, 3, 4, 5, 6, 8, 4, 6, 8, 1, 3, 4 );
 
         // Remove all odd numbers, sort in an acceding order and double the value.
         $newData = F\pipe(
@@ -86,8 +86,8 @@ class DocsExampleTest extends TestCase
         );
 
         $data = array(
-            array('details' => array('description' => '   This is some description   ')),
-            array('details' => array('description' => '    This is some other description     ')),
+            array( 'details' => array( 'description' => '   This is some description   ' ) ),
+            array( 'details' => array( 'description' => '    This is some other description     ' ) ),
         );
 
         $expected = array(
@@ -132,15 +132,15 @@ class DocsExampleTest extends TestCase
         // Get all users with +2 timezone.
         $zonePlus2 = array_filter($data, F\propertyEquals('timezone', '+2'));
         $this->assertCount(2, $zonePlus2);
-        $this->assertEquals(array(3, 4), array_column($zonePlus2, 'id'));
+        $this->assertEquals(array( 3, 4 ), array_column($zonePlus2, 'id'));
 
         // Get all users who have special index.
         $special = array_filter($data, F\hasProperty('special'));
         $this->assertCount(2, $zonePlus2);
-        $this->assertEquals(array(2, 4), array_column($special, 'id'));
+        $this->assertEquals(array( 2, 4 ), array_column($special, 'id'));
 
         $colours = array_map(F\getProperty('colour'), $data);
-        $results = array('red', 'red', 'green', 'blue'); // Expected results.
+        $results = array( 'red', 'red', 'green', 'blue' ); // Expected results.
         $this->assertEquals($results, $colours);
     }
 
@@ -156,7 +156,7 @@ class DocsExampleTest extends TestCase
         $this->assertEquals('new value', $object->key);
 
         // Set array index.
-        $array          = array('key' => 'default');
+        $array          = array( 'key' => 'default' );
         $setKeyOfSArray = F\setProperty($array, 'key');
         $array          = $setKeyOfSArray('new value');
         $this->assertEquals('new value', $array['key']);
@@ -191,27 +191,51 @@ class DocsExampleTest extends TestCase
     public function testFirstFoo(): void
     {
         $firstFoo = Str\firstPosition('foo');
-        $result = $firstFoo('abcdefoog');
+        $result   = $firstFoo('abcdefoog');
         $this->assertEquals(5, $result);
     }
 
     /** @testdox README : Use takeWhile() and takeUntil() with games data */
     public function testTakeWhileTakeUntil(): void
     {
-        $games = [
-            ['id' => 1, 'result' => 'loss'],
-            ['id' => 2, 'result' => 'loss'],
-            ['id' => 3, 'result' => 'win'],
-            ['id' => 4, 'result' => 'win'],
-            ['id' => 5, 'result' => 'loss'],
-        ];
+        $games = array(
+            array(
+                'id'     => 1,
+                'result' => 'loss',
+            ),
+            array(
+                'id'     => 2,
+                'result' => 'loss',
+            ),
+            array(
+                'id'     => 3,
+                'result' => 'win',
+            ),
+            array(
+                'id'     => 4,
+                'result' => 'win',
+            ),
+            array(
+                'id'     => 5,
+                'result' => 'loss',
+            ),
+        );
 
         // All the games until the first win using takeWhile
         $initialLoosingStreak = Arr\takeWhile(
             F\propertyEquals('result', 'loss')
         );
         $this->assertEquals(
-            [['id' => 1, 'result' => 'loss'], ['id' => 2, 'result' => 'loss']],
+            array(
+                array(
+                    'id'     => 1,
+                    'result' => 'loss',
+                ),
+                array(
+                    'id'     => 2,
+                    'result' => 'loss',
+                ),
+            ),
             $initialLoosingStreak($games)
         );
 
@@ -220,7 +244,16 @@ class DocsExampleTest extends TestCase
             F\propertyEquals('result', 'win')
         );
         $this->assertEquals(
-            [['id' => 1, 'result' => 'loss'], ['id' => 2, 'result' => 'loss']],
+            array(
+                array(
+                    'id'     => 1,
+                    'result' => 'loss',
+                ),
+                array(
+                    'id'     => 2,
+                    'result' => 'loss',
+                ),
+            ),
             $untilFirstWin($games)
         );
     }
@@ -228,28 +261,49 @@ class DocsExampleTest extends TestCase
     /** @testdox README : Use fold and scan with payments */
     public function testArrayFoldAndScanWithPayments(): void
     {
-        $payments = [
-            ['type' => 'card', 'amount' => 12.53],
-            ['type' => 'cash', 'amount' => 21.95],
-            ['type' => 'card', 'amount' => 1.99],
-            ['type' => 'cash', 'amount' => 4.50],
-            ['type' => 'cash', 'amount' => 21.50],
-        ];
+        $payments = array(
+            array(
+                'type'   => 'card',
+                'amount' => 12.53,
+            ),
+            array(
+                'type'   => 'cash',
+                'amount' => 21.95,
+            ),
+            array(
+                'type'   => 'card',
+                'amount' => 1.99,
+            ),
+            array(
+                'type'   => 'cash',
+                'amount' => 4.50,
+            ),
+            array(
+                'type'   => 'cash',
+                'amount' => 21.50,
+            ),
+        );
 
-        $allCash = Arr\fold(function ($total, $payment) {
-            if ($payment['type'] === 'cash') {
-                $total += $payment['amount'];
-            }
-            return $total;
-        }, 0.00);
+        $allCash = Arr\fold(
+            function ($total, $payment) {
+                if ($payment['type'] === 'cash') {
+                    $total += $payment['amount'];
+                }
+                return $total;
+            },
+            0.00
+        );
 
         $this->assertEquals(47.95, $allCash($payments));
 
-        $runningTotal = Arr\scan(function ($runningTotal, $payment) {
-            $runningTotal += $payment['amount'];
-            return $runningTotal;
-        }, 0.00);
-        $expected = [0.0, 12.53, 34.48, 36.47, 40.97, 62.47];
+        $runningTotal = Arr\scan(
+            function ($runningTotal, $payment) {
+                $runningTotal += $payment['amount'];
+                return $runningTotal;
+            },
+            0.00
+        );
+        $expected     = array( 0.0, 12.53, 34.48, 36.47, 40.97, 62.47 );
 
         $this->assertEquals($expected, $runningTotal($payments));
     }
@@ -257,102 +311,130 @@ class DocsExampleTest extends TestCase
     /** @testdox README : use groupBy and Partition*/
     public function testGroupByAndPartition(): void
     {
-        $data = [
-            ['id' => 1, 'name' => 'John', 'age' => 20, 'someMetric' => 'A12'],
-            ['id' => 2, 'name' => 'Jane', 'age' => 21, 'someMetric' => 'B10'],
-            ['id' => 3, 'name' => 'Joe', 'age' => 20, 'someMetric' => 'C15'],
-            ['id' => 4, 'name' => 'Jack', 'age' => 18, 'someMetric' => 'B10'],
-            ['id' => 5, 'name' => 'Jill', 'age' => 22, 'someMetric' => 'A12'],
-        ];
-
+        $data = array(
+            array(
+                'id'         => 1,
+                'name'       => 'John',
+                'age'        => 20,
+                'someMetric' => 'A12',
+            ),
+            array(
+                'id'         => 2,
+                'name'       => 'Jane',
+                'age'        => 21,
+                'someMetric' => 'B10',
+            ),
+            array(
+                'id'         => 3,
+                'name'       => 'Joe',
+                'age'        => 20,
+                'someMetric' => 'C15',
+            ),
+            array(
+                'id'         => 4,
+                'name'       => 'Jack',
+                'age'        => 18,
+                'someMetric' => 'B10',
+            ),
+            array(
+                'id'         => 5,
+                'name'       => 'Jill',
+                'age'        => 22,
+                'someMetric' => 'A12',
+            ),
+        );
 
         // Group by a property
-        $groupedByMetric = Arr\groupBy(function ($item) {
-            return $item['someMetric'];
-        });
+        $groupedByMetric = Arr\groupBy(
+            function ($item) {
+                return $item['someMetric'];
+            }
+        );
 
-        $expected = [
-            "A12" =>  [
-                [
-                    "id" => 1,
-                    "name" => "John",
-                    "age" => 20,
-                    "someMetric" => "A12"
-                ],
-                [
-                    "id" => 5,
-                    "name" => "Jill",
-                    "age" => 22,
-                    "someMetric" => "A12"
-                ]
-            ],
-            "B10" =>  [
-                [
-                    "id" => 2,
-                    "name" => "Jane",
-                    "age" => 21,
-                    "someMetric" => "B10"
-                ],
-                [
-                    "id" => 4,
-                    "name" => "Jack",
-                    "age" => 18,
-                    "someMetric" => "B10"
-                ]
-            ],
-            "C15" =>  [
-                [
-                    "id" => 3,
-                    "name" => "Joe",
-                    "age" => 20,
-                    "someMetric" => "C15",
-                ]
-            ]
-        ];
+        $expected = array(
+            'A12' => array(
+                array(
+                    'id'         => 1,
+                    'name'       => 'John',
+                    'age'        => 20,
+                    'someMetric' => 'A12',
+                ),
+                array(
+                    'id'         => 5,
+                    'name'       => 'Jill',
+                    'age'        => 22,
+                    'someMetric' => 'A12',
+                ),
+            ),
+            'B10' => array(
+                array(
+                    'id'         => 2,
+                    'name'       => 'Jane',
+                    'age'        => 21,
+                    'someMetric' => 'B10',
+                ),
+                array(
+                    'id'         => 4,
+                    'name'       => 'Jack',
+                    'age'        => 18,
+                    'someMetric' => 'B10',
+                ),
+            ),
+            'C15' => array(
+                array(
+                    'id'         => 3,
+                    'name'       => 'Joe',
+                    'age'        => 20,
+                    'someMetric' => 'C15',
+                ),
+            ),
+        );
 
         $this->assertSame($expected, $groupedByMetric($data));
 
         // Partition using a predicate function.
-        $over21 = Arr\partition(function ($item) {
-            return $item['age'] >= 21;
-        });
+        $over21 = Arr\partition(
+            function ($item) {
+                return $item['age'] >= 21;
+            }
+        );
 
-        $expected = [
-            0 => [
-                [
-                    "id" => 1,
-                    "name" => "John",
-                    "age" => 20,
-                    "someMetric" => "A12"
-                ],
-                [
-                    "id" => 3,
-                    "name" => "Joe",
-                    "age" => 20,
-                    "someMetric" => "C15"
-                ],
-                [
-                    "id" => 4,
-                    "name" => "Jack",
-                    "age" => 18,
-                    "someMetric" => "B10"
-                ]
-            ],
-            1 => [
-                [
-                    "id" => 2,
-                    "name" => "Jane",
-                    "age" => 21,
-                    "someMetric" => "B10"
-                ],
-                [
-                    "id" => 5,
-                    "name" => "Jill",
-                    "age" => 22,
-                    "someMetric" => "A12"
-                ]
-            ]
-        ];
+        $expected = array(
+            0 => array(
+                array(
+                    'id'         => 1,
+                    'name'       => 'John',
+                    'age'        => 20,
+                    'someMetric' => 'A12',
+                ),
+                array(
+                    'id'         => 3,
+                    'name'       => 'Joe',
+                    'age'        => 20,
+                    'someMetric' => 'C15',
+                ),
+                array(
+                    'id'         => 4,
+                    'name'       => 'Jack',
+                    'age'        => 18,
+                    'someMetric' => 'B10',
+                ),
+            ),
+            1 => array(
+                array(
+                    'id'         => 2,
+                    'name'       => 'Jane',
+                    'age'        => 21,
+                    'someMetric' => 'B10',
+                ),
+                array(
+                    'id'         => 5,
+                    'name'       => 'Jill',
+                    'age'        => 22,
+                    'someMetric' => 'A12',
+                ),
+            ),
+        );
 
         $this->assertSame($expected, $over21($data));
     }
@@ -360,40 +442,98 @@ class DocsExampleTest extends TestCase
     /** @testdox README : use sort, ksort and uasort */
     public function testArraySort(): void
     {
-        $dataWords = ['Zoo', 'cat', 'Dog', 'ant', 'bat', 'Cow'];
+        $dataWords = array( 'Zoo', 'cat', 'Dog', 'ant', 'bat', 'Cow' );
         $sortWords = Arr\sort(SORT_STRING | SORT_FLAG_CASE);
 
-        $expected = ['ant', 'bat', 'cat', 'Cow', 'Dog', 'Zoo'];
+        $expected = array( 'ant', 'bat', 'cat', 'Cow', 'Dog', 'Zoo' );
         $this->assertSame($expected, $sortWords($dataWords));
 
-
-        $dataBooks = [
-            'ehJF89' => ['id' => 'ehjf89', 'title' => 'Some title', 'author' => 'Adam James'],
-            'Retg23' => ['id' => 'retg23', 'title' => 'A Title', 'author' => 'Jane Jones'],
-            'fvbI43' => ['id' => 'fvbi43', 'title' => 'Some title words', 'author' => 'Sam Smith'],
-            'MggEd3' => ['id' => 'mgged3', 'title' => 'Book', 'author' => 'Will Adams'],
-        ];
+        $dataBooks = array(
+            'ehJF89' => array(
+                'id'     => 'ehjf89',
+                'title'  => 'Some title',
+                'author' => 'Adam James',
+            ),
+            'Retg23' => array(
+                'id'     => 'retg23',
+                'title'  => 'A Title',
+                'author' => 'Jane Jones',
+            ),
+            'fvbI43' => array(
+                'id'     => 'fvbi43',
+                'title'  => 'Some title words',
+                'author' => 'Sam Smith',
+            ),
+            'MggEd3' => array(
+                'id'     => 'mgged3',
+                'title'  => 'Book',
+                'author' => 'Will Adams',
+            ),
+        );
 
         // Sort the books by key
         $sortBookByKey = Arr\ksort(SORT_STRING | SORT_FLAG_CASE);
-        $expected = [
-            'ehJF89' => ['id' => 'ehjf89', 'title' => 'Some title', 'author' => 'Adam James'],
-            'fvbI43' => ['id' => 'fvbi43', 'title' => 'Some title words', 'author' => 'Sam Smith'],
-            'MggEd3' => ['id' => 'mgged3', 'title' => 'Book', 'author' => 'Will Adams'],
-            'Retg23' => ['id' => 'retg23', 'title' => 'A Title', 'author' => 'Jane Jones'],
-        ];
+        $expected      = array(
+            'ehJF89' => array(
+                'id'     => 'ehjf89',
+                'title'  => 'Some title',
+                'author' => 'Adam James',
+            ),
+            'fvbI43' => array(
+                'id'     => 'fvbi43',
+                'title'  => 'Some title words',
+                'author' => 'Sam Smith',
+            ),
+            'MggEd3' => array(
+                'id'     => 'mgged3',
+                'title'  => 'Book',
+                'author' => 'Will Adams',
+            ),
+            'Retg23' => array(
+                'id'     => 'retg23',
+                'title'  => 'A Title',
+                'author' => 'Jane Jones',
+            ),
+        );
         $this->assertSame($expected, $sortBookByKey($dataBooks));
 
         // Sort by author
-        $sortBookByAuthor = Arr\uasort(function ($a, $b) {
-            return strcmp($a['author'], $b['author']);
-        });
-        $expected = [
-            'ehJF89' => ['id' => 'ehjf89', 'title' => 'Some title', 'author' => 'Adam James'],
-            'Retg23' => ['id' => 'retg23', 'title' => 'A Title', 'author' => 'Jane Jones'],
-            'fvbI43' => ['id' => 'fvbi43', 'title' => 'Some title words', 'author' => 'Sam Smith'],
-            'MggEd3' => ['id' => 'mgged3', 'title' => 'Book', 'author' => 'Will Adams'],
-        ];
+        $sortBookByAuthor = Arr\uasort(
+            function ($a, $b) {
+                return strcmp($a['author'], $b['author']);
+            }
+        );
+        $expected         = array(
+            'ehJF89' => array(
+                'id'     => 'ehjf89',
+                'title'  => 'Some title',
+                'author' => 'Adam James',
+            ),
+            'Retg23' => array(
+                'id'     => 'retg23',
+                'title'  => 'A Title',
+                'author' => 'Jane Jones',
+            ),
+            'fvbI43' => array(
+                'id'     => 'fvbi43',
+                'title'  => 'Some title words',
+                'author' => 'Sam Smith',
+            ),
+            'MggEd3' => array(
+                'id'     => 'mgged3',
+                'title'  => 'Book',
+                'author' => 'Will Adams',
+            ),
+        );
         $this->assertSame($expected, $sortBookByAuthor($dataBooks));
+    }
+
+    /** @testdox - Github Page Docs : String\replaceSubString() */
+    public function testStringReplaceSubString(): void
+    {
+        $this->assertSame('Thi...', Str\replaceSubString('...', 3)('This is an example'));
+        $this->assertSame('This is an exam...', Str\replaceSubString('...', -3)('This is an example'));
+        $this->assertSame('This ... an example', Str\replaceSubString('...', 5, 2)('This is an example'));
+        $this->assertSame('This ...', Str\replaceSubString('...', 5, 0)('This is an example'));
     }
 }

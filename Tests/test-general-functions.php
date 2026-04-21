@@ -288,36 +288,6 @@ class GeneralFunctionTest extends TestCase
         $this->assertEquals(69, $doubleAnyNumber(7));
     }
 
-    public function testCanUseToArrayForObjects()
-    {
-        // Create the simple to array wrapper.
-        $toArrray = Func\toArray();
-
-        // Test with valid stdClass.
-        $obj        = new stdClass();
-        $obj->propA = 1;
-        $obj->propB = 2;
-        $this->assertArrayHasKey('propA', $toArrray($obj));
-        $this->assertEquals(1, $toArrray($obj)['propA']);
-        $this->assertArrayHasKey('propB', $toArrray($obj));
-        $this->assertEquals(2, $toArrray($obj)['propB']);
-
-        // Test only valid public properties.
-        $obj = new ToArrayFixtureClass();
-        $this->assertArrayNotHasKey('propA', $toArrray($obj));
-        $this->assertArrayNotHasKey('propB', $toArrray($obj));
-        $this->assertArrayHasKey('propC', $toArrray($obj));
-        $this->assertEquals(3, $toArrray($obj)['propC']);
-
-        // Check it returns blank array if any other value passed.
-        $this->assertEmpty($toArrray(false));
-        $this->assertEmpty($toArrray(null));
-        $this->assertEmpty($toArrray(array( 1, 2, 3, 4 )));
-        $this->assertEmpty($toArrray(1));
-        $this->assertEmpty($toArrray(2.5));
-        $this->assertEmpty($toArrray('STRING'));
-    }
-
     /** @testdox It should be possible to create a simple if statement, which can be preloaded and used as part of currying */
     public function testIfThen(): void
     {
@@ -394,7 +364,7 @@ class GeneralFunctionTest extends TestCase
     {
         // Array
         $setName = Func\setProperty(array('id' => 1), 'name');
-        $this->assertEquals(array( 'id' => 1,'name' => 'bar' ), $setName('bar'));
+        $this->assertEquals(array('id' => 1,'name' => 'bar'), $setName('bar'));
 
         // Object with ArrayAccess
         $instance = ObjectFactory::arrayAccess();
@@ -502,5 +472,30 @@ class GeneralFunctionTest extends TestCase
         $encoder = Func\recordEncoder(new stdClass());
         $encoder = $encoder(Func\encodeProperty('0', Func\getProperty('userId')));
         $encoder(array( 'userId' => 1, 'userName' => 'foo' ));
+    }
+
+    /** @testdox sideEffect should call the interceptor with the value and return the value unchanged */
+    public function testSideEffectWithClosure(): void
+    {
+        $captured = null;
+        $tap = Func\sideEffect(function ($value) use (&$captured) {
+            $captured = $value;
+        });
+        $this->assertEquals('hello', $tap('hello'));
+        $this->assertEquals('hello', $captured);
+    }
+
+    /** @testdox sideEffect should accept a string function name as the interceptor */
+    public function testSideEffectWithStringCallable(): void
+    {
+        $tap = Func\sideEffect('strtoupper');
+        $this->assertEquals('hello', $tap('hello'));
+    }
+
+    /** @testdox sideEffect should throw a TypeError when the interceptor is not callable */
+    public function testSideEffectThrowsOnNonCallable(): void
+    {
+        $this->expectException(TypeError::class);
+        Func\sideEffect(123);
     }
 }
