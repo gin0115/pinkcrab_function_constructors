@@ -699,25 +699,22 @@ function mapWithKey(callable $func): Closure
 }
 
 /**
- * Returns a Closure foreaching over an array
+ * Returns a Closure that iterates over an array or iterable, invoking the
+ * callback with each ($key, $value) pair for its side effect.
  *
  * @param callable(int|string $key, mixed $value):void $func
- * @return Closure(mixed[]):void
+ * @return Closure(iterable<int|string, mixed>):void
  */
 function each(callable $func): Closure
 {
     /**
-     * @param mixed[] $array The array to map
+     * @param iterable<int|string, mixed> $source
      * @return void
      */
-    return function (array $array) use ($func): void {
-        array_map(
-            function ($key, $value) use ($func) {
-                $func($key, $value);
-            },
-            array_keys($array),
-            $array
-        );
+    return function (iterable $source) use ($func): void {
+        foreach ($source as $key => $value) {
+            $func($key, $value);
+        }
     };
 }
 

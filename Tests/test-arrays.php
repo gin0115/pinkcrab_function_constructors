@@ -962,6 +962,19 @@ class ArrayFunctionTests extends TestCase
         $iterate($data);
     }
 
+    /** @testdox each() accepts any iterable and invokes the callback with each (key, value) pair from a Generator source. */
+    public function testEachAcceptsGenerator(): void
+    {
+        $collected = array();
+        $iterate   = Arr\each(function ($key, $value) use (&$collected): void {
+            $collected[$key] = $value;
+        });
+
+        $iterate(self::gen(array('a' => 1, 'b' => 2, 'c' => 3)));
+
+        $this->assertSame(array('a' => 1, 'b' => 2, 'c' => 3), $collected);
+    }
+
     /** @testdox It should be possible to create a function that is populated with a filter predicate, which when used on an array will return a count of matching values. */
     public function testCountBy(): void
     {
