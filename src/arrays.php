@@ -95,43 +95,74 @@ function prepend($value): Closure
 }
 
 /**
- * Gets the first value from an array.
+ * Gets the first value from an array or iterable. For Generators this is a
+ * genuine early-exit — the rest of the stream is NOT consumed.
  *
- * @param array<int|string, mixed> $array The array.
- * @return mixed Will return the first value is array is not empty, else null.
+ * @param iterable<int|string, mixed> $source The array or iterable.
+ * @return mixed The first value, or null if empty.
  */
-function head(array $array)
+function head(iterable $source)
 {
-    return !empty($array) ? array_values($array)[0] : null;
-}
-
-/**
- * Gets the last value from an array.
- *
- * @param array<int|string, mixed> $array The array.
- * @return mixed Will return the last value is array is not empty, else null.
- */
-function last(array $array)
-{
-    return !empty($array) ? array_reverse($array, false)[0] : null;
-}
-
-/**
- * Gets the remainder values from an array, after first item removed.
- *
- * @param array<int|string, mixed> $array
- * @return array<int|string, mixed>|null Will return the first value is array is not empty, else null.
- */
-function tail(array $array)
-{
-    // Return null if empty.
-    if (empty($array)) {
-        return null;
+    if (is_array($source)) {
+        return ! empty($source) ? array_values($source)[0] : null;
     }
+    foreach ($source as $value) {
+        return $value;
+    }
+    return null;
+}
 
-    // Remove the first item from the array.
-    array_shift($array);
-    return $array;
+/**
+ * Gets the last value from an array or iterable. For a Generator the whole
+ * stream is consumed (there is no way to know the last value without doing so).
+ *
+ * @param iterable<int|string, mixed> $source The array or iterable.
+ * @return mixed The last value, or null if empty.
+ */
+function last(iterable $source)
+{
+    if (is_array($source)) {
+        return ! empty($source) ? array_reverse($source, false)[0] : null;
+    }
+    $last  = null;
+    $found = false;
+    foreach ($source as $value) {
+        $last  = $value;
+        $found = true;
+    }
+    return $found ? $last : null;
+}
+
+/**
+ * Gets the remainder of an array or iterable after the first element is removed.
+ *
+ * - Array in  → new array with the first element dropped, or null if empty (unchanged behaviour).
+ * - Generator/Traversable in → Generator that lazily yields every element after
+ *   the first. For an empty Generator source the returned Generator is empty
+ *   (NOT null — this is the one documented API divergence from the array path).
+ *
+ * @param iterable<int|string, mixed> $source
+ * @return array<int|string, mixed>|\Generator<int|string, mixed>|null
+ */
+function tail(iterable $source)
+{
+    if (is_array($source)) {
+        if (empty($source)) {
+            return null;
+        }
+        array_shift($source);
+        return $source;
+    }
+    return (function () use ($source) {
+        $first = true;
+        foreach ($source as $key => $value) {
+            if ($first) {
+                $first = false;
+                continue;
+            }
+            yield $key => $value;
+        }
+    })();
 }
 
 

@@ -172,6 +172,41 @@ class ArrayFunctionTests extends TestCase
         $this->assertNull(Arr\head(array()));
     }
 
+    /** @testdox head() accepts any iterable. For a Generator it returns the first yielded value without consuming the rest. */
+    public function testHeadAcceptsGenerator(): void
+    {
+        $this->assertSame('first', Arr\head(self::gen(array('first', 'second', 'third'))));
+        $this->assertNull(Arr\head(self::gen(array())));
+    }
+
+    /** @testdox head() must not consume the source Generator beyond the first yielded value. */
+    public function testHeadIsLazyOverGenerator(): void
+    {
+        // Source throws the moment index 1 is requested. head() should return
+        // the first value without ever advancing to trip the throw.
+        $src = self::genThrowAt(array('ok'), 1);
+        $this->assertSame('ok', Arr\head($src));
+    }
+
+    /** @testdox last() accepts any iterable and returns the final value (materialises Generators). */
+    public function testLastAcceptsGenerator(): void
+    {
+        $this->assertSame('third', Arr\last(self::gen(array('first', 'second', 'third'))));
+        $this->assertNull(Arr\last(self::gen(array())));
+    }
+
+    /** @testdox tail() over a Generator lazily yields every element after the first. Empty Generator yields an empty Generator (not null). */
+    public function testTailAcceptsGenerator(): void
+    {
+        $result = Arr\tail(self::gen(array(1, 2, 3, 4)));
+        $this->assertInstanceOf(\Generator::class, $result);
+        $this->assertSame(array(2, 3, 4), iterator_to_array($result, false));
+
+        $empty = Arr\tail(self::gen(array()));
+        $this->assertInstanceOf(\Generator::class, $empty);
+        $this->assertSame(array(), iterator_to_array($empty, false));
+    }
+
     public function testCanCompileArray(): void
     {
         $arrayCompiler = Arr\arrayCompiler();
