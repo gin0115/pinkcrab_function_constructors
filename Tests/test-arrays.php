@@ -785,6 +785,52 @@ class ArrayFunctionTests extends TestCase
         $this->assertEquals($data, $takeWhile($data));
     }
 
+    /** @testdox take() should return a lazy Generator that stops after N items without consuming the source further. */
+    public function testTakeReturnsGeneratorForGeneratorInput(): void
+    {
+        // Generator throws if asked for index 2. take(2) should consume only
+        // indices 0 and 1 and succeed.
+        $src    = self::genThrowAt(array('a', 'b', 'c', 'd'), 2);
+        $result = Arr\take(2)($src);
+
+        $this->assertInstanceOf(\Generator::class, $result);
+        $this->assertSame(array('a', 'b'), iterator_to_array($result, false));
+    }
+
+    /** @testdox take(0) over a Generator yields an empty Generator. */
+    public function testTakeZeroOverGeneratorYieldsEmpty(): void
+    {
+        $result = Arr\take(0)(self::gen(array('a', 'b', 'c')));
+
+        $this->assertInstanceOf(\Generator::class, $result);
+        $this->assertSame(array(), iterator_to_array($result, false));
+    }
+
+    /** @testdox takeUntil() should return a lazy Generator that stops at the first value where the predicate returns true. */
+    public function testTakeUntilReturnsGeneratorForGeneratorInput(): void
+    {
+        // Predicate is "value === 'STOP'". Source throws at index 3 — if
+        // takeUntil is properly lazy, it stops at index 2 ('STOP') and never
+        // advances to trip the throw.
+        $src    = self::genThrowAt(array('a', 'b', 'STOP', 'c'), 3);
+        $result = Arr\takeUntil(fn ($v) => $v === 'STOP')($src);
+
+        $this->assertInstanceOf(\Generator::class, $result);
+        $this->assertSame(array('a', 'b'), iterator_to_array($result, false));
+    }
+
+    /** @testdox takeWhile() should return a lazy Generator that stops at the first value where the predicate returns false. */
+    public function testTakeWhileReturnsGeneratorForGeneratorInput(): void
+    {
+        // Predicate is "< 10". Source throws at index 3. takeWhile stops at
+        // value 10 (index 2, first failing item) and must not advance further.
+        $src    = self::genThrowAt(array(1, 2, 10, 3), 3);
+        $result = Arr\takeWhile(fn ($v) => $v < 10)($src);
+
+        $this->assertInstanceOf(\Generator::class, $result);
+        $this->assertSame(array(1, 2), iterator_to_array($result, false));
+    }
+
     /** @testdox It should be possible to use Map() and have access to key and value. */
     public function testMapWithKeys(): void
     {

@@ -203,6 +203,32 @@ class ArrayFilterAndMapTests extends TestCase
         );
     }
 
+    /** @testdox filterFirst() should accept a Generator and return the first match without consuming the source further. */
+    public function testFilterFirstAcceptsGeneratorAndShortCircuits(): void
+    {
+        // First match is 'b'. Source throws at index 2 — filterFirst must not reach it.
+        $src = self::genThrowAt(array('a', 'b', 'c'), 2);
+        $this->assertSame('b', Arr\filterFirst(fn ($v) => $v === 'b')($src));
+    }
+
+    /** @testdox filterAll() should accept a Generator and short-circuit on the first non-matching value. */
+    public function testFilterAllAcceptsGeneratorAndShortCircuitsOnFalse(): void
+    {
+        // Values 1, 2 are all truthy; value at index 2 (-1) is negative.
+        // Source throws at index 3 — filterAll returns false at index 2 and never advances.
+        $src = self::genThrowAt(array(1, 2, -1, 3), 3);
+        $this->assertFalse(Arr\filterAll(fn ($v) => $v > 0)($src));
+    }
+
+    /** @testdox filterAny() should accept a Generator and short-circuit on the first matching value. */
+    public function testFilterAnyAcceptsGeneratorAndShortCircuitsOnTrue(): void
+    {
+        // Value at index 1 matches. Source throws at index 2 — filterAny returns
+        // true at index 1 and never advances.
+        $src = self::genThrowAt(array(1, 2, 3), 2);
+        $this->assertTrue(Arr\filterAny(fn ($v) => $v === 2)($src));
+    }
+
     public function testCanMapArrayKeys(): void
     {
         $origArray = array(

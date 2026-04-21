@@ -363,19 +363,21 @@ function filterOr(callable ...$callables): Closure
 }
 
 /**
- * Creates a Closure for running array filter and getting the first value.
+ * Creates a Closure that returns the first element matching a predicate.
+ * Accepts any iterable; short-circuits on the first match (the source is NOT
+ * advanced past it).
  *
  * @param callable $func
- * @return Closure(array<int|string, mixed>):?mixed
+ * @return Closure(iterable<int|string, mixed>):?mixed
  */
 function filterFirst(callable $func): Closure
 {
     /**
-     * @param array<int|string, mixed> $array The array to filter
-     * @return mixed|null The first element from the filtered array or null if filter returns empty
+     * @param iterable<int|string, mixed> $source The array or iterable to filter.
+     * @return mixed|null The first matching value, or null if no match found.
      */
-    return function (array $array) use ($func) {
-        foreach ($array as $value) {
+    return function (iterable $source) use ($func) {
+        foreach ($source as $value) {
             $result = $func($value);
             if (\is_bool($result) && $result) {
                 return $value;
@@ -488,19 +490,20 @@ function partition(callable $function): Closure
 }
 
 /**
- * Returns a closure for checking all elements pass a filter.
+ * Returns a closure for checking that every element of an array or iterable
+ * passes the predicate. Short-circuits on the first non-matching value.
  *
  * @param callable(mixed):bool $function
- * @return Closure(mixed[]):bool
+ * @return Closure(iterable<int|string, mixed>):bool
  */
 function filterAll(callable $function): Closure
 {
     /**
-     * @param mixed[] $array
+     * @param iterable<int|string, mixed> $source
      * @return bool
      */
-    return function (array $array) use ($function): bool {
-        foreach ($array as $value) {
+    return function (iterable $source) use ($function): bool {
+        foreach ($source as $value) {
             if (false === $function($value)) {
                 return false;
             }
@@ -511,19 +514,20 @@ function filterAll(callable $function): Closure
 
 
 /**
- * Returns a closure for checking any elements pass a filter.
+ * Returns a closure for checking that at least one element of an array or
+ * iterable passes the predicate. Short-circuits on the first match.
  *
  * @param callable(mixed):bool $function
- * @return Closure(mixed[]):bool
+ * @return Closure(iterable<int|string, mixed>):bool
  */
 function filterAny(callable $function): Closure
 {
     /**
-     * @param mixed[] $array
+     * @param iterable<int|string, mixed> $source
      * @return bool
      */
-    return function (array $array) use ($function): bool {
-        foreach ($array as $value) {
+    return function (iterable $source) use ($function): bool {
+        foreach ($source as $value) {
             if (true === $function($value)) {
                 return true;
             }
@@ -1271,25 +1275,43 @@ function foldKeys(callable $callable, $initial = array()): Closure
 }
 
 /**
- * Creates a function which takes the first n elements from an array
+ * Creates a function which takes the first n elements from an array or iterable.
+ *
+ * - Array in  → array of the first $count elements (unchanged behaviour).
+ * - Generator/Traversable in → Generator that yields up to $count elements
+ *   lazily. The source is NOT advanced beyond what was taken.
  *
  * @param int $count
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):(array<int|string, mixed>|\Generator<int|string, mixed>)
  * @throws \InvalidArgumentException if count is negative
  */
 function take(int $count = 1): Closure
 {
-    // throw InvalidArgumentException if count is negative
     if ($count < 0) {
         throw new \InvalidArgumentException(__FUNCTION__ . ' count must be greater than or equal to 0');
     }
 
     /**
-     * @param mixed[] $array
-     * @return mixed[]
+     * @param iterable<int|string, mixed> $source
+     * @return array<int|string, mixed>|\Generator<int|string, mixed>
      */
-    return function (array $array) use ($count) {
-        return \array_slice($array, 0, $count);
+    return function (iterable $source) use ($count) {
+        if (is_array($source)) {
+            return \array_slice($source, 0, $count);
+        }
+        return (function () use ($source, $count) {
+            if ($count === 0) {
+                return;
+            }
+            $taken = 0;
+            foreach ($source as $key => $value) {
+                yield $key => $value;
+                $taken++;
+                if ($taken >= $count) {
+                    break;
+                }
+            }
+        })();
     };
 }
 
@@ -1324,52 +1346,80 @@ function takeLast(int $count = 1): Closure
 }
 
 /**
- * Creates a function that allows you to take a slice of an array until the passed conditional
- * returns true.
+ * Creates a function that takes elements from an array or iterable until the
+ * conditional returns true (exclusive — the first truthy element is NOT included).
+ *
+ * - Array in  → array out (unchanged behaviour).
+ * - Generator/Traversable in → Generator out, yields lazily, stops at the first
+ *   truthy predicate. Source is not advanced past the stopping element.
  *
  * @param callable(mixed): bool $conditional
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):(array<int|string, mixed>|\Generator<int|string, mixed>)
  */
 function takeUntil(callable $conditional): Closure
 {
     /**
-     * @param mixed[] $array
-     * @return mixed[]
+     * @param iterable<int|string, mixed> $source
+     * @return array<int|string, mixed>|\Generator<int|string, mixed>
      */
-    return function (array $array) use ($conditional) {
-        $carry = array();
-        foreach ($array as $key => $value) {
-            if (true === $conditional($value)) {
-                break;
+    return function (iterable $source) use ($conditional) {
+        if (is_array($source)) {
+            $carry = array();
+            foreach ($source as $key => $value) {
+                if (true === $conditional($value)) {
+                    break;
+                }
+                $carry[$key] = $value;
             }
-            $carry[$key] = $value;
+            return $carry;
         }
-        return $carry;
+        return (function () use ($source, $conditional) {
+            foreach ($source as $key => $value) {
+                if (true === $conditional($value)) {
+                    break;
+                }
+                yield $key => $value;
+            }
+        })();
     };
 }
 
 /**
- * Creates a function that allows you to take a slice of an array until the passed conditional
- * returns false.
+ * Creates a function that takes elements from an array or iterable while the
+ * conditional returns true. Stops at the first falsy predicate (exclusive).
+ *
+ * - Array in  → array out (unchanged behaviour).
+ * - Generator/Traversable in → Generator out, yields lazily, stops at the first
+ *   falsy predicate. Source is not advanced past the stopping element.
  *
  * @param callable(mixed): bool $conditional
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):(array<int|string, mixed>|\Generator<int|string, mixed>)
  */
 function takeWhile(callable $conditional): Closure
 {
     /**
-     * @param mixed[] $array
-     * @return mixed[]
+     * @param iterable<int|string, mixed> $source
+     * @return array<int|string, mixed>|\Generator<int|string, mixed>
      */
-    return function (array $array) use ($conditional) {
-        $carry = array();
-        foreach ($array as $key => $value) {
-            if (false === $conditional($value)) {
-                break;
+    return function (iterable $source) use ($conditional) {
+        if (is_array($source)) {
+            $carry = array();
+            foreach ($source as $key => $value) {
+                if (false === $conditional($value)) {
+                    break;
+                }
+                $carry[$key] = $value;
             }
-            $carry[$key] = $value;
+            return $carry;
         }
-        return $carry;
+        return (function () use ($source, $conditional) {
+            foreach ($source as $key => $value) {
+                if (false === $conditional($value)) {
+                    break;
+                }
+                yield $key => $value;
+            }
+        })();
     };
 }
 
