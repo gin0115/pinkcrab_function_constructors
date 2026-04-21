@@ -952,7 +952,7 @@ function flattenByN(?int $n = null): Closure
                 if (is_array($element) && empty($element)) {
                     continue;
                 }
-                if (is_array($element) && (is_null($n) || $n > 0)) {
+                if (is_array($element) && (is_null($n) || $n > 0)) { // @phpstan-ignore-line
                     foreach (flattenByN($n ? $n - 1 : null)($element) as $sub) {
                         yield $sub;
                     }
