@@ -208,7 +208,9 @@ class ArrayFilterAndMapTests extends TestCase
     {
         // First match is 'b'. Source throws at index 2 — filterFirst must not reach it.
         $src = self::genThrowAt(array('a', 'b', 'c'), 2);
-        $this->assertSame('b', Arr\filterFirst(fn ($v) => $v === 'b')($src));
+        $this->assertSame('b', Arr\filterFirst(function ($v) {
+            return $v === 'b';
+        })($src));
     }
 
     /** @testdox filterAll() should accept a Generator and short-circuit on the first non-matching value. */
@@ -217,7 +219,9 @@ class ArrayFilterAndMapTests extends TestCase
         // Values 1, 2 are all truthy; value at index 2 (-1) is negative.
         // Source throws at index 3 — filterAll returns false at index 2 and never advances.
         $src = self::genThrowAt(array(1, 2, -1, 3), 3);
-        $this->assertFalse(Arr\filterAll(fn ($v) => $v > 0)($src));
+        $this->assertFalse(Arr\filterAll(function ($v) {
+            return $v > 0;
+        })($src));
     }
 
     /** @testdox filterAny() should accept a Generator and short-circuit on the first matching value. */
@@ -226,7 +230,9 @@ class ArrayFilterAndMapTests extends TestCase
         // Value at index 1 matches. Source throws at index 2 — filterAny returns
         // true at index 1 and never advances.
         $src = self::genThrowAt(array(1, 2, 3), 2);
-        $this->assertTrue(Arr\filterAny(fn ($v) => $v === 2)($src));
+        $this->assertTrue(Arr\filterAny(function ($v) {
+            return $v === 2;
+        })($src));
     }
 
     public function testCanMapArrayKeys(): void
@@ -291,7 +297,9 @@ class ArrayFilterAndMapTests extends TestCase
     /** @testdox map() should still return an array when the input is an array (back-compat). */
     public function testMapReturnsArrayForArrayInput(): void
     {
-        $result = Arr\map(fn ($x) => $x * 2)(array(1, 2, 3));
+        $result = Arr\map(function ($x) {
+            return $x * 2;
+        })(array(1, 2, 3));
         $this->assertIsArray($result);
         $this->assertSame(array(2, 4, 6), $result);
     }
@@ -300,7 +308,9 @@ class ArrayFilterAndMapTests extends TestCase
     public function testMapReturnsGeneratorForGeneratorInput(): void
     {
         $src    = self::gen(array('a' => 1, 'b' => 2, 'c' => 3));
-        $result = Arr\map(fn ($x) => $x * 10)($src);
+        $result = Arr\map(function ($x) {
+            return $x * 10;
+        })($src);
 
         $this->assertInstanceOf(\Generator::class, $result);
         $this->assertSame(array('a' => 10, 'b' => 20, 'c' => 30), iterator_to_array($result));
@@ -310,7 +320,9 @@ class ArrayFilterAndMapTests extends TestCase
     public function testMapEmptyGeneratorYieldsNothing(): void
     {
         $empty  = self::gen(array());
-        $result = Arr\map(fn ($x) => $x)($empty);
+        $result = Arr\map(function ($x) {
+            return $x;
+        })($empty);
 
         $this->assertInstanceOf(\Generator::class, $result);
         $this->assertSame(array(), iterator_to_array($result));
@@ -343,7 +355,9 @@ class ArrayFilterAndMapTests extends TestCase
     public function testFilterReturnsGeneratorForGeneratorInput(): void
     {
         $src    = self::gen(array('a' => 1, 'b' => 2, 'c' => 3, 'd' => 4));
-        $result = Arr\filter(fn ($x) => $x % 2 === 0)($src);
+        $result = Arr\filter(function ($x) {
+            return $x % 2 === 0;
+        })($src);
 
         $this->assertInstanceOf(\Generator::class, $result);
         $this->assertSame(array('b' => 2, 'd' => 4), iterator_to_array($result));
@@ -353,7 +367,9 @@ class ArrayFilterAndMapTests extends TestCase
     public function testFilterKeyReturnsGeneratorForGeneratorInput(): void
     {
         $src    = self::gen(array('keep_a' => 1, 'drop_b' => 2, 'keep_c' => 3));
-        $result = Arr\filterKey(fn ($k) => strpos($k, 'keep_') === 0)($src);
+        $result = Arr\filterKey(function ($k) {
+            return strpos($k, 'keep_') === 0;
+        })($src);
 
         $this->assertInstanceOf(\Generator::class, $result);
         $this->assertSame(array('keep_a' => 1, 'keep_c' => 3), iterator_to_array($result));
@@ -364,8 +380,12 @@ class ArrayFilterAndMapTests extends TestCase
     {
         $src    = self::gen(array(1, 2, 3, 4, 5, 6));
         $result = Arr\filterAnd(
-            fn ($x) => $x > 2,
-            fn ($x) => $x % 2 === 0
+            function ($x) {
+                return $x > 2;
+            },
+            function ($x) {
+                return $x % 2 === 0;
+            }
         )($src);
 
         $this->assertInstanceOf(\Generator::class, $result);
@@ -377,8 +397,12 @@ class ArrayFilterAndMapTests extends TestCase
     {
         $src    = self::gen(array(1, 2, 3, 4, 5));
         $result = Arr\filterOr(
-            fn ($x) => $x === 1,
-            fn ($x) => $x === 5
+            function ($x) {
+                return $x === 1;
+            },
+            function ($x) {
+                return $x === 5;
+            }
         )($src);
 
         $this->assertInstanceOf(\Generator::class, $result);
@@ -390,8 +414,12 @@ class ArrayFilterAndMapTests extends TestCase
     {
         $src    = self::gen(array(1, 2, 3, 4, 5));
         $result = Arr\filterMap(
-            fn ($x) => $x % 2 === 0,
-            fn ($x) => $x * 10
+            function ($x) {
+                return $x % 2 === 0;
+            },
+            function ($x) {
+                return $x * 10;
+            }
         )($src);
 
         $this->assertInstanceOf(\Generator::class, $result);
@@ -412,7 +440,9 @@ class ArrayFilterAndMapTests extends TestCase
     public function testMapWithReturnsGeneratorForGeneratorInput(): void
     {
         $src    = self::gen(array('a' => 1, 'b' => 2));
-        $result = Arr\mapWith(fn ($v, $suffix) => "{$v}{$suffix}", '!')($src);
+        $result = Arr\mapWith(function ($v, $suffix) {
+            return "{$v}{$suffix}";
+        }, '!')($src);
 
         $this->assertInstanceOf(\Generator::class, $result);
         $this->assertSame(array('a' => '1!', 'b' => '2!'), iterator_to_array($result));
@@ -422,7 +452,9 @@ class ArrayFilterAndMapTests extends TestCase
     public function testMapWithKeyReturnsGeneratorForGeneratorInput(): void
     {
         $src    = self::gen(array('a' => 1, 'b' => 2));
-        $result = Arr\mapWithKey(fn ($v, $k) => "{$k}:{$v}")($src);
+        $result = Arr\mapWithKey(function ($v, $k) {
+            return "{$k}:{$v}";
+        })($src);
 
         $this->assertInstanceOf(\Generator::class, $result);
         // array path returns [0 => 'a:1', 1 => 'b:2'] because array_map with
@@ -467,7 +499,9 @@ class ArrayFilterAndMapTests extends TestCase
     public function testFlatMapReturnsGeneratorForGeneratorInput(): void
     {
         $src    = self::gen(array(1, array(2, array(3, 4)), 5));
-        $result = Arr\flatMap(fn ($x) => $x * 10)($src);
+        $result = Arr\flatMap(function ($x) {
+            return $x * 10;
+        })($src);
 
         $this->assertInstanceOf(\Generator::class, $result);
         $this->assertSame(array(10, 20, 30, 40, 50), iterator_to_array($result, false));
@@ -478,7 +512,9 @@ class ArrayFilterAndMapTests extends TestCase
     {
         // Depth 1: top-level nested arrays flatten one level; deeper arrays stay as arrays.
         $src    = self::gen(array(1, array(2, array(3, 4)), 5));
-        $result = Arr\flatMap(fn ($x) => $x * 10, 1)($src);
+        $result = Arr\flatMap(function ($x) {
+            return $x * 10;
+        }, 1)($src);
 
         $this->assertSame(array(10, 20, array(3, 4), 50), iterator_to_array($result, false));
     }

@@ -692,7 +692,9 @@ class ArrayFunctionTests extends TestCase
     /** @testdox scan() should return a lazy Generator yielding the initial value then each running accumulation when given a Generator. */
     public function testScanReturnsGeneratorForGeneratorInput(): void
     {
-        $result = Arr\scan(fn ($c, $v) => $c + $v, 0)(self::gen(array(1, 2, 3, 4, 5)));
+        $result = Arr\scan(function ($c, $v) {
+            return $c + $v;
+        }, 0)(self::gen(array(1, 2, 3, 4, 5)));
 
         $this->assertInstanceOf(\Generator::class, $result);
         $this->assertSame(array(0, 1, 3, 6, 10, 15), iterator_to_array($result, false));
@@ -701,7 +703,9 @@ class ArrayFunctionTests extends TestCase
     /** @testdox scanR() accepts a Generator — source is materialised to reverse, but the result is still returned as a Generator for API consistency. */
     public function testScanRReturnsGeneratorForGeneratorInput(): void
     {
-        $result = Arr\scanR(fn ($c, $v) => $c + $v, 0)(self::gen(array(1, 2, 3)));
+        $result = Arr\scanR(function ($c, $v) {
+            return $c + $v;
+        }, 0)(self::gen(array(1, 2, 3)));
 
         $this->assertInstanceOf(\Generator::class, $result);
         $this->assertSame(array(6, 5, 3, 0), iterator_to_array($result, false));
@@ -906,7 +910,9 @@ class ArrayFunctionTests extends TestCase
         // takeUntil is properly lazy, it stops at index 2 ('STOP') and never
         // advances to trip the throw.
         $src    = self::genThrowAt(array('a', 'b', 'STOP', 'c'), 3);
-        $result = Arr\takeUntil(fn ($v) => $v === 'STOP')($src);
+        $result = Arr\takeUntil(function ($v) {
+            return $v === 'STOP';
+        })($src);
 
         $this->assertInstanceOf(\Generator::class, $result);
         $this->assertSame(array('a', 'b'), iterator_to_array($result, false));
@@ -918,7 +924,9 @@ class ArrayFunctionTests extends TestCase
         // Predicate is "< 10". Source throws at index 3. takeWhile stops at
         // value 10 (index 2, first failing item) and must not advance further.
         $src    = self::genThrowAt(array(1, 2, 10, 3), 3);
-        $result = Arr\takeWhile(fn ($v) => $v < 10)($src);
+        $result = Arr\takeWhile(function ($v) {
+            return $v < 10;
+        })($src);
 
         $this->assertInstanceOf(\Generator::class, $result);
         $this->assertSame(array(1, 2), iterator_to_array($result, false));
@@ -1532,20 +1540,28 @@ class ArrayFunctionTests extends TestCase
     /** @testdox filterCount() accepts any iterable and returns the number of matches. */
     public function testFilterCountAcceptsGenerator(): void
     {
-        $this->assertSame(3, Arr\filterCount(fn ($v) => $v % 2 === 0)(self::gen(array(1, 2, 3, 4, 5, 6))));
+        $this->assertSame(3, Arr\filterCount(function ($v) {
+            return $v % 2 === 0;
+        })(self::gen(array(1, 2, 3, 4, 5, 6))));
     }
 
     /** @testdox filterLast() accepts any iterable and returns the last matching value. */
     public function testFilterLastAcceptsGenerator(): void
     {
-        $this->assertSame(6, Arr\filterLast(fn ($v) => $v % 2 === 0)(self::gen(array(1, 3, 4, 6))));
-        $this->assertNull(Arr\filterLast(fn ($v) => $v > 100)(self::gen(array(1, 2, 3))));
+        $this->assertSame(6, Arr\filterLast(function ($v) {
+            return $v % 2 === 0;
+        })(self::gen(array(1, 3, 4, 6))));
+        $this->assertNull(Arr\filterLast(function ($v) {
+            return $v > 100;
+        })(self::gen(array(1, 2, 3))));
     }
 
     /** @testdox partition() accepts any iterable and returns the [truthy, falsy] buckets. */
     public function testPartitionAcceptsGenerator(): void
     {
-        $result = Arr\partition(fn ($v) => $v > 2)(self::gen(array(1, 2, 3, 4, 5)));
+        $result = Arr\partition(function ($v) {
+            return $v > 2;
+        })(self::gen(array(1, 2, 3, 4, 5)));
         $this->assertSame(array(array(1, 2), array(3, 4, 5)), $result);
     }
 
@@ -1553,7 +1569,9 @@ class ArrayFunctionTests extends TestCase
     public function testGroupByAcceptsGenerator(): void
     {
         $src = self::gen(array('apple', 'avocado', 'banana', 'blueberry'));
-        $byFirstChar = Arr\groupBy(fn ($v) => $v[0])($src);
+        $byFirstChar = Arr\groupBy(function ($v) {
+            return $v[0];
+        })($src);
         $this->assertSame(
             array('a' => array('apple', 'avocado'), 'b' => array('banana', 'blueberry')),
             $byFirstChar
@@ -1564,7 +1582,9 @@ class ArrayFunctionTests extends TestCase
     public function testSumWhereAcceptsGenerator(): void
     {
         $src = self::gen(array(array('qty' => 2), array('qty' => 3), array('qty' => 5)));
-        $this->assertSame(10, Arr\sumWhere(fn ($row) => $row['qty'])($src));
+        $this->assertSame(10, Arr\sumWhere(function ($row) {
+            return $row['qty'];
+        })($src));
     }
 
     /** @testdox toObject() accepts any iterable and casts it into the given object. */
@@ -1627,14 +1647,18 @@ class ArrayFunctionTests extends TestCase
     public function testUsortAcceptsGenerator(): void
     {
         $src = self::gen(array(5, 3, 8, 1));
-        $desc = Arr\usort(fn ($a, $b) => $b - $a);
+        $desc = Arr\usort(function ($a, $b) {
+            return $b - $a;
+        });
         $this->assertSame(array(8, 5, 3, 1), $desc($src));
     }
 
     /** @testdox fold() accepts any iterable and reduces left-to-right via a streaming foreach (no materialisation). */
     public function testFoldAcceptsGenerator(): void
     {
-        $sum = Arr\fold(fn ($acc, $v) => $acc + $v, 0);
+        $sum = Arr\fold(function ($acc, $v) {
+            return $acc + $v;
+        }, 0);
         $this->assertSame(15, $sum(self::gen(array(1, 2, 3, 4, 5))));
     }
 
@@ -1642,14 +1666,18 @@ class ArrayFunctionTests extends TestCase
     public function testFoldRAcceptsGenerator(): void
     {
         // Concatenate right-to-left to prove direction: "c","b","a" → "cba"
-        $cat = Arr\foldR(fn ($acc, $v) => $acc . $v, '');
+        $cat = Arr\foldR(function ($acc, $v) {
+            return $acc . $v;
+        }, '');
         $this->assertSame('cba', $cat(self::gen(array('a', 'b', 'c'))));
     }
 
     /** @testdox foldKeys() accepts any iterable and supplies the key to the callback. */
     public function testFoldKeysAcceptsGenerator(): void
     {
-        $joined = Arr\foldKeys(fn ($acc, $k, $v) => $acc . "$k=$v;", '');
+        $joined = Arr\foldKeys(function ($acc, $k, $v) {
+            return $acc . "$k=$v;";
+        }, '');
         $this->assertSame('a=1;b=2;', $joined(self::gen(array('a' => 1, 'b' => 2))));
     }
 }
