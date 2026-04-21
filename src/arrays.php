@@ -35,124 +35,196 @@ use stdClass;
 use PinkCrab\FunctionConstructors\Comparisons as Comp;
 
 /**
- * Returns a Closure for appending a value to an array.
+ * Returns a Closure for appending a value to the end of an array or iterable.
+ *
+ * - Array in  → array out with the value pushed on the end (unchanged behaviour).
+ * - Generator/Traversable in → Generator out that first yields every source
+ *   element, then yields the new value.
  *
  * @param mixed $value
- * @return Closure(array<int|string, mixed>):array<int|string, mixed>
+ * @return Closure(iterable<int|string, mixed>):(array<int|string, mixed>|\Generator<int|string, mixed>)
  */
 function append($value): Closure
 {
     /**
-     * @param array<int|string, mixed> $array
-     * @return array<int|string, mixed>
+     * @param iterable<int|string, mixed> $source
+     * @return array<int|string, mixed>|\Generator<int|string, mixed>
      */
-    return function (array $array) use ($value): array {
-        $array[] = $value;
-        return $array;
+    return function (iterable $source) use ($value) {
+        if (is_array($source)) {
+            $source[] = $value;
+            return $source;
+        }
+        return (function () use ($source, $value) {
+            foreach ($source as $key => $v) {
+                yield $key => $v;
+            }
+            yield $value;
+        })();
     };
 }
 
 /**
- * Returns a Closure for prepending a value to an array.
+ * Returns a Closure for prepending a value to the start of an array or iterable.
+ *
+ * - Array in  → array out with the value unshifted onto the front (unchanged behaviour).
+ * - Generator/Traversable in → Generator out that first yields the new value, then
+ *   yields every source element.
  *
  * @param mixed $value
- * @return Closure(array<int|string, mixed>):array<int|string, mixed>
+ * @return Closure(iterable<int|string, mixed>):(array<int|string, mixed>|\Generator<int|string, mixed>)
  */
 function prepend($value): Closure
 {
     /**
-     * @param array<int|string, mixed> $array
-     * @return array<int|string, mixed>
+     * @param iterable<int|string, mixed> $source
+     * @return array<int|string, mixed>|\Generator<int|string, mixed>
      */
-    return function (array $array) use ($value): array {
-        array_unshift($array, $value);
-        return $array;
+    return function (iterable $source) use ($value) {
+        if (is_array($source)) {
+            array_unshift($source, $value);
+            return $source;
+        }
+        return (function () use ($source, $value) {
+            yield $value;
+            foreach ($source as $key => $v) {
+                yield $key => $v;
+            }
+        })();
     };
 }
 
 /**
- * Gets the first value from an array.
+ * Gets the first value from an array or iterable. For Generators this is a
+ * genuine early-exit — the rest of the stream is NOT consumed.
  *
- * @param array<int|string, mixed> $array The array.
- * @return mixed Will return the first value is array is not empty, else null.
+ * @param iterable<int|string, mixed> $source The array or iterable.
+ * @return mixed The first value, or null if empty.
  */
-function head(array $array)
+function head(iterable $source)
 {
-    return !empty($array) ? array_values($array)[0] : null;
-}
-
-/**
- * Gets the last value from an array.
- *
- * @param array<int|string, mixed> $array The array.
- * @return mixed Will return the last value is array is not empty, else null.
- */
-function last(array $array)
-{
-    return !empty($array) ? array_reverse($array, false)[0] : null;
-}
-
-/**
- * Gets the remainder values from an array, after first item removed.
- *
- * @param array<int|string, mixed> $array
- * @return array<int|string, mixed>|null Will return the first value is array is not empty, else null.
- */
-function tail(array $array)
-{
-    // Return null if empty.
-    if (empty($array)) {
-        return null;
+    if (is_array($source)) {
+        return ! empty($source) ? array_values($source)[0] : null;
     }
+    foreach ($source as $value) {
+        return $value;
+    }
+    return null;
+}
 
-    // Remove the first item from the array.
-    array_shift($array);
-    return $array;
+/**
+ * Gets the last value from an array or iterable. For a Generator the whole
+ * stream is consumed (there is no way to know the last value without doing so).
+ *
+ * @param iterable<int|string, mixed> $source The array or iterable.
+ * @return mixed The last value, or null if empty.
+ */
+function last(iterable $source)
+{
+    if (is_array($source)) {
+        return ! empty($source) ? array_reverse($source, false)[0] : null;
+    }
+    $last  = null;
+    $found = false;
+    foreach ($source as $value) {
+        $last  = $value;
+        $found = true;
+    }
+    return $found ? $last : null;
+}
+
+/**
+ * Gets the remainder of an array or iterable after the first element is removed.
+ *
+ * - Array in  → new array with the first element dropped, or null if empty (unchanged behaviour).
+ * - Generator/Traversable in → Generator that lazily yields every element after
+ *   the first. For an empty Generator source the returned Generator is empty
+ *   (NOT null — this is the one documented API divergence from the array path).
+ *
+ * @param iterable<int|string, mixed> $source
+ * @return array<int|string, mixed>|\Generator<int|string, mixed>|null
+ */
+function tail(iterable $source)
+{
+    if (is_array($source)) {
+        if (empty($source)) {
+            return null;
+        }
+        array_shift($source);
+        return $source;
+    }
+    return (function () use ($source) {
+        $first = true;
+        foreach ($source as $key => $value) {
+            if ($first) {
+                $first = false;
+                continue;
+            }
+            yield $key => $value;
+        }
+    })();
 }
 
 
 /**
- * Creates a Closure for concatenating arrays with a defined glue.
+ * Creates a Closure for joining an array or iterable into a string with a glue.
+ * Terminal: Generator input is materialised before joining.
  *
  * @param string|null $glue The string to join each element. If null, will be no separation between elements.
- * @return Closure(array<int|string, mixed>):string
- *
+ * @return Closure(iterable<int|string, mixed>):string
  */
 function toString(?string $glue = null): Closure
 {
     /**
-     * @param array<int|string, mixed> $array Array join
+     * @param iterable<int|string, mixed> $source
      * @return string
      */
-    return function (array $array) use ($glue): string {
+    return function (iterable $source) use ($glue): string {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         return $glue ? \join($glue, $array) : \join($array);
     };
 }
 
 /**
- * Creates a Closure for zipping 2 arrays.
+ * Creates a Closure for zipping a source array or iterable with a secondary
+ * array. Each element of the result is a pair — [source_value, additional_value].
+ * When the additional array is shorter than the source, `$default` fills the gap.
  *
- * @param array<mixed> $additional Values with the same key will be paired.
- * @param mixed $default The fallback value if the additional array doesn't have the same length
- * @return Closure(array<mixed>):array<array{mixed, mixed}>
+ * - Array in  → array out (unchanged behaviour).
+ * - Generator/Traversable in → Generator out that yields pairs lazily.
  *
+ * @param array<mixed> $additional Values paired positionally with the source.
+ * @param mixed $default Fallback when the additional array runs out.
+ * @return Closure(iterable<mixed>):(array<array{mixed, mixed}>|\Generator<int, array{mixed, mixed}>)
  */
 function zip(array $additional, $default = null): Closure
 {
     $additional = array_values($additional);
-    return function (array $array) use ($additional, $default) {
-        $array = array_values($array);
-        return array_reduce(
-            array_keys($array),
-            function ($carry, $key) use ($array, $additional, $default): array {
-                $carry[] = array(
-                    $array[$key],
-                    array_key_exists($key, $additional) ? $additional[$key] : $default,
+    return function (iterable $source) use ($additional, $default) {
+        if (is_array($source)) {
+            $source = array_values($source);
+            return array_reduce(
+                array_keys($source),
+                function ($carry, $key) use ($source, $additional, $default): array {
+                    $carry[] = array(
+                        $source[$key],
+                        array_key_exists($key, $additional) ? $additional[$key] : $default,
+                    );
+                    return $carry;
+                },
+                array()
+            );
+        }
+        return (function () use ($source, $additional, $default) {
+            $i = 0;
+            foreach ($source as $value) {
+                yield array(
+                    $value,
+                    array_key_exists($i, $additional) ? $additional[$i] : $default,
                 );
-                return $carry;
-            },
-            array()
-        );
+                $i++;
+            }
+        })();
     };
 }
 
@@ -220,89 +292,109 @@ function arrayCompilerTyped(callable $validator, array $inital = array()): Closu
 
 
 /**
- * Created a Closure for filtering an array.
+ * Created a Closure for filtering an array or iterable.
  *
- * @param callable $callable The function to apply to the array.
- * @return Closure(array<int|string, mixed>):array<int|string, mixed>
+ * - Array in  → array out (eager, unchanged behaviour).
+ * - Generator/Traversable in → Generator out (lazy; keys preserved).
+ *
+ * @param callable $callable The function to apply to each value.
+ * @return Closure(iterable<int|string, mixed>):(array<int|string, mixed>|\Generator<int|string, mixed>)
  */
 function filter(callable $callable): Closure
 {
     /**
-     * @param array<int|string, mixed> $source Array to filter
-     * @return array<int|string, mixed> Filtered array.
+     * @param iterable<int|string, mixed> $source Array or iterable to filter.
+     * @return array<int|string, mixed>|\Generator<int|string, mixed>
      */
-    return function (array $source) use ($callable): array {
-        return array_filter($source, $callable);
+    return function (iterable $source) use ($callable) {
+        if (is_array($source)) {
+            return array_filter($source, $callable);
+        }
+        return (function () use ($source, $callable) {
+            foreach ($source as $key => $value) {
+                if ($callable($value)) {
+                    yield $key => $value;
+                }
+            }
+        })();
     };
 }
 
 /**
- * Create a Closure for filtering an array by a key.
+ * Create a Closure for filtering an array or iterable by its keys.
  *
- * @param callable $callable The function to apply to the array.
- * @return Closure(array<int|string, mixed>):array<int|string, mixed>
+ * - Array in  → array out (eager, unchanged behaviour).
+ * - Generator/Traversable in → Generator out (lazy; keys preserved).
+ *
+ * @param callable $callable The function to apply to each key.
+ * @return Closure(iterable<int|string, mixed>):(array<int|string, mixed>|\Generator<int|string, mixed>)
  */
 function filterKey(callable $callable): Closure
 {
     /**
-     * @param array<int|string, mixed> $source Array to filter
-     * @return array<int|string, mixed> Filtered array.
+     * @param iterable<int|string, mixed> $source Array or iterable to filter.
+     * @return array<int|string, mixed>|\Generator<int|string, mixed>
      */
-    return function (array $source) use ($callable): array {
-        return array_filter($source, $callable, \ARRAY_FILTER_USE_KEY);
+    return function (iterable $source) use ($callable) {
+        if (is_array($source)) {
+            return array_filter($source, $callable, \ARRAY_FILTER_USE_KEY);
+        }
+        return (function () use ($source, $callable) {
+            foreach ($source as $key => $value) {
+                if ($callable($key)) {
+                    yield $key => $value;
+                }
+            }
+        })();
     };
 }
 
 /**
- * Creates a Closure for running an array through various callbacks for all true response.
- * Wrapper for creating a AND group of callbacks and running through array filter.
+ * Creates a Closure applying an AND group of predicates.
+ *
+ * - Array in  → array out (eager, unchanged behaviour).
+ * - Generator/Traversable in → Generator out (lazy; keys preserved).
  *
  * @param callable ...$callables
- * @return Closure(array<int|string, mixed>):array<int|string, mixed>
+ * @return Closure(iterable<int|string, mixed>):(array<int|string, mixed>|\Generator<int|string, mixed>)
  */
 function filterAnd(callable ...$callables): Closure
 {
-    /**
-     * @param array<int|string, mixed> $source Array to filter
-     * @return array<int|string, mixed> Filtered array.
-     */
-    return function (array $source) use ($callables): array {
-        return array_filter($source, Comp\groupAnd(...$callables));
-    };
+    $predicate = Comp\groupAnd(...$callables);
+    return filter($predicate);
 }
 
 /**
- * Creates a Closure for running an array through various callbacks for any true response.
- * Wrapper for creating a OR group of callbacks and running through array filter.
+ * Creates a Closure applying an OR group of predicates.
+ *
+ * - Array in  → array out (eager, unchanged behaviour).
+ * - Generator/Traversable in → Generator out (lazy; keys preserved).
  *
  * @param callable ...$callables
- * @return Closure(array<int|string, mixed>):array<int|string, mixed>
+ * @return Closure(iterable<int|string, mixed>):(array<int|string, mixed>|\Generator<int|string, mixed>)
  */
 function filterOr(callable ...$callables): Closure
 {
-    /**
-     * @param array<int|string, mixed> $source Array to filter
-     * @return array<int|string, mixed> Filtered array.
-     */
-    return function (array $source) use ($callables): array {
-        return array_filter($source, Comp\groupOr(...$callables));
-    };
+    $predicate = Comp\groupOr(...$callables);
+    return filter($predicate);
 }
 
 /**
- * Creates a Closure for running array filter and getting the first value.
+ * Creates a Closure that returns the first element matching a predicate.
+ * Accepts any iterable; short-circuits on the first match (the source is NOT
+ * advanced past it).
  *
  * @param callable $func
- * @return Closure(array<int|string, mixed>):?mixed
+ * @return Closure(iterable<int|string, mixed>):?mixed
  */
 function filterFirst(callable $func): Closure
 {
     /**
-     * @param array<int|string, mixed> $array The array to filter
-     * @return mixed|null The first element from the filtered array or null if filter returns empty
+     * @param iterable<int|string, mixed> $source The array or iterable to filter.
+     * @return mixed|null The first matching value, or null if no match found.
      */
-    return function (array $array) use ($func) {
-        foreach ($array as $value) {
+    return function (iterable $source) use ($func) {
+        foreach ($source as $value) {
             $result = $func($value);
             if (\is_bool($result) && $result) {
                 return $value;
@@ -312,18 +404,21 @@ function filterFirst(callable $func): Closure
 }
 
 /**
- * Creates a Closure for running array filter and getting the last value.
+ * Creates a Closure that returns the last element matching a predicate.
+ * Accepts any iterable. Terminal — for a Generator, the whole source is
+ * consumed (there is no way to find "last" without doing so).
  *
  * @param callable $func
- * @return Closure(array<int|string, mixed>):?mixed
+ * @return Closure(iterable<int|string, mixed>):?mixed
  */
 function filterLast(callable $func): Closure
 {
     /**
-     * @param array<int|string, mixed> $array The array to filter
-     * @return mixed|null The last element from the filtered array.
+     * @param iterable<int|string, mixed> $source The array or iterable to scan.
+     * @return mixed|null The last matching value, or null if no match.
      */
-    return function (array $array) use ($func) {
+    return function (iterable $source) use ($func) {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         while ($value = array_pop($array)) {
             $result = $func($value);
             if (\is_bool($result) && $result) {
@@ -334,57 +429,71 @@ function filterLast(callable $func): Closure
 }
 
 /**
- * Creates a Closure which takes an array, applies a filter, then maps the
- * results of the map.
+ * Creates a Closure which filters then maps over the results.
  *
+ * - Array in  → array out (eager, unchanged behaviour).
+ * - Generator/Traversable in → Generator out (lazy; keys preserved).
  *
- * @param callable(mixed):bool $filter Function to of filter contents
- * @param callable(mixed):mixed $map Function to map results of filter function.
- * @return Closure(array<int|string, mixed>):array<int|string, mixed>
+ * @param callable(mixed):bool $filter Predicate used to include values.
+ * @param callable(mixed):mixed $map Transformation applied to included values.
+ * @return Closure(iterable<int|string, mixed>):(array<int|string, mixed>|\Generator<int|string, mixed>)
  */
 function filterMap(callable $filter, callable $map): Closure
 {
     /**
-     * @param array<int|string, mixed> $array The array to filter then map.
-     * @return array<int|string, mixed>
+     * @param iterable<int|string, mixed> $source Array or iterable to filter+map.
+     * @return array<int|string, mixed>|\Generator<int|string, mixed>
      */
-    return function (array $array) use ($filter, $map): array {
-        return array_map($map, array_filter($array, $filter));
+    return function (iterable $source) use ($filter, $map) {
+        if (is_array($source)) {
+            return array_map($map, array_filter($source, $filter));
+        }
+        return (function () use ($source, $filter, $map) {
+            foreach ($source as $key => $value) {
+                if ($filter($value)) {
+                    yield $key => $map($value);
+                }
+            }
+        })();
     };
 }
 
 /**
- * Runs an array through a filters, returns the total count of true
+ * Returns a Closure that counts the elements of an array or iterable matching
+ * a predicate. Terminal — Generator input is consumed.
  *
  * @param callable $function
- * @return Closure(array<int|string, mixed>):int
+ * @return Closure(iterable<int|string, mixed>):int
  */
 function filterCount(callable $function): Closure
 {
     /**
-     * @param array<int|string, mixed> $array
+     * @param iterable<int|string, mixed> $source
      * @return int Count
      */
-    return function (array $array) use ($function) {
+    return function (iterable $source) use ($function) {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         return count(array_filter($array, $function));
     };
 }
 
 /**
- * Returns a Closure for partitioning an array based
- * on the results of a filter type function.
- * Callable will be cast to a bool, if truthy will be listed under 1 key, else 0 for falsey
+ * Returns a Closure for partitioning an array or iterable into two buckets by
+ * a predicate. Terminal — Generator input is consumed fully.
+ *
+ * Callable will be cast to a bool, if truthy will be listed under key 1, else 0.
  *
  * @param callable(mixed):(bool|int) $function
- * @return Closure(mixed[]):array{0:mixed[], 1:mixed[]}
+ * @return Closure(iterable<int|string, mixed>):array{0:mixed[], 1:mixed[]}
  */
 function partition(callable $function): Closure
 {
     /**
-     * @param mixed[] $array
+     * @param iterable<int|string, mixed> $source
      * @return array{0:mixed[], 1:mixed[]}
      */
-    return function (array $array) use ($function): array {
+    return function (iterable $source) use ($function): array {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         /** @var array{0:mixed[], 1:mixed[]} $result */
         $result = array_reduce(
             $array,
@@ -405,19 +514,20 @@ function partition(callable $function): Closure
 }
 
 /**
- * Returns a closure for checking all elements pass a filter.
+ * Returns a closure for checking that every element of an array or iterable
+ * passes the predicate. Short-circuits on the first non-matching value.
  *
  * @param callable(mixed):bool $function
- * @return Closure(mixed[]):bool
+ * @return Closure(iterable<int|string, mixed>):bool
  */
 function filterAll(callable $function): Closure
 {
     /**
-     * @param mixed[] $array
+     * @param iterable<int|string, mixed> $source
      * @return bool
      */
-    return function (array $array) use ($function): bool {
-        foreach ($array as $value) {
+    return function (iterable $source) use ($function): bool {
+        foreach ($source as $value) {
             if (false === $function($value)) {
                 return false;
             }
@@ -428,19 +538,20 @@ function filterAll(callable $function): Closure
 
 
 /**
- * Returns a closure for checking any elements pass a filter.
+ * Returns a closure for checking that at least one element of an array or
+ * iterable passes the predicate. Short-circuits on the first match.
  *
  * @param callable(mixed):bool $function
- * @return Closure(mixed[]):bool
+ * @return Closure(iterable<int|string, mixed>):bool
  */
 function filterAny(callable $function): Closure
 {
     /**
-     * @param mixed[] $array
+     * @param iterable<int|string, mixed> $source
      * @return bool
      */
-    return function (array $array) use ($function): bool {
-        foreach ($array as $value) {
+    return function (iterable $source) use ($function): bool {
+        foreach ($source as $value) {
             if (true === $function($value)) {
                 return true;
             }
@@ -459,147 +570,211 @@ function filterAny(callable $function): Closure
 
 
 /**
- * Returns a Closure which can be passed an array.
+ * Returns a Closure which applies a callback to every element of an array
+ * or iterable.
  *
- * @param callable(mixed):mixed $func Callback to apply to each element in array.
- * @return Closure(mixed[]):mixed[]
+ * - Array in  → array out (eager, unchanged behaviour).
+ * - Generator/Traversable in → Generator out (lazy; values are transformed
+ *   on demand, keys preserved).
+ *
+ * @param callable(mixed):mixed $func Callback to apply to each element.
+ * @return Closure(iterable<int|string, mixed>):(array<int|string, mixed>|\Generator<int|string, mixed>)
  */
 function map(callable $func): Closure
 {
     /**
-     * @param mixed[] $array The array to map
-     * @return mixed[]
+     * @param iterable<int|string, mixed> $source The array or iterable to map.
+     * @return array<int|string, mixed>|\Generator<int|string, mixed>
      */
-    return function (array $array) use ($func): array {
-        return array_map($func, $array);
+    return function (iterable $source) use ($func) {
+        if (is_array($source)) {
+            return array_map($func, $source);
+        }
+        return (function () use ($source, $func) {
+            foreach ($source as $key => $value) {
+                yield $key => $func($value);
+            }
+        })();
     };
 }
 
 /**
- * Returns a Closure for mapping of an arrays keys.
+ * Returns a Closure for transforming the keys of an array or iterable.
  * Setting the key to an existing index will overwrite the current value at same index.
  *
- * @param callable $func
- * @return Closure(mixed[]):mixed[]
+ * - Array in  → array out (eager, unchanged behaviour).
+ * - Generator/Traversable in → Generator out (lazy; transformed keys preserved).
+ *
+ * @param callable $func Callback applied to each key.
+ * @return Closure(iterable<int|string, mixed>):(array<int|string, mixed>|\Generator<int|string, mixed>)
  */
 function mapKey(callable $func): Closure
 {
     /**
-     * @param mixed[] $array The array to map
-     * @return mixed[]
+     * @param iterable<int|string, mixed> $source Array or iterable whose keys are transformed.
+     * @return array<int|string, mixed>|\Generator<int|string, mixed>
      */
-    return function (array $array) use ($func): array {
-        return array_reduce(
-            array_keys($array),
-            function ($carry, $key) use ($func, $array) {
-                $carry[$func($key)] = $array[$key];
-                return $carry;
-            },
-            array()
-        );
+    return function (iterable $source) use ($func) {
+        if (is_array($source)) {
+            return array_reduce(
+                array_keys($source),
+                function ($carry, $key) use ($func, $source) {
+                    $carry[$func($key)] = $source[$key];
+                    return $carry;
+                },
+                array()
+            );
+        }
+        return (function () use ($source, $func) {
+            foreach ($source as $key => $value) {
+                yield $func($key) => $value;
+            }
+        })();
     };
 }
 
 /**
- * Returns a Closure for mapping an array with additional data.
+ * Returns a Closure for mapping an array or iterable with additional data arguments
+ * passed to the callback alongside each element's value.
  *
- * @param callable(mixed ...$a):mixed $func
- * @param mixed ...$data
- * @return Closure(mixed[]):mixed[]
+ * - Array in  → array out (eager, unchanged behaviour).
+ * - Generator/Traversable in → Generator out (lazy; keys preserved).
+ *
+ * @param callable(mixed ...$a):mixed $func Callback invoked as `$func($value, ...$data)`.
+ * @param mixed ...$data Extra arguments threaded into each invocation of `$func`.
+ * @return Closure(iterable<int|string, mixed>):(array<int|string, mixed>|\Generator<int|string, mixed>)
  */
 function mapWith(callable $func, ...$data): Closure
 {
     /**
-     * @param mixed[] $array The array to map
-     * @return mixed[]
+     * @param iterable<int|string, mixed> $source Array or iterable to map.
+     * @return array<int|string, mixed>|\Generator<int|string, mixed>
      */
-    return function (array $array) use ($func, $data): array {
-        return array_map(
-            function ($e) use ($data, $func) {
-                return $func($e, ...$data);
-            },
-            $array
-        );
+    return function (iterable $source) use ($func, $data) {
+        if (is_array($source)) {
+            return array_map(
+                function ($e) use ($data, $func) {
+                    return $func($e, ...$data);
+                },
+                $source
+            );
+        }
+        return (function () use ($source, $func, $data) {
+            foreach ($source as $key => $value) {
+                yield $key => $func($value, ...$data);
+            }
+        })();
     };
 }
 
 /**
- * Returns a Closure for mapping an array with access to value and key.
+ * Returns a Closure for mapping over an array or iterable with access to both value
+ * and key in the callback: `$func($value, $key)`.
  *
- * @param callable(int|string $key, mixed $value):mixed $func
- * @return Closure(mixed[]):mixed[]
+ * Note on keys: for parity with the existing array-path behaviour (which uses
+ * `array_map` with two arrays — causing the result to be numerically re-indexed),
+ * the Generator path also yields sequential integer keys starting at 0.
+ *
+ * - Array in  → array out with sequential numeric keys (unchanged behaviour).
+ * - Generator/Traversable in → Generator out with sequential numeric keys.
+ *
+ * @param callable(mixed $value, int|string $key):mixed $func
+ * @return Closure(iterable<int|string, mixed>):(array<int, mixed>|\Generator<int, mixed>)
  */
 function mapWithKey(callable $func): Closure
 {
     /**
-     * @param mixed[] $array The array to map
-     * @return mixed[]
+     * @param iterable<int|string, mixed> $source Array or iterable to map.
+     * @return array<int, mixed>|\Generator<int, mixed>
      */
-    return function (array $array) use ($func): array {
-        return array_map(
-            function ($key, $value) use ($func) {
-                return $func($value, $key);
-            },
-            $array,
-            array_keys($array)
-        );
+    return function (iterable $source) use ($func) {
+        if (is_array($source)) {
+            return array_map(
+                function ($key, $value) use ($func) {
+                    return $func($value, $key);
+                },
+                $source,
+                array_keys($source)
+            );
+        }
+        return (function () use ($source, $func) {
+            $i = 0;
+            foreach ($source as $key => $value) {
+                yield $i++ => $func($value, $key);
+            }
+        })();
     };
 }
 
 /**
- * Returns a Closure foreaching over an array
+ * Returns a Closure that iterates over an array or iterable, invoking the
+ * callback with each ($key, $value) pair for its side effect.
  *
  * @param callable(int|string $key, mixed $value):void $func
- * @return Closure(mixed[]):void
+ * @return Closure(iterable<int|string, mixed>):void
  */
 function each(callable $func): Closure
 {
     /**
-     * @param mixed[] $array The array to map
+     * @param iterable<int|string, mixed> $source
      * @return void
      */
-    return function (array $array) use ($func): void {
-        array_map(
-            function ($key, $value) use ($func) {
-                $func($key, $value);
-            },
-            array_keys($array),
-            $array
-        );
+    return function (iterable $source) use ($func): void {
+        foreach ($source as $key => $value) {
+            $func($key, $value);
+        }
     };
 }
 
 /**
- * Returns a Closure for flattening and mapping an array
+ * Returns a Closure for flattening and mapping an array or iterable.
  *
- * @param callable(mixed):mixed $function The function to map the element. (Will no be called if resolves to array)
- * @param int|null $n Depth of nodes to flatten. If null will flatten to n
- * @return Closure(mixed[]):mixed[]
+ * - Array in  → array out (unchanged behaviour via array_reduce/array_merge).
+ * - Generator/Traversable in → Generator out that lazily recurses into nested
+ *   arrays up to depth $n, applying $function to leaf non-array elements.
+ *
+ * @param callable(mixed):mixed $function Applied to leaf non-array elements.
+ * @param int|null $n Recursion depth; null = flatten fully.
+ * @return Closure(iterable<int|string, mixed>):(array<int, mixed>|\Generator<int, mixed>)
  */
 function flatMap(callable $function, ?int $n = null): Closure
 {
     /**
-     * @param mixed[] $array
-     * @return mixed[]
+     * @param iterable<int|string, mixed> $source
+     * @return array<int, mixed>|\Generator<int, mixed>
      */
-    return function (array $array) use ($n, $function): array {
-        return array_reduce(
-            $array,
-            /**
-             * @param mixed[] $carry
-             * @param mixed $element
-             * @return mixed[]
-             */
-            function (array $carry, $element) use ($n, $function): array {
+    return function (iterable $source) use ($n, $function) {
+        if (is_array($source)) {
+            return array_reduce(
+                $source,
+                /**
+                 * @param mixed[] $carry
+                 * @param mixed $element
+                 * @return mixed[]
+                 */
+                function (array $carry, $element) use ($n, $function): array {
+                    if (is_array($element) && (is_null($n) || $n > 0)) {
+                        $recursed = flatMap($function, $n ? $n - 1 : null)($element);
+                        $carry    = array_merge($carry, is_array($recursed) ? $recursed : iterator_to_array($recursed));
+                    } else {
+                        $carry[] = is_array($element) ? $element : $function($element);
+                    }
+                    return $carry;
+                },
+                array()
+            );
+        }
+        return (function () use ($source, $n, $function) {
+            foreach ($source as $element) {
                 if (is_array($element) && (is_null($n) || $n > 0)) {
-                    $carry = array_merge($carry, flatMap($function, $n ? $n - 1 : null)($element));
+                    foreach (flatMap($function, $n ? $n - 1 : null)($element) as $sub) {
+                        yield $sub;
+                    }
                 } else {
-                    $carry[] = is_array($element) ? $element : $function($element);
+                    yield is_array($element) ? $element : $function($element);
                 }
-                return $carry;
-            },
-            array()
-        );
+            }
+        })();
     };
 }
 
@@ -611,18 +786,20 @@ function flatMap(callable $function, ?int $n = null): Closure
 
 
 /**
- * Creates a Closure for grouping an array.
+ * Creates a Closure for grouping an array or iterable by a key-producing fn.
+ * Terminal — Generator input is consumed fully.
  *
  * @param callable(mixed):(string|int) $function The function to group by.
- * @return Closure(mixed):mixed[]
+ * @return Closure(iterable<int|string, mixed>):mixed[]
  */
 function groupBy(callable $function): Closure
 {
     /**
-     * @param mixed[] $array The array to be grouped
+     * @param iterable<int|string, mixed> $source The array or iterable to be grouped.
      * @return mixed[] Grouped array.
      */
-    return function (array $array) use ($function): array {
+    return function (iterable $source) use ($function): array {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         return array_reduce(
             $array,
             /**
@@ -640,139 +817,220 @@ function groupBy(callable $function): Closure
 }
 
 /**
- * Creates a Closure for chunking an array to set a limit.
+ * Creates a Closure for chunking an array or iterable into batches of up to N.
  *
- * @param int $count The max size of each chunk. Must not be less than 1!
- * @param bool $preserveKeys Should inital keys be kept. Default false.
- * @return Closure(mixed[]):mixed[]
+ * - Array in  → array of arrays (unchanged behaviour via array_chunk).
+ * - Generator/Traversable in → Generator that yields each completed batch as
+ *   an array. The final partial batch is yielded when the source exhausts.
+ *
+ * @param int $count The max size of each chunk. Values less than 1 are
+ *                   clamped to 1.
+ * @param bool $preserveKeys Should the source keys be kept inside each batch.
+ * @return Closure(iterable<int|string, mixed>):(array<int, array<int|string, mixed>>|\Generator<int, array<int|string, mixed>>)
  */
 function chunk(int $count, bool $preserveKeys = false): Closure
 {
+    $count = max(1, $count);
     /**
-     * @param mixed[] $array Array to chunk
-     * @return mixed[]
+     * @param iterable<int|string, mixed> $source
+     * @return array<int, array<int|string, mixed>>|\Generator<int, array<int|string, mixed>>
      */
-    return function (array $array) use ($count, $preserveKeys): array {
-        return array_chunk($array, max(1, $count), $preserveKeys);
+    return function (iterable $source) use ($count, $preserveKeys) {
+        if (is_array($source)) {
+            return array_chunk($source, $count, $preserveKeys);
+        }
+        return (function () use ($source, $count, $preserveKeys) {
+            $buffer = array();
+            foreach ($source as $key => $value) {
+                if ($preserveKeys) {
+                    $buffer[$key] = $value;
+                } else {
+                    $buffer[] = $value;
+                }
+                if (count($buffer) >= $count) {
+                    yield $buffer;
+                    $buffer = array();
+                }
+            }
+            if (count($buffer) > 0) {
+                yield $buffer;
+            }
+        })();
     };
 }
 
 /**
- * Create callback for extracting a single column from an array.
+ * Create callback for extracting a single column from an array or iterable of
+ * array/object rows.
+ *
+ * - Array in  → array of extracted values (unchanged behaviour via array_column).
+ * - Generator/Traversable in → Generator that lazily yields the column value
+ *   from each row. If `$key` is provided, each yielded pair is `rowKey => value`;
+ *   otherwise sequential integer keys are used.
  *
  * @param string $column Column to retrieve.
- * @param string $key Use column for assigning as the index. defaults to numeric keys if null.
- * @return Closure(mixed[]):mixed[]
+ * @param string|null $key Column to use as the yielded key. Null = sequential ints.
+ * @return Closure(iterable<int|string, mixed>):(array<int|string, mixed>|\Generator<int|string, mixed>)
  */
 function column(string $column, ?string $key = null): Closure
 {
     /**
-     * @param mixed[] $array
-     * @return mixed[]
+     * @param iterable<int|string, mixed> $source
+     * @return array<int|string, mixed>|\Generator<int|string, mixed>
      */
-    return function (array $array) use ($column, $key): array {
-        return array_column($array, $column, $key);
+    return function (iterable $source) use ($column, $key) {
+        if (is_array($source)) {
+            return array_column($source, $column, $key);
+        }
+        return (function () use ($source, $column, $key) {
+            foreach ($source as $row) {
+                $value = null;
+                if (is_array($row) && array_key_exists($column, $row)) {
+                    $value = $row[$column];
+                } elseif (is_object($row) && isset($row->{$column})) {
+                    $value = $row->{$column};
+                }
+                if ($key === null) {
+                    yield $value;
+                    continue;
+                }
+                $rowKey = null;
+                if (is_array($row) && array_key_exists($key, $row)) {
+                    $rowKey = $row[$key];
+                } elseif (is_object($row) && isset($row->{$key})) {
+                    $rowKey = $row->{$key};
+                }
+                yield $rowKey => $value;
+            }
+        })();
     };
 }
 
 /**
- * Returns a Closure for flattening an array to a defined depth
+ * Returns a Closure for flattening an array or iterable to a defined depth.
  *
- * @param int|null $n Depth of nodes to flatten. If null will flatten to n
- * @return Closure(mixed[] $var): mixed[]
+ * - Array in  → array out (unchanged behaviour).
+ * - Generator/Traversable in → Generator out that lazily recurses into nested
+ *   arrays up to depth $n. Empty nested arrays are dropped.
+ *
+ * @param int|null $n Depth of nodes to flatten. If null will flatten fully.
+ * @return Closure(iterable<int|string, mixed>):(array<int, mixed>|\Generator<int, mixed>)
  */
 function flattenByN(?int $n = null): Closure
 {
     /**
-     * @param mixed[] $array Array to flatten
-     * @return mixed[]
+     * @param iterable<int|string, mixed> $source
+     * @return array<int, mixed>|\Generator<int, mixed>
      */
-    return function (array $array) use ($n): array {
-        return array_reduce(
-            $array,
-            /**
-             * @param array<int|string, mixed> $carry
-             * @param mixed|mixed[] $element
-             * @return array<int|string, mixed>
-             */
-            function (array $carry, $element) use ($n): array {
-                // Remove empty arrays.
-                if (is_array($element) && empty($element)) {
+    return function (iterable $source) use ($n) {
+        if (is_array($source)) {
+            return array_reduce(
+                $source,
+                /**
+                 * @param array<int|string, mixed> $carry
+                 * @param mixed|mixed[] $element
+                 * @return array<int|string, mixed>
+                 */
+                function (array $carry, $element) use ($n): array {
+                    // Remove empty arrays.
+                    if (is_array($element) && empty($element)) {
+                        return $carry;
+                    }
+                    if (is_array($element) && (is_null($n) || $n > 0)) { // @phpstan-ignore-line
+                        $recursed = flattenByN($n ? $n - 1 : null)($element);
+                        $carry    = array_merge($carry, is_array($recursed) ? $recursed : iterator_to_array($recursed));
+                    } else {
+                        $carry[] = $element;
+                    }
                     return $carry;
+                },
+                array()
+            );
+        }
+        return (function () use ($source, $n) {
+            foreach ($source as $element) {
+                if (is_array($element)) {
+                    if (empty($element)) {
+                        continue;
+                    }
+                    if (is_null($n) || $n > 0) {
+                        foreach (flattenByN($n ? $n - 1 : null)($element) as $sub) {
+                            yield $sub;
+                        }
+                        continue;
+                    }
                 }
-                // If the element is an array and we are still flattening, call again
-                if (is_array($element) && (is_null($n) || $n > 0)) { // @phpstan-ignore-line
-                    $carry = array_merge($carry, flattenByN($n ? $n - 1 : null)($element));
-                } else {
-                    // Else just add the element.
-                    $carry[] = $element;
-                }
-                return $carry;
-            },
-            array()
-        );
+                yield $element;
+            }
+        })();
     };
 }
 
 /**
- * Returns a closure for recursively changing values in an array.
+ * Returns a closure for recursively replacing values in an array or iterable.
+ * Terminal — Generator input is materialised first.
  *
  * @param mixed[] ...$with The array values to replace with
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):mixed[]
  */
 function replaceRecursive(array ...$with): Closure
 {
     /**
-     * @param mixed[] $array The array to have elements replaced from.
+     * @param iterable<int|string, mixed> $source
      * @return mixed[] Array with replacements.
      */
-    return function (array $array) use ($with): array {
+    return function (iterable $source) use ($with): array {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         return array_replace_recursive($array, ...$with);
     };
 }
 
 /**
- * Returns a Closure for changing all values in a flat array, based on key.
+ * Returns a Closure for changing values in a flat array or iterable, based on key.
+ * Terminal — Generator input is materialised first.
  *
  * @param mixed[] ...$with Array with values to replace with, must have matching key with base array.
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):mixed[]
  */
 function replace(array ...$with): Closure
 {
     /**
-     * @param mixed[] $array The array to have elements replaced from.
+     * @param iterable<int|string, mixed> $source
      * @return mixed[] Array with replacements.
      */
-    return function (array $array) use ($with): array {
+    return function (iterable $source) use ($with): array {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         return array_replace($array, ...$with);
     };
 }
 
 /**
- * Returns a Closure for doing array_sum with the results of a function/expression.
+ * Returns a Closure for summing the result of a callback applied to each element
+ * of an array or iterable. Terminal — Generator input is materialised.
  *
- * @param callable(mixed):Number $function The function to return the value for array sum
- * @return Closure(mixed[]):Number
+ * @param callable(mixed):Number $function Applied to each value before summing.
+ * @return Closure(iterable<int|string, mixed>):Number
  */
 function sumWhere(callable $function): Closure
 {
     /**
-     * @param mixed[] $array Array to do sum() on.
+     * @param iterable<int|string, mixed> $source
      * @return Number The total.
      */
-    return function (array $array) use ($function) {
+    return function (iterable $source) use ($function) {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         return array_sum(array_map($function, $array));
     };
 }
 
 /**
- * Creates a closure for casting an array to an object.
- * Assumed all properties are public
- * None existing properties will be set as dynamic properties.
+ * Creates a closure for casting an array or iterable into an object.
+ * Assumes all properties are public; non-existing properties are set dynamically.
+ * Terminal — Generator input is materialised first.
  *
- * @param object|null $object The object to cast to, defaults to stdClass
+ * @param object|null $object The object to cast to, defaults to stdClass.
  * @phpstan-param mixed $object
- * @return Closure(mixed[]):object
+ * @return Closure(iterable<int|string, mixed>):object
  * @throws \InvalidArgumentException If property does not exist or is not public.
  */
 function toObject($object = null): Closure
@@ -785,10 +1043,11 @@ function toObject($object = null): Closure
     }
 
     /**
-     * @param mixed[] $array
+     * @param iterable<int|string, mixed> $source
      * @return object
      */
-    return function (array $array) use ($object) {
+    return function (iterable $source) use ($object) {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         foreach ($array as $key => $value) {
             // If key is not a string or numerical, skip it.
             if (!is_string($key) || is_numeric($key)) {
@@ -838,38 +1097,40 @@ function toJson(int $flags = 0, int $depth = 512): Closure
 
 
 /**
- * Returns a Closure for doing regular SORT against an array.
- * Doesn't maintain keys.
+ * Returns a Closure for doing regular SORT against an array or iterable.
+ * Doesn't maintain keys. Terminal — Generator input is materialised.
  *
  * @param int $flag Uses php stock sort constants or numerical values.
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):mixed[]
  */
 function sort(int $flag = SORT_REGULAR): Closure
 {
     /**
-     *  @param mixed[]$array The array to sort
-     *  @return mixed[] The sorted array (new array)
+     * @param iterable<int|string, mixed> $source
+     * @return mixed[] The sorted array (new array).
      */
-    return function (array $array) use ($flag) {
+    return function (iterable $source) use ($flag) {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         \sort($array, $flag);
         return $array;
     };
 }
 
 /**
- * Returns a Closure for doing regular Reverse SORT against an array.
- * Doesn't maintain keys.
+ * Returns a Closure for doing regular Reverse SORT against an array or iterable.
+ * Doesn't maintain keys. Terminal — Generator input is materialised.
  *
  * @param int $flag Uses php stock sort constants or numerical values.
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):mixed[]
  */
 function rsort(int $flag = SORT_REGULAR): Closure
 {
     /**
-     *  @param mixed[]$array The array to sort
-     *  @return mixed[] The sorted array (new array)
+     * @param iterable<int|string, mixed> $source
+     * @return mixed[] The sorted array (new array).
      */
-    return function (array $array) use ($flag) {
+    return function (iterable $source) use ($flag) {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         \rsort($array, $flag);
         return $array;
     };
@@ -877,145 +1138,158 @@ function rsort(int $flag = SORT_REGULAR): Closure
 
 
 /**
- * Returns a Closure for sorting an array by key in ascending order.
+ * Returns a Closure for sorting an array or iterable by key in ascending order.
+ * Terminal — Generator input is materialised.
  *
  * @param int $flag Uses php stock sort constants or numerical values.
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):mixed[]
  */
 function ksort(int $flag = SORT_REGULAR): Closure
 {
     /**
-     *  @param mixed[]$array The array to sort
-     *  @return mixed[] The sorted array (new array)
+     * @param iterable<int|string, mixed> $source
+     * @return mixed[] The sorted array (new array).
      */
-    return function (array $array) use ($flag) {
+    return function (iterable $source) use ($flag) {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         \ksort($array, $flag);
         return $array;
     };
 }
 
 /**
- * Returns a Closure for sorting an array by key in descending (reverse) order.
+ * Returns a Closure for sorting an array or iterable by key in descending order.
+ * Terminal — Generator input is materialised.
  *
  * @param int $flag Uses php stock sort constants or numerical values.
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):mixed[]
  */
 function krsort(int $flag = SORT_REGULAR): Closure
 {
     /**
-     *  @param mixed[]$array The array to sort
-     *  @return mixed[] The sorted array (new array)
+     * @param iterable<int|string, mixed> $source
+     * @return mixed[] The sorted array (new array).
      */
-    return function (array $array) use ($flag) {
+    return function (iterable $source) use ($flag) {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         \krsort($array, $flag);
         return $array;
     };
 }
 
 /**
- * Returns a Closure for sorting an array by value in ascending order.
- * Maintain keys.
+ * Returns a Closure for sorting an array or iterable by value in ascending order.
+ * Maintains keys. Terminal — Generator input is materialised.
  *
  * @param int $flag Uses php stock sort constants or numerical values.
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):mixed[]
  */
 function asort(int $flag = SORT_REGULAR): Closure
 {
     /**
-     *  @param mixed[]$array The array to sort
-     *  @return mixed[] The sorted array (new array)
+     * @param iterable<int|string, mixed> $source
+     * @return mixed[] The sorted array (new array).
      */
-    return function (array $array) use ($flag) {
+    return function (iterable $source) use ($flag) {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         \asort($array, $flag);
         return $array;
     };
 }
 
 /**
- * Returns a Closure for sorting an array by value in descending (reverse) order.
- * Maintain keys.
+ * Returns a Closure for sorting an array or iterable by value in descending order.
+ * Maintains keys. Terminal — Generator input is materialised.
  *
  * @param int $flag Uses php stock sort constants or numerical values.
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):mixed[]
  */
 function arsort(int $flag = SORT_REGULAR): Closure
 {
     /**
-     *  @param mixed[]$array The array to sort
-     *  @return mixed[] The sorted array (new array)
+     * @param iterable<int|string, mixed> $source
+     * @return mixed[] The sorted array (new array).
      */
-    return function (array $array) use ($flag) {
+    return function (iterable $source) use ($flag) {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         \arsort($array, $flag);
         return $array;
     };
 }
 
 /**
- * Returns a Closure for sorting an array using a "natural order" algorithm
+ * Returns a Closure for sorting an array or iterable with a "natural order" algorithm.
+ * Terminal — Generator input is materialised.
  *
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):mixed[]
  */
 function natsort(): Closure
 {
     /**
-     *  @param mixed[]$array The array to sort
-     *  @return mixed[] The sorted array (new array)
+     * @param iterable<int|string, mixed> $source
+     * @return mixed[] The sorted array (new array).
      */
-    return function (array $array) {
+    return function (iterable $source) {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         \natsort($array);
         return $array;
     };
 }
 
 /**
- * Returns a Closure for sorting an array using a case insensitive "natural order" algorithm
+ * Returns a Closure for sorting an array or iterable with a case-insensitive
+ * "natural order" algorithm. Terminal — Generator input is materialised.
  *
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):mixed[]
  */
 function natcasesort(): Closure
 {
     /**
-     *  @param mixed[]$array The array to sort
-     *  @return mixed[] The sorted array (new array)
+     * @param iterable<int|string, mixed> $source
+     * @return mixed[] The sorted array (new array).
      */
-    return function (array $array) {
+    return function (iterable $source) {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         \natcasesort($array);
         return $array;
     };
 }
 
 /**
- * Returns a Closure for sorting an array by key using a custom comparison function
+ * Returns a Closure for sorting an array or iterable by key using a custom comparator.
+ * Terminal — Generator input is materialised.
  *
  * @param callable(mixed $a, mixed $b): int $function
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):mixed[]
  */
 function uksort(callable $function): Closure
 {
     /**
-     *  @param mixed[] $array The array to sort
-     *  @return mixed[] The sorted array (new array)
+     * @param iterable<int|string, mixed> $source
+     * @return mixed[] The sorted array (new array).
      */
-    return function (array $array) use ($function) {
+    return function (iterable $source) use ($function) {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         \uksort($array, $function);
         return $array;
     };
 }
 
 /**
- * Returns a Closure for sorting an array using a custom comparison function
- * Maintain keys.
+ * Returns a Closure for sorting an array or iterable by value using a custom
+ * comparator. Maintains keys. Terminal — Generator input is materialised.
  *
  * @param callable(mixed $a, mixed $b): int $function
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):mixed[]
  */
 function uasort(callable $function): Closure
 {
     /**
-     *  @param mixed[]$array The array to sort
-     *  @return mixed[] The sorted array (new array)
+     * @param iterable<int|string, mixed> $source
+     * @return mixed[] The sorted array (new array).
      */
-    return function (array $array) use ($function) {
+    return function (iterable $source) use ($function) {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         \uasort($array, $function);
         return $array;
     };
@@ -1023,19 +1297,20 @@ function uasort(callable $function): Closure
 
 
 /**
- * Returns a Closure for sorting an array using a custom comparison function
- * Doesn't maintain keys.
+ * Returns a Closure for sorting an array or iterable using a custom comparator.
+ * Does not maintain keys. Terminal — Generator input is materialised.
  *
  * @param callable(mixed $a, mixed $b): int $function
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):mixed[]
  */
 function usort(callable $function): Closure
 {
     /**
-     *  @param mixed[]$array The array to sort
-     *  @return mixed[] The sorted array (new array)
+     * @param iterable<int|string, mixed> $source
+     * @return mixed[] The sorted array (new array).
      */
-    return function (array $array) use ($function) {
+    return function (iterable $source) use ($function) {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         \usort($array, $function);
         return $array;
     };
@@ -1043,95 +1318,148 @@ function usort(callable $function): Closure
 
 
 /**
- * Returns a Closure for applying a function to every element of an array
+ * Returns a Closure for a left-scan (running fold) over an array or iterable.
+ * Emits the initial value, then every intermediate accumulation.
+ *
+ * - Array in  → array out (unchanged behaviour).
+ * - Generator/Traversable in → Generator out that yields the initial value
+ *   first, then each running accumulation lazily.
  *
  * @param callable(mixed $carry, mixed $value):mixed $function
  * @param mixed $initialValue
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):(array<int, mixed>|\Generator<int, mixed>)
  */
 function scan(callable $function, $initialValue): Closure
 {
-    return function (array $array) use ($function, $initialValue) {
-        $carry[] = $initialValue;
-        foreach ($array as $key => $value) {
-            $initialValue = $function($initialValue, $value);
-            $carry[]      = $initialValue;
+    /**
+     * @param iterable<int|string, mixed> $source
+     * @return array<int, mixed>|\Generator<int, mixed>
+     */
+    return function (iterable $source) use ($function, $initialValue) {
+        if (is_array($source)) {
+            $carry[] = $initialValue;
+            foreach ($source as $key => $value) {
+                $initialValue = $function($initialValue, $value);
+                $carry[]      = $initialValue;
+            }
+            return $carry;
         }
-        return $carry;
+        return (function () use ($source, $function, $initialValue) {
+            yield $initialValue;
+            foreach ($source as $value) {
+                $initialValue = $function($initialValue, $value);
+                yield $initialValue;
+            }
+        })();
     };
 }
 
 /**
- * Returns a Closure for applying a function to every element of an array
+ * Returns a Closure for a right-scan (running fold from the right) over an array
+ * or iterable. Emits every intermediate accumulation, finishing with the initial.
+ *
+ * - Array in  → array out (unchanged behaviour).
+ * - Generator/Traversable in → the source is materialised to an array (reverse
+ *   scan requires it), the scan is computed, then the results are re-yielded
+ *   as a Generator for API consistency.
  *
  * @param callable(mixed $carry, mixed $value):mixed $function
  * @param mixed $initialValue
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):(array<int, mixed>|\Generator<int, mixed>)
  */
 function scanR(callable $function, $initialValue): Closure
 {
-    return function (array $array) use ($function, $initialValue) {
-        $carry[] = $initialValue;
-        foreach (array_reverse($array) as $key => $value) {
-            $initialValue = $function($initialValue, $value);
-            $carry[]      = $initialValue;
+    /**
+     * @param iterable<int|string, mixed> $source
+     * @return array<int, mixed>|\Generator<int, mixed>
+     */
+    return function (iterable $source) use ($function, $initialValue) {
+        if (is_array($source)) {
+            $carry[] = $initialValue;
+            foreach (array_reverse($source) as $key => $value) {
+                $initialValue = $function($initialValue, $value);
+                $carry[]      = $initialValue;
+            }
+            return \array_reverse($carry);
         }
-        return \array_reverse($carry);
+        return (function () use ($source, $function, $initialValue) {
+            $materialised = iterator_to_array($source);
+            $carry        = array($initialValue);
+            foreach (array_reverse($materialised) as $value) {
+                $initialValue = $function($initialValue, $value);
+                $carry[]      = $initialValue;
+            }
+            foreach (array_reverse($carry) as $v) {
+                yield $v;
+            }
+        })();
     };
 }
 
 /**
- * Creates a function for defining the callback and initial for reduce/fold
+ * Creates a Closure that reduces an array or iterable left-to-right with an
+ * initial accumulator. Terminal — Generator input is consumed fully via a
+ * streaming foreach (no materialisation).
  *
  * @param callable(mixed $carry, mixed $value): mixed $callable
  * @param mixed $initial
- * @return Closure(mixed[]):mixed
+ * @return Closure(iterable<int|string, mixed>):mixed
  */
 function fold(callable $callable, $initial = array()): Closure
 {
     /**
-     * @param mixed[] $array
+     * @param iterable<int|string, mixed> $source
      * @return mixed
      */
-    return function (array $array) use ($callable, $initial) {
-        return array_reduce($array, $callable, $initial);
+    return function (iterable $source) use ($callable, $initial) {
+        if (is_array($source)) {
+            return array_reduce($source, $callable, $initial);
+        }
+        foreach ($source as $value) {
+            $initial = $callable($initial, $value);
+        }
+        return $initial;
     };
 }
 
 /**
- * Creates a function for defining the callback and initial for reduce/fold
+ * Creates a Closure that reduces an array or iterable right-to-left with an
+ * initial accumulator. Terminal — Generator input must be materialised to
+ * reverse before reducing.
  *
  * @param callable(mixed $carry, mixed $value): mixed $callable
  * @param mixed $initial
- * @return Closure(mixed[]):mixed
+ * @return Closure(iterable<int|string, mixed>):mixed
  */
 function foldR(callable $callable, $initial = array()): Closure
 {
     /**
-     * @param mixed[] $array
+     * @param iterable<int|string, mixed> $source
      * @return mixed
      */
-    return function (array $array) use ($callable, $initial) {
+    return function (iterable $source) use ($callable, $initial) {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         return array_reduce(\array_reverse($array), $callable, $initial);
     };
 }
 
 /**
- * Creates a function for defining the callback and initial for reduce/fold, with the key
- * also passed to the callback.
+ * Creates a Closure that reduces an array or iterable left-to-right with the
+ * key passed to the callback alongside the value. Terminal — streams the
+ * source via foreach (no materialisation needed).
  *
  * @param callable(mixed $carry, int|string $key, mixed $value): mixed $callable
  * @param mixed $initial
- * @return Closure(mixed[]):mixed
+ * @return Closure(iterable<int|string, mixed>):mixed
  */
 function foldKeys(callable $callable, $initial = array()): Closure
 {
     /**
-     * @param mixed[] $array
+     * @param iterable<int|string, mixed> $source
      * @return mixed
      */
-    return function (array $array) use ($callable, $initial) {
-        foreach ($array as $key => $value) {
+    return function (iterable $source) use ($callable, $initial) {
+        foreach ($source as $key => $value) {
             $initial = $callable($initial, $key, $value);
         }
         return $initial;
@@ -1139,33 +1467,53 @@ function foldKeys(callable $callable, $initial = array()): Closure
 }
 
 /**
- * Creates a function which takes the first n elements from an array
+ * Creates a function which takes the first n elements from an array or iterable.
+ *
+ * - Array in  → array of the first $count elements (unchanged behaviour).
+ * - Generator/Traversable in → Generator that yields up to $count elements
+ *   lazily. The source is NOT advanced beyond what was taken.
  *
  * @param int $count
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):(array<int|string, mixed>|\Generator<int|string, mixed>)
  * @throws \InvalidArgumentException if count is negative
  */
 function take(int $count = 1): Closure
 {
-    // throw InvalidArgumentException if count is negative
     if ($count < 0) {
         throw new \InvalidArgumentException(__FUNCTION__ . ' count must be greater than or equal to 0');
     }
 
     /**
-     * @param mixed[] $array
-     * @return mixed[]
+     * @param iterable<int|string, mixed> $source
+     * @return array<int|string, mixed>|\Generator<int|string, mixed>
      */
-    return function (array $array) use ($count) {
-        return \array_slice($array, 0, $count);
+    return function (iterable $source) use ($count) {
+        if (is_array($source)) {
+            return \array_slice($source, 0, $count);
+        }
+        return (function () use ($source, $count) {
+            if ($count === 0) {
+                return;
+            }
+            $taken = 0;
+            foreach ($source as $key => $value) {
+                yield $key => $value;
+                $taken++;
+                if ($taken >= $count) {
+                    break;
+                }
+            }
+        })();
     };
 }
 
 /**
- * Creates a function which takes the last n elements from an array
+ * Creates a function which takes the last N elements from an array or iterable.
+ * Terminal — Generator input is materialised fully (the last N is only
+ * knowable once the source has been consumed).
  *
  * @param int $count
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):mixed[]
  * @throws \InvalidArgumentException if count is negative
  */
 function takeLast(int $count = 1): Closure
@@ -1175,85 +1523,116 @@ function takeLast(int $count = 1): Closure
         throw new \InvalidArgumentException(__FUNCTION__ . ' count must be greater than or equal to 0');
     }
 
-    // If count is 0, return an empty array
+    // If count is 0, return an empty array for any input.
     if ($count === 0) {
-        return function (array $array) {
+        return function (iterable $source) {
             return array();
         };
     }
 
     /**
-     * @param mixed[] $array
+     * @param iterable<int|string, mixed> $source
      * @return mixed[]
      */
-    return function (array $array) use ($count) {
+    return function (iterable $source) use ($count) {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         return \array_slice($array, -$count);
     };
 }
 
 /**
- * Creates a function that allows you to take a slice of an array until the passed conditional
- * returns true.
+ * Creates a function that takes elements from an array or iterable until the
+ * conditional returns true (exclusive — the first truthy element is NOT included).
+ *
+ * - Array in  → array out (unchanged behaviour).
+ * - Generator/Traversable in → Generator out, yields lazily, stops at the first
+ *   truthy predicate. Source is not advanced past the stopping element.
  *
  * @param callable(mixed): bool $conditional
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):(array<int|string, mixed>|\Generator<int|string, mixed>)
  */
 function takeUntil(callable $conditional): Closure
 {
     /**
-     * @param mixed[] $array
-     * @return mixed[]
+     * @param iterable<int|string, mixed> $source
+     * @return array<int|string, mixed>|\Generator<int|string, mixed>
      */
-    return function (array $array) use ($conditional) {
-        $carry = array();
-        foreach ($array as $key => $value) {
-            if (true === $conditional($value)) {
-                break;
+    return function (iterable $source) use ($conditional) {
+        if (is_array($source)) {
+            $carry = array();
+            foreach ($source as $key => $value) {
+                if (true === $conditional($value)) {
+                    break;
+                }
+                $carry[$key] = $value;
             }
-            $carry[$key] = $value;
+            return $carry;
         }
-        return $carry;
+        return (function () use ($source, $conditional) {
+            foreach ($source as $key => $value) {
+                if (true === $conditional($value)) {
+                    break;
+                }
+                yield $key => $value;
+            }
+        })();
     };
 }
 
 /**
- * Creates a function that allows you to take a slice of an array until the passed conditional
- * returns false.
+ * Creates a function that takes elements from an array or iterable while the
+ * conditional returns true. Stops at the first falsy predicate (exclusive).
+ *
+ * - Array in  → array out (unchanged behaviour).
+ * - Generator/Traversable in → Generator out, yields lazily, stops at the first
+ *   falsy predicate. Source is not advanced past the stopping element.
  *
  * @param callable(mixed): bool $conditional
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):(array<int|string, mixed>|\Generator<int|string, mixed>)
  */
 function takeWhile(callable $conditional): Closure
 {
     /**
-     * @param mixed[] $array
-     * @return mixed[]
+     * @param iterable<int|string, mixed> $source
+     * @return array<int|string, mixed>|\Generator<int|string, mixed>
      */
-    return function (array $array) use ($conditional) {
-        $carry = array();
-        foreach ($array as $key => $value) {
-            if (false === $conditional($value)) {
-                break;
+    return function (iterable $source) use ($conditional) {
+        if (is_array($source)) {
+            $carry = array();
+            foreach ($source as $key => $value) {
+                if (false === $conditional($value)) {
+                    break;
+                }
+                $carry[$key] = $value;
             }
-            $carry[$key] = $value;
+            return $carry;
         }
-        return $carry;
+        return (function () use ($source, $conditional) {
+            foreach ($source as $key => $value) {
+                if (false === $conditional($value)) {
+                    break;
+                }
+                yield $key => $value;
+            }
+        })();
     };
 }
 
 /**
- * Picks selected indexes from an array
+ * Picks selected indexes from an array or iterable.
+ * Terminal — Generator input is materialised first.
  *
  * @param string ...$indexes
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):mixed[]
  */
 function pick(string ...$indexes): Closure
 {
     /**
-     * @param mixed[] $array
+     * @param iterable<int|string, mixed> $source
      * @return mixed[]
      */
-    return function (array $array) use ($indexes) {
+    return function (iterable $source) use ($indexes) {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         return array_intersect_key($array, array_flip($indexes));
     };
 }
