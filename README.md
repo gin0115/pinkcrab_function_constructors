@@ -562,6 +562,14 @@ If you would like to contribute to this project, please feel to fork the project
 
 ## Changes
 
+* 1.0.0
+   * **Breaking Changes**
+   * Removed deprecated typo-alias functions. Use the correctly-spelled versions:
+     * `Strings\decimialNumber()` → `Strings\decimalNumber()`
+     * `Strings\similarAsComparisson()` → `Strings\similarAsComparison()`
+     * `Strings\firstPosistion()` → `Strings\firstPosition()`
+     * `Strings\lastPosistion()` → `Strings\lastPosition()`
+
 * 0.2.0 - 
    * **New Functions**
    * `Numbers\isMultipleOf()`

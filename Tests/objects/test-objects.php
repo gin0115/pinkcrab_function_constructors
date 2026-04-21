@@ -17,7 +17,6 @@ use PinkCrab\FunctionConstructors\Numbers as Num;
 use PinkCrab\FunctionConstructors\Objects as Obj;
 use PinkCrab\FunctionConstructors\Strings as Str;
 use PinkCrab\FunctionConstructors\FunctionsLoader;
-
 use PinkCrab\FunctionConstructors\GeneralFunctions as Func;
 
 use function PHPUnit\Framework\throwException;

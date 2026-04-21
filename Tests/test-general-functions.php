@@ -191,7 +191,7 @@ class GeneralFunctionTest extends TestCase
                 'id'      => 123,
                 'title'   => 'Lorem ipsum dolor',
                 'content' => 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique iste voluptatum sequi. Officia dignissimos minus ipsum odit, facilis voluptatibus veniam enim molestiae ipsam quae temporibus porro necessitatibus quia non mollitia!',
-                'date'    => ( new DateTime() )->format('d/m/yy H:m'),
+                'date'    => (new DateTime())->format('d/m/yy H:m'),
                 'author'  => (object) array(
                     'userName'    => 'someUser12',
                     'displayName' => 'Sam Smith',
@@ -205,7 +205,7 @@ class GeneralFunctionTest extends TestCase
                         'userName'    => 'someUser2',
                         'displayName' => 'Jane Jameson',
                         'comment'     => 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Hic, illo tempore repudiandae quos vero, vitae aut ullam tenetur officiis accusantium dolor animi ipsa omnis impedit, saepe est harum quisquam sit.',
-                        'date'        => ( new DateTime('yesterday') )->format('d/m/yy H:m'),
+                        'date'        => (new DateTime('yesterday'))->format('d/m/yy H:m'),
                     ),
                 ),
                 (object) array(
@@ -214,7 +214,7 @@ class GeneralFunctionTest extends TestCase
                         'userName'    => 'someUser22',
                         'displayName' => 'Barry Burton',
                         'comment'     => 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Hic, illo tempore repudiandae quos vero, vitae aut ullam tenetur officiis accusantium dolor animi ipsa omnis impedit, saepe est harum quisquam sit.',
-                        'date'        => ( new DateTime('yesterday') )->format('d/m/yy H:m'),
+                        'date'        => (new DateTime('yesterday'))->format('d/m/yy H:m'),
                     ),
                 ),
             ),
@@ -394,7 +394,7 @@ class GeneralFunctionTest extends TestCase
     {
         // Array
         $setName = Func\setProperty(array('id' => 1), 'name');
-        $this->assertEquals(array( 'id'=>1,'name' => 'bar' ), $setName('bar'));
+        $this->assertEquals(array( 'id' => 1,'name' => 'bar' ), $setName('bar'));
 
         // Object with ArrayAccess
         $instance = ObjectFactory::arrayAccess();
@@ -409,7 +409,7 @@ class GeneralFunctionTest extends TestCase
         $this->assertEquals('bar', $withBar['name']);
 
         // ArrayObject with ObjectAccess
-        $ObjectAccess = new ArrayObject((object)['id'=> 12, 'name' => null], ArrayObject::STD_PROP_LIST);
+        $ObjectAccess = new ArrayObject((object)['id' => 12, 'name' => null], ArrayObject::STD_PROP_LIST);
         $setName = Func\setProperty($ObjectAccess, 'name');
         $ObjectAccess = $setName('bar');
         $this->assertEquals('bar', $ObjectAccess['name']);

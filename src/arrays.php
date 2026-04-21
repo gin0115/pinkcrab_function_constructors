@@ -104,7 +104,7 @@ function toString(?string $glue = null): Closure
 {
     /**
      * @param array<int|string, mixed> $array Array join
-     * @return string.
+     * @return string
      */
     return function (array $array) use ($glue): string {
         return $glue ? \join($glue, $array) : \join($array);
@@ -357,7 +357,8 @@ function partition(callable $function): Closure
      * @return array{0:mixed[], 1:mixed[]}
      */
     return function (array $array) use ($function): array {
-        return array_reduce(
+        /** @var array{0:mixed[], 1:mixed[]} $result */
+        $result = array_reduce(
             $array,
             /**
              * @param array{0:mixed[], 1:mixed[]} $carry
@@ -371,6 +372,7 @@ function partition(callable $function): Closure
             },
             array( array(), array() )
         );
+        return $result;
     };
 }
 
@@ -741,6 +743,7 @@ function sumWhere(callable $function): Closure
  * None existing properties will be set as dynamic properties.
  *
  * @param object|null $object The object to cast to, defaults to stdClass
+ * @phpstan-param mixed $object
  * @return Closure(mixed[]):object
  * @throws \InvalidArgumentException If property does not exist or is not public.
  */
