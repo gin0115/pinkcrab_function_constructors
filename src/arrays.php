@@ -754,9 +754,6 @@ function flatMap(callable $function, ?int $n = null): Closure
                  */
                 function (array $carry, $element) use ($n, $function): array {
                     if (is_array($element) && (is_null($n) || $n > 0)) {
-                        // Recursive call on an array element always hits the array path,
-                        // which returns array. The return type is widened to include
-                        // Generator for iterable inputs; narrow it back here for array_merge.
                         $recursed = flatMap($function, $n ? $n - 1 : null)($element);
                         $carry    = array_merge($carry, is_array($recursed) ? $recursed : iterator_to_array($recursed));
                     } else {
@@ -939,14 +936,10 @@ function flattenByN(?int $n = null): Closure
                     if (is_array($element) && empty($element)) {
                         return $carry;
                     }
-                    // If the element is an array and we are still flattening, call again
                     if (is_array($element) && (is_null($n) || $n > 0)) { // @phpstan-ignore-line
-                        // Recursion on an array hits the array path; narrow the widened
-                        // array|Generator return back to array for array_merge.
                         $recursed = flattenByN($n ? $n - 1 : null)($element);
                         $carry    = array_merge($carry, is_array($recursed) ? $recursed : iterator_to_array($recursed));
                     } else {
-                        // Else just add the element.
                         $carry[] = $element;
                     }
                     return $carry;
