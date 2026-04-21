@@ -1293,40 +1293,81 @@ function usort(callable $function): Closure
 
 
 /**
- * Returns a Closure for applying a function to every element of an array
+ * Returns a Closure for a left-scan (running fold) over an array or iterable.
+ * Emits the initial value, then every intermediate accumulation.
+ *
+ * - Array in  → array out (unchanged behaviour).
+ * - Generator/Traversable in → Generator out that yields the initial value
+ *   first, then each running accumulation lazily.
  *
  * @param callable(mixed $carry, mixed $value):mixed $function
  * @param mixed $initialValue
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):(array<int, mixed>|\Generator<int, mixed>)
  */
 function scan(callable $function, $initialValue): Closure
 {
-    return function (array $array) use ($function, $initialValue) {
-        $carry[] = $initialValue;
-        foreach ($array as $key => $value) {
-            $initialValue = $function($initialValue, $value);
-            $carry[]      = $initialValue;
+    /**
+     * @param iterable<int|string, mixed> $source
+     * @return array<int, mixed>|\Generator<int, mixed>
+     */
+    return function (iterable $source) use ($function, $initialValue) {
+        if (is_array($source)) {
+            $carry[] = $initialValue;
+            foreach ($source as $key => $value) {
+                $initialValue = $function($initialValue, $value);
+                $carry[]      = $initialValue;
+            }
+            return $carry;
         }
-        return $carry;
+        return (function () use ($source, $function, $initialValue) {
+            yield $initialValue;
+            foreach ($source as $value) {
+                $initialValue = $function($initialValue, $value);
+                yield $initialValue;
+            }
+        })();
     };
 }
 
 /**
- * Returns a Closure for applying a function to every element of an array
+ * Returns a Closure for a right-scan (running fold from the right) over an array
+ * or iterable. Emits every intermediate accumulation, finishing with the initial.
+ *
+ * - Array in  → array out (unchanged behaviour).
+ * - Generator/Traversable in → the source is materialised to an array (reverse
+ *   scan requires it), the scan is computed, then the results are re-yielded
+ *   as a Generator for API consistency.
  *
  * @param callable(mixed $carry, mixed $value):mixed $function
  * @param mixed $initialValue
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):(array<int, mixed>|\Generator<int, mixed>)
  */
 function scanR(callable $function, $initialValue): Closure
 {
-    return function (array $array) use ($function, $initialValue) {
-        $carry[] = $initialValue;
-        foreach (array_reverse($array) as $key => $value) {
-            $initialValue = $function($initialValue, $value);
-            $carry[]      = $initialValue;
+    /**
+     * @param iterable<int|string, mixed> $source
+     * @return array<int, mixed>|\Generator<int, mixed>
+     */
+    return function (iterable $source) use ($function, $initialValue) {
+        if (is_array($source)) {
+            $carry[] = $initialValue;
+            foreach (array_reverse($source) as $key => $value) {
+                $initialValue = $function($initialValue, $value);
+                $carry[]      = $initialValue;
+            }
+            return \array_reverse($carry);
         }
-        return \array_reverse($carry);
+        return (function () use ($source, $function, $initialValue) {
+            $materialised = iterator_to_array($source);
+            $carry        = array($initialValue);
+            foreach (array_reverse($materialised) as $value) {
+                $initialValue = $function($initialValue, $value);
+                $carry[]      = $initialValue;
+            }
+            foreach (array_reverse($carry) as $v) {
+                yield $v;
+            }
+        })();
     };
 }
 

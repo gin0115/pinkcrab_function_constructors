@@ -689,6 +689,24 @@ class ArrayFunctionTests extends TestCase
         $this->assertEquals($expected, $scanR($initial));
     }
 
+    /** @testdox scan() should return a lazy Generator yielding the initial value then each running accumulation when given a Generator. */
+    public function testScanReturnsGeneratorForGeneratorInput(): void
+    {
+        $result = Arr\scan(fn ($c, $v) => $c + $v, 0)(self::gen(array(1, 2, 3, 4, 5)));
+
+        $this->assertInstanceOf(\Generator::class, $result);
+        $this->assertSame(array(0, 1, 3, 6, 10, 15), iterator_to_array($result, false));
+    }
+
+    /** @testdox scanR() accepts a Generator — source is materialised to reverse, but the result is still returned as a Generator for API consistency. */
+    public function testScanRReturnsGeneratorForGeneratorInput(): void
+    {
+        $result = Arr\scanR(fn ($c, $v) => $c + $v, 0)(self::gen(array(1, 2, 3)));
+
+        $this->assertInstanceOf(\Generator::class, $result);
+        $this->assertSame(array(6, 5, 3, 0), iterator_to_array($result, false));
+    }
+
     /** @testdox It should be possible to create a function, pre defined to perform fold/reduce on a given array. */
     public function testFold(): void
     {
