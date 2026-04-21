@@ -9,3 +9,4 @@ clover.xml
 coverage-report/
 .vscode
 phpunit_9.xml
+_phpcs.xml.local

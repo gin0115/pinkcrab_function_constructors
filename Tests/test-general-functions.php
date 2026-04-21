@@ -394,7 +394,7 @@ class GeneralFunctionTest extends TestCase
     {
         // Array
         $setName = Func\setProperty(array('id' => 1), 'name');
-        $this->assertEquals(array( 'id' => 1,'name' => 'bar' ), $setName('bar'));
+        $this->assertEquals(array('id' => 1,'name' => 'bar'), $setName('bar'));
 
         // Object with ArrayAccess
         $instance = ObjectFactory::arrayAccess();

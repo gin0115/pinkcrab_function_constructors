@@ -92,7 +92,7 @@ $callback = F\compose(
    'trim',                                   // Remove all whitespace
    Str\slice(0, 20),                         // Remove all but first 20 chars          
    'ucfirst',                                // Uppercase each word
-   Str\prepend('...')                        // End the string with ...
+   Str\append('...')                        // End the string with ...
 );
 
 $results = array_map($callback, $data);
@@ -563,12 +563,29 @@ If you would like to contribute to this project, please feel to fork the project
 ## Changes
 
 * 1.0.0
-   * **Breaking Changes**
-   * Removed deprecated typo-alias functions. Use the correctly-spelled versions:
-     * `Strings\decimialNumber()` → `Strings\decimalNumber()`
-     * `Strings\similarAsComparisson()` → `Strings\similarAsComparison()`
-     * `Strings\firstPosistion()` → `Strings\firstPosition()`
-     * `Strings\lastPosistion()` → `Strings\lastPosition()`
+  * **New Functions**
+  * `Strings\digit()` — replaces `Strings\decimalNumber()`
+  * `Strings\compare()`
+  * `Strings\countChars()` now has mode constants.
+  * `Arrays\last()` — returns the last element of an array.
+  * `Arrays\append()` — appends a value to the end of an array.
+  * `Arrays\prepend()` — prepends a value to the start of an array.
+  * `Arrays\pick()` — picks a subset of keys from an array.
+  * **Breaking Changes**
+  * Removed deprecated typo-alias functions. Use the correctly-spelled versions:
+    * `Strings\decimialNumber()` → `Strings\digit()` (superseding the earlier `decimalNumber` rename)
+    * `Strings\similarAsComparisson()` → `Strings\similar()` (superseding the earlier `similarAsComparison` rename)
+    * `Strings\firstPosistion()` → `Strings\firstPosition()`
+    * `Strings\lastPosistion()` → `Strings\lastPosition()`
+  * `Strings\decimalNumber()` has been deprecated in favour of `Strings\digit()`
+  * `Strings\similarAsBase()` and `Strings\similarAsComparison()` have been deprecated in favour of `Strings\similar()`
+  * `Arrays\tail()` now works as expected, returning the array without the first element.
+  * `Arrays\pushHead()` and `Arrays\pushTail()` have been deprecated in favour of `Arrays\prepend()` and `Arrays\append()`
+  * `Strings\allowTags()` now accepts an array of allowed tags even for pre PHP7.4
+  * **Other Changes**
+  * Made `Arrays\filterFirst()` and `Arrays\filterLast()` more efficient.
+  * Bumped dev deps: phpstan `^1.0 || ^2.0`, phpunit `^7.5 || ^8.5 || ^9.6`, phpunit-polyfills `^1.0 || ^2.0 || ^4.0`.
+  * CI matrix expanded to PHP 7.1 through 8.5; Codecov upload restricted to the PHP 8.5 job.
 
 * 0.2.0 - 
    * **New Functions**

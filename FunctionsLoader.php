@@ -26,7 +26,6 @@ namespace PinkCrab\FunctionConstructors;
 
 class FunctionsLoader
 {
-
     /**
      * Loads all supplementary function files.
      *
