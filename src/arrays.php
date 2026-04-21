@@ -1402,57 +1402,69 @@ function scanR(callable $function, $initialValue): Closure
 }
 
 /**
- * Creates a function for defining the callback and initial for reduce/fold
+ * Creates a Closure that reduces an array or iterable left-to-right with an
+ * initial accumulator. Terminal — Generator input is consumed fully via a
+ * streaming foreach (no materialisation).
  *
  * @param callable(mixed $carry, mixed $value): mixed $callable
  * @param mixed $initial
- * @return Closure(mixed[]):mixed
+ * @return Closure(iterable<int|string, mixed>):mixed
  */
 function fold(callable $callable, $initial = array()): Closure
 {
     /**
-     * @param mixed[] $array
+     * @param iterable<int|string, mixed> $source
      * @return mixed
      */
-    return function (array $array) use ($callable, $initial) {
-        return array_reduce($array, $callable, $initial);
+    return function (iterable $source) use ($callable, $initial) {
+        if (is_array($source)) {
+            return array_reduce($source, $callable, $initial);
+        }
+        foreach ($source as $value) {
+            $initial = $callable($initial, $value);
+        }
+        return $initial;
     };
 }
 
 /**
- * Creates a function for defining the callback and initial for reduce/fold
+ * Creates a Closure that reduces an array or iterable right-to-left with an
+ * initial accumulator. Terminal — Generator input must be materialised to
+ * reverse before reducing.
  *
  * @param callable(mixed $carry, mixed $value): mixed $callable
  * @param mixed $initial
- * @return Closure(mixed[]):mixed
+ * @return Closure(iterable<int|string, mixed>):mixed
  */
 function foldR(callable $callable, $initial = array()): Closure
 {
     /**
-     * @param mixed[] $array
+     * @param iterable<int|string, mixed> $source
      * @return mixed
      */
-    return function (array $array) use ($callable, $initial) {
+    return function (iterable $source) use ($callable, $initial) {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         return array_reduce(\array_reverse($array), $callable, $initial);
     };
 }
 
 /**
- * Creates a function for defining the callback and initial for reduce/fold, with the key
- * also passed to the callback.
+ * Creates a Closure that reduces an array or iterable left-to-right with the
+ * key passed to the callback alongside the value. Terminal — streams the
+ * source via foreach (no materialisation needed).
  *
  * @param callable(mixed $carry, int|string $key, mixed $value): mixed $callable
  * @param mixed $initial
- * @return Closure(mixed[]):mixed
+ * @return Closure(iterable<int|string, mixed>):mixed
  */
 function foldKeys(callable $callable, $initial = array()): Closure
 {
     /**
-     * @param mixed[] $array
+     * @param iterable<int|string, mixed> $source
      * @return mixed
      */
-    return function (array $array) use ($callable, $initial) {
-        foreach ($array as $key => $value) {
+    return function (iterable $source) use ($callable, $initial) {
+        foreach ($source as $key => $value) {
             $initial = $callable($initial, $key, $value);
         }
         return $initial;

@@ -1630,4 +1630,26 @@ class ArrayFunctionTests extends TestCase
         $desc = Arr\usort(fn ($a, $b) => $b - $a);
         $this->assertSame(array(8, 5, 3, 1), $desc($src));
     }
+
+    /** @testdox fold() accepts any iterable and reduces left-to-right via a streaming foreach (no materialisation). */
+    public function testFoldAcceptsGenerator(): void
+    {
+        $sum = Arr\fold(fn ($acc, $v) => $acc + $v, 0);
+        $this->assertSame(15, $sum(self::gen(array(1, 2, 3, 4, 5))));
+    }
+
+    /** @testdox foldR() accepts any iterable and reduces right-to-left (materialises Generator first). */
+    public function testFoldRAcceptsGenerator(): void
+    {
+        // Concatenate right-to-left to prove direction: "c","b","a" → "cba"
+        $cat = Arr\foldR(fn ($acc, $v) => $acc . $v, '');
+        $this->assertSame('cba', $cat(self::gen(array('a', 'b', 'c'))));
+    }
+
+    /** @testdox foldKeys() accepts any iterable and supplies the key to the callback. */
+    public function testFoldKeysAcceptsGenerator(): void
+    {
+        $joined = Arr\foldKeys(fn ($acc, $k, $v) => $acc . "$k=$v;", '');
+        $this->assertSame('a=1;b=2;', $joined(self::gen(array('a' => 1, 'b' => 2))));
+    }
 }
