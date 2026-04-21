@@ -1102,38 +1102,40 @@ function toJson(int $flags = 0, int $depth = 512): Closure
 
 
 /**
- * Returns a Closure for doing regular SORT against an array.
- * Doesn't maintain keys.
+ * Returns a Closure for doing regular SORT against an array or iterable.
+ * Doesn't maintain keys. Terminal — Generator input is materialised.
  *
  * @param int $flag Uses php stock sort constants or numerical values.
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):mixed[]
  */
 function sort(int $flag = SORT_REGULAR): Closure
 {
     /**
-     *  @param mixed[]$array The array to sort
-     *  @return mixed[] The sorted array (new array)
+     * @param iterable<int|string, mixed> $source
+     * @return mixed[] The sorted array (new array).
      */
-    return function (array $array) use ($flag) {
+    return function (iterable $source) use ($flag) {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         \sort($array, $flag);
         return $array;
     };
 }
 
 /**
- * Returns a Closure for doing regular Reverse SORT against an array.
- * Doesn't maintain keys.
+ * Returns a Closure for doing regular Reverse SORT against an array or iterable.
+ * Doesn't maintain keys. Terminal — Generator input is materialised.
  *
  * @param int $flag Uses php stock sort constants or numerical values.
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):mixed[]
  */
 function rsort(int $flag = SORT_REGULAR): Closure
 {
     /**
-     *  @param mixed[]$array The array to sort
-     *  @return mixed[] The sorted array (new array)
+     * @param iterable<int|string, mixed> $source
+     * @return mixed[] The sorted array (new array).
      */
-    return function (array $array) use ($flag) {
+    return function (iterable $source) use ($flag) {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         \rsort($array, $flag);
         return $array;
     };
@@ -1141,145 +1143,158 @@ function rsort(int $flag = SORT_REGULAR): Closure
 
 
 /**
- * Returns a Closure for sorting an array by key in ascending order.
+ * Returns a Closure for sorting an array or iterable by key in ascending order.
+ * Terminal — Generator input is materialised.
  *
  * @param int $flag Uses php stock sort constants or numerical values.
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):mixed[]
  */
 function ksort(int $flag = SORT_REGULAR): Closure
 {
     /**
-     *  @param mixed[]$array The array to sort
-     *  @return mixed[] The sorted array (new array)
+     * @param iterable<int|string, mixed> $source
+     * @return mixed[] The sorted array (new array).
      */
-    return function (array $array) use ($flag) {
+    return function (iterable $source) use ($flag) {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         \ksort($array, $flag);
         return $array;
     };
 }
 
 /**
- * Returns a Closure for sorting an array by key in descending (reverse) order.
+ * Returns a Closure for sorting an array or iterable by key in descending order.
+ * Terminal — Generator input is materialised.
  *
  * @param int $flag Uses php stock sort constants or numerical values.
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):mixed[]
  */
 function krsort(int $flag = SORT_REGULAR): Closure
 {
     /**
-     *  @param mixed[]$array The array to sort
-     *  @return mixed[] The sorted array (new array)
+     * @param iterable<int|string, mixed> $source
+     * @return mixed[] The sorted array (new array).
      */
-    return function (array $array) use ($flag) {
+    return function (iterable $source) use ($flag) {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         \krsort($array, $flag);
         return $array;
     };
 }
 
 /**
- * Returns a Closure for sorting an array by value in ascending order.
- * Maintain keys.
+ * Returns a Closure for sorting an array or iterable by value in ascending order.
+ * Maintains keys. Terminal — Generator input is materialised.
  *
  * @param int $flag Uses php stock sort constants or numerical values.
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):mixed[]
  */
 function asort(int $flag = SORT_REGULAR): Closure
 {
     /**
-     *  @param mixed[]$array The array to sort
-     *  @return mixed[] The sorted array (new array)
+     * @param iterable<int|string, mixed> $source
+     * @return mixed[] The sorted array (new array).
      */
-    return function (array $array) use ($flag) {
+    return function (iterable $source) use ($flag) {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         \asort($array, $flag);
         return $array;
     };
 }
 
 /**
- * Returns a Closure for sorting an array by value in descending (reverse) order.
- * Maintain keys.
+ * Returns a Closure for sorting an array or iterable by value in descending order.
+ * Maintains keys. Terminal — Generator input is materialised.
  *
  * @param int $flag Uses php stock sort constants or numerical values.
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):mixed[]
  */
 function arsort(int $flag = SORT_REGULAR): Closure
 {
     /**
-     *  @param mixed[]$array The array to sort
-     *  @return mixed[] The sorted array (new array)
+     * @param iterable<int|string, mixed> $source
+     * @return mixed[] The sorted array (new array).
      */
-    return function (array $array) use ($flag) {
+    return function (iterable $source) use ($flag) {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         \arsort($array, $flag);
         return $array;
     };
 }
 
 /**
- * Returns a Closure for sorting an array using a "natural order" algorithm
+ * Returns a Closure for sorting an array or iterable with a "natural order" algorithm.
+ * Terminal — Generator input is materialised.
  *
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):mixed[]
  */
 function natsort(): Closure
 {
     /**
-     *  @param mixed[]$array The array to sort
-     *  @return mixed[] The sorted array (new array)
+     * @param iterable<int|string, mixed> $source
+     * @return mixed[] The sorted array (new array).
      */
-    return function (array $array) {
+    return function (iterable $source) {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         \natsort($array);
         return $array;
     };
 }
 
 /**
- * Returns a Closure for sorting an array using a case insensitive "natural order" algorithm
+ * Returns a Closure for sorting an array or iterable with a case-insensitive
+ * "natural order" algorithm. Terminal — Generator input is materialised.
  *
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):mixed[]
  */
 function natcasesort(): Closure
 {
     /**
-     *  @param mixed[]$array The array to sort
-     *  @return mixed[] The sorted array (new array)
+     * @param iterable<int|string, mixed> $source
+     * @return mixed[] The sorted array (new array).
      */
-    return function (array $array) {
+    return function (iterable $source) {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         \natcasesort($array);
         return $array;
     };
 }
 
 /**
- * Returns a Closure for sorting an array by key using a custom comparison function
+ * Returns a Closure for sorting an array or iterable by key using a custom comparator.
+ * Terminal — Generator input is materialised.
  *
  * @param callable(mixed $a, mixed $b): int $function
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):mixed[]
  */
 function uksort(callable $function): Closure
 {
     /**
-     *  @param mixed[] $array The array to sort
-     *  @return mixed[] The sorted array (new array)
+     * @param iterable<int|string, mixed> $source
+     * @return mixed[] The sorted array (new array).
      */
-    return function (array $array) use ($function) {
+    return function (iterable $source) use ($function) {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         \uksort($array, $function);
         return $array;
     };
 }
 
 /**
- * Returns a Closure for sorting an array using a custom comparison function
- * Maintain keys.
+ * Returns a Closure for sorting an array or iterable by value using a custom
+ * comparator. Maintains keys. Terminal — Generator input is materialised.
  *
  * @param callable(mixed $a, mixed $b): int $function
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):mixed[]
  */
 function uasort(callable $function): Closure
 {
     /**
-     *  @param mixed[]$array The array to sort
-     *  @return mixed[] The sorted array (new array)
+     * @param iterable<int|string, mixed> $source
+     * @return mixed[] The sorted array (new array).
      */
-    return function (array $array) use ($function) {
+    return function (iterable $source) use ($function) {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         \uasort($array, $function);
         return $array;
     };
@@ -1287,19 +1302,20 @@ function uasort(callable $function): Closure
 
 
 /**
- * Returns a Closure for sorting an array using a custom comparison function
- * Doesn't maintain keys.
+ * Returns a Closure for sorting an array or iterable using a custom comparator.
+ * Does not maintain keys. Terminal — Generator input is materialised.
  *
  * @param callable(mixed $a, mixed $b): int $function
- * @return Closure(mixed[]):mixed[]
+ * @return Closure(iterable<int|string, mixed>):mixed[]
  */
 function usort(callable $function): Closure
 {
     /**
-     *  @param mixed[]$array The array to sort
-     *  @return mixed[] The sorted array (new array)
+     * @param iterable<int|string, mixed> $source
+     * @return mixed[] The sorted array (new array).
      */
-    return function (array $array) use ($function) {
+    return function (iterable $source) use ($function) {
+        $array = is_array($source) ? $source : iterator_to_array($source);
         \usort($array, $function);
         return $array;
     };

@@ -1608,4 +1608,26 @@ class ArrayFunctionTests extends TestCase
         $src = self::gen(array('a' => 1, 'b' => 2, 'c' => 3));
         $this->assertSame(array('a' => 1, 'c' => 3), Arr\pick('a', 'c')($src));
     }
+
+    /** @testdox sort() accepts any iterable; keys are re-indexed as per native sort(). */
+    public function testSortAcceptsGenerator(): void
+    {
+        $src = self::gen(array('b', 'a', 'c'));
+        $this->assertSame(array('a', 'b', 'c'), Arr\sort()($src));
+    }
+
+    /** @testdox asort() accepts any iterable; keys are preserved. */
+    public function testAsortAcceptsGenerator(): void
+    {
+        $src = self::gen(array('x' => 3, 'y' => 1, 'z' => 2));
+        $this->assertSame(array('y' => 1, 'z' => 2, 'x' => 3), Arr\asort()($src));
+    }
+
+    /** @testdox usort() accepts any iterable and sorts with a custom comparator. */
+    public function testUsortAcceptsGenerator(): void
+    {
+        $src = self::gen(array(5, 3, 8, 1));
+        $desc = Arr\usort(fn ($a, $b) => $b - $a);
+        $this->assertSame(array(8, 5, 3, 1), $desc($src));
+    }
 }
