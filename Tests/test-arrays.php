@@ -273,6 +273,28 @@ class ArrayFunctionTests extends TestCase
         $this->assertEquals('Fay', $chunkedNames[1][3]);
     }
 
+    /** @testdox chunk() should return a lazy Generator yielding batches of N, including a partial final batch when the source length doesn't divide cleanly. */
+    public function testChunkReturnsGeneratorForGeneratorInput(): void
+    {
+        $src    = self::gen(array(1, 2, 3, 4, 5));
+        $result = Arr\chunk(2)($src);
+
+        $this->assertInstanceOf(\Generator::class, $result);
+        $this->assertSame(array(array(1, 2), array(3, 4), array(5)), iterator_to_array($result, false));
+    }
+
+    /** @testdox chunk() with preserveKeys over a Generator keeps the original keys inside each batch. */
+    public function testChunkPreservesKeysOverGenerator(): void
+    {
+        $src    = self::gen(array('a' => 1, 'b' => 2, 'c' => 3, 'd' => 4));
+        $result = Arr\chunk(2, true)($src);
+
+        $this->assertSame(
+            array(array('a' => 1, 'b' => 2), array('c' => 3, 'd' => 4)),
+            iterator_to_array($result, false)
+        );
+    }
+
     public function testCanUseZip()
     {
         $array = array( 'a', 'b', 'c' );
@@ -288,6 +310,19 @@ class ArrayFunctionTests extends TestCase
         $expectedFull = array( array( 'a', 'A' ), array( 'b', 'B' ), array( 'c', 'C' ) );
         $resultFull   = Arr\zip($arrayFull, 'FALLBACK')($array);
         $this->assertSame($resultFull, $expectedFull);
+    }
+
+    /** @testdox zip() should return a lazy Generator pairing source values with the additional array, using the default when the additional runs out. */
+    public function testZipReturnsGeneratorForGeneratorInput(): void
+    {
+        $src    = self::gen(array('a', 'b', 'c'));
+        $result = Arr\zip(array('A', 'B'), 'FALLBACK')($src);
+
+        $this->assertInstanceOf(\Generator::class, $result);
+        $this->assertSame(
+            array(array('a', 'A'), array('b', 'B'), array('c', 'FALLBACK')),
+            iterator_to_array($result, false)
+        );
     }
 
     public function testCanUseColumn(): void
@@ -347,6 +382,26 @@ class ArrayFunctionTests extends TestCase
         $this->assertArrayHasKey('Duke', $getUsersRandoms($data));
         $this->assertArrayNotHasKey(2, $getUsersRandoms($data));
         $this->assertArrayHasKey('Bazza', $getUsersRandoms($data));
+    }
+
+    /** @testdox column() should return a lazy Generator yielding the named column from each Generator element. */
+    public function testColumnReturnsGeneratorForGeneratorInput(): void
+    {
+        $rows = array(
+            array('id' => 1, 'name' => 'Alice'),
+            array('id' => 2, 'name' => 'Bob'),
+            array('id' => 3, 'name' => 'Charlie'),
+        );
+
+        // Without an index column — sequential integer keys.
+        $names = Arr\column('name')(self::gen($rows));
+        $this->assertInstanceOf(\Generator::class, $names);
+        $this->assertSame(array('Alice', 'Bob', 'Charlie'), iterator_to_array($names, false));
+
+        // With an index column — keyed by id.
+        $namesById = Arr\column('name', 'id')(self::gen($rows));
+        $this->assertInstanceOf(\Generator::class, $namesById);
+        $this->assertSame(array(1 => 'Alice', 2 => 'Bob', 3 => 'Charlie'), iterator_to_array($namesById));
     }
 
     /** @testdox It should be possible to flatten an array by any number of nodes. */

@@ -185,29 +185,45 @@ function toString(?string $glue = null): Closure
 }
 
 /**
- * Creates a Closure for zipping 2 arrays.
+ * Creates a Closure for zipping a source array or iterable with a secondary
+ * array. Each element of the result is a pair — [source_value, additional_value].
+ * When the additional array is shorter than the source, `$default` fills the gap.
  *
- * @param array<mixed> $additional Values with the same key will be paired.
- * @param mixed $default The fallback value if the additional array doesn't have the same length
- * @return Closure(array<mixed>):array<array{mixed, mixed}>
+ * - Array in  → array out (unchanged behaviour).
+ * - Generator/Traversable in → Generator out that yields pairs lazily.
  *
+ * @param array<mixed> $additional Values paired positionally with the source.
+ * @param mixed $default Fallback when the additional array runs out.
+ * @return Closure(iterable<mixed>):(array<array{mixed, mixed}>|\Generator<int, array{mixed, mixed}>)
  */
 function zip(array $additional, $default = null): Closure
 {
     $additional = array_values($additional);
-    return function (array $array) use ($additional, $default) {
-        $array = array_values($array);
-        return array_reduce(
-            array_keys($array),
-            function ($carry, $key) use ($array, $additional, $default): array {
-                $carry[] = array(
-                    $array[$key],
-                    array_key_exists($key, $additional) ? $additional[$key] : $default,
+    return function (iterable $source) use ($additional, $default) {
+        if (is_array($source)) {
+            $source = array_values($source);
+            return array_reduce(
+                array_keys($source),
+                function ($carry, $key) use ($source, $additional, $default): array {
+                    $carry[] = array(
+                        $source[$key],
+                        array_key_exists($key, $additional) ? $additional[$key] : $default,
+                    );
+                    return $carry;
+                },
+                array()
+            );
+        }
+        return (function () use ($source, $additional, $default) {
+            $i = 0;
+            foreach ($source as $value) {
+                yield array(
+                    $value,
+                    array_key_exists($i, $additional) ? $additional[$i] : $default,
                 );
-                return $carry;
-            },
-            array()
-        );
+                $i++;
+            }
+        })();
     };
 }
 
@@ -776,38 +792,92 @@ function groupBy(callable $function): Closure
 }
 
 /**
- * Creates a Closure for chunking an array to set a limit.
+ * Creates a Closure for chunking an array or iterable into batches of up to N.
  *
- * @param int $count The max size of each chunk. Must not be less than 1!
- * @param bool $preserveKeys Should inital keys be kept. Default false.
- * @return Closure(mixed[]):mixed[]
+ * - Array in  → array of arrays (unchanged behaviour via array_chunk).
+ * - Generator/Traversable in → Generator that yields each completed batch as
+ *   an array. The final partial batch is yielded when the source exhausts.
+ *
+ * @param int $count The max size of each chunk. Values less than 1 are
+ *                   clamped to 1.
+ * @param bool $preserveKeys Should the source keys be kept inside each batch.
+ * @return Closure(iterable<int|string, mixed>):(array<int, array<int|string, mixed>>|\Generator<int, array<int|string, mixed>>)
  */
 function chunk(int $count, bool $preserveKeys = false): Closure
 {
+    $count = max(1, $count);
     /**
-     * @param mixed[] $array Array to chunk
-     * @return mixed[]
+     * @param iterable<int|string, mixed> $source
+     * @return array<int, array<int|string, mixed>>|\Generator<int, array<int|string, mixed>>
      */
-    return function (array $array) use ($count, $preserveKeys): array {
-        return array_chunk($array, max(1, $count), $preserveKeys);
+    return function (iterable $source) use ($count, $preserveKeys) {
+        if (is_array($source)) {
+            return array_chunk($source, $count, $preserveKeys);
+        }
+        return (function () use ($source, $count, $preserveKeys) {
+            $buffer = array();
+            foreach ($source as $key => $value) {
+                if ($preserveKeys) {
+                    $buffer[$key] = $value;
+                } else {
+                    $buffer[] = $value;
+                }
+                if (count($buffer) >= $count) {
+                    yield $buffer;
+                    $buffer = array();
+                }
+            }
+            if (count($buffer) > 0) {
+                yield $buffer;
+            }
+        })();
     };
 }
 
 /**
- * Create callback for extracting a single column from an array.
+ * Create callback for extracting a single column from an array or iterable of
+ * array/object rows.
+ *
+ * - Array in  → array of extracted values (unchanged behaviour via array_column).
+ * - Generator/Traversable in → Generator that lazily yields the column value
+ *   from each row. If `$key` is provided, each yielded pair is `rowKey => value`;
+ *   otherwise sequential integer keys are used.
  *
  * @param string $column Column to retrieve.
- * @param string $key Use column for assigning as the index. defaults to numeric keys if null.
- * @return Closure(mixed[]):mixed[]
+ * @param string|null $key Column to use as the yielded key. Null = sequential ints.
+ * @return Closure(iterable<int|string, mixed>):(array<int|string, mixed>|\Generator<int|string, mixed>)
  */
 function column(string $column, ?string $key = null): Closure
 {
     /**
-     * @param mixed[] $array
-     * @return mixed[]
+     * @param iterable<int|string, mixed> $source
+     * @return array<int|string, mixed>|\Generator<int|string, mixed>
      */
-    return function (array $array) use ($column, $key): array {
-        return array_column($array, $column, $key);
+    return function (iterable $source) use ($column, $key) {
+        if (is_array($source)) {
+            return array_column($source, $column, $key);
+        }
+        return (function () use ($source, $column, $key) {
+            foreach ($source as $row) {
+                $value = null;
+                if (is_array($row) && array_key_exists($column, $row)) {
+                    $value = $row[$column];
+                } elseif (is_object($row) && isset($row->{$column})) {
+                    $value = $row->{$column};
+                }
+                if ($key === null) {
+                    yield $value;
+                    continue;
+                }
+                $rowKey = null;
+                if (is_array($row) && array_key_exists($key, $row)) {
+                    $rowKey = $row[$key];
+                } elseif (is_object($row) && isset($row->{$key})) {
+                    $rowKey = $row->{$key};
+                }
+                yield $rowKey => $value;
+            }
+        })();
     };
 }
 
