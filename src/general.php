@@ -436,3 +436,27 @@ function ifElse(callable $condition, callable $then, callable $else): Closure
             : $else($value);
     };
 }
+
+/**
+ * Creates a closure that calls the given interceptor for its side effect
+ * and returns the original input value unchanged. Useful for inserting
+ * debug or logging steps into a compose/pipe chain without breaking it.
+ *
+ * @param mixed $interceptor Any callable — string function name, Closure, array callable, or invokable object.
+ * @return Closure A closure that applies $interceptor to the value and returns the value unchanged.
+ * @throws \TypeError If $interceptor is not callable.
+ */
+function sideEffect($interceptor): Closure
+{
+    if (! is_callable($interceptor)) {
+        throw new \TypeError('sideEffect interceptor must be callable');
+    }
+    /**
+     * @param  mixed $value
+     * @return mixed
+     */
+    return function ($value) use ($interceptor) {
+        $interceptor($value);
+        return $value;
+    };
+}

@@ -503,4 +503,29 @@ class GeneralFunctionTest extends TestCase
         $encoder = $encoder(Func\encodeProperty('0', Func\getProperty('userId')));
         $encoder(array( 'userId' => 1, 'userName' => 'foo' ));
     }
+
+    /** @testdox sideEffect should call the interceptor with the value and return the value unchanged */
+    public function testSideEffectWithClosure(): void
+    {
+        $captured = null;
+        $tap = Func\sideEffect(function ($value) use (&$captured) {
+            $captured = $value;
+        });
+        $this->assertEquals('hello', $tap('hello'));
+        $this->assertEquals('hello', $captured);
+    }
+
+    /** @testdox sideEffect should accept a string function name as the interceptor */
+    public function testSideEffectWithStringCallable(): void
+    {
+        $tap = Func\sideEffect('strtoupper');
+        $this->assertEquals('hello', $tap('hello'));
+    }
+
+    /** @testdox sideEffect should throw a TypeError when the interceptor is not callable */
+    public function testSideEffectThrowsOnNonCallable(): void
+    {
+        $this->expectException(TypeError::class);
+        Func\sideEffect(123);
+    }
 }
