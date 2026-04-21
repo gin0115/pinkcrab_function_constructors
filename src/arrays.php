@@ -459,19 +459,31 @@ function filterAny(callable $function): Closure
 
 
 /**
- * Returns a Closure which can be passed an array.
+ * Returns a Closure which applies a callback to every element of an array
+ * or iterable.
  *
- * @param callable(mixed):mixed $func Callback to apply to each element in array.
- * @return Closure(mixed[]):mixed[]
+ * - Array in  → array out (eager, unchanged behaviour).
+ * - Generator/Traversable in → Generator out (lazy; values are transformed
+ *   on demand, keys preserved).
+ *
+ * @param callable(mixed):mixed $func Callback to apply to each element.
+ * @return Closure(iterable<int|string, mixed>):(array<int|string, mixed>|\Generator<int|string, mixed>)
  */
 function map(callable $func): Closure
 {
     /**
-     * @param mixed[] $array The array to map
-     * @return mixed[]
+     * @param iterable<int|string, mixed> $source The array or iterable to map.
+     * @return array<int|string, mixed>|\Generator<int|string, mixed>
      */
-    return function (array $array) use ($func): array {
-        return array_map($func, $array);
+    return function (iterable $source) use ($func) {
+        if (is_array($source)) {
+            return array_map($func, $source);
+        }
+        return (function () use ($source, $func) {
+            foreach ($source as $key => $value) {
+                yield $key => $func($value);
+            }
+        })();
     };
 }
 

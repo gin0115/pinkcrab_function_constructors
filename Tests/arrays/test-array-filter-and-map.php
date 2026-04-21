@@ -26,6 +26,38 @@ class ArrayFilterAndMapTests extends TestCase
         FunctionsLoader::include();
     }
 
+    /**
+     * Helper: wraps an array in a one-shot Generator so tests can exercise the
+     * iterable branch of the Arrays\* fns.
+     *
+     * @param array<int|string, mixed> $data
+     * @return \Generator<int|string, mixed>
+     */
+    private static function gen(array $data): \Generator
+    {
+        foreach ($data as $k => $v) {
+            yield $k => $v;
+        }
+    }
+
+    /**
+     * Helper: Generator that throws the moment the consumer asks for the
+     * element at index $throwOn. Used to prove a lazy fn does NOT consume
+     * past its short-circuit point.
+     *
+     * @param array<int|string, mixed> $data
+     */
+    private static function genThrowAt(array $data, int $throwOn): \Generator
+    {
+        $i = 0;
+        foreach ($data as $k => $v) {
+            if ($i++ === $throwOn) {
+                throw new \RuntimeException('Generator consumed past the short-circuit point');
+            }
+            yield $k => $v;
+        }
+    }
+
     public function testCanUseFilter()
     {
         $names = array( 'James Smith', 'Betty Jones', 'Sam Power', 'Rebecca Smith' );
@@ -228,6 +260,57 @@ class ArrayFilterAndMapTests extends TestCase
         // Check inital array the same.
         $this->assertEquals('aa', $origArray['a']);
         $this->assertNotEquals('AA', $origArray['a']);
+    }
+
+    /** @testdox map() should still return an array when the input is an array (back-compat). */
+    public function testMapReturnsArrayForArrayInput(): void
+    {
+        $result = Arr\map(fn ($x) => $x * 2)(array(1, 2, 3));
+        $this->assertIsArray($result);
+        $this->assertSame(array(2, 4, 6), $result);
+    }
+
+    /** @testdox map() should return a lazy Generator when the input is a Generator, yielding transformed values with keys preserved. */
+    public function testMapReturnsGeneratorForGeneratorInput(): void
+    {
+        $src    = self::gen(array('a' => 1, 'b' => 2, 'c' => 3));
+        $result = Arr\map(fn ($x) => $x * 10)($src);
+
+        $this->assertInstanceOf(\Generator::class, $result);
+        $this->assertSame(array('a' => 10, 'b' => 20, 'c' => 30), iterator_to_array($result));
+    }
+
+    /** @testdox map() over an empty Generator should yield nothing (empty Generator returned). */
+    public function testMapEmptyGeneratorYieldsNothing(): void
+    {
+        $empty  = self::gen(array());
+        $result = Arr\map(fn ($x) => $x)($empty);
+
+        $this->assertInstanceOf(\Generator::class, $result);
+        $this->assertSame(array(), iterator_to_array($result));
+    }
+
+    /** @testdox map() over a Generator must stay lazy \u2014 elements past the consumer's demand should not be pulled from the source. */
+    public function testMapIsLazyOverGenerator(): void
+    {
+        // Generator throws the moment index 2 is requested. If map() were eager
+        // it would materialise the whole thing and throw during the initial call.
+        $src    = self::genThrowAt(array('a', 'b', 'c', 'd'), 2);
+        $result = Arr\map('strtoupper')($src);
+
+        // Pulling only the first two items must not trip the throw at index 2.
+        $first  = null;
+        $second = null;
+        foreach ($result as $i => $v) {
+            if ($first === null) {
+                $first = $v;
+                continue;
+            }
+            $second = $v;
+            break; // consumer stops here; source should NOT be advanced further
+        }
+        $this->assertSame('A', $first);
+        $this->assertSame('B', $second);
     }
 
     public function testCanUseFlatMap(): void
