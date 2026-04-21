@@ -298,7 +298,7 @@ function sameScalar(...$variables): bool
 function allTrue(bool ...$variables): bool
 {
     foreach ($variables as $value) {
-        if (! is_bool($value) || $value !== true) {
+        if ($value !== true) {
             return false;
         }
     }
@@ -314,7 +314,7 @@ function allTrue(bool ...$variables): bool
 function anyTrue(bool ...$variables): bool
 {
     foreach ($variables as $value) {
-        if (is_bool($value) && $value === true) {
+        if ($value === true) {
             return true;
         }
     }

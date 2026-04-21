@@ -46,7 +46,7 @@ use PinkCrab\FunctionConstructors\Objects as Objects;
 function compose(callable ...$callables): Closure
 {
     /**
-     * @param mixed The value passed into the functions
+     * @param mixed $e The value passed into the functions
      * @return mixed The final result.
      */
     return function ($e) use ($callables) {
@@ -67,7 +67,7 @@ function compose(callable ...$callables): Closure
 function composeR(callable ...$callables): Closure
 {
     /**
-     * @param mixed The value passed into the functions
+     * @param mixed $e The value passed into the functions
      * @return mixed The final result.
      */
     return function ($e) use ($callables) {
@@ -88,7 +88,7 @@ function composeR(callable ...$callables): Closure
 function composeSafe(callable ...$callables): Closure
 {
     /**
-     * @param mixed The value passed into the functions
+     * @param mixed $e The value passed into the functions
      * @return mixed|null The final result or null.
      */
     return function ($e) use ($callables) {
