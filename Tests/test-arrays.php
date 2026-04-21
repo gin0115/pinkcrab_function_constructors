@@ -438,6 +438,26 @@ class ArrayFunctionTests extends TestCase
         $this->assertEquals(13, Arr\flattenByN()($array)[12]);
     }
 
+    /** @testdox flattenByN() should return a lazy Generator fully flattening nested arrays in a Generator source when no depth is given. */
+    public function testFlattenByNFullyOverGenerator(): void
+    {
+        $src    = self::gen(array(1, 2, array(3, 4), array(array(5, 6), 7)));
+        $result = Arr\flattenByN()($src);
+
+        $this->assertInstanceOf(\Generator::class, $result);
+        $this->assertSame(array(1, 2, 3, 4, 5, 6, 7), iterator_to_array($result, false));
+    }
+
+    /** @testdox flattenByN() respects depth and skips empty nested arrays on a Generator source. */
+    public function testFlattenByNRespectsDepthOverGenerator(): void
+    {
+        $src    = self::gen(array(1, array(), array(2, array(3, 4)), 5));
+        $result = Arr\flattenByN(1)($src);
+
+        // Empty nested array dropped, depth 1 keeps [3, 4] as a nested array.
+        $this->assertSame(array(1, 2, array(3, 4), 5), iterator_to_array($result, false));
+    }
+
     public function testCanUseReplace()
     {
         $base          = array( 'orange', 'banana', 'apple', 'raspberry' );

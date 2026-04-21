@@ -50,7 +50,11 @@ if (! function_exists('array_flatten')) {
      */
     function arrayFlatten(array $array, ?int $n = null): array
     {
-        return Arr\flattenByN($n)($array);
+        // Arr\flattenByN returns array when given an array, but its return type
+        // was widened in 1.0.0 to include Generator for iterable inputs.
+        // Narrow here — callers still expect an array.
+        $result = Arr\flattenByN($n)($array);
+        return is_array($result) ? $result : iterator_to_array($result);
     }
 }
 

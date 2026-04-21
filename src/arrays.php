@@ -722,36 +722,57 @@ function each(callable $func): Closure
 }
 
 /**
- * Returns a Closure for flattening and mapping an array
+ * Returns a Closure for flattening and mapping an array or iterable.
  *
- * @param callable(mixed):mixed $function The function to map the element. (Will no be called if resolves to array)
- * @param int|null $n Depth of nodes to flatten. If null will flatten to n
- * @return Closure(mixed[]):mixed[]
+ * - Array in  → array out (unchanged behaviour via array_reduce/array_merge).
+ * - Generator/Traversable in → Generator out that lazily recurses into nested
+ *   arrays up to depth $n, applying $function to leaf non-array elements.
+ *
+ * @param callable(mixed):mixed $function Applied to leaf non-array elements.
+ * @param int|null $n Recursion depth; null = flatten fully.
+ * @return Closure(iterable<int|string, mixed>):(array<int, mixed>|\Generator<int, mixed>)
  */
 function flatMap(callable $function, ?int $n = null): Closure
 {
     /**
-     * @param mixed[] $array
-     * @return mixed[]
+     * @param iterable<int|string, mixed> $source
+     * @return array<int, mixed>|\Generator<int, mixed>
      */
-    return function (array $array) use ($n, $function): array {
-        return array_reduce(
-            $array,
-            /**
-             * @param mixed[] $carry
-             * @param mixed $element
-             * @return mixed[]
-             */
-            function (array $carry, $element) use ($n, $function): array {
+    return function (iterable $source) use ($n, $function) {
+        if (is_array($source)) {
+            return array_reduce(
+                $source,
+                /**
+                 * @param mixed[] $carry
+                 * @param mixed $element
+                 * @return mixed[]
+                 */
+                function (array $carry, $element) use ($n, $function): array {
+                    if (is_array($element) && (is_null($n) || $n > 0)) {
+                        // Recursive call on an array element always hits the array path,
+                        // which returns array. The return type is widened to include
+                        // Generator for iterable inputs; narrow it back here for array_merge.
+                        $recursed = flatMap($function, $n ? $n - 1 : null)($element);
+                        $carry    = array_merge($carry, is_array($recursed) ? $recursed : iterator_to_array($recursed));
+                    } else {
+                        $carry[] = is_array($element) ? $element : $function($element);
+                    }
+                    return $carry;
+                },
+                array()
+            );
+        }
+        return (function () use ($source, $n, $function) {
+            foreach ($source as $element) {
                 if (is_array($element) && (is_null($n) || $n > 0)) {
-                    $carry = array_merge($carry, flatMap($function, $n ? $n - 1 : null)($element));
+                    foreach (flatMap($function, $n ? $n - 1 : null)($element) as $sub) {
+                        yield $sub;
+                    }
                 } else {
-                    $carry[] = is_array($element) ? $element : $function($element);
+                    yield is_array($element) ? $element : $function($element);
                 }
-                return $carry;
-            },
-            array()
-        );
+            }
+        })();
     };
 }
 
@@ -882,41 +903,64 @@ function column(string $column, ?string $key = null): Closure
 }
 
 /**
- * Returns a Closure for flattening an array to a defined depth
+ * Returns a Closure for flattening an array or iterable to a defined depth.
  *
- * @param int|null $n Depth of nodes to flatten. If null will flatten to n
- * @return Closure(mixed[] $var): mixed[]
+ * - Array in  → array out (unchanged behaviour).
+ * - Generator/Traversable in → Generator out that lazily recurses into nested
+ *   arrays up to depth $n. Empty nested arrays are dropped.
+ *
+ * @param int|null $n Depth of nodes to flatten. If null will flatten fully.
+ * @return Closure(iterable<int|string, mixed>):(array<int, mixed>|\Generator<int, mixed>)
  */
 function flattenByN(?int $n = null): Closure
 {
     /**
-     * @param mixed[] $array Array to flatten
-     * @return mixed[]
+     * @param iterable<int|string, mixed> $source
+     * @return array<int, mixed>|\Generator<int, mixed>
      */
-    return function (array $array) use ($n): array {
-        return array_reduce(
-            $array,
-            /**
-             * @param array<int|string, mixed> $carry
-             * @param mixed|mixed[] $element
-             * @return array<int|string, mixed>
-             */
-            function (array $carry, $element) use ($n): array {
-                // Remove empty arrays.
-                if (is_array($element) && empty($element)) {
+    return function (iterable $source) use ($n) {
+        if (is_array($source)) {
+            return array_reduce(
+                $source,
+                /**
+                 * @param array<int|string, mixed> $carry
+                 * @param mixed|mixed[] $element
+                 * @return array<int|string, mixed>
+                 */
+                function (array $carry, $element) use ($n): array {
+                    // Remove empty arrays.
+                    if (is_array($element) && empty($element)) {
+                        return $carry;
+                    }
+                    // If the element is an array and we are still flattening, call again
+                    if (is_array($element) && (is_null($n) || $n > 0)) { // @phpstan-ignore-line
+                        // Recursion on an array hits the array path; narrow the widened
+                        // array|Generator return back to array for array_merge.
+                        $recursed = flattenByN($n ? $n - 1 : null)($element);
+                        $carry    = array_merge($carry, is_array($recursed) ? $recursed : iterator_to_array($recursed));
+                    } else {
+                        // Else just add the element.
+                        $carry[] = $element;
+                    }
                     return $carry;
+                },
+                array()
+            );
+        }
+        return (function () use ($source, $n) {
+            foreach ($source as $element) {
+                if (is_array($element) && empty($element)) {
+                    continue;
                 }
-                // If the element is an array and we are still flattening, call again
-                if (is_array($element) && (is_null($n) || $n > 0)) { // @phpstan-ignore-line
-                    $carry = array_merge($carry, flattenByN($n ? $n - 1 : null)($element));
+                if (is_array($element) && (is_null($n) || $n > 0)) {
+                    foreach (flattenByN($n ? $n - 1 : null)($element) as $sub) {
+                        yield $sub;
+                    }
                 } else {
-                    // Else just add the element.
-                    $carry[] = $element;
+                    yield $element;
                 }
-                return $carry;
-            },
-            array()
-        );
+            }
+        })();
     };
 }
 

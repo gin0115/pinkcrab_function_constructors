@@ -462,4 +462,24 @@ class ArrayFilterAndMapTests extends TestCase
         $this->assertEquals(16, $doubleNFlattenIt($array)[8]);
         $this->assertEquals(4, $doubleNFlattenIt($array)[2]);
     }
+
+    /** @testdox flatMap() should return a lazy Generator that recursively flattens nested arrays in a Generator source, applying the callback to leaf values. */
+    public function testFlatMapReturnsGeneratorForGeneratorInput(): void
+    {
+        $src    = self::gen(array(1, array(2, array(3, 4)), 5));
+        $result = Arr\flatMap(fn ($x) => $x * 10)($src);
+
+        $this->assertInstanceOf(\Generator::class, $result);
+        $this->assertSame(array(10, 20, 30, 40, 50), iterator_to_array($result, false));
+    }
+
+    /** @testdox flatMap() with a depth limit should respect it when recursing into a Generator source. */
+    public function testFlatMapRespectsDepthLimitOverGenerator(): void
+    {
+        // Depth 1: top-level nested arrays flatten one level; deeper arrays stay as arrays.
+        $src    = self::gen(array(1, array(2, array(3, 4)), 5));
+        $result = Arr\flatMap(fn ($x) => $x * 10, 1)($src);
+
+        $this->assertSame(array(10, 20, array(3, 4), 50), iterator_to_array($result, false));
+    }
 }
