@@ -48,7 +48,7 @@ examplePartial: >
 
  // Used in a higher order function.
 
- $array = array_map($lastPositionOfFoo, ['This is when the foo begins', 'not foo']);
+ $array = array_map($lastPositionOfFoo, ['This is when the foo begins', 'is bar']);
 
  print_r($array); // [17, null]
 
@@ -78,7 +78,7 @@ exampleCurried: >
 
 
 exampleInline: >
-  $array = array_map(Strings\lastPosition('foo'), ['This is when the foo begins', 'not foo']);
+  $array = array_map(Strings\lastPosition('foo'), ['This is when the foo begins', 'is bar']);
 
   print_r($array); // [17, null]
 
