@@ -130,57 +130,13 @@ $array = $setKeyOfSArray('new value');
 
 ### Number Functions
 
-Much of the number functions found in this library act as wrappers for common standard (PHP) library functions, but curried to allow them to be easier composed with.
+`Num\sum()`, `Num\multiply()`, `Num\round()`, `Num\power()`, accumulators and more — every numeric operation is supplied as a partially applied Closure that composes cleanly inside `pipe()` / `compose()`.
 
-#### Basic Arithmetic 
+> All number constructors accept `int` or `float` only. Numeric strings must be cast first — anything else throws `InvalidArgumentException`.
 
-You can do some basic arithmetic using composable functions. This allows for the creation of a base value, then work using the passed value.
+[See all Number functions →](./numbers.html)
 
-> All these functions allow the use of `INT` or `FLOAT` only, all numerical strings must be cast before being used. Will throw `TypeError` otherwise.
-
-{% highlight php %}
-// Add
-$addTo5 = Num\sum(5);
-
-$addTo5(15.5); // 20.5
-$addTo5(-2); // 3
-
-// Subtract
-$subtractFrom10 = Num\subtract(10);
-$subtractFrom10(3)  // 7
-$subtractFrom10(20) // -10
-
-// Multiply 
-$multiplyBy10 = Num\multiply(10)
-$multiplyBy10(5);   // 50 
-$multiplyBy10(2.5); // 25.0
-
-// Divide By
-$divideBy3 = Num\divideBy(3);
-$divideBy3(12); // 4 = 12/3
-$divideBy3(10); // 3.333333333333 
-
-// Divide Into
-$divideInto12 = Num\divideInto(12);
-$divideInto12(4); // 3 = 12/4
-{% endhighlight %}
-
-#### Multiple and Modulus
-
-It is possible to do basic modulus operations and working out if a number has a whole factor of another.
-
-{% highlight php %}
-// Factor of 
-$isMultipleOf2 = Num\isMultipleOf(2);
-$isMultipleOf2(12); // true
-$isMultipleOf2(13); // false
-
-// Getting the remainder
-$remainderBy2 = Num\remainderBy(2);
-$remainderBy2(10); // 0 = (5 * 2) - 10
-$remainderBy2(9);  // 1 = (4 * 2) - 9
-{% endhighlight %}
-
+*****
 
 <div class="function__releated-group">
     <h3><a href="{{ site.url | absolute_url }}/strings.html">
@@ -198,6 +154,16 @@ $remainderBy2(9);  // 1 = (4 * 2) - 9
     </a></h3>
     <ul>
         {% for related in site.arrays %}
+            <li><a href="{{ site.url | absolute_url }}{{related.url}}">{{ related.title }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
+<div class="function__releated-group">
+    <h3><a href="{{ site.url | absolute_url }}/numbers.html">
+        <em>Number</em> Functions
+    </a></h3>
+    <ul>
+        {% for related in site.numbers %}
             <li><a href="{{ site.url | absolute_url }}{{related.url}}">{{ related.title }}</a></li>
         {% endfor %}
     </ul>

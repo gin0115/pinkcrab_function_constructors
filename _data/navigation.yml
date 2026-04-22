@@ -1,0 +1,11 @@
+main:
+  - title: "Home"
+    url: /
+  - title: "Arrays"
+    url: /arrays.html
+  - title: "Strings"
+    url: /strings.html
+  - title: "Numbers"
+    url: /numbers.html
+  - title: "GitHub"
+    url: https://github.com/gin0115/pinkcrab_function_constructors

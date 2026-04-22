@@ -45,3 +45,6 @@ collections:
   arrays:
     output: true
     permalink: /arrays/:title.html
+  numbers:
+    output: true
+    permalink: /numbers/:title.html
