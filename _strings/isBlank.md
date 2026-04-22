@@ -25,12 +25,15 @@ definition: >
    */
  Strings\isBlank($value): bool
 
-exampleInline: >
- // Called directly — this is a predicate, not a partially applied function.
+examplePartial: >
+ // isBlank is called directly with the value under test — it is not a partially applied constructor like the rest of the Strings namespace.
 
  var_dump(Strings\isBlank(''));     // true
 
  var_dump(Strings\isBlank('foo'));  // false
+
+
+ // Only a zero-length string is considered blank. Any non-string value returns false.
 
  var_dump(Strings\isBlank(null));   // false
 
@@ -39,12 +42,28 @@ exampleInline: >
  var_dump(Strings\isBlank([]));     // false
 
 
- // Used directly as a callable in a higher order function.
+ // A string of whitespace is NOT blank — trim the input first if you need that behaviour.
+
+ var_dump(Strings\isBlank(' '));                 // false
+
+ var_dump(Strings\isBlank(Strings\trim(' ')(' '))); // true
+
+
+exampleInline: >
+ // Pass the fully qualified name as a string callable to any higher order function.
 
  $values = ['', 'foo', '', 'bar', ''];
+
 
  $blanks = array_filter($values, 'PinkCrab\FunctionConstructors\Strings\isBlank');
 
  print_r($blanks); // ['', '', '']
+
+
+ // Or use it as a negated predicate to strip blanks out.
+
+ $nonBlanks = array_filter($values, fn($v) => ! Strings\isBlank($v));
+
+ print_r($nonBlanks); // ['foo', 'bar']
 
 ---
