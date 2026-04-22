@@ -24,14 +24,28 @@ layout: default
 {% endif %}
 
 <div class="function__subtitle">
-    <p>  
-        {% if page.description %}  
-            {{ page.description }}  
-        {% else %}  
+    <p>
+        {% if page.description %}
+            {{ page.description }}
+        {% else %}
             <span class="notice--danger">This function has no description defined.</span>
-        {% endif %}   
+        {% endif %}
     </p>
 </div>
+
+{% if page.iterable %}
+    <div class="function__iterable-badge function__iterable-badge--{{ page.iterable.behaviour }}">
+        <strong class="function__iterable-badge__label">
+            {% case page.iterable.behaviour %}
+                {% when "lazy" %}Lazy
+                {% when "short-circuit" %}Short-circuiting
+                {% when "terminal" %}Terminal
+                {% when "array-only" %}Array-only
+            {% endcase %}
+        </strong>
+        <span class="function__iterable-badge__summary">{{ page.iterable.summary }}</span>
+    </div>
+{% endif %}
 
 <div class="function__definition">
         {% if page.definition %}  
@@ -93,7 +107,7 @@ layout: default
 
 
 <!-- Inline -->
-{% if page.exampleInline %} 
+{% if page.exampleInline %}
 <div class="panel">
     <h4 class="panel__title">Inlined with Higher Order Function</h4>
     <div class="panel__content">
@@ -102,6 +116,29 @@ layout: default
         </p>
 {% highlight php %}
 {{ page.exampleInline }}
+{% endhighlight %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Iterable / Generator -->
+{% if page.exampleIterable %}
+<div class="panel">
+    <h4 class="panel__title">Works with Iterables &amp; Generators</h4>
+    <div class="panel__content">
+        <p>
+            {% if page.iterable.behaviour == "lazy" %}
+                Feed the resulting Closure a Generator or any <code class="inline">Traversable</code> and it streams lazily — values are produced on demand, so the source is never fully realised in memory.
+            {% elsif page.iterable.behaviour == "short-circuit" %}
+                Accepts a Generator or any <code class="inline">Traversable</code>. Consumes only as much of the source as needed to produce the answer, then stops.
+            {% elsif page.iterable.behaviour == "terminal" %}
+                Accepts a Generator or any <code class="inline">Traversable</code>. The source is materialised to an array first — do not chain this in front of an infinite Generator.
+            {% else %}
+                Accepts a Generator or any <code class="inline">Traversable</code> as input.
+            {% endif %}
+        </p>
+{% highlight php %}
+{{ page.exampleIterable }}
 {% endhighlight %}
     </div>
 </div>

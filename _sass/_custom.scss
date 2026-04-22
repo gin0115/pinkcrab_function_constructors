@@ -160,3 +160,53 @@ code.inline {
     color: #eeffff;
     background: #263238;
 }
+.function__iterable-badge {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5em;
+    margin: 1em 0 1.5em;
+    padding: 0.6em 1em;
+    border-left: 4px solid #999;
+    border-radius: 3px;
+    background: #f4f4f4;
+    font-size: 0.9em;
+
+    &__label {
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        font-size: 0.8em;
+        padding: 2px 8px;
+        border-radius: 3px;
+        color: #fff;
+        background: #607d8b;
+    }
+
+    &__summary {
+        color: #37474f;
+    }
+
+    &--lazy {
+        border-left-color: #4caf50;
+        background: #e8f5e9;
+        .function__iterable-badge__label { background: #4caf50; }
+    }
+
+    &--short-circuit {
+        border-left-color: #ff9800;
+        background: #fff3e0;
+        .function__iterable-badge__label { background: #ff9800; }
+    }
+
+    &--terminal {
+        border-left-color: #607d8b;
+        background: #eceff1;
+        .function__iterable-badge__label { background: #607d8b; }
+    }
+
+    &--array-only {
+        border-left-color: #e53935;
+        background: #ffebee;
+        .function__iterable-badge__label { background: #e53935; }
+    }
+}
