@@ -27,7 +27,7 @@ closure: >
    * @param float|null $value  Value to add, or null to finalise.
    * @return Closure|float     Closure while still accumulating, float once finalised.
    */
- $function (?float $value = null)
+ $function (?float $value = null): Closure|float
 
 examplePartial: >
  // Seed the accumulator with a starting value — each call returns a new accumulator.

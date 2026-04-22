@@ -31,7 +31,7 @@ closure: >
    * @return int|float  Result of pow($value, $exponent).
    * @throws InvalidArgumentException If $value is not int or float.
    */
- $function ($value)
+ $function (int|float $value): int|float
 
 examplePartial: >
  // Create a function that squares every number it receives.

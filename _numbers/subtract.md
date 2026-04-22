@@ -28,7 +28,7 @@ closure: >
    * @param int|float $value
    * @return int|float  Result of ($value - $initial).
    */
- $function ($value)
+ $function (int|float $value): int|float
 
 examplePartial: >
  // Create a function that subtracts 10 from whatever it receives.

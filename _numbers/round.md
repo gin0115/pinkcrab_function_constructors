@@ -31,7 +31,7 @@ closure: >
    * @return float
    * @throws InvalidArgumentException If $value is not int or float.
    */
- $function ($value): float
+ $function (int|float $value): float
 
 examplePartial: >
  // Create a function that rounds to 2 decimal places.

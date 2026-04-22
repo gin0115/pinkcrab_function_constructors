@@ -28,7 +28,7 @@ closure: >
    * @param int|float $value
    * @return float  Result of ($dividend / $value).
    */
- $function ($value): float
+ $function (int|float $value): float
 
 examplePartial: >
  // Create a function that divides 12 by whatever it receives.

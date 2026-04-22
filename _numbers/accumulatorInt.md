@@ -27,7 +27,7 @@ closure: >
    * @param int|null $value  Value to add, or null to finalise.
    * @return Closure|int     Closure while still accumulating, int once finalised.
    */
- $function (?int $value = null)
+ $function (?int $value = null): Closure|int
 
 examplePartial: >
  // Seed the accumulator with a starting value — each call returns a new accumulator.

@@ -29,7 +29,7 @@ closure: >
    * @return bool  True when ($value % $multiple === 0) and $value !== 0.
    * @throws InvalidArgumentException If $value is not int or float.
    */
- $function ($value): bool
+ $function (int|float $value): bool
 
 examplePartial: >
  // Create a predicate that checks for multiples of 3.
