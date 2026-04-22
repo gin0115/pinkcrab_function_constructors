@@ -58,35 +58,30 @@ exampleInline: >
 
 
 exampleIterable: >
- // A Generator source is never fully materialised.
+ // A Generator that yields one word at a time.
 
- $numbers = (function () {
-     for ($i = 1; $i <= 10_000_000; $i++) {
-         yield $i;
-     }
+ $words = (function () {
+     yield 'apple';
+     yield 'ANT';
+     yield 'banana';
+     yield 'BEE';
  })();
 
 
- // filter() returns a Generator — nothing is filtered until it is consumed.
+ // Pass the Generator in — a Generator comes out. Nothing runs yet.
 
- $evens = Arrays\filter(fn($v) => $v % 2 === 0)($numbers);
+ $lowercaseOnly = Arrays\filter('ctype_lower')($words);
 
 
- // Chain another lazy op to cap consumption — only 5 values are ever produced.
+ // foreach pulls values on demand; each one is tested only when needed.
 
- foreach (Arrays\take(5)($evens) as $n) {
-     echo $n . PHP_EOL;
+ foreach ($lowercaseOnly as $word) {
+     echo $word . PHP_EOL;
  }
 
 
- // 2
+ // apple
 
- // 4
-
- // 6
-
- // 8
-
- // 10
+ // banana
 
 ---
