@@ -58,7 +58,7 @@ exampleInline: >
 
 
 exampleIterable: >
- // A Generator that yields one word at a time.
+ // Step 1 — define a Generator source that yields one word at a time.
 
  $words = (function () {
      yield 'apple';
@@ -68,12 +68,17 @@ exampleIterable: >
  })();
 
 
- // Pass the Generator in — a Generator comes out. Nothing runs yet.
+ // Step 2 — build a reusable filter from the predicate.
 
- $lowercaseOnly = Arrays\filter('ctype_lower')($words);
+ $lowercaseOnlyFilter = Arrays\filter('ctype_lower');
 
 
- // foreach pulls values on demand; each one is tested only when needed.
+ // Step 3 — apply the filter to the Generator. Nothing runs yet; this returns a new Generator.
+
+ $lowercaseOnly = $lowercaseOnlyFilter($words);
+
+
+ // Step 4 — consume with foreach. Each value is pulled from the source on demand and the predicate is checked only when needed.
 
  foreach ($lowercaseOnly as $word) {
      echo $word . PHP_EOL;
