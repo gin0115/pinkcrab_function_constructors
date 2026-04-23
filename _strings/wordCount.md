@@ -18,6 +18,15 @@ coreFunctions:
 deprecated: false
 alternative: false
 
+tags: [reducer, returns-closure, pure]
+
+typeSignature: "(int, string?) → (string → int | string[])"
+typeSignatureEn: >
+ Given a mode flag (and optional extra-word-chars string), returns a function that either counts or lists words in any string — return shape depends on the mode.
+
+atGlance: >
+ Wraps <code>str_word_count()</code>. Mode flag controls return type.
+
 definition: >
  /**
    * @param int $format can use WORD_COUNT_NUMBER_OF_WORDS | WORD_COUNT_ARRAY | WORD_COUNT_ASSOCIATIVE_ARRAY

@@ -15,6 +15,15 @@ since: 0.1.0
 deprecated: false
 alternative: null
 
+tags: [transformer, returns-closure, pure]
+
+typeSignature: "string → (string → string)"
+typeSignatureEn: >
+ Given a suffix, returns a function that appends it to any string passed in.
+
+atGlance: >
+ Bind a suffix; the returned Closure tacks it onto the end of any string.
+
 definition: >
  /**
    * @param string $append

@@ -18,6 +18,15 @@ coreFunctions:
 deprecated: false
 alternative: false
 
+tags: [reducer, returns-closure, pure]
+
+typeSignature: "(string, int, int?) → (string → int)"
+typeSignatureEn: >
+ Given a needle and optional offset/length window, returns a function that counts how many times the needle appears in any string within that window.
+
+atGlance: >
+ Bind a substring and optional search window; the returned Closure counts occurrences. Wraps <code>substr_count()</code>.
+
 definition: >
  /**
    * @param string $needle The substring to find

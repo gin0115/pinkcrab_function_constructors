@@ -17,6 +17,15 @@ since: 0.3.0
 deprecated: false
 alternative: false
 
+tags: [transformer, returns-closure, pure]
+
+typeSignature: "(number, string, string) → (number → string)"
+typeSignatureEn: >
+ Given a precision, a decimal separator, and a thousands separator, returns a function that formats any number as a decimal string.
+
+atGlance: >
+ Bind formatting rules up front; the returned Closure <code>number_format</code>s any number. Always returns a string.
+
 definition: >
  /**
    * @param string|int|float $precision Number of decimal places

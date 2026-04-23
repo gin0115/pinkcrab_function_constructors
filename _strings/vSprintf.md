@@ -15,6 +15,15 @@ categories: [strings, string manipulation]
 deprecated: false
 alternative: false
 
+tags: [transformer, returns-closure, pure]
+
+typeSignature: "string → (mixed[] → string)"
+typeSignatureEn: >
+ Given a sprintf template, returns a function that substitutes an array of values into it.
+
+atGlance: >
+ Wraps <code>vsprintf()</code>. Bind the template once, feed different value arrays.
+
 definition: >
  /**
    * @param string $template The sprintf template to use.

@@ -17,6 +17,15 @@ since: 0.1.0
 deprecated: false
 alternative: false
 
+tags: [transformer, returns-closure, pure]
+
+typeSignature: "string → (string → string)"
+typeSignatureEn: >
+ Given a set of chars to look for, returns a function that yields the contents of any string starting at the first occurrence of any matching char.
+
+atGlance: >
+ Slice from the first matching char. Wraps <code>strpbrk()</code>.
+
 definition: >
  /**
    *  @param string $chars All chars to check with.

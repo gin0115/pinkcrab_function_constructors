@@ -18,6 +18,15 @@ coreFunctions:
 deprecated: false
 alternative: false
 
+tags: [transformer, returns-closure, pure]
+
+typeSignature: "(string | string[])? → (string → string)"
+typeSignatureEn: >
+ Given an optional allow-list of tag names (as a string or array), returns a function that strips HTML/PHP tags from any string except the allowed ones.
+
+atGlance: >
+ Wraps <code>strip_tags()</code>. Bind the allow-list once, reuse.
+
 definition: >
  /**
    * @param string|string[]|null $allowedTags The allowed tags, pass null or leave blank for none.

@@ -18,6 +18,15 @@ coreFunctions:
 deprecated: false
 alternative: false
 
+tags: [transformer, returns-closure, pure]
+
+typeSignature: "string → (string → string)"
+typeSignatureEn: >
+ Given a mask, returns a function that removes matching characters from both ends of any string.
+
+atGlance: >
+ Bind a mask; the returned Closure trims those chars from both ends. Wraps <code>trim()</code>.
+
 definition: >
  /**
    * @param string $mask

@@ -18,6 +18,15 @@ coreFunctions:
 deprecated: false
 alternative: false
 
+tags: [transformer, returns-closure, pure]
+
+typeSignature: "int → (string → string)"
+typeSignatureEn: >
+ Given a count, returns a function that repeats any string that many times.
+
+atGlance: >
+ Bind a repetition count. Wraps <code>str_repeat()</code>.
+
 definition: >
  /**
    * @param int $count Number of times to repeat string.

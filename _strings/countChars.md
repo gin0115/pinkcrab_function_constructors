@@ -18,6 +18,15 @@ coreFunctions:
 deprecated: false
 alternative: false
 
+tags: [reducer, returns-closure, pure]
+
+typeSignature: "int → (string → int[] | string)"
+typeSignatureEn: >
+ Given a mode flag, returns a function that reports character-frequency information for any string; return type varies by mode — either an associative array of byte values or a string of unique characters.
+
+atGlance: >
+ Bind a mode flag; the returned Closure wraps <code>count_chars()</code>. Return shape (array vs. string) depends on the flag.
+
 definition: >
  /**
    * @param int $mode See details below.

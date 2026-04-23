@@ -15,6 +15,15 @@ since: 0.1.0
 deprecated: false
 alternative: false
 
+tags: [accumulator, returns-closure, pure]
+
+typeSignature: "string → (string? → Closure | string)"
+typeSignatureEn: >
+ Seeded with an initial string, returns a callable that either appends a chunk and hands back a fresh compiler, or returns the final string when called with null.
+
+atGlance: >
+ Self-returning accumulator for building strings across calls. Call with null (or no argument) to read the final result.
+
 definition: >
  /**
    * @param string $initial Optional seed string. Defaults to ''.

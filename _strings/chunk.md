@@ -18,6 +18,15 @@ coreFunctions:
 deprecated: false
 alternative: false
 
+tags: [transformer, returns-closure, pure]
+
+typeSignature: "(int, string) → (string → string)"
+typeSignatureEn: >
+ Given a chunk length and an end-of-chunk string, returns a function that splits any string into fixed-width chunks joined by the end-of-chunk string.
+
+atGlance: >
+ Bind chunk size and separator; the returned Closure breaks strings into fixed-width pieces. Wraps <code>chunk_split()</code>.
+
 definition: >
  /**
    * @param int $length The length of each chunk.

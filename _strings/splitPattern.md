@@ -17,6 +17,15 @@ since: 0.1.0
 deprecated: false
 alternative: false
 
+tags: [transformer, returns-closure, pure]
+
+typeSignature: "string → (string → string[])"
+typeSignatureEn: >
+ Given a regex pattern, returns a function that splits any string on matches of the pattern.
+
+atGlance: >
+ Wraps <code>preg_split()</code>.
+
 definition: >
  /**
    * @param string $pattern The pattern to look for.

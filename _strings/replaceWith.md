@@ -13,6 +13,15 @@ source: https://github.com/gin0115/pinkcrab_function_constructors/blob/master/sr
 namespace: PinkCrab\FunctionConstructors\Strings
 since: 0.1.0
 
+tags: [transformer, returns-closure, pure]
+
+typeSignature: "(string, string) → (string → string)"
+typeSignatureEn: >
+ Given a needle and a replacement, returns a function that replaces every occurrence of the needle in any string with the replacement.
+
+atGlance: >
+ Bind both needle and replacement up front. Wraps <code>str_replace()</code>.
+
 definition: >
  /**
    * @param string  $find

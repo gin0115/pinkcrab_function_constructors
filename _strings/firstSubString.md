@@ -18,6 +18,15 @@ since: 0.1.0
 deprecated: false
 alternative: false
 
+tags: [transformer, returns-closure, pure]
+
+typeSignature: "(string, int) → (string → string)"
+typeSignatureEn: >
+ Given a needle and flags, returns a function that yields the portion of any string from (or before) the first occurrence of the needle.
+
+atGlance: >
+ Extract the text before or after the first match. Controlled by the <code>STRINGS_BEFORE_NEEDLE</code> / <code>STRINGS_AFTER_NEEDLE</code> flag. Wraps <code>strstr()</code>.
+
 definition: >
  /**
    * @param string $needle The substring to look for.

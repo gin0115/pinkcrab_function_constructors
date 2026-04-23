@@ -18,6 +18,15 @@ coreFunctions:
 deprecated: false
 alternative: false
 
+tags: [transformer, returns-closure, pure]
+
+typeSignature: "(int, string, bool) → (string → string)"
+typeSignatureEn: >
+ Given a width, line-break string, and cut flag, returns a function that word-wraps any string to that width.
+
+atGlance: >
+ Wraps <code>wordwrap()</code>. Bind width, break, and whether to hard-cut long words.
+
 definition: >
  /**
    * @param int $width Max width for each "line"

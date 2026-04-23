@@ -15,6 +15,15 @@ since: 0.1.0
 deprecated: false
 alternative: null
 
+tags: [transformer, returns-closure, pure]
+
+typeSignature: "string → (string → string)"
+typeSignatureEn: >
+ Given a prefix, returns a function that stitches it onto the front of any string passed in.
+
+atGlance: >
+ Bind a prefix; the returned Closure prepends it to any string.
+
 definition: >
  /**
    * @param string $prepend

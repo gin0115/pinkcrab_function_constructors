@@ -17,6 +17,15 @@ since: 0.1.0
 deprecated: false
 alternative: false
 
+tags: [transformer, returns-closure, pure]
+
+typeSignature: "string → (string → (string → string))"
+typeSignatureEn: >
+ Given a needle, returns a Closure awaiting a replacement; supplying the replacement yields the final Closure that performs the swap on any subject string.
+
+atGlance: >
+ A double curry — bind the needle once, then spawn any number of replacement-bound Closures that share the same target. Wraps <code>str_replace()</code>.
+
 definition: >
  /**
    * @param string $find Value to look for

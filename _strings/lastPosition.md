@@ -18,6 +18,15 @@ since: 0.1.0
 deprecated: false
 alternative: false
 
+tags: [reducer, returns-closure, pure]
+
+typeSignature: "(string, int, int) → (string → int | null)"
+typeSignatureEn: >
+ Given a needle (plus optional offset and case-sensitivity flags), returns a function that reports the integer position of the last occurrence in any string, or null if not found.
+
+atGlance: >
+ Bind a needle; the returned Closure yields the last offset, or <code>null</code>. Wraps <code>strrpos()</code> / <code>strripos()</code>.
+
 definition: >
  /**
    * @param string $needle The value to look for.

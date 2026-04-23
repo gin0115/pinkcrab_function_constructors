@@ -13,6 +13,15 @@ source: https://github.com/gin0115/pinkcrab_function_constructors/blob/master/sr
 namespace: PinkCrab\FunctionConstructors\Strings
 since: 0.1.0
 
+tags: [transformer, returns-closure, pure]
+
+typeSignature: "map<string, string> → (string → string)"
+typeSignatureEn: >
+ Given a dictionary of find-to-replace pairs, returns a function that replaces every key in any string with its mapped value.
+
+atGlance: >
+ Wraps <code>strtr()</code> with a dictionary. Bind the mapping once, apply to many strings.
+
 definition: >
  /**
    * @param array<string, mixed> $dictionary

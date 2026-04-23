@@ -18,6 +18,15 @@ coreFunctions:
 deprecated: false
 alternative: false
 
+tags: [transformer, returns-closure, pure]
+
+typeSignature: "(int, int?) → (string → string)"
+typeSignatureEn: >
+ Given a start index and optional length, returns a function that extracts that slice of any string.
+
+atGlance: >
+ Bind a start (and optional length) once, reuse. Wraps <code>mb_substr()</code>.
+
 definition: >
  /**
    * @param int      $start   start position (offset)

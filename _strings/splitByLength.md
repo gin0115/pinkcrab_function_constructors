@@ -18,6 +18,15 @@ coreFunctions:
 deprecated: false
 alternative: false
 
+tags: [transformer, returns-closure, pure]
+
+typeSignature: "int → (string → string[])"
+typeSignatureEn: >
+ Given a chunk length, returns a function that splits any string into fixed-width chunks.
+
+atGlance: >
+ Wraps <code>str_split()</code>.
+
 definition: >
  /**
    * @param int $length The length to split the string up with.

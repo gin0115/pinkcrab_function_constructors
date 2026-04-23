@@ -17,6 +17,15 @@ since: 0.1.0
 deprecated: false
 alternative: false
 
+tags: [hof, composer, variadic, returns-closure, pure]
+
+typeSignature: "...(mixed → string) → (mixed → string | null)"
+typeSignatureEn: >
+ Given a pipeline of string-returning callables, returns a Closure that feeds a value through each step; if any step produces a non-string the chain aborts and null is returned.
+
+atGlance: >
+ Compose several string-returning callables into one pipeline; an <code>is_string</code> guard between each step makes the chain abort with <code>null</code> rather than passing bad data onward.
+
 definition: >
  /**
    * @param callable(mixed):string ...$callable

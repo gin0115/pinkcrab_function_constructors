@@ -18,6 +18,15 @@ coreFunctions:
 deprecated: false
 alternative: false
 
+tags: [transformer, returns-closure, pure]
+
+typeSignature: "string → (string → string)"
+typeSignatureEn: >
+ Given a mask, returns a function that removes matching characters from the right side of any string.
+
+atGlance: >
+ Bind a mask; the returned Closure strips those chars from the end of any string. Wraps <code>rtrim()</code>.
+
 definition: >
  /**
    * @param string $mask

@@ -17,6 +17,15 @@ since: 0.1.0
 deprecated: false
 alternative: false
 
+tags: [transformer, returns-closure, pure]
+
+typeSignature: "(string, int, int?) → (string → string)"
+typeSignatureEn: >
+ Given a replacement, an offset, and an optional length, returns a function that splices the replacement into any string at the given range.
+
+atGlance: >
+ Bind replacement and span up front. Wraps <code>substr_replace()</code>.
+
 definition: >
  /**
    * @param string $replace The value to replace in passed string

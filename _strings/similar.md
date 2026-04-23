@@ -15,6 +15,15 @@ categories: [strings, string analysis]
 coreFunctions: 
     - similar_text()
 
+tags: [reducer, returns-closure, pure]
+
+typeSignature: "(string, bool) → (string → int | float)"
+typeSignatureEn: >
+ Given a reference string and a percent flag, returns a function that reports the similarity to any other string — either as a matching-char count (int) or a percentage (float).
+
+atGlance: >
+ Wraps <code>similar_text()</code>. Percent flag true returns a float percentage; false returns an int match count.
+
 deprecated: false
 alternative: false
 

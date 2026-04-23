@@ -17,6 +17,15 @@ since: 0.1.0
 deprecated: false
 alternative: false
 
+tags: [transformer, returns-closure, pure]
+
+typeSignature: "string → (string → string)"
+typeSignatureEn: >
+ Given a char list to escape, returns a function that backslash-escapes those chars in any string.
+
+atGlance: >
+ Bind the chars to escape; the returned Closure prefixes each of them with a backslash in any input. Wraps <code>addcslashes()</code>.
+
 definition: >
  /**
    * @param string $charList The Char list to add slashes too.

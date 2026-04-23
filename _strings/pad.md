@@ -18,6 +18,15 @@ coreFunctions:
 deprecated: false
 alternative: false
 
+tags: [transformer, returns-closure, pure]
+
+typeSignature: "(int, string, int) → (string → string)"
+typeSignatureEn: >
+ Given a target length, pad character, and pad-position flag, returns a function that pads any string up to that length.
+
+atGlance: >
+ Bind length, fill, and direction up front. Wraps <code>str_pad()</code>.
+
 definition: >
  /**
    * @param int $length Max length to make string.

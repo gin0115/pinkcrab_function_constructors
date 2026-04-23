@@ -18,6 +18,15 @@ coreFunctions:
 deprecated: false
 alternative: false
 
+tags: [transformer, returns-closure, pure]
+
+typeSignature: "(string, int) → (string → string[])"
+typeSignatureEn: >
+ Given a separator and a limit, returns a function that splits any string on the separator into an array of parts.
+
+atGlance: >
+ Wraps <code>explode()</code>.
+
 definition: >
  /**
    * @param non-empty-string $separator The char to split by.

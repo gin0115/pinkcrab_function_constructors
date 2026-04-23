@@ -15,6 +15,15 @@ since: 0.1.0
 deprecated: false
 alternative: false
 
+tags: [transformer, returns-closure, pure]
+
+typeSignature: "(string, string?) → (string → string)"
+typeSignatureEn: >
+ Given an opening (and optional closing) string, returns a function that wraps any string between them. When only an opening is given, it is used as both opening and closing.
+
+atGlance: >
+ Bind the wrapper strings once; reuse to wrap any input.
+
 definition: >
 
  /**

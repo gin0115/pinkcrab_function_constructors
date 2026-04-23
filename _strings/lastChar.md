@@ -17,6 +17,15 @@ since: 0.1.0
 deprecated: false
 alternative: false
 
+tags: [transformer, returns-closure, pure]
+
+typeSignature: "string → (string → string)"
+typeSignatureEn: >
+ Given a char, returns a function that yields the contents of any string starting at the last occurrence of that char.
+
+atGlance: >
+ Slice from the last occurrence of a character. Wraps <code>strrchr()</code>.
+
 definition: >
  /**
    *  @param string $chars All chars to check with.
