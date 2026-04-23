@@ -33,8 +33,21 @@ The map family includes `map`, `mapKey`, `mapWith`, `mapWithKey`, `flatMap`, `co
 #### Sort without mutation
 
 {% highlight php %}
+$users = [
+    'ada' => ['name' => 'Ada', 'age' => 40],
+    'bea' => ['name' => 'Bea', 'age' => 30],
+    'cal' => ['name' => 'Cal', 'age' => 50],
+];
+
 $sortByAge = Arr\uasort(fn($a, $b) => $a['age'] <=> $b['age']);
-$sortByAge($users);   // returns a new sorted array, keys preserved
+
+$sortByAge($users);
+// [
+//   'bea' => ['name' => 'Bea', 'age' => 30],
+//   'ada' => ['name' => 'Ada', 'age' => 40],
+//   'cal' => ['name' => 'Cal', 'age' => 50],
+// ]
+// — keys preserved, $users unchanged
 {% endhighlight %}
 
 Every native PHP sort has a curried, immutable counterpart: `sort`, `rsort`, `ksort`, `krsort`, `asort`, `arsort`, `natsort`, `natcasesort`, `uksort`, `uasort`, `usort`.
@@ -42,10 +55,21 @@ Every native PHP sort has a curried, immutable counterpart: `sort`, `rsort`, `ks
 #### Group, fold, reduce
 
 {% highlight php %}
+$orders = [
+    ['id' => 1, 'status' => 'paid',     'amount' => 50],
+    ['id' => 2, 'status' => 'paid',     'amount' => 20],
+    ['id' => 3, 'status' => 'refunded', 'amount' => 15],
+    ['id' => 4, 'status' => 'paid',     'amount' => 35],
+];
+
 $byStatus = Arr\groupBy(F\getProperty('status'))($orders);
-// ['paid' => [...], 'pending' => [...], 'refunded' => [...]]
+// [
+//   'paid'     => [ <order 1>, <order 2>, <order 4> ],
+//   'refunded' => [ <order 3> ],
+// ]
 
 $totalPaid = Arr\sumWhere(F\getProperty('amount'))($byStatus['paid']);
+// 105   (50 + 20 + 35)
 {% endhighlight %}
 
 Also: `fold`, `foldR`, `foldKeys`, `scan`, `scanR`, `partition`, `chunk`.
