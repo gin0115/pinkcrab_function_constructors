@@ -5,14 +5,21 @@ on:
   workflow_dispatch:
 
 name: algolia-search
+
 jobs:
   algolia-search:
     runs-on: ubuntu-latest
-    env:
-      JEKYLL_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@v3
-      - name: Algolia Jekyll Action
-        uses: dieghernan/algolia-jekyll-action@main
+      - uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
         with:
-          APIKEY: '${{ secrets.ALGOLIA_API_KEY }}'
+          ruby-version: '3.3'
+          bundler-cache: true
+
+      - name: Index on Algolia
+        env:
+          ALGOLIA_API_KEY: ${{ secrets.ALGOLIA_API_KEY }}
+          JEKYLL_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: bundle exec jekyll algolia
