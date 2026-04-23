@@ -31,7 +31,7 @@ Express each step as a pure number → number callable, compose them into a sing
 
 {% highlight php %}
 use PinkCrab\FunctionConstructors\GeneralFunctions as F;
-use PinkCrab\FunctionConstructors\Arrays as A;
+use PinkCrab\FunctionConstructors\Arrays;
 use PinkCrab\FunctionConstructors\Numbers as N;
 use PinkCrab\FunctionConstructors\Strings as Str;
 

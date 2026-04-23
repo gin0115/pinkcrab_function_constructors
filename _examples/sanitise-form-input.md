@@ -31,7 +31,7 @@ Build one field-level sanitiser and one form-level sanitiser. Reuse both everywh
 
 {% highlight php %}
 use PinkCrab\FunctionConstructors\GeneralFunctions as F;
-use PinkCrab\FunctionConstructors\Arrays as A;
+use PinkCrab\FunctionConstructors\Arrays;
 use PinkCrab\FunctionConstructors\Strings as Str;
 use PinkCrab\FunctionConstructors\Comparisons as C;
 

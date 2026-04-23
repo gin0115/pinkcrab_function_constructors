@@ -29,7 +29,7 @@ With partial application, the concept becomes a **named first-class callable**. 
 
 {% highlight php %}
 use PinkCrab\FunctionConstructors\GeneralFunctions as F;
-use PinkCrab\FunctionConstructors\Arrays as A;
+use PinkCrab\FunctionConstructors\Arrays;
 use PinkCrab\FunctionConstructors\Comparisons as C;
 
 // "Active" means active=true AND email_verified_at is not null.

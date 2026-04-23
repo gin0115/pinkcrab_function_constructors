@@ -45,7 +45,7 @@ Each concept becomes its own named callable. The pipeline reads top-to-bottom li
 {% highlight php %}
 use PinkCrab\FunctionConstructors\GeneralFunctions as F;
 use PinkCrab\FunctionConstructors\Comparisons as C;
-use PinkCrab\FunctionConstructors\Arrays as A;
+use PinkCrab\FunctionConstructors\Arrays;
 
 // --- named concepts ---
 

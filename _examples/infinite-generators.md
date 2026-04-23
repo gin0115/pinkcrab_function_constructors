@@ -81,26 +81,11 @@ foreach (Arrays\takeUntil(fn($n) => $n > 100)($naturals()) as $n) {
 // 1 2 3 ... 99 100
 {% endhighlight %}
 
-## An aside — shortening the namespace with an alias
-
-Typing `Arrays\` on every line gets repetitive in pipelines that chain five or six operations. When a file uses several functions from the namespace, aliasing it on import keeps the code easier to scan. Same code, shorter prefix:
-
-{% highlight php %}
-use PinkCrab\FunctionConstructors\Arrays as A;
-
-foreach (A\takeUntil(fn($n) => $n > 100)($naturals()) as $n) {
-    echo $n . ' ';
-}
-{% endhighlight %}
-
-Both styles are fine. Pick whichever reads better in the file at hand — most real-world codebases land on aliases (`A` for Arrays, `F` for GeneralFunctions, `Str` for Strings, etc.) once the file uses more than one or two functions from a namespace. The remaining examples on this page use the alias form.
-
 ## First match — short-circuit
 
 {% highlight php %}
-use PinkCrab\FunctionConstructors\Arrays as A;
 
-$firstPrime = A\filterFirst(function (int $n): bool {
+$firstPrime = Arrays\filterFirst(function (int $n): bool {
     if ($n < 2) return false;
     for ($i = 2; $i * $i <= $n; $i++) if ($n % $i === 0) return false;
     return true;
@@ -117,13 +102,13 @@ Don't mix infinite sources with terminal operations:
 
 {% highlight php %}
 // ❌ hangs — sort needs the whole list
-A\sort()($naturals());
+Arrays\sort()($naturals());
 
 // ❌ hangs — fold needs to consume everything
-A\fold(fn($a, $b) => $a + $b, 0)($naturals());
+Arrays\fold(fn($a, $b) => $a + $b, 0)($naturals());
 
 // ❌ hangs — takeLast needs to know where the end is
-A\takeLast(5)($naturals());
+Arrays\takeLast(5)($naturals());
 
 // ❌ hangs — count materialises first
 iterator_to_array($naturals());
@@ -133,10 +118,10 @@ For these, force a bounded prefix first:
 
 {% highlight php %}
 // ✅ sort the first 100 naturals
-A\sort()(iterator_to_array(A\take(100)($naturals())));
+Arrays\sort()(iterator_to_array(Arrays\take(100)($naturals())));
 
 // ✅ sum the first 100 naturals
-A\fold(fn($a, $b) => $a + $b, 0)(A\take(100)($naturals()));
+Arrays\fold(fn($a, $b) => $a + $b, 0)(Arrays\take(100)($naturals()));
 {% endhighlight %}
 
 ## A realistic case — poll an API forever, stop on first failure
@@ -149,7 +134,7 @@ $poll = function () {
     }
 };
 
-$firstFailed = A\filterFirst(fn($r) => $r['status'] !== 200);
+$firstFailed = Arrays\filterFirst(fn($r) => $r['status'] !== 200);
 
 $failedResponse = $firstFailed($poll());
 // Loops fetching every 5 seconds until one fails, returns that response.
