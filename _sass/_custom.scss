@@ -496,25 +496,10 @@ ul.visible-links {
     align-items: center;
 }
 
-.search-hit { position: relative; }
-.search-hit__badge {
+.search-hit__marker {
     display: inline-block;
-    font-size: 0.68em;
-    padding: 2px 9px;
-    margin-bottom: 0.4em;
-    border-radius: 999px;
-    background: #eceff1;
-    color: #546e7a;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    font-weight: 700;
-    line-height: 1.6;
+    margin-right: 0.35em;
+    font-size: 0.9em;
+    cursor: help;
+    vertical-align: middle;
 }
-.search-hit--arrays      .search-hit__badge { background: #e8f5e9; color: #2e7d32; }
-.search-hit--strings     .search-hit__badge { background: #fff3e0; color: #ef6c00; }
-.search-hit--numbers     .search-hit__badge { background: #e3f2fd; color: #1565c0; }
-.search-hit--general     .search-hit__badge { background: #f3e5f5; color: #6a1b9a; }
-.search-hit--objects     .search-hit__badge { background: #efebe9; color: #4e342e; }
-.search-hit--comparisons .search-hit__badge { background: #fff8e1; color: #f57f17; }
-.search-hit--tags        .search-hit__badge { background: #e0f7fa; color: #00838f; }
-.search-hit--examples    .search-hit__badge { background: #fce4ec; color: #c2185b; }

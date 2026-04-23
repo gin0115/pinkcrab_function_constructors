@@ -11,29 +11,21 @@ const search = instantsearch({
   indexName: '{{ site.algolia.index_name }}'
 });
 
-const collectionLabels = {
-  arrays:      'Arrays',
-  strings:     'Strings',
-  numbers:     'Numbers',
-  general:     'General',
-  objects:     'Objects',
-  comparisons: 'Comparisons',
-  tags:        'Tag archive',
-  examples:    'Example'
-};
-
 const hitTemplate = function(hit) {
   const url = hit.url;
   const highlight = hit._highlightResult;
   const title = (highlight.title && highlight.title.value) || '';
   const content = hit.description || (highlight.content && highlight.content.value) || '';
   const collection = hit.collection || 'pages';
-  const label = collectionLabels[collection] || 'Page';
+
+  let marker = '';
+  if (collection === 'pages')    marker = '<span class="search-hit__marker" title="Index page">📖</span>';
+  if (collection === 'examples') marker = '<span class="search-hit__marker" title="Example">💡</span>';
+
   return `
     <div class="list__item">
-      <article class="archive__item search-hit search-hit--${collection}">
-        <span class="search-hit__badge">${label}</span>
-        <h2 class="archive__item-title"><a href="{{ site.baseurl }}${url}">${title}</a></h2>
+      <article class="archive__item search-hit">
+        <h2 class="archive__item-title">${marker}<a href="{{ site.baseurl }}${url}">${title}</a></h2>
         <div class="archive__item-excerpt">${content}</div>
       </article>
     </div>
