@@ -22,11 +22,11 @@ array_map($slugify, ['  Hello World  ', 'FOO Bar']);
 
 // Or run immediately.
 F\pipe(
-    [0, 3, 4, 5, 6, 8],
+    [3, 4, 5, 6, 8],
     Arr\filter(Num\isMultipleOf(2)),
     Arr\map(Num\multiply(2))
 );
-// [8, 8, 12, 16]
+// [8, 12, 16]
 {% endhighlight %}
 
 `composeR` / `pipeR` run callables in reverse order. `composeSafe` halts on the first `null`. `composeTypeSafe` halts on a custom type check.
