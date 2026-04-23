@@ -5,6 +5,8 @@ description: >
  A PHP library of composable function constructors — partial application + pipelining for PHP's standard library and beyond.
 ---
 
+<img src="{{ site.url }}/img/pinkcrab-library-header.png" alt="PinkCrab Library — Function Constructors" class="home-hero">
+
 At its core, **Function Constructors** is a library for building bigger functions out of smaller ones. Every helper here either partially applies a standard operation (so you can bind its configuration up front and reuse the resulting Closure) or it stitches callables together with `compose` / `pipe`.
 
 ### Compose or pipe — build once, reuse everywhere
