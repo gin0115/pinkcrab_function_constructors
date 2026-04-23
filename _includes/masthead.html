@@ -5,9 +5,9 @@
     <div class="masthead__menu">
       <nav id="site-nav" class="greedy-nav">
         {% unless logo_path == empty %}
-          <a class="site-logo" href="{{ '/' | absolute_url }}"><img src="{{ logo_path | absolute_url }}" alt="{{ site.masthead_title | default: site.title }}"></a>
+          <a class="site-logo" href="{{ site.url }}/"><img src="{{ site.url }}{{ logo_path }}" alt="{{ site.masthead_title | default: site.title }}"></a>
         {% endunless %}
-        <a class="site-title" href="{{ '/' | absolute_url }}">
+        <a class="site-title" href="{{ site.url }}/">
           {{ site.masthead_title | default: site.title }}
           {% if site.subtitle %}<span class="site-subtitle">{{ site.subtitle }}</span>{% endif %}
         </a>
@@ -15,18 +15,18 @@
           {% for item in site.data.navigation.main %}
             {% if item.children %}
               <li class="masthead__menu-item masthead__menu-item--dropdown">
-                <button type="button" class="masthead__dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                <a href="#" class="masthead__dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false">
                   {{ item.title }} <span class="masthead__dropdown-caret" aria-hidden="true">▾</span>
-                </button>
+                </a>
                 <ul class="masthead__dropdown">
                   {% for child in item.children %}
-                    <li><a href="{{ child.url | absolute_url }}">{{ child.title }}</a></li>
+                    <li><a href="{% if child.url contains '://' %}{{ child.url }}{% else %}{{ site.url }}{{ child.url }}{% endif %}">{{ child.title }}</a></li>
                   {% endfor %}
                 </ul>
               </li>
             {% else %}
               <li class="masthead__menu-item">
-                <a href="{{ item.url | absolute_url }}">{{ item.title }}</a>
+                <a href="{% if item.url contains '://' %}{{ item.url }}{% else %}{{ site.url }}{{ item.url }}{% endif %}">{{ item.title }}</a>
               </li>
             {% endif %}
           {% endfor %}
