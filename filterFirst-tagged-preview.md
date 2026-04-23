@@ -26,6 +26,47 @@ description: Mock of the proposed shared doc layout — type signature, at-a-gla
     letter-spacing: 0.02em;
 }
 .v-chip:hover { background: #cfd8dc; }
+.v-chip:focus { outline: 2px solid #1565c0; outline-offset: 2px; }
+
+/* ---------- JS tooltip popup ---------- */
+.v-tip-popup {
+    position: absolute;
+    top: 0;
+    left: 0;
+    max-width: 280px;
+    padding: 0.55em 0.8em;
+    background: #263238;
+    color: #fff;
+    font-size: 0.82em;
+    line-height: 1.45;
+    border-radius: 4px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 120ms ease, transform 120ms ease;
+    z-index: 9999;
+}
+.v-tip-popup::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: var(--arrow-left, 50%);
+    margin-left: -6px;
+    border: 6px solid transparent;
+    border-top-color: #263238;
+}
+.v-tip-popup--visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+.v-tip-popup__heading {
+    display: block;
+    font-weight: 700;
+    color: #c3e88d;
+    margin-bottom: 0.2em;
+    font-size: 0.98em;
+}
 
 /* ---------- type signature (variant I with <T>) ---------- */
 .v-typesig {
@@ -82,13 +123,108 @@ description: Mock of the proposed shared doc layout — type signature, at-a-gla
 </div>
 
 <div class="v-chips">
-  <a class="v-chip" href="#" title="Higher-order function — takes one or more callables as arguments.">higher-order</a>
-  <a class="v-chip" href="#" title="Reducer — collapses a collection down to a single result.">reducer</a>
-  <a class="v-chip" href="#" title="Short-circuit — stops consuming the source at the first match. Safe with infinite Generators.">short-circuit</a>
-  <a class="v-chip" href="#" title="Accepts arrays, Iterators, or Generators interchangeably.">accepts iterable</a>
-  <a class="v-chip" href="#" title="The outer call binds the predicate and hands back a reusable Closure.">returns Closure</a>
-  <a class="v-chip" href="#" title="No side effects given a pure predicate.">pure</a>
+  <a class="v-chip" href="#"
+     data-tip-heading="Higher-order function"
+     data-tip="Takes one or more callables (predicates, mappers, comparators) as arguments.">higher-order</a>
+  <a class="v-chip" href="#"
+     data-tip-heading="Reducer"
+     data-tip="Collapses a whole collection down to a single result.">reducer</a>
+  <a class="v-chip" href="#"
+     data-tip-heading="Short-circuit"
+     data-tip="Stops consuming the source the moment it has enough to answer. Safe with infinite Generators.">short-circuit</a>
+  <a class="v-chip" href="#"
+     data-tip-heading="Accepts iterable"
+     data-tip="Works with arrays, Iterators, or Generators interchangeably — no need to convert first.">accepts iterable</a>
+  <a class="v-chip" href="#"
+     data-tip-heading="Returns Closure"
+     data-tip="The outer call binds arguments and hands back a reusable Closure — no answer is computed yet.">returns Closure</a>
+  <a class="v-chip" href="#"
+     data-tip-heading="Pure"
+     data-tip="No side effects — same input always produces the same output (given any callables passed in are themselves pure).">pure</a>
 </div>
+
+<div id="v-tip-popup" class="v-tip-popup" role="tooltip" aria-hidden="true">
+    <span class="v-tip-popup__heading"></span>
+    <span class="v-tip-popup__body"></span>
+</div>
+
+<script>
+(function () {
+    var popup = document.getElementById('v-tip-popup');
+    if (!popup) return;
+    var headingEl = popup.querySelector('.v-tip-popup__heading');
+    var bodyEl    = popup.querySelector('.v-tip-popup__body');
+    var activeChip = null;
+    var isTouchDevice = window.matchMedia('(hover: none)').matches;
+
+    function show(chip) {
+        var heading = chip.getAttribute('data-tip-heading') || '';
+        var body    = chip.getAttribute('data-tip') || '';
+        if (!body) return;
+
+        headingEl.textContent = heading;
+        bodyEl.textContent = body;
+        popup.classList.add('v-tip-popup--visible');
+        popup.setAttribute('aria-hidden', 'false');
+
+        // Measure and position AFTER render so dimensions are correct.
+        window.requestAnimationFrame(function () {
+            var chipRect  = chip.getBoundingClientRect();
+            var popupRect = popup.getBoundingClientRect();
+            var margin = 8;
+
+            var top  = chipRect.top + window.scrollY - popupRect.height - 10;
+            var left = chipRect.left + window.scrollX + (chipRect.width / 2) - (popupRect.width / 2);
+
+            // Clamp to viewport horizontally.
+            var minLeft = window.scrollX + margin;
+            var maxLeft = window.scrollX + document.documentElement.clientWidth - popupRect.width - margin;
+            if (left < minLeft) left = minLeft;
+            if (left > maxLeft) left = maxLeft;
+
+            popup.style.top  = top  + 'px';
+            popup.style.left = left + 'px';
+
+            // Re-centre the little arrow over the chip if the popup got clamped.
+            var chipCentre = chipRect.left + window.scrollX + (chipRect.width / 2);
+            var arrowLeft  = chipCentre - left;
+            popup.style.setProperty('--arrow-left', arrowLeft + 'px');
+        });
+
+        activeChip = chip;
+    }
+
+    function hide() {
+        popup.classList.remove('v-tip-popup--visible');
+        popup.setAttribute('aria-hidden', 'true');
+        activeChip = null;
+    }
+
+    document.querySelectorAll('.v-chip').forEach(function (chip) {
+        chip.addEventListener('mouseenter', function () { show(chip); });
+        chip.addEventListener('mouseleave', hide);
+        chip.addEventListener('focus',      function () { show(chip); });
+        chip.addEventListener('blur',       hide);
+
+        // Touch devices: first tap shows the tooltip, second tap follows the link.
+        chip.addEventListener('click', function (e) {
+            if (isTouchDevice && activeChip !== chip) {
+                e.preventDefault();
+                show(chip);
+            }
+        });
+    });
+
+    // Tap outside dismisses the tooltip on touch devices.
+    document.addEventListener('click', function (e) {
+        if (activeChip && !e.target.closest('.v-chip')) hide();
+    });
+
+    // Scroll or resize invalidates positioning — hide rather than try to recompute.
+    window.addEventListener('scroll', hide, { passive: true });
+    window.addEventListener('resize', hide);
+})();
+</script>
 
 <div class="v-typesig">
   <span class="v-generic">&lt;T&gt;</span> (<span class="v-generic">T</span> <span class="v-arrow">→</span> <span class="v-builtin">bool</span>) <span class="v-arrow">→</span> (<span class="v-builtin">Iterable</span>&lt;<span class="v-generic">T</span>&gt; <span class="v-arrow">→</span> <span class="v-generic">T</span> | <span class="v-builtin">null</span>)
