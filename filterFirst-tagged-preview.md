@@ -208,17 +208,17 @@ description: Mock of the proposed shared doc layout — type signature, at-a-gla
 </div>
 
 <script>
-(function () {
-    var popup = document.getElementById('v-tip-popup');
+(() => {
+    const popup = document.getElementById('v-tip-popup');
     if (!popup) return;
-    var headingEl = popup.querySelector('.v-tip-popup__heading');
-    var bodyEl    = popup.querySelector('.v-tip-popup__body');
-    var activeChip = null;
-    var isTouchDevice = window.matchMedia('(hover: none)').matches;
+    const headingEl = popup.querySelector('.v-tip-popup__heading');
+    const bodyEl    = popup.querySelector('.v-tip-popup__body');
+    const isTouchDevice = window.matchMedia('(hover: none)').matches;
+    let activeChip = null;
 
-    function show(chip) {
-        var heading = chip.getAttribute('data-tip-heading') || '';
-        var body    = chip.getAttribute('data-tip') || '';
+    const show = (chip) => {
+        const heading = chip.getAttribute('data-tip-heading') || '';
+        const body    = chip.getAttribute('data-tip') || '';
         if (!body) return;
 
         headingEl.textContent = heading;
@@ -227,46 +227,46 @@ description: Mock of the proposed shared doc layout — type signature, at-a-gla
         popup.setAttribute('aria-hidden', 'false');
 
         // Measure and position AFTER render so dimensions are correct.
-        window.requestAnimationFrame(function () {
-            var chipRect  = chip.getBoundingClientRect();
-            var popupRect = popup.getBoundingClientRect();
-            var margin = 8;
+        window.requestAnimationFrame(() => {
+            const chipRect  = chip.getBoundingClientRect();
+            const popupRect = popup.getBoundingClientRect();
+            const margin = 8;
 
-            var top  = chipRect.top + window.scrollY - popupRect.height - 10;
-            var left = chipRect.left + window.scrollX + (chipRect.width / 2) - (popupRect.width / 2);
+            const top  = chipRect.top + window.scrollY - popupRect.height - 10;
+            let   left = chipRect.left + window.scrollX + (chipRect.width / 2) - (popupRect.width / 2);
 
             // Clamp to viewport horizontally.
-            var minLeft = window.scrollX + margin;
-            var maxLeft = window.scrollX + document.documentElement.clientWidth - popupRect.width - margin;
+            const minLeft = window.scrollX + margin;
+            const maxLeft = window.scrollX + document.documentElement.clientWidth - popupRect.width - margin;
             if (left < minLeft) left = minLeft;
             if (left > maxLeft) left = maxLeft;
 
-            popup.style.top  = top  + 'px';
-            popup.style.left = left + 'px';
+            popup.style.top  = `${top}px`;
+            popup.style.left = `${left}px`;
 
             // Re-centre the little arrow over the chip if the popup got clamped.
-            var chipCentre = chipRect.left + window.scrollX + (chipRect.width / 2);
-            var arrowLeft  = chipCentre - left;
-            popup.style.setProperty('--arrow-left', arrowLeft + 'px');
+            const chipCentre = chipRect.left + window.scrollX + (chipRect.width / 2);
+            const arrowLeft  = chipCentre - left;
+            popup.style.setProperty('--arrow-left', `${arrowLeft}px`);
         });
 
         activeChip = chip;
-    }
+    };
 
-    function hide() {
+    const hide = () => {
         popup.classList.remove('v-tip-popup--visible');
         popup.setAttribute('aria-hidden', 'true');
         activeChip = null;
-    }
+    };
 
-    document.querySelectorAll('.v-chip').forEach(function (chip) {
-        chip.addEventListener('mouseenter', function () { show(chip); });
+    document.querySelectorAll('.v-chip').forEach((chip) => {
+        chip.addEventListener('mouseenter', () => show(chip));
         chip.addEventListener('mouseleave', hide);
-        chip.addEventListener('focus',      function () { show(chip); });
+        chip.addEventListener('focus',      () => show(chip));
         chip.addEventListener('blur',       hide);
 
         // Touch devices: first tap shows the tooltip, second tap follows the link.
-        chip.addEventListener('click', function (e) {
+        chip.addEventListener('click', (e) => {
             if (isTouchDevice && activeChip !== chip) {
                 e.preventDefault();
                 show(chip);
@@ -275,7 +275,7 @@ description: Mock of the proposed shared doc layout — type signature, at-a-gla
     });
 
     // Tap outside dismisses the tooltip on touch devices.
-    document.addEventListener('click', function (e) {
+    document.addEventListener('click', (e) => {
         if (activeChip && !e.target.closest('.v-chip')) hide();
     });
 
@@ -285,14 +285,14 @@ description: Mock of the proposed shared doc layout — type signature, at-a-gla
 })();
 
 // -------- JS reveal: click-to-expand panel for longer explanations --------
-(function () {
-    document.querySelectorAll('.v-reveal__trigger').forEach(function (trigger) {
-        var panelId = trigger.getAttribute('aria-controls');
-        var panel = panelId ? document.getElementById(panelId) : null;
+(() => {
+    document.querySelectorAll('.v-reveal__trigger').forEach((trigger) => {
+        const panelId = trigger.getAttribute('aria-controls');
+        const panel = panelId ? document.getElementById(panelId) : null;
         if (!panel) return;
 
-        trigger.addEventListener('click', function () {
-            var isOpen = trigger.getAttribute('aria-expanded') === 'true';
+        trigger.addEventListener('click', () => {
+            const isOpen = trigger.getAttribute('aria-expanded') === 'true';
             trigger.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
             panel.setAttribute('aria-hidden', isOpen ? 'true' : 'false');
             panel.classList.toggle('v-reveal__panel--open', !isOpen);
