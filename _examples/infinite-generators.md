@@ -60,7 +60,7 @@ foreach (Arrays\take(5)($naturals()) as $n) {
 
 {% highlight php %}
 $first5Evens = F\compose(
-    Arrays\filter(fn($n) => $n % 2 === 0),
+    Arrays\filter(Numbers\isMultipleOf(2)),   // Numbers\isMultipleOf gives us a ready-made "is even?" predicate
     Arrays\take(5)
 );
 
@@ -70,7 +70,7 @@ foreach ($first5Evens($naturals()) as $n) {
 // 2 4 6 8 10
 {% endhighlight %}
 
-The pipeline pulls 1, tests (fail), pulls 2, tests (pass), yields, continues until 5 have yielded. At that point `take(5)` stops and the source stops advancing.
+The pipeline pulls 1, tests (fail), pulls 2, tests (pass), yields, continues until 5 have yielded. At that point `take(5)` stops and the source stops advancing. No inline `fn()` — the predicate is constructed by another library function.
 
 ## Take until a condition — short-circuit
 
