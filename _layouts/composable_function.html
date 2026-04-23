@@ -23,6 +23,43 @@ layout: default
     </div>
 {% endif %}
 
+{% if page.tags %}
+<div class="fn-chips">
+    {% for slug in page.tags %}
+        {% assign tag = site.data.tags[slug] %}
+        {% if tag %}
+            <span class="fn-chip" tabindex="0"
+                  data-tip-heading="{{ tag.label | capitalize }}"
+                  data-tip="{{ tag.description }}">{{ tag.label }}</span>
+        {% endif %}
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if page.typeSignature %}
+<div class="fn-typesig" data-open="false">
+    {% if page.typeSignatureEn %}
+    <button type="button" class="fn-typesig__trigger"
+            aria-expanded="false"
+            aria-controls="fn-typesig-reveal"
+            aria-label="Show plain-English translation"
+            title="Plain-English translation">?</button>
+    {% endif %}
+    <span class="fn-typesig__sig">{{ page.typeSignature }}</span>
+</div>
+{% if page.typeSignatureEn %}
+<div id="fn-typesig-reveal" class="fn-typesig__reveal" aria-hidden="true">
+    {{ page.typeSignatureEn }}
+</div>
+{% endif %}
+{% endif %}
+
+{% if page.atGlance %}
+<div class="fn-glance">
+    <strong>At a glance —</strong> {{ page.atGlance }}
+</div>
+{% endif %}
+
 <div class="function__subtitle">
     <p>
         {% if page.description %}
@@ -32,20 +69,6 @@ layout: default
         {% endif %}
     </p>
 </div>
-
-{% if page.iterable %}
-    <div class="function__iterable-badge function__iterable-badge--{{ page.iterable.behaviour }}">
-        <strong class="function__iterable-badge__label">
-            {% case page.iterable.behaviour %}
-                {% when "lazy" %}Lazy
-                {% when "short-circuit" %}Short-circuiting
-                {% when "terminal" %}Terminal
-                {% when "array-only" %}Array-only
-            {% endcase %}
-        </strong>
-        <span class="function__iterable-badge__summary">{{ page.iterable.summary }}</span>
-    </div>
-{% endif %}
 
 <div class="function__definition">
         {% if page.definition %}  
@@ -214,3 +237,84 @@ layout: default
 
 
 
+
+<div id="fn-tip-popup" class="fn-tip-popup" role="tooltip" aria-hidden="true">
+    <span class="fn-tip-popup__heading"></span>
+    <span class="fn-tip-popup__body"></span>
+</div>
+
+<script>
+(() => {
+    const popup = document.getElementById('fn-tip-popup');
+    if (!popup) return;
+    const headingEl = popup.querySelector('.fn-tip-popup__heading');
+    const bodyEl    = popup.querySelector('.fn-tip-popup__body');
+    const isTouch   = window.matchMedia('(hover: none)').matches;
+    let active = null;
+
+    const show = (chip) => {
+        const body = chip.getAttribute('data-tip') || '';
+        if (!body) return;
+        headingEl.textContent = chip.getAttribute('data-tip-heading') || '';
+        bodyEl.textContent    = body;
+        popup.classList.add('fn-tip-popup--visible');
+        popup.setAttribute('aria-hidden', 'false');
+
+        requestAnimationFrame(() => {
+            const chipRect  = chip.getBoundingClientRect();
+            const popupRect = popup.getBoundingClientRect();
+            const margin = 8;
+            const top = chipRect.top + scrollY - popupRect.height - 10;
+            let left = chipRect.left + scrollX + chipRect.width / 2 - popupRect.width / 2;
+            const min = scrollX + margin;
+            const max = scrollX + document.documentElement.clientWidth - popupRect.width - margin;
+            left = Math.min(Math.max(left, min), max);
+            popup.style.top  = `${top}px`;
+            popup.style.left = `${left}px`;
+            const chipCentre = chipRect.left + scrollX + chipRect.width / 2;
+            popup.style.setProperty('--arrow-left', `${chipCentre - left}px`);
+        });
+
+        active = chip;
+    };
+
+    const hide = () => {
+        popup.classList.remove('fn-tip-popup--visible');
+        popup.setAttribute('aria-hidden', 'true');
+        active = null;
+    };
+
+    document.querySelectorAll('.fn-chip').forEach((chip) => {
+        chip.addEventListener('mouseenter', () => show(chip));
+        chip.addEventListener('mouseleave', hide);
+        chip.addEventListener('focus',      () => show(chip));
+        chip.addEventListener('blur',       hide);
+        chip.addEventListener('click', (e) => {
+            if (isTouch && active !== chip) { e.preventDefault(); show(chip); }
+        });
+    });
+
+    document.addEventListener('click', (e) => {
+        if (active && !e.target.closest('.fn-chip')) hide();
+    });
+    addEventListener('scroll', hide, { passive: true });
+    addEventListener('resize', hide);
+})();
+
+(() => {
+    document.querySelectorAll('.fn-typesig__trigger').forEach((trigger) => {
+        const container = trigger.closest('.fn-typesig');
+        const panelId   = trigger.getAttribute('aria-controls');
+        const panel     = panelId ? document.getElementById(panelId) : null;
+        if (!container || !panel) return;
+
+        trigger.addEventListener('click', () => {
+            const open = container.dataset.open !== 'true';
+            container.dataset.open = open ? 'true' : 'false';
+            trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+            panel.setAttribute('aria-hidden', open ? 'false' : 'true');
+            panel.classList.toggle('fn-typesig__reveal--open', open);
+        });
+    });
+})();
+</script>

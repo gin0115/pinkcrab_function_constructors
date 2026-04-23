@@ -1,0 +1,67 @@
+hof:
+  label: "higher-order"
+  description: "Takes one or more callables (predicates, mappers, comparators) as arguments."
+
+predicate:
+  label: "predicate"
+  description: "Tests a value and returns true or false."
+
+transformer:
+  label: "transformer"
+  description: "Takes a value and returns a new value of the same or related kind — no reduction."
+
+reducer:
+  label: "reducer"
+  description: "Collapses a whole collection down to a single result."
+
+accumulator:
+  label: "accumulator"
+  description: "Self-returning factory — each call returns a fresh copy with more state until finalised."
+
+composer:
+  label: "composer"
+  description: "Takes several callables and stitches them into a single new callable."
+
+lazy:
+  label: "lazy"
+  description: "Returns a Generator; values produced on demand. Never fully materialises the source."
+
+short-circuit:
+  label: "short-circuit"
+  description: "Stops consuming the source the moment it has enough to answer. Safe with infinite Generators."
+
+terminal:
+  label: "terminal"
+  description: "Always consumes the entire source before returning. Do not use with infinite Generators."
+
+accepts-iterable:
+  label: "accepts iterable"
+  description: "Works with arrays, Iterators, or Generators interchangeably."
+
+array-only:
+  label: "array only"
+  description: "Requires a plain PHP array — Generators are not accepted."
+
+variadic:
+  label: "variadic"
+  description: "Accepts any number of arguments of the same kind via ...$args."
+
+returns-closure:
+  label: "returns Closure"
+  description: "The outer call binds arguments and hands back a reusable Closure — no answer is computed yet."
+
+returns-bool:
+  label: "returns bool"
+  description: "Ultimately resolves to true or false."
+
+returns-value:
+  label: "returns value"
+  description: "Resolves to a single concrete value (not another Closure, not a collection)."
+
+pure:
+  label: "pure"
+  description: "No side effects — same input always produces the same output, given any callables passed in are themselves pure."
+
+throws:
+  label: "throws"
+  description: "Can raise an exception on bad input. The exception type is listed in the Details section."

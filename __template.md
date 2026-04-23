@@ -15,9 +15,14 @@ since: 0.1.0
 deprecated: false
 alternative: false
 
-iterable:
-  behaviour: xx        # lazy | short-circuit | terminal | array-only
-  summary: xx
+tags: [xx, xx]
+
+typeSignature: "<T> (T → bool) → (Iterable<T> → T | null)"
+typeSignatureEn: >
+ xx
+
+atGlance: >
+ xx
 
 definition: >
  #

@@ -16,9 +16,14 @@ since: 0.1.0
 deprecated: false
 alternative: false
 
-iterable:
-  behaviour: lazy
-  summary: "Generator in → Generator out. Values pulled on demand; keys preserved."
+tags: [hof, transformer, lazy, accepts-iterable, returns-closure, pure]
+
+typeSignature: "<T> (T → bool) → (Iterable<T> → Iterable<T>)"
+typeSignatureEn: >
+ Given a predicate on <code>T</code>, returns a function that consumes an iterable of <code>T</code> and yields a filtered iterable of <code>T</code>. Keys are preserved. A Generator source produces a Generator result — nothing is materialised.
+
+atGlance: >
+ A higher-order function that takes a predicate and returns a Closure. The Closure yields only the values for which the predicate returns true, lazily — feed it a Generator and you get a Generator back.
 
 definition: >
  /**
