@@ -68,49 +68,35 @@ description: Mock of the proposed shared doc layout — type signature, at-a-gla
     font-size: 0.98em;
 }
 
-/* ---------- type signature (variant I with <T>) ---------- */
 .v-typesig {
+    display: flex;
+    align-items: center;
+    gap: 0.75em;
     background: #263238;
     color: #c3e88d;
-    padding: 0.55em 0.9em;
+    padding: 0.55em 0.6em 0.55em 0.9em;
     border-radius: 3px;
     font-family: monospace;
     font-size: 0.98em;
-    margin: 0.4em 0 0.35em;
+    margin: 0.4em 0 0;
     overflow-x: auto;
 }
+.v-typesig[data-open="true"] { border-radius: 3px 3px 0 0; }
+.v-typesig__sig { flex: 1; min-width: 0; }
 .v-typesig .v-generic { color: #82b1ff; font-weight: 700; }
 .v-typesig .v-arrow   { color: #ff9e80; }
 .v-typesig .v-builtin { color: #f07178; }
-/* ---------- plain-English reveal: button lives inside the block ---------- */
-.v-reveal {
-    display: inline-flex;
-    align-items: flex-start;
-    gap: 0.6em;
-    margin: 0.5em 0 1em;
-    padding: 4px;
-    background: transparent;
-    border: 1px solid transparent;
-    border-radius: 6px;
-    max-width: 100%;
-    transition: background 200ms ease, border-color 200ms ease, padding 200ms ease;
-}
-.v-reveal[data-open="true"] {
-    background: #f5f7f8;
-    border-color: #cfd8dc;
-    padding: 0.55em 0.9em;
-}
 
-.v-reveal__trigger {
+.v-typesig__trigger {
     flex-shrink: 0;
     width: 22px;
     height: 22px;
     padding: 0;
-    background: #eceff1;
-    border: 1px solid #cfd8dc;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.18);
     border-radius: 50%;
-    color: #546e7a;
-    font: inherit;
+    color: #b0bec5;
+    font-family: sans-serif;
     font-size: 0.85em;
     font-weight: 700;
     line-height: 1;
@@ -119,42 +105,44 @@ description: Mock of the proposed shared doc layout — type signature, at-a-gla
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    transition: background 160ms ease, color 160ms ease, border-color 160ms ease, transform 220ms ease;
+    transition: background 160ms ease, color 160ms ease, border-color 160ms ease;
 }
-.v-reveal__trigger:hover,
-.v-reveal__trigger:focus {
+.v-typesig__trigger:hover,
+.v-typesig__trigger:focus {
     color: #fff;
-    background: #546e7a;
-    border-color: #546e7a;
+    background: rgba(255,255,255,0.2);
+    border-color: rgba(255,255,255,0.38);
     outline: none;
 }
-.v-reveal[data-open="true"] .v-reveal__trigger {
-    color: #fff;
-    background: #263238;
-    border-color: #263238;
-    transform: rotate(45deg);
+.v-typesig[data-open="true"] .v-typesig__trigger {
+    color: #263238;
+    background: #c3e88d;
+    border-color: #c3e88d;
 }
 
-.v-reveal__panel {
-    flex: 1;
+.v-typesig__reveal {
     overflow: hidden;
     max-height: 0;
     opacity: 0;
-    color: #37474f;
+    margin: 0 0 1em;
+    padding: 0 0.9em;
+    background: #37474f;
+    color: #eceff1;
+    border-radius: 0 0 3px 3px;
     font-size: 0.9em;
     line-height: 1.5;
-    transition: max-height 260ms ease, opacity 200ms ease;
+    transition: max-height 260ms ease, opacity 200ms ease, padding 200ms ease;
 }
-.v-reveal[data-open="true"] .v-reveal__panel {
+.v-typesig__reveal--open {
     max-height: 400px;
     opacity: 1;
+    padding: 0.7em 0.9em;
 }
-.v-reveal__panel code {
-    background: #eceff1;
+.v-typesig__reveal code {
+    background: rgba(255,255,255,0.08);
     padding: 1px 5px;
     border-radius: 3px;
-    font-size: 0.95em;
-    color: #1565c0;
+    color: #c3e88d;
 }
 
 /* ---------- at-a-glance (variant D) ---------- */
@@ -216,15 +204,12 @@ description: Mock of the proposed shared doc layout — type signature, at-a-gla
     <span class="v-tip-popup__body"></span>
 </div>
 
-<div class="v-typesig">
-  <span class="v-generic">&lt;T&gt;</span> (<span class="v-generic">T</span> <span class="v-arrow">→</span> <span class="v-builtin">bool</span>) <span class="v-arrow">→</span> (<span class="v-builtin">Iterable</span>&lt;<span class="v-generic">T</span>&gt; <span class="v-arrow">→</span> <span class="v-generic">T</span> | <span class="v-builtin">null</span>)
+<div class="v-typesig" data-open="false">
+    <span class="v-typesig__sig"><span class="v-generic">&lt;T&gt;</span> (<span class="v-generic">T</span> <span class="v-arrow">→</span> <span class="v-builtin">bool</span>) <span class="v-arrow">→</span> (<span class="v-builtin">Iterable</span>&lt;<span class="v-generic">T</span>&gt; <span class="v-arrow">→</span> <span class="v-generic">T</span> | <span class="v-builtin">null</span>)</span>
+    <button type="button" class="v-typesig__trigger" aria-expanded="false" aria-controls="v-typesig-reveal" aria-label="Show plain-English translation" title="Plain-English translation">?</button>
 </div>
-
-<div class="v-reveal" data-open="false">
-    <button type="button" class="v-reveal__trigger" aria-expanded="false" aria-controls="v-reveal-typesig" aria-label="Show plain-English translation of the type signature" title="Plain-English translation">?</button>
-    <div id="v-reveal-typesig" class="v-reveal__panel" aria-hidden="true">
-        Given a predicate on <code>T</code>, returns a function that consumes an iterable of <code>T</code> and returns either a <code>T</code> (the first match) or <code>null</code> (no match).
-    </div>
+<div id="v-typesig-reveal" class="v-typesig__reveal" aria-hidden="true">
+    Given a predicate on <code>T</code>, returns a function that consumes an iterable of <code>T</code> and returns either a <code>T</code> (the first match) or <code>null</code> (no match).
 </div>
 
 <div class="v-glance">
@@ -340,53 +325,44 @@ echo $firstLowercase($words);
 </div>
 
 <script>
-// -------- JS tooltip popover on chips --------
 (() => {
     const popup = document.getElementById('v-tip-popup');
     if (!popup) return;
     const headingEl = popup.querySelector('.v-tip-popup__heading');
     const bodyEl    = popup.querySelector('.v-tip-popup__body');
-    const isTouchDevice = window.matchMedia('(hover: none)').matches;
-    let activeChip = null;
+    const isTouch   = window.matchMedia('(hover: none)').matches;
+    let active = null;
 
     const show = (chip) => {
-        const heading = chip.getAttribute('data-tip-heading') || '';
-        const body    = chip.getAttribute('data-tip') || '';
+        const body = chip.getAttribute('data-tip') || '';
         if (!body) return;
-
-        headingEl.textContent = heading;
-        bodyEl.textContent = body;
+        headingEl.textContent = chip.getAttribute('data-tip-heading') || '';
+        bodyEl.textContent    = body;
         popup.classList.add('v-tip-popup--visible');
         popup.setAttribute('aria-hidden', 'false');
 
-        window.requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
             const chipRect  = chip.getBoundingClientRect();
             const popupRect = popup.getBoundingClientRect();
             const margin = 8;
-
-            const top  = chipRect.top + window.scrollY - popupRect.height - 10;
-            let   left = chipRect.left + window.scrollX + (chipRect.width / 2) - (popupRect.width / 2);
-
-            const minLeft = window.scrollX + margin;
-            const maxLeft = window.scrollX + document.documentElement.clientWidth - popupRect.width - margin;
-            if (left < minLeft) left = minLeft;
-            if (left > maxLeft) left = maxLeft;
-
+            const top = chipRect.top + scrollY - popupRect.height - 10;
+            let left = chipRect.left + scrollX + chipRect.width / 2 - popupRect.width / 2;
+            const min = scrollX + margin;
+            const max = scrollX + document.documentElement.clientWidth - popupRect.width - margin;
+            left = Math.min(Math.max(left, min), max);
             popup.style.top  = `${top}px`;
             popup.style.left = `${left}px`;
-
-            const chipCentre = chipRect.left + window.scrollX + (chipRect.width / 2);
-            const arrowLeft  = chipCentre - left;
-            popup.style.setProperty('--arrow-left', `${arrowLeft}px`);
+            const chipCentre = chipRect.left + scrollX + chipRect.width / 2;
+            popup.style.setProperty('--arrow-left', `${chipCentre - left}px`);
         });
 
-        activeChip = chip;
+        active = chip;
     };
 
     const hide = () => {
         popup.classList.remove('v-tip-popup--visible');
         popup.setAttribute('aria-hidden', 'true');
-        activeChip = null;
+        active = null;
     };
 
     document.querySelectorAll('.v-chip').forEach((chip) => {
@@ -394,35 +370,31 @@ echo $firstLowercase($words);
         chip.addEventListener('mouseleave', hide);
         chip.addEventListener('focus',      () => show(chip));
         chip.addEventListener('blur',       hide);
-
         chip.addEventListener('click', (e) => {
-            if (isTouchDevice && activeChip !== chip) {
-                e.preventDefault();
-                show(chip);
-            }
+            if (isTouch && active !== chip) { e.preventDefault(); show(chip); }
         });
     });
 
     document.addEventListener('click', (e) => {
-        if (activeChip && !e.target.closest('.v-chip')) hide();
+        if (active && !e.target.closest('.v-chip')) hide();
     });
-
-    window.addEventListener('scroll', hide, { passive: true });
-    window.addEventListener('resize', hide);
+    addEventListener('scroll', hide, { passive: true });
+    addEventListener('resize', hide);
 })();
 
-// -------- JS reveal: click ? to expand inline info block --------
 (() => {
-    document.querySelectorAll('.v-reveal').forEach((container) => {
-        const trigger = container.querySelector('.v-reveal__trigger');
-        const panel   = container.querySelector('.v-reveal__panel');
-        if (!trigger || !panel) return;
+    document.querySelectorAll('.v-typesig__trigger').forEach((trigger) => {
+        const container = trigger.closest('.v-typesig');
+        const panelId   = trigger.getAttribute('aria-controls');
+        const panel     = panelId ? document.getElementById(panelId) : null;
+        if (!container || !panel) return;
 
         trigger.addEventListener('click', () => {
-            const isOpen = container.dataset.open === 'true';
-            container.dataset.open = isOpen ? 'false' : 'true';
-            trigger.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
-            panel.setAttribute('aria-hidden', isOpen ? 'true' : 'false');
+            const open = container.dataset.open !== 'true';
+            container.dataset.open = open ? 'true' : 'false';
+            trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+            panel.setAttribute('aria-hidden', open ? 'false' : 'true');
+            panel.classList.toggle('v-typesig__reveal--open', open);
         });
     });
 })();
