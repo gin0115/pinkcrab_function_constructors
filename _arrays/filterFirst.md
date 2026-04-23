@@ -16,9 +16,14 @@ since: 0.1.0
 deprecated: false
 alternative: false
 
-iterable:
-  behaviour: short-circuit
-  summary: "Stops iterating at the first matching value — the source is not advanced past it."
+tags: [hof, reducer, short-circuit, accepts-iterable, returns-closure, pure]
+
+typeSignature: "<T> (T → bool) → (Iterable<T> → T | null)"
+typeSignatureEn: >
+ Given a predicate on <code>T</code>, returns a function that consumes an iterable of <code>T</code> and returns either a <code>T</code> (the first match) or <code>null</code> (no match).
+
+atGlance: >
+ A higher-order reducer. The returned Closure stops pulling from the source at the first match — safe with infinite Generators. Returns <code>null</code> when nothing matches.
 
 definition: >
  /**

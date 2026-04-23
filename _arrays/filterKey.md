@@ -16,6 +16,15 @@ since: 0.1.0
 deprecated: false
 alternative: false
 
+tags: [hof, transformer, lazy, accepts-iterable, returns-closure, pure]
+
+typeSignature: "<T> (int|string → bool) → (Iterable<T> → Iterable<T>)"
+typeSignatureEn: >
+ Given a predicate on the <em>key</em>, returns a function that yields only the entries of an iterable whose key passes.
+
+atGlance: >
+ Like <code>filter</code> but tests keys instead of values. Lazy — Generator in, Generator out, keys preserved.
+
 definition: >
  /**
   * Returns a Closure for filtering the passed arrays keys

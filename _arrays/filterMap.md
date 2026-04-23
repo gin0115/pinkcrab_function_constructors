@@ -16,6 +16,15 @@ since: 0.1.0
 deprecated: false
 alternative: false
 
+tags: [hof, transformer, lazy, accepts-iterable, returns-closure, pure]
+
+typeSignature: "<T, U> (T → bool, T → U) → (Iterable<T> → Iterable<U>)"
+typeSignatureEn: >
+ Given a predicate and a mapper, returns a function that filters an iterable of <code>T</code> by the predicate and maps the survivors into <code>U</code>s — in one pass.
+
+atGlance: >
+ Filter and map in one traversal — avoids a double iteration. Lazy — feeds a Generator through both steps element-by-element.
+
 definition: >
  /**
   * Creates a Closure which takes an array, applies a filter, then maps the

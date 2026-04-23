@@ -17,6 +17,15 @@ since: 0.1.0
 deprecated: false
 alternative: false
 
+tags: [reducer, terminal, accepts-iterable, returns-closure, pure]
+
+typeSignature: "string? → (Iterable<mixed> → string)"
+typeSignatureEn: >
+ Given an optional glue string, returns a function that joins every element of an iterable into a single string separated by the glue.
+
+atGlance: >
+ Reduces an iterable to a single string. Terminal — a Generator source is fully materialised before joining.
+
 definition: >
  /**
   * Returns a Closure for casting an array to a string.

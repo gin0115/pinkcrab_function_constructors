@@ -16,6 +16,15 @@ since: 0.1.0
 deprecated: false
 alternative: false
 
+tags: [hof, transformer, variadic, lazy, accepts-iterable, returns-closure, pure]
+
+typeSignature: "<T> ...(T → bool) → (Iterable<T> → Iterable<T>)"
+typeSignatureEn: >
+ Given any number of predicates on <code>T</code>, returns a function that yields only the values of a <code>T</code>-iterable for which <em>every</em> predicate is true.
+
+atGlance: >
+ AND-combines multiple predicates into a single filter. Lazy — Generator in, Generator out, keys preserved.
+
 definition: >
  /**
   * Returns a Closure for filtering the passed array using multiple predicates, all of which must return true.

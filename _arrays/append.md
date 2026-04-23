@@ -17,6 +17,15 @@ since: 0.3.0
 deprecated: false
 alternative: false
 
+tags: [transformer, lazy, accepts-iterable, returns-closure, pure]
+
+typeSignature: "<T> T → (Iterable<T> → Iterable<T>)"
+typeSignatureEn: >
+ Given a value of type <code>T</code>, returns a function that yields every element of a <code>T</code>-iterable followed by the bound value.
+
+atGlance: >
+ Bind a value to push onto the end; the returned Closure yields the source first, then the bound value. Generator in → Generator out.
+
 definition: >
  /**
   * Returns a Closure for appending a value to an array.

@@ -18,6 +18,15 @@ since: 0.1.0
 deprecated: false
 alternative: false
 
+tags: [transformer, lazy, accepts-iterable, returns-closure, pure]
+
+typeSignature: "<T, U> (U[], U?) → (Iterable<T> → Iterable<[T, U]>)"
+typeSignatureEn: >
+ Given a secondary array (and a default fallback), returns a function that pairs each element of a <code>T</code>-iterable with the element of the secondary at the same position, yielding <code>[T, U]</code> tuples.
+
+atGlance: >
+ Pairs each source value with the value at the same index in the bound array. Lazy — yields pairs on demand.
+
 definition: >
  /**
   * Returns a Closure for zipping together 2 arrays

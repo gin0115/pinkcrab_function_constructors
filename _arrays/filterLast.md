@@ -16,6 +16,15 @@ since: 0.1.0
 deprecated: false
 alternative: false
 
+tags: [hof, reducer, terminal, accepts-iterable, returns-closure, pure]
+
+typeSignature: "<T> (T → bool) → (Iterable<T> → T | null)"
+typeSignatureEn: >
+ Given a predicate on <code>T</code>, returns a function that consumes an iterable of <code>T</code> and returns the <em>last</em> matching value, or <code>null</code> if nothing matches.
+
+atGlance: >
+ A reducer that returns the last match, not the first. Terminal — must consume the whole source to know which match is last. Do not use with infinite Generators.
+
 definition: >
  /**
   * Creates a Closure for running array filter and getting the last value.
