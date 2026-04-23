@@ -84,41 +84,40 @@ description: Mock of the proposed shared doc layout — type signature, at-a-gla
 .v-typesig .v-builtin { color: #f07178; }
 /* ---------- plain-English reveal for the type signature ---------- */
 .v-reveal {
-    margin: 0 0 1em;
+    margin: 0.3em 0 1em;
 }
 .v-reveal__trigger {
     display: inline-flex;
     align-items: center;
-    gap: 0.4em;
-    margin: 0.4em 0 0;
-    padding: 0.25em 0.6em 0.25em 0.4em;
-    background: transparent;
-    border: 1px solid transparent;
-    border-radius: 3px;
-    color: #607d8b;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    background: #eceff1;
+    border: 1px solid #cfd8dc;
+    border-radius: 50%;
+    color: #546e7a;
     font: inherit;
-    font-size: 0.82em;
+    font-size: 0.85em;
+    font-weight: 700;
+    line-height: 1;
     cursor: pointer;
     user-select: none;
-    transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
+    transition: background 120ms ease, color 120ms ease, border-color 120ms ease, transform 180ms ease;
 }
 .v-reveal__trigger:hover,
 .v-reveal__trigger:focus {
-    color: #263238;
-    background: #eceff1;
-    border-color: #cfd8dc;
+    color: #fff;
+    background: #546e7a;
+    border-color: #546e7a;
     outline: none;
 }
-.v-reveal__trigger-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 1em;
-    height: 1em;
-    font-size: 0.85em;
-    transition: transform 180ms ease;
+.v-reveal__trigger[aria-expanded="true"] {
+    color: #fff;
+    background: #263238;
+    border-color: #263238;
+    transform: rotate(45deg);
 }
-.v-reveal__trigger[aria-expanded="true"] .v-reveal__trigger-icon { transform: rotate(90deg); }
 
 .v-reveal__panel {
     overflow: hidden;
@@ -136,7 +135,7 @@ description: Mock of the proposed shared doc layout — type signature, at-a-gla
     padding: 0 0.9em;
 }
 .v-reveal__panel--open {
-    max-height: var(--reveal-height, 400px);
+    max-height: 400px;
     opacity: 1;
     margin-top: 0.5em;
     padding: 0.7em 0.9em;
@@ -292,28 +291,11 @@ description: Mock of the proposed shared doc layout — type signature, at-a-gla
         var panel = panelId ? document.getElementById(panelId) : null;
         if (!panel) return;
 
-        // Measure the panel's content height once so max-height animates to the right value.
-        function measure() {
-            // Temporarily remove the open state to measure natural height.
-            var wasOpen = panel.classList.contains('v-reveal__panel--open');
-            panel.classList.add('v-reveal__panel--open');
-            panel.style.setProperty('--reveal-height', 'none');
-            var height = panel.scrollHeight;
-            panel.style.setProperty('--reveal-height', height + 'px');
-            if (!wasOpen) panel.classList.remove('v-reveal__panel--open');
-        }
-
         trigger.addEventListener('click', function () {
             var isOpen = trigger.getAttribute('aria-expanded') === 'true';
-            if (!isOpen) measure();
             trigger.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
             panel.setAttribute('aria-hidden', isOpen ? 'true' : 'false');
             panel.classList.toggle('v-reveal__panel--open', !isOpen);
-        });
-
-        // Keep the height correct if the window resizes while the panel is open.
-        window.addEventListener('resize', function () {
-            if (trigger.getAttribute('aria-expanded') === 'true') measure();
         });
     });
 })();
@@ -324,10 +306,7 @@ description: Mock of the proposed shared doc layout — type signature, at-a-gla
 </div>
 
 <div class="v-reveal">
-    <button type="button" class="v-reveal__trigger" aria-expanded="false" aria-controls="v-reveal-typesig">
-        <span class="v-reveal__trigger-icon" aria-hidden="true">▸</span>
-        <span>Plain-English translation</span>
-    </button>
+    <button type="button" class="v-reveal__trigger" aria-expanded="false" aria-controls="v-reveal-typesig" aria-label="Show plain-English translation of the type signature" title="Plain-English translation">?</button>
     <div id="v-reveal-typesig" class="v-reveal__panel" aria-hidden="true">
         Given a predicate on <code>T</code>, returns a function that consumes an iterable of <code>T</code> and returns either a <code>T</code> (the first match) or <code>null</code> (no match).
     </div>
