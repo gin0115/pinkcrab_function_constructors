@@ -459,3 +459,16 @@ code.inline {
     color: #1565c0;
     outline: none;
 }
+
+.masthead,
+.masthead__inner-wrap,
+.masthead__menu,
+.greedy-nav,
+.greedy-nav .visible-links {
+    overflow: visible !important;
+}
+.masthead__menu-item--dropdown {
+    position: relative;
+    z-index: 101;
+}
+.masthead__dropdown { z-index: 102; }

@@ -5,9 +5,9 @@
     <div class="masthead__menu">
       <nav id="site-nav" class="greedy-nav">
         {% unless logo_path == empty %}
-          <a class="site-logo" href="{{ '/' | relative_url }}"><img src="{{ logo_path | relative_url }}" alt="{{ site.masthead_title | default: site.title }}"></a>
+          <a class="site-logo" href="{{ '/' | absolute_url }}"><img src="{{ logo_path | absolute_url }}" alt="{{ site.masthead_title | default: site.title }}"></a>
         {% endunless %}
-        <a class="site-title" href="{{ '/' | relative_url }}">
+        <a class="site-title" href="{{ '/' | absolute_url }}">
           {{ site.masthead_title | default: site.title }}
           {% if site.subtitle %}<span class="site-subtitle">{{ site.subtitle }}</span>{% endif %}
         </a>
@@ -20,13 +20,13 @@
                 </button>
                 <ul class="masthead__dropdown">
                   {% for child in item.children %}
-                    <li><a href="{{ child.url | relative_url }}">{{ child.title }}</a></li>
+                    <li><a href="{{ child.url | absolute_url }}">{{ child.title }}</a></li>
                   {% endfor %}
                 </ul>
               </li>
             {% else %}
               <li class="masthead__menu-item">
-                <a href="{{ item.url | relative_url }}">{{ item.title }}</a>
+                <a href="{{ item.url | absolute_url }}">{{ item.title }}</a>
               </li>
             {% endif %}
           {% endfor %}

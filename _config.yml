@@ -35,6 +35,7 @@ description: >-
 
 name                     : "Glynn Quelch | PinkCrab"
 url: https://gin0115.github.io/pinkcrab_function_constructors
+baseurl: ""
 repository: gin0115/pinkcrab_function_constructors
 
 ## All custom collections
