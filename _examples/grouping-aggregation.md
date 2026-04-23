@@ -43,12 +43,12 @@ $payments = [
 
 {% highlight php %}
 use PinkCrab\FunctionConstructors\GeneralFunctions as F;
-use PinkCrab\FunctionConstructors\Arrays;
+use PinkCrab\FunctionConstructors\Arrays as A;
 
-$byCurrency = Arrays\groupBy(F\getProperty('currency'))($payments);
+$byCurrency = A\groupBy(F\getProperty('currency'))($payments);
 // ['GBP' => [payment, payment, payment], 'EUR' => [payment, payment]]
 
-$totalInGroup = Arrays\sumWhere(F\getProperty('amount'));
+$totalInGroup = A\sumWhere(F\getProperty('amount'));
 
 $revenueByCurrency = array_map($totalInGroup, $byCurrency);
 // ['GBP' => 200, 'EUR' => 90]
@@ -59,10 +59,10 @@ $revenueByCurrency = array_map($totalInGroup, $byCurrency);
 ## 2. Payment counts per status, per customer — nested groupBy
 
 {% highlight php %}
-$byCustomer = Arrays\groupBy(F\getProperty('customer'))($payments);
+$byCustomer = A\groupBy(F\getProperty('customer'))($payments);
 
 $statusCountsFor = fn(array $rows) =>
-    array_map('count', Arrays\groupBy(F\getProperty('status'))($rows));
+    array_map('count', A\groupBy(F\getProperty('status'))($rows));
 
 $summary = array_map($statusCountsFor, $byCustomer);
 /*
@@ -78,7 +78,7 @@ $summary = array_map($statusCountsFor, $byCustomer);
 ## 3. Refunded vs settled — partition
 
 {% highlight php %}
-[$settled, $refunded] = Arrays\partition(
+[$settled, $refunded] = A\partition(
     fn($p) => $p['status'] === 'refunded'
 )($payments);
 
@@ -89,7 +89,7 @@ $summary = array_map($statusCountsFor, $byCustomer);
 Wait — `partition` puts truthy matches at index 1, falsy at 0. So unpacking is `[$falsy, $truthy]`. Rename to match:
 
 {% highlight php %}
-[$notRefunded, $refunded] = Arrays\partition(
+[$notRefunded, $refunded] = A\partition(
     fn($p) => $p['status'] === 'refunded'
 )($payments);
 {% endhighlight %}
@@ -101,7 +101,7 @@ One traversal, two buckets.
 For anything `sumWhere` doesn't cover, drop to `fold`:
 
 {% highlight php %}
-$stats = Arrays\fold(
+$stats = A\fold(
     fn($acc, $p) => [
         'count' => $acc['count'] + 1,
         'total' => $acc['total'] + $p['amount'],

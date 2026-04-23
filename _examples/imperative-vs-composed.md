@@ -45,7 +45,7 @@ Each concept becomes its own named callable. The pipeline reads top-to-bottom li
 {% highlight php %}
 use PinkCrab\FunctionConstructors\GeneralFunctions as F;
 use PinkCrab\FunctionConstructors\Comparisons as C;
-use PinkCrab\FunctionConstructors\Arrays;
+use PinkCrab\FunctionConstructors\Arrays as A;
 
 // --- named concepts ---
 
@@ -61,9 +61,9 @@ $formatCustomer = fn($c) =>
 // --- the pipeline ---
 
 $shortlist = F\compose(
-    Arrays\filter(C\groupAnd($isVerified, $isHighValue)),
-    Arrays\map($getCustomer),
-    Arrays\map($formatCustomer),
+    A\filter(C\groupAnd($isVerified, $isHighValue)),
+    A\map($getCustomer),
+    A\map($formatCustomer),
     'array_unique',
     function ($a) { sort($a); return $a; }
 )($orders);
@@ -77,7 +77,7 @@ $shortlist = F\compose(
 | Concepts named | 0 | `$isVerified`, `$isHighValue`, `$formatCustomer` |
 | Can reuse "high-value" as a predicate elsewhere | No | Yes — just reference `$isHighValue` |
 | Can unit-test "formatCustomer" in isolation | No | Yes — it's a pure one-arg function |
-| Adding a new filter | Wedge an `if` into the loop | Add one more `Arrays\filter(...)` step |
+| Adding a new filter | Wedge an `if` into the loop | Add one more `A\filter(...)` step |
 | Order of operations | Implicit in nesting | Explicit, linear, top-to-bottom |
 
 ## When imperative wins

@@ -31,6 +31,7 @@ Express each step as a pure number → number callable, compose them into a sing
 
 {% highlight php %}
 use PinkCrab\FunctionConstructors\GeneralFunctions as F;
+use PinkCrab\FunctionConstructors\Arrays as A;
 use PinkCrab\FunctionConstructors\Numbers as N;
 use PinkCrab\FunctionConstructors\Strings as Str;
 
@@ -79,7 +80,7 @@ $cartItems = [
 ];
 
 // Sum of the transformed prices via sumWhere — map + sum in one pass.
-$total = Arrays\sumWhere(F\compose(F\getProperty('price'), $eurosAsFloat));
+$total = A\sumWhere(F\compose(F\getProperty('price'), $eurosAsFloat));
 
 echo $total($cartItems);   // 49.84
 {% endhighlight %}

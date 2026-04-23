@@ -43,7 +43,8 @@ Every Arrays function in this library accepts an iterable and — for the lazy v
 
 {% highlight php %}
 use PinkCrab\FunctionConstructors\GeneralFunctions as F;
-use PinkCrab\FunctionConstructors\Arrays;
+use PinkCrab\FunctionConstructors\Arrays as A;
+use PinkCrab\FunctionConstructors\Comparisons as C;
 
 $parse = fn(string $line) => json_decode($line, true) ?? null;
 
@@ -53,10 +54,10 @@ $isNoise = fn(array $r) => in_array($r['path'] ?? '', ['/health', '/metrics'], t
 $enrich = fn(array $r) => $r + ['country' => GeoIp::lookup($r['ip'])];
 
 $pipeline = F\compose(
-    Arrays\map($parse),                   // string → array|null
-    Arrays\filter(fn($r) => $r !== null), // drop unparseable lines
-    Arrays\filter(fn($r) => ! $isNoise($r)),
-    Arrays\map($enrich)
+    A\map($parse),                 // string → array|null
+    A\filter(C\not('is_null')),    // drop unparseable lines
+    A\filter(C\not($isNoise)),     // drop health-checks / assets
+    A\map($enrich)
 );
 {% endhighlight %}
 
@@ -79,8 +80,8 @@ $todaysCutoff = strtotime('tomorrow');
 
 $firstPageOfToday = F\compose(
     $pipeline,
-    Arrays\takeWhile(fn($r) => strtotime($r['time']) < $todaysCutoff),
-    Arrays\take(100)                // only the first 100 of today
+    A\takeWhile(fn($r) => strtotime($r['time']) < $todaysCutoff),
+    A\take(100)                // only the first 100 of today
 );
 
 foreach ($firstPageOfToday($lines('/var/log/access.log')) as $r) {
@@ -107,18 +108,18 @@ Because each step is a first-class callable, you can reorder or swap parts freel
 {% highlight php %}
 // Cheaper: filter BEFORE enriching so we don't do a GeoIP lookup for noise.
 $efficient = F\compose(
-    Arrays\map($parse),
-    Arrays\filter(fn($r) => $r !== null),
-    Arrays\filter(fn($r) => ! $isNoise($r)),
-    Arrays\map($enrich)              // only runs on what made it through
+    A\map($parse),
+    A\filter(fn($r) => $r !== null),
+    A\filter(fn($r) => ! $isNoise($r)),
+    A\map($enrich)              // only runs on what made it through
 );
 
 // Or: enrich before filtering, if some filters need enriched data.
 $alternate = F\compose(
-    Arrays\map($parse),
-    Arrays\filter(fn($r) => $r !== null),
-    Arrays\map($enrich),
-    Arrays\filter(fn($r) => $r['country'] !== 'RU')
+    A\map($parse),
+    A\filter(fn($r) => $r !== null),
+    A\map($enrich),
+    A\filter(fn($r) => $r['country'] !== 'RU')
 );
 {% endhighlight %}
 

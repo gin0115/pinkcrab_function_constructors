@@ -29,6 +29,7 @@ Say an admin can configure what happens to every user-submitted message. Some of
 
 {% highlight php %}
 use PinkCrab\FunctionConstructors\GeneralFunctions as F;
+use PinkCrab\FunctionConstructors\Arrays as A;
 use PinkCrab\FunctionConstructors\Strings as Str;
 
 $registry = [

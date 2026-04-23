@@ -67,6 +67,7 @@ Each step is a pure function. Each one is named for what it does. No intermediat
 
 {% highlight php %}
 use PinkCrab\FunctionConstructors\GeneralFunctions as F;
+use PinkCrab\FunctionConstructors\Arrays as A;
 use PinkCrab\FunctionConstructors\Strings as Str;
 
 // Rename + shape: source field → output field, with a value transform.
@@ -83,8 +84,8 @@ $hasValidAge = fn($row) => $row['age'] !== null;
 
 // One pipeline that shapes every row, drops invalid ones.
 $normalise = F\compose(
-    Arrays\map($shape),
-    Arrays\filter($hasValidAge)
+    A\map($shape),
+    A\filter($hasValidAge)
 );
 
 $clean = $normalise($raw);

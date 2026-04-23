@@ -39,6 +39,7 @@ Each rule is a pair: a predicate that says whether the field is VALID, and the m
 
 {% highlight php %}
 use PinkCrab\FunctionConstructors\GeneralFunctions as F;
+use PinkCrab\FunctionConstructors\Arrays as A;
 use PinkCrab\FunctionConstructors\Comparisons as C;
 use PinkCrab\FunctionConstructors\Strings as Str;
 
