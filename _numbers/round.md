@@ -17,6 +17,15 @@ since: 0.1.0
 deprecated: false
 alternative: false
 
+tags: [transformer, returns-closure, pure, throws]
+
+typeSignature: "number → (number → float)"
+typeSignatureEn: >
+ Given a precision, returns a function that rounds any number to that many decimal places.
+
+atGlance: >
+ Bind a decimal precision; the returned Closure rounds any number to that many places. Always returns a float. Throws <code>InvalidArgumentException</code> on non-number input.
+
 definition: >
  /**
    * @param int|float $precision Number of decimal places. Defaults to 1.

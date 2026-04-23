@@ -15,6 +15,15 @@ since: 0.1.0
 deprecated: false
 alternative: false
 
+tags: [transformer, returns-closure, pure, throws]
+
+typeSignature: "number → (number → float)"
+typeSignatureEn: >
+ Given a dividend, returns a function that divides that dividend by whatever number you pass in, as a float.
+
+atGlance: >
+ Bind a numerator; the returned Closure computes <code>dividend / value</code>. Use <code>divideBy()</code> for the reverse direction. Throws <code>InvalidArgumentException</code> on non-number input.
+
 definition: >
  /**
    * @param int|float $dividend Defaults to 1. The fixed numerator.

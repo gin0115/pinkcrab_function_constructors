@@ -15,6 +15,15 @@ since: 0.1.0
 deprecated: false
 alternative: false
 
+tags: [predicate, returns-closure, returns-bool, pure]
+
+typeSignature: "int → (int → bool)"
+typeSignatureEn: >
+ Given an integer, returns a predicate that is true when the value divides the bound integer cleanly.
+
+atGlance: >
+ Bind a target integer; the returned predicate is true when the passed value is a factor of the target. Zero always returns false.
+
 definition: >
  /**
    * @param int $factor The fixed number to test factors of.

@@ -15,6 +15,15 @@ since: 0.1.0
 deprecated: false
 alternative: false
 
+tags: [accumulator, returns-closure, pure]
+
+typeSignature: "float → (float | null → Closure | float)"
+typeSignatureEn: >
+ Seeded with a starting float, returns a callable that either appends another float and hands back a fresh accumulator, or returns the final float when called with null.
+
+atGlance: >
+ A float accumulator: each call with a float appends to the running total and returns a fresh accumulator; call with null (or no argument) to finalise and read the total.
+
 definition: >
  /**
    * @param float $initial Optional seed value. Defaults to 0.0.

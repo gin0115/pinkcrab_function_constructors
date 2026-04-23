@@ -15,6 +15,15 @@ since: 0.1.0
 deprecated: false
 alternative: false
 
+tags: [transformer, returns-closure, pure, throws]
+
+typeSignature: "number → (number → number)"
+typeSignatureEn: >
+ Given a factor, returns a function that multiplies any number by that factor.
+
+atGlance: >
+ Bind a factor up front; the returned Closure is a reusable multiplier. Result follows PHP's native arithmetic rules. Throws <code>InvalidArgumentException</code> on non-number input.
+
 definition: >
  /**
    * @param int|float $initial Defaults to 1.

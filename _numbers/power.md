@@ -17,6 +17,15 @@ since: 0.1.0
 deprecated: false
 alternative: false
 
+tags: [transformer, returns-closure, pure, throws]
+
+typeSignature: "number → (number → number)"
+typeSignatureEn: >
+ Given an exponent, returns a function that raises any number to that power.
+
+atGlance: >
+ Bind an exponent; the returned Closure wraps <code>pow()</code> to raise any number to that power. Throws <code>InvalidArgumentException</code> on non-number input.
+
 definition: >
  /**
    * @param int|float $exponent

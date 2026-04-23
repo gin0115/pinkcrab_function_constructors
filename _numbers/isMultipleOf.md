@@ -15,6 +15,15 @@ since: 0.1.0
 deprecated: false
 alternative: false
 
+tags: [predicate, returns-closure, returns-bool, pure, throws]
+
+typeSignature: "number → (number → bool)"
+typeSignatureEn: >
+ Given a number, returns a predicate that is true when the value passed in is a whole multiple of the bound number.
+
+atGlance: >
+ Bind a multiplier; the returned predicate is true when the value is a whole multiple of it. Zero always returns false. Throws <code>InvalidArgumentException</code> on non-number input.
+
 definition: >
  /**
    * @param int|float $multiple The fixed multiple to test against.

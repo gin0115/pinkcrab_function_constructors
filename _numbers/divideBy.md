@@ -15,6 +15,15 @@ since: 0.1.0
 deprecated: false
 alternative: false
 
+tags: [transformer, returns-closure, pure, throws]
+
+typeSignature: "number → (number → float)"
+typeSignatureEn: >
+ Given a divisor, returns a function that divides any number by that divisor and returns a float.
+
+atGlance: >
+ Bind a divisor; the returned Closure computes <code>value / divisor</code>. Always returns a float. Throws <code>InvalidArgumentException</code> on non-number input.
+
 definition: >
  /**
    * @param int|float $divisor Defaults to 1. The fixed divisor.

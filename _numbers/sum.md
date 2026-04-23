@@ -15,6 +15,15 @@ since: 0.1.0
 deprecated: false
 alternative: false
 
+tags: [transformer, returns-closure, pure, throws]
+
+typeSignature: "number → (number → number)"
+typeSignatureEn: >
+ Given a starting number, returns a function that adds that number to any int or float you pass in.
+
+atGlance: >
+ Bind an amount to add up front; the returned Closure is a reusable adder. Throws <code>InvalidArgumentException</code> on non-number input.
+
 definition: >
  /**
    * @param int|float $initial Defaults to 0.

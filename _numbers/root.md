@@ -17,6 +17,15 @@ since: 0.1.0
 deprecated: false
 alternative: false
 
+tags: [transformer, returns-closure, pure, throws]
+
+typeSignature: "number → (number → number)"
+typeSignatureEn: >
+ Given a root index n, returns a function that takes the nth root of any number.
+
+atGlance: >
+ Bind a root index (2 for square root, 3 for cube root, etc.); the returned Closure computes <code>pow(value, 1/root)</code>. Throws <code>InvalidArgumentException</code> on non-number input.
+
 definition: >
  /**
    * @param int|float $root The root index — 2 for square root, 3 for cube root, etc.

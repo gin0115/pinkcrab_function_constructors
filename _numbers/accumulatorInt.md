@@ -15,6 +15,15 @@ since: 0.1.0
 deprecated: false
 alternative: false
 
+tags: [accumulator, returns-closure, pure]
+
+typeSignature: "int → (int | null → Closure | int)"
+typeSignatureEn: >
+ Seeded with a starting int, returns a callable that either appends another int and hands back a fresh accumulator, or returns the final int when called with null.
+
+atGlance: >
+ An integer accumulator: each call with an int appends to the running total and returns a fresh accumulator; call with null (or no argument) to finalise and read the total.
+
 definition: >
  /**
    * @param int $initial Optional seed value. Defaults to 0.

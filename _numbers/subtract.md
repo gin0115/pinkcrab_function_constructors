@@ -15,6 +15,15 @@ since: 0.1.0
 deprecated: false
 alternative: false
 
+tags: [transformer, returns-closure, pure, throws]
+
+typeSignature: "number → (number → number)"
+typeSignatureEn: >
+ Given an amount to subtract, returns a function that computes <code>value - initial</code> for any number passed in.
+
+atGlance: >
+ Bind a subtrahend; the returned Closure computes <code>value - initial</code>. Note the argument order — the bound amount is what gets removed, not the starting point. Throws <code>InvalidArgumentException</code> on non-number input.
+
 definition: >
  /**
    * @param int|float $initial Defaults to 0. The amount to subtract.
