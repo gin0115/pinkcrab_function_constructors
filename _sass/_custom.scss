@@ -472,3 +472,21 @@ code.inline {
     z-index: 101;
 }
 .masthead__dropdown { z-index: 102; }
+
+.example-functions {
+    background: #eceff1;
+    border-left: 4px solid #607d8b;
+    border-radius: 0 4px 4px 0;
+    padding: 0.7em 1em;
+    margin: 1em 0 1.5em;
+}
+.example-functions h3 {
+    margin: 0 0 0.3em;
+    font-size: 1em;
+    color: #263238;
+}
+.example-functions ul { margin: 0; padding-left: 1.2em; }
+.example-functions code { background: none; padding: 0; }
+
+.example-content h2 { margin-top: 2em; }
+.example-content h3 { margin-top: 1.4em; }

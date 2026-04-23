@@ -44,3 +44,35 @@ examplePartial: >
  // ['id' => 1, 'title' => 'ADA', 'admin' => true]
 
 ---
+
+## How this fits together
+
+`recordEncoder` is the scaffold; [`encodeProperty`](/general/encodeProperty.html) is the brick. Each brick pairs one output key with a callable that produces its value from the source. The scaffold collects the bricks, applies each one to the input, and returns a fresh record.
+
+This pattern separates **what the output record is** from **how each field is computed**:
+
+- Reorder output fields by reordering the arguments — declaration order is output order.
+- Add or remove fields without touching anything else.
+- Test each encoder piece in isolation — every one is a tiny pure function.
+- Swap array output for object output by passing an object to `recordEncoder` instead of `[]`.
+
+### Seed types
+
+The record passed to `recordEncoder` determines the output kind:
+
+- `recordEncoder([])` — output is a fresh array.
+- `recordEncoder(new \stdClass)` — output is an object (properties set via [`setProperty`](/general/setProperty.html)).
+- `recordEncoder(new MyDto)` — output is your DTO with each field assigned as a public property.
+
+### Composing field values
+
+Each field callable is just a plain callable — use anything that takes the source record and returns a value:
+
+- [`getProperty`](/general/getProperty.html) / [`pluckProperty`](/general/pluckProperty.html) for simple and nested lookups.
+- An inline closure for computed fields.
+- A composed pipeline from [`compose`](/general/compose.html) for multi-step transforms.
+- [`ifElse`](/general/ifElse.html) with [`always`](/general/always.html) for conditionals.
+
+### Full walked example
+
+See **[Transforming complex objects](/examples/complex-objects.html)** for a step-by-step build that turns raw API records into view models using `recordEncoder` alongside `encodeProperty`, `pluckProperty`, `propertyEquals`, `ifElse`, and `always`.

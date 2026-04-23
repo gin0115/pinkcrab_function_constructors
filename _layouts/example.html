@@ -1,0 +1,30 @@
+---
+layout: base
+---
+
+<h1 class="page-title">{{ page.title }}</h1>
+
+<div class="breadcrumbs">
+    <a href="{{ site.url }}/">Home</a>
+    >> <a href="{{ site.url }}/examples.html">Examples</a>
+    >> <a href="{{ site.url }}{{ page.url }}">{{ page.title }}</a>
+</div>
+
+{% if page.summary %}
+<p class="tag-archive__description">{{ page.summary }}</p>
+{% endif %}
+
+{% if page.functions %}
+<div class="example-functions">
+    <h3>Functions used</h3>
+    <ul>
+    {% for fn in page.functions %}
+        <li><code><a href="{{ site.url }}{{ fn.url }}">{{ fn.name }}</a></code>{% if fn.note %} — {{ fn.note }}{% endif %}</li>
+    {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+<div class="example-content">
+    {{ content }}
+</div>

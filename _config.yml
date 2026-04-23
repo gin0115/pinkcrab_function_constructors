@@ -54,3 +54,6 @@ collections:
   general:
     output: true
     permalink: /general/:title.html
+  examples:
+    output: true
+    permalink: /examples/:title.html

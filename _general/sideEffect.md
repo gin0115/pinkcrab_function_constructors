@@ -10,7 +10,7 @@ categories: [general, combinator, side-effect]
 
 source: https://github.com/gin0115/pinkcrab_function_constructors/blob/master/src/general.php#L433
 namespace: PinkCrab\FunctionConstructors\GeneralFunctions
-since: 0.1.0
+since: 1.0.0
 
 deprecated: false
 alternative: false

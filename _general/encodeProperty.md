@@ -33,11 +33,48 @@ definition: >
  GeneralFunctions\encodeProperty(string $key, callable $value): Closure
 
 examplePartial: >
- // Usually used inside recordEncoder() — see that page for full usage.
+ // One encoder step: the 'displayName' output field is computed from the source by upper-casing its 'name'.
 
  $encodeName = GeneralFunctions\encodeProperty(
    'displayName',
    fn($src) => strtoupper($src['name'])
  );
 
+
+ // On its own encodeProperty does nothing — it records the intent. The work happens inside recordEncoder.
+
+ $toViewModel = GeneralFunctions\recordEncoder([])($encodeName);
+
+
+ print_r($toViewModel(['name' => 'Ada']));  // ['displayName' => 'ADA']
+
 ---
+
+## What it does (and what it doesn't)
+
+`encodeProperty` doesn't touch any data by itself. It **bundles a key with a way to compute its value** — nothing more. The bundle is useful only inside [`recordEncoder`](/general/recordEncoder.html), which collects many of these bundles and runs them over a source record to build an output record.
+
+Think of it as declaring one row of a transformation table:
+
+{% highlight text %}
+ output key       |  computed from source via
+ -----------------+---------------------------------------
+ 'id'             |  getProperty('id')
+ 'displayName'    |  fn($u) => ucfirst($u['first']) . ' ' . ucfirst($u['last'])
+ 'isAdmin'        |  propertyEquals('role', 'admin')
+ 'country'        |  pluckProperty('profile', 'country')
+{% endhighlight %}
+
+Each row is one `encodeProperty` call. The value callable can be anything — [`getProperty`](/general/getProperty.html), [`pluckProperty`](/general/pluckProperty.html), a closure, a composed pipeline from [`compose`](/general/compose.html), a conditional from [`ifElse`](/general/ifElse.html). All that matters is that it takes the source record and returns the value for that output field.
+
+### Why this indirection is useful
+
+If you just wanted `$output['displayName'] = strtoupper($source['name'])` you could write exactly that. The separation pays off once you have several fields:
+
+- Each encoder is a first-class callable — test it, log it, reuse it across encoders.
+- The transformation is **data**, not control flow. You can filter or reorder your encoders based on configuration, permission rules, or anything else you like before `recordEncoder` runs them.
+- Swapping array output for object output means changing the seed record passed to `recordEncoder` — the `encodeProperty` calls don't change.
+
+### Full walked example
+
+See **[Transforming complex objects](/examples/complex-objects.html)** for the whole pattern — building a view model from a list of API records with `encodeProperty` for every output field plus `recordEncoder` to assemble them.

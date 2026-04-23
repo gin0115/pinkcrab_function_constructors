@@ -11,6 +11,8 @@ main:
         url: /numbers.html
       - title: "General"
         url: /general.html
+  - title: "Examples"
+    url: /examples.html
   - title: "Tags"
     url: /tags.html
   - title: "GitHub"
