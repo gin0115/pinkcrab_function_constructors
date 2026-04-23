@@ -82,11 +82,71 @@ description: Mock of the proposed shared doc layout — type signature, at-a-gla
 .v-typesig .v-generic { color: #82b1ff; font-weight: 700; }
 .v-typesig .v-arrow   { color: #ff9e80; }
 .v-typesig .v-builtin { color: #f07178; }
-.v-typesig-en {
-    color: #607d8b;
-    font-style: italic;
-    font-size: 0.9em;
+/* ---------- plain-English reveal for the type signature ---------- */
+.v-reveal {
     margin: 0 0 1em;
+}
+.v-reveal__trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    margin: 0.4em 0 0;
+    padding: 0.25em 0.6em 0.25em 0.4em;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    color: #607d8b;
+    font: inherit;
+    font-size: 0.82em;
+    cursor: pointer;
+    user-select: none;
+    transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
+}
+.v-reveal__trigger:hover,
+.v-reveal__trigger:focus {
+    color: #263238;
+    background: #eceff1;
+    border-color: #cfd8dc;
+    outline: none;
+}
+.v-reveal__trigger-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1em;
+    height: 1em;
+    font-size: 0.85em;
+    transition: transform 180ms ease;
+}
+.v-reveal__trigger[aria-expanded="true"] .v-reveal__trigger-icon { transform: rotate(90deg); }
+
+.v-reveal__panel {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    margin-top: 0;
+    background: #f5f7f8;
+    border: 1px solid #cfd8dc;
+    border-radius: 4px;
+    color: #37474f;
+    font-size: 0.9em;
+    line-height: 1.5;
+    box-sizing: border-box;
+    transition: max-height 220ms ease, opacity 180ms ease, margin-top 180ms ease, padding 180ms ease;
+    padding: 0 0.9em;
+}
+.v-reveal__panel--open {
+    max-height: var(--reveal-height, 400px);
+    opacity: 1;
+    margin-top: 0.5em;
+    padding: 0.7em 0.9em;
+}
+.v-reveal__panel code {
+    background: #eceff1;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 0.9em;
+    color: #1565c0;
 }
 
 /* ---------- at-a-glance (variant D) ---------- */
@@ -224,12 +284,54 @@ description: Mock of the proposed shared doc layout — type signature, at-a-gla
     window.addEventListener('scroll', hide, { passive: true });
     window.addEventListener('resize', hide);
 })();
+
+// -------- JS reveal: click-to-expand panel for longer explanations --------
+(function () {
+    document.querySelectorAll('.v-reveal__trigger').forEach(function (trigger) {
+        var panelId = trigger.getAttribute('aria-controls');
+        var panel = panelId ? document.getElementById(panelId) : null;
+        if (!panel) return;
+
+        // Measure the panel's content height once so max-height animates to the right value.
+        function measure() {
+            // Temporarily remove the open state to measure natural height.
+            var wasOpen = panel.classList.contains('v-reveal__panel--open');
+            panel.classList.add('v-reveal__panel--open');
+            panel.style.setProperty('--reveal-height', 'none');
+            var height = panel.scrollHeight;
+            panel.style.setProperty('--reveal-height', height + 'px');
+            if (!wasOpen) panel.classList.remove('v-reveal__panel--open');
+        }
+
+        trigger.addEventListener('click', function () {
+            var isOpen = trigger.getAttribute('aria-expanded') === 'true';
+            if (!isOpen) measure();
+            trigger.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+            panel.setAttribute('aria-hidden', isOpen ? 'true' : 'false');
+            panel.classList.toggle('v-reveal__panel--open', !isOpen);
+        });
+
+        // Keep the height correct if the window resizes while the panel is open.
+        window.addEventListener('resize', function () {
+            if (trigger.getAttribute('aria-expanded') === 'true') measure();
+        });
+    });
+})();
 </script>
 
 <div class="v-typesig">
   <span class="v-generic">&lt;T&gt;</span> (<span class="v-generic">T</span> <span class="v-arrow">→</span> <span class="v-builtin">bool</span>) <span class="v-arrow">→</span> (<span class="v-builtin">Iterable</span>&lt;<span class="v-generic">T</span>&gt; <span class="v-arrow">→</span> <span class="v-generic">T</span> | <span class="v-builtin">null</span>)
 </div>
-<p class="v-typesig-en">Given a predicate on <code>T</code>, returns a function that consumes an iterable of <code>T</code> and returns either a <code>T</code> (the first match) or <code>null</code> (no match).</p>
+
+<div class="v-reveal">
+    <button type="button" class="v-reveal__trigger" aria-expanded="false" aria-controls="v-reveal-typesig">
+        <span class="v-reveal__trigger-icon" aria-hidden="true">▸</span>
+        <span>Plain-English translation</span>
+    </button>
+    <div id="v-reveal-typesig" class="v-reveal__panel" aria-hidden="true">
+        Given a predicate on <code>T</code>, returns a function that consumes an iterable of <code>T</code> and returns either a <code>T</code> (the first match) or <code>null</code> (no match).
+    </div>
+</div>
 
 <div class="v-glance">
     <strong>At a glance —</strong> A higher-order function that takes a predicate and returns a Closure. The Closure pulls values from an iterable until the predicate matches, then stops. Safe with infinite Generators; returns <code>null</code> when nothing matches. Pure, given a pure predicate.
