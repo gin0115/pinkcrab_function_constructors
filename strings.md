@@ -9,7 +9,7 @@ description: >
 
 <div class="breadcrumbs">
   <a href="{{ site.url | absolute_url  }}">Home</a> 
-  >> <a href="{{ page.url | absolute_url }}">{{page.title}}</a>
+  >> <a href="{{ site.url }}{{ page.url }}">{{page.title}}</a>
 </div>
 
 > A collection of functions which can be used to work with strings.

@@ -9,7 +9,7 @@ description: >
 
 <div class="breadcrumbs">
   <a href="{{ site.url | absolute_url  }}">Home</a>
-  >> <a href="{{ page.url | absolute_url }}">{{page.title}}</a>
+  >> <a href="{{ site.url }}{{ page.url }}">{{page.title}}</a>
 </div>
 
 > A collection of functions for composing numeric operations. Every constructor here is partially applied — supply a fixed operand up front and receive a reusable Closure that accepts the other operand later.
