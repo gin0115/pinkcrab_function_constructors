@@ -178,3 +178,13 @@ $array = $setKeyOfSArray('new value');
         {% endfor %}
     </ul>
 </div>
+<div class="function__releated-group">
+    <h3><a href="{{ site.url | absolute_url }}/objects.html">
+        <em>Object</em> Functions
+    </a></h3>
+    <ul>
+        {% for related in site.objects %}
+            <li><a href="{{ site.url | absolute_url }}{{related.url}}">{{ related.title }}</a></li>
+        {% endfor %}
+    </ul>
+</div>

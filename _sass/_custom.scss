@@ -490,3 +490,8 @@ code.inline {
 
 .example-content h2 { margin-top: 2em; }
 .example-content h3 { margin-top: 1.4em; }
+
+ul.visible-links {
+    display: flex;
+    align-items: center;
+}
