@@ -21,6 +21,7 @@ const hitTemplate = function(hit) {
   let marker = '';
   if (collection === 'pages')    marker = '<span class="search-hit__marker" title="Index page">📖</span>';
   if (collection === 'examples') marker = '<span class="search-hit__marker" title="Example">💡</span>';
+  if (collection === 'tags')     marker = '<span class="search-hit__marker" title="Tag archive">🏷️</span>';
 
   return `
     <div class="list__item">

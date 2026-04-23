@@ -18,7 +18,8 @@ description: Browse functions by tag — role, iteration behaviour, input type, 
     {% assign count = 0 %}
     {% for collection in site.collections %}
         {% if collection.label == "tags" or collection.label == "posts" %}{% continue %}{% endif %}
-        {% assign matches = collection.docs | where_exp: "d", "d.tags contains tag.slug" %}
+        {% assign tagged = collection.docs | where_exp: "d", "d.tags contains tag.slug" %}
+        {% assign matches = tagged | where_exp: "d", "d.deprecated != true" %}
         {% assign count = count | plus: matches.size %}
     {% endfor %}
     <li>

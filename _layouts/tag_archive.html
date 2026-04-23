@@ -19,15 +19,14 @@ layout: base
 {% assign total = 0 %}
 {% for collection in site.collections %}
     {% if collection.label == "tags" or collection.label == "posts" %}{% continue %}{% endif %}
-    {% assign matches = collection.docs | where_exp: "d", "d.tags contains page.slug" %}
+    {% assign tagged = collection.docs | where_exp: "d", "d.tags contains page.slug" %}
+    {% assign matches = tagged | where_exp: "d", "d.deprecated != true" %}
     {% if matches.size > 0 %}
         {% assign total = total | plus: matches.size %}
         <h2>{{ collection.label | capitalize }} <small>({{ matches.size }})</small></h2>
         <ul class="tag-archive__list">
             {% for doc in matches %}
-                {% if true != doc.deprecated %}
-                    <li><a href="{{ site.url | absolute_url }}{{ doc.url }}">{{ doc.title }}</a></li>
-                {% endif %}
+                <li><a href="{{ site.url | absolute_url }}{{ doc.url }}">{{ doc.title }}</a></li>
             {% endfor %}
         </ul>
     {% endif %}
