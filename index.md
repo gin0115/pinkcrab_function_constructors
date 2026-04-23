@@ -2,146 +2,76 @@
 layout: base
 title: Home
 description: >
- This is where I will tell my friends way too much about me
+ A PHP library of composable function constructors — partial application + pipelining for PHP's standard library and beyond.
 ---
-At its core, the Function Constructors library is designed to make using PHP easier to use in a functional manor. With the use of functions `compose()` and `pipe()` its possible to construct complex functions, from simpler ones.
 
-### Function Composition and Piping
+At its core, **Function Constructors** is a library for building bigger functions out of smaller ones. Every helper here either partially applies a standard operation (so you can bind its configuration up front and reuse the resulting Closure) or it stitches callables together with `compose` / `pipe`.
 
-#### pipe()
+### Compose or pipe — build once, reuse everywhere
 
-> PLEASE NOTE THIS HAS CHANGED IN VERSION 2.0.0, using `compose()` is now the preferred method.
-
-Using `pipe(mixed $value, callable ...$callables)` and [ `pipeR()` *](#pipe "Same as pipe(), but callables in reverse order"), allows you to pass a value through a chain of callables. The result of the 1st function, is passed as the input the 2nd and so on, until the end when the final result is returned.
-
-> The rest of this library makes it easier to use standard php functions as callables, by defining some of the parameters up front.
+`compose` returns a Closure you can pass anywhere a callable is expected. `pipe` takes a value and runs it through the chain immediately.
 
 {% highlight php %}
-$data = [0,3,4,5,6,8,4,6,8,1,3,4];
+// Build once.
+$slugify = F\compose('trim', 'strtolower', Str\replaceWith(' ', '-'));
 
-// Remove all odd numbers, sort in an acceding order and double the value.
-$newData = F\pipe(
-    $data,
-    Arr\filter(Num\isMultipleOf(2)), // Remove odd numbers
-    Arr\natsort(),                 // Sort the remaining values
-    Arr\map(Num\multiply(2))       // Double the values.
+array_map($slugify, ['  Hello World  ', 'FOO Bar']);
+// ['hello-world', 'foo-bar']
+
+// Or run immediately.
+F\pipe(
+    [0, 3, 4, 5, 6, 8],
+    Arr\filter(Num\isMultipleOf(2)),
+    Arr\map(Num\multiply(2))
 );
-
-// Result
-$newData = [
- 2 => 8,
- 6 => 8,
- 11 => 8,
- 4 => 12,
- 7 => 12,
- 5 => 16,
- 8 => 16,
-];
+// [8, 8, 12, 16]
 {% endhighlight %}
 
-#### compose()
+`composeR` / `pipeR` run callables in reverse order. `composeSafe` halts on the first `null`. `composeTypeSafe` halts on a custom type check.
 
-Piping is ideal when you are working with a single value, but when it comes to working with Arrays or writing callbacks, compose() is much more useful.
+### Records — one API for arrays and objects
 
-`compose(callable ...$callables)` , `composeR(callable ...$callables)` , `composeSafe(callable ...$callables)` and `composeTypeSafe(callable $validator, callable ...$callables)` all allow you to create custom Closures.
+`getProperty`, `hasProperty`, `propertyEquals`, `setProperty`, `pluckProperty` all work uniformly on arrays AND objects. Partially apply them and they become named, reusable concepts.
 
 {% highlight php %}
-
-$data = [
-    ['details'=>['description' => '    This is some description ']],
-    ['details'=>['description' => '        This is some other description    ']],
+$users = [
+    ['id' => 1, 'name' => 'Ada', 'role' => 'admin'],
+    ['id' => 2, 'name' => 'Bea', 'role' => 'user'],
+    ['id' => 3, 'name' => 'Cal', 'role' => 'admin'],
 ];
 
-$callback = F\compose(
-   F\pluckProperty('details','description'), // Plucks the description
-   'trim',                                   // Remove all whitespace
-   Str\slice(0, 20),                         // Remove all but first 20 chars          
-   'ucfirst',                                // Uppercase each word
-   Str\append('...')                        // End the string with ...
-);
+$isAdmin = F\propertyEquals('role', 'admin');
 
-$results = array_map($callback, $data);
+array_filter($users, $isAdmin);
+// [ ['id' => 1, ...], ['id' => 3, ...] ]
 
-$results = [
-    'This Is Some Descrip...',
-    'This Is Some Other D...'
-]
+array_map(F\getProperty('name'), $users);
+// ['Ada', 'Bea', 'Cal']
 {% endhighlight %}
 
-> You can use `composeTypeSafe()` if you want to pass the return of each callable through a validator before being passed to the next. If the validator fails, the rest of the chain will be skipped and null will be returned.
+For building a fresh record from scratch, see `recordEncoder` + `encodeProperty` — walked through in the [complex objects example]({{ site.url }}/examples/complex-objects.html).
 
-*****
+### Every Array function accepts iterables
 
-### Working with Records
-
-It is possible to work with the properties of *Records* (arrays and objects). Indexes or Properties can be checked, fetched and set using some of the `GeneralFunctions` . 
-
-#### Reading Properties
-
-You can check if a property exists, get its value or compare it an defined value.
+The Arrays namespace functions all accept `array`, `Iterator`, or `Generator` interchangeably. Lazy functions (`map`, `filter`, `take`, `takeWhile`, ...) stream through a Generator without materialising it. Short-circuit ones (`filterFirst`, `filterAny`, `head`) stop at the answer. Terminal ones (sorts, `foldR`, `takeLast`) consume everything — so **never** run them against an infinite source.
 
 {% highlight php %}
-$data = [
-    ['id' => 1, 'name' => 'James', 'timezone' => '+1', 'colour' => 'red'],
-    ['id' => 2, 'name' => 'Sam', 'timezone' => '+1', 'colour' => 'red', 'special' => true],
-    ['id' => 3, 'name' => 'Sarah', 'timezone' => '+2', 'colour' => 'green'],
-    ['id' => 4, 'name' => 'Donna', 'timezone' => '+2', 'colour' => 'blue', 'special' => true],
-];
+$naturals = function () { $i = 1; while (true) yield $i++; };
 
-// Filter all users with +2 timezone.
-$zonePlus2 = array_filter($data, F\propertyEquals('timezone','+2'));
-$results = [['id' => 3, ....],['id' => 4, ...]];
-
-// Filter all user who have the special index.
-$special = array_filter($data, F\hasProperty('special'));
-$results = [['id' => 2, ....],['id' => 4, ...]];
-
-// Get a list of all colours.
-$colours = array_map(F\getProperty('colour'), $data);
-$results = ['red', 'red', 'green', 'blue'];
+// Safe — take pulls only 5 values from the infinite generator.
+foreach (Arr\take(5)($naturals()) as $n) echo "$n ";   // 1 2 3 4 5
 {% endhighlight %}
 
-> `pluckProperty()` can also be used if you need to traverse nested properties/indexes of either **arrays** or **objects** *also handles `ArrayAccess` objects, set with array syntax* [see example on `compose()` ](#compose)
+### Where next
 
-#### Writing Properties
-
-Its also possible to write properties of objects and set values to indexes in arrays using the `setProperty()` function. More complex structures can also be created using the [Record Encoder](../../../../pinkcrab_function_constructors/wiki/Record_Encoder)
-
-{% highlight php %}
-// Set object property.
-$object = new class(){ public $key = 'default'};
-
-// Create a custom setter function.
-$setKeyOfObject = F\setProperty($object, 'key');
-$object = $setKeyOfObject('new value');
-// {"key":"new value"}
-
-// Can be used with arrays too
-$array = ['key' => 'default'];
-
-// Create a custom setter function.
-$setKeyOfSArray = F\setProperty($array, 'key');
-$array = $setKeyOfSArray('new value');
-// [key => "new value"]
-{% endhighlight %}
-
-
-*****
-
-### Number Functions
-
-`Num\sum()`, `Num\multiply()`, `Num\round()`, `Num\power()`, accumulators and more — every numeric operation is supplied as a partially applied Closure that composes cleanly inside `pipe()` / `compose()`.
-
-> All number constructors accept `int` or `float` only. Numeric strings must be cast first — anything else throws `InvalidArgumentException`.
-
-[See all Number functions →](./numbers.html)
+- [**Examples**]({{ site.url }}/examples.html) — 14 worked walkthroughs: normalising API payloads, form sanitisation, pricing pipelines, log streaming, validation chains, infinite generators, and more.
+- [**Tags**]({{ site.url }}/tags.html) — browse every function by role (predicate / transformer / reducer), iteration behaviour (lazy / short-circuit / terminal), purity, and more.
+- Per-namespace indices: [Arrays]({{ site.url }}/arrays.html) · [Strings]({{ site.url }}/strings.html) · [Numbers]({{ site.url }}/numbers.html) · [General]({{ site.url }}/general.html) · [Objects]({{ site.url }}/objects.html) · [Comparisons]({{ site.url }}/comparisons.html).
 
 *****
 
 <div class="function__releated-group">
-    <h3><a href="{{ site.url | absolute_url }}/strings.html">
-        <em>String</em> Functions
-    </a></h3>
+    <h3><a href="{{ site.url | absolute_url }}/strings.html"><em>String</em> Functions</a></h3>
     <ul>
         {% for related in site.strings %}
             <li><a href="{{ site.url | absolute_url }}{{related.url}}">{{ related.title }}</a></li>
@@ -149,9 +79,7 @@ $array = $setKeyOfSArray('new value');
     </ul>
 </div>
 <div class="function__releated-group">
-    <h3><a href="{{ site.url | absolute_url }}/arrays.html">
-        <em>Array</em> Functions
-    </a></h3>
+    <h3><a href="{{ site.url | absolute_url }}/arrays.html"><em>Array</em> Functions</a></h3>
     <ul>
         {% for related in site.arrays %}
             <li><a href="{{ site.url | absolute_url }}{{related.url}}">{{ related.title }}</a></li>
@@ -159,9 +87,7 @@ $array = $setKeyOfSArray('new value');
     </ul>
 </div>
 <div class="function__releated-group">
-    <h3><a href="{{ site.url | absolute_url }}/numbers.html">
-        <em>Number</em> Functions
-    </a></h3>
+    <h3><a href="{{ site.url | absolute_url }}/numbers.html"><em>Number</em> Functions</a></h3>
     <ul>
         {% for related in site.numbers %}
             <li><a href="{{ site.url | absolute_url }}{{related.url}}">{{ related.title }}</a></li>
@@ -169,9 +95,7 @@ $array = $setKeyOfSArray('new value');
     </ul>
 </div>
 <div class="function__releated-group">
-    <h3><a href="{{ site.url | absolute_url }}/general.html">
-        <em>General</em> Functions
-    </a></h3>
+    <h3><a href="{{ site.url | absolute_url }}/general.html"><em>General</em> Functions</a></h3>
     <ul>
         {% for related in site.general %}
             <li><a href="{{ site.url | absolute_url }}{{related.url}}">{{ related.title }}</a></li>
@@ -179,9 +103,7 @@ $array = $setKeyOfSArray('new value');
     </ul>
 </div>
 <div class="function__releated-group">
-    <h3><a href="{{ site.url | absolute_url }}/objects.html">
-        <em>Object</em> Functions
-    </a></h3>
+    <h3><a href="{{ site.url | absolute_url }}/objects.html"><em>Object</em> Functions</a></h3>
     <ul>
         {% for related in site.objects %}
             <li><a href="{{ site.url | absolute_url }}{{related.url}}">{{ related.title }}</a></li>
@@ -189,9 +111,7 @@ $array = $setKeyOfSArray('new value');
     </ul>
 </div>
 <div class="function__releated-group">
-    <h3><a href="{{ site.url | absolute_url }}/comparisons.html">
-        <em>Comparison</em> Functions
-    </a></h3>
+    <h3><a href="{{ site.url | absolute_url }}/comparisons.html"><em>Comparison</em> Functions</a></h3>
     <ul>
         {% for related in site.comparisons %}
             <li><a href="{{ site.url | absolute_url }}{{related.url}}">{{ related.title }}</a></li>

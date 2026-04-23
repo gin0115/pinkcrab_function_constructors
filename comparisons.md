@@ -2,61 +2,80 @@
 layout: base
 title: Comparisons
 description: >
- Archive of all functions in the Comparisons namespace — predicate constructors for equality, ordering, type and truthiness checks, plus boolean combinators that stitch predicates together.
+ Archive of all functions in the Comparisons namespace.
 ---
 
 <h1 class="page-title">{{ page.title }}</h1>
 
 <div class="breadcrumbs">
-  <a href="{{ site.url }}/">Home</a>
-  >> <a href="{{ site.url }}{{ page.url }}">{{page.title}}</a>
+  <a href="{{ site.url | absolute_url }}">Home</a>
+  >> <a href="{{ site.url }}{{ page.url }}">{{ page.title }}</a>
 </div>
 
-> Predicate factories for filter chains and logic. Bind a comparison once, reuse it against many values. Combine predicates with AND / OR / NOT without repeating yourself.
+> Predicate factories for filter chains and control flow. Bind a comparison once, reuse it against many values. Combine predicates with AND / OR / NOT to build richer conditions without repeating yourself.
 
 #### Equality and ordering
 
 {% highlight php %}
-use PinkCrab\FunctionConstructors\Comparisons as C;
-
 $isFoo    = C\isEqualTo('foo');
-$over18   = C\isGreaterThanOrEqualTo(18);
-$inSet    = C\isEqualIn(['red', 'green', 'blue']);
+$isFoo('foo');     // true
+$isFoo('bar');     // false
 
-array_filter($users, fn($u) => $over18($u['age']));
+$over18   = C\isGreaterThanOrEqualTo(18);
+$over18(21);       // true
+$over18(17);       // false
+
+$inPalette = C\isEqualIn(['red', 'green', 'blue']);
+$inPalette('red');    // true
+$inPalette('yellow'); // false
 {% endhighlight %}
+
+Also: `isNotEqualTo`, `isGreaterThan`, `isLessThan`, `isLessThanOrEqualTo`.
 
 #### Type and truthiness
 
-A mix of curried constructors and direct predicates. `isScalar('string')` returns a Closure; `isNumber`, `isTrue`, `isFalse`, `notEmpty` take the value directly.
-
 {% highlight php %}
-$isIntLike = C\isScalar('integer');
-$isIntLike(42);  // true
+$isString = C\isScalar('string');     // curried — binds the gettype() name
+$isString('hello');   // true
+$isString(42);        // false
 
-C\isNumber(3.14);       // true  (direct call)
-C\isTrue('yes');        // true  (loose true-ish)
-C\notEmpty([]);         // false (direct call)
+C\isNumber(3.14);     // true     — direct call (int or float only)
+C\isNumber('3.14');   // false    — stricter than is_numeric()
+C\notEmpty([]);       // false
+C\notEmpty('hello');  // true
 {% endhighlight %}
+
+Also: `isTrue`, `isFalse`, `sameScalar`, `allTrue`, `anyTrue`.
 
 #### Combining predicates
 
-`groupAnd` / `groupOr` (aliases `all` / `any`) and `not` let you build complex predicates without spelling them out.
-
 {% highlight php %}
-$isAdultString = C\groupAnd('is_string', fn($s) => strlen($s) >= 18);
-$isNotZero     = C\not(C\isEqualTo(0));
-$positiveOrZero = C\any(C\isGreaterThan(0), C\isEqualTo(0));
+$isStringLongEnough = C\groupAnd('is_string', fn($s) => strlen($s) >= 3);
+$isStringLongEnough('ok');    // false
+$isStringLongEnough('hello'); // true
+
+$isNotZero = C\not(C\isEqualTo(0));
+$isNotZero(0);   // false
+$isNotZero(5);   // true
 {% endhighlight %}
 
-## Comparisons Functions.
+`any` / `all` are aliases of `groupOr` / `groupAnd` with a more natural reading.
+
+### Deep-dive examples
+
+- [Preconfigured filters]({{ site.url }}/examples/preconfigured-filters.html) — "active users", "high-value orders" as named composed predicates.
+- [Validation chains]({{ site.url }}/examples/validation-chains.html) — predicates as rules in a validator.
+- [Using library functions instead of fn() lambdas]({{ site.url }}/examples/library-over-lambdas.html) — common predicate patterns, before and after.
+- [All worked examples]({{ site.url }}/examples.html) →
+
+## Comparisons Functions
 
 <div class="container">
     <div class="grid all-functions">
     {% for function in site.comparisons %}
         {% if true != function.deprecated %}
         <div class="col-12 col-md-4">
-            <a href="{{ site.url }}{{ function.url}}">{{ function.title }}</a>
+            <a href="{{ site.url }}{{ function.url }}">{{ function.title }}</a>
         </div>
         {% endif %}
     {% endfor %}

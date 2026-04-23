@@ -2,60 +2,74 @@
 layout: base
 title: Objects
 description: >
- Archive of all functions in the Objects namespace — predicates and helpers for working with class instances, interfaces, traits, and object construction.
+ Archive of all functions in the Objects namespace.
 ---
 
 <h1 class="page-title">{{ page.title }}</h1>
 
 <div class="breadcrumbs">
-  <a href="{{ site.url }}/">Home</a>
-  >> <a href="{{ site.url }}{{ page.url }}">{{page.title}}</a>
+  <a href="{{ site.url | absolute_url }}">Home</a>
+  >> <a href="{{ site.url }}{{ page.url }}">{{ page.title }}</a>
 </div>
 
-> Small namespace. Four reflection-style predicates and one object factory. All are curried and compose with the Arrays filter/map family for type-driven collection processing.
+> Small namespace. Four reflection-style predicates and one object factory. All curried and compose cleanly with the Arrays filter/map family for type-driven collection processing.
 
 #### Type predicates
 
 {% highlight php %}
-use PinkCrab\FunctionConstructors\Objects as Obj;
+$isCountable = Obj\implementsInterface(\Countable::class);
 
-$isString = Obj\isInstanceOf(\Stringable::class);
-$implementsCountable = Obj\implementsInterface(\Countable::class);
-$usesIterator = Obj\usesTrait(\IteratorAggregate::class);
+$isCountable(new \ArrayObject());     // true
+$isCountable(new \stdClass());        // false
 
-array_filter($mixed, $implementsCountable); // only the Countable ones
+array_filter($mixed, $isCountable);   // only the Countable ones
 {% endhighlight %}
 
-#### Converting objects to arrays
+Also: `isInstanceOf`, `usesTrait`.
 
-`toArray()` takes no arguments and returns a Closure that shallow-copies an object's public properties into an associative array. Non-public properties are skipped.
+#### toArray
 
 {% highlight php %}
+$user = new class {
+    public $name = 'Ada';
+    public $role = 'admin';
+    private $secret = 'hidden';
+};
+
 $toArr = Obj\toArray();
 
-$user = new class { public $name = 'Ada'; public $role = 'admin'; };
-print_r($toArr($user)); // ['name' => 'Ada', 'role' => 'admin']
+$toArr($user);   // ['name' => 'Ada', 'role' => 'admin']
+                 // — $secret is private, so it's skipped
 {% endhighlight %}
 
-#### Object factories
+`toArray()` takes no arguments and returns a Closure — drop it straight into `array_map` to convert a list of objects to arrays.
 
-`createWith()` binds a class name and a base property set, returning a Closure that takes per-instance overrides and produces a fully-populated object. Good for fixture builders and prototype patterns.
+#### createWith
 
 {% highlight php %}
+class User {
+    public string $name   = '';
+    public string $role   = 'user';
+    public bool   $active = true;
+}
+
 $makeUser = Obj\createWith(User::class, ['role' => 'user', 'active' => true]);
 
-$admin  = $makeUser(['name' => 'Ada', 'role' => 'admin']);
-$member = $makeUser(['name' => 'Bea']);  // inherits role=user, active=true
+$admin  = $makeUser(['name' => 'Ada', 'role' => 'admin']);  // role overridden
+$member = $makeUser(['name' => 'Bea']);                      // inherits base
+
+$admin->role;    // 'admin'
+$member->role;   // 'user'
 {% endhighlight %}
 
-## Object Functions.
+## Object Functions
 
 <div class="container">
     <div class="grid all-functions">
     {% for function in site.objects %}
         {% if true != function.deprecated %}
         <div class="col-12 col-md-4">
-            <a href="{{ site.url }}{{ function.url}}">{{ function.title }}</a>
+            <a href="{{ site.url }}{{ function.url }}">{{ function.title }}</a>
         </div>
         {% endif %}
     {% endfor %}

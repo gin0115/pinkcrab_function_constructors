@@ -2,76 +2,85 @@
 layout: base
 title: General
 description: >
- Archive of all functions in the General namespace — the foundational pieces of this library: function composition, piping, property accessors, and combinators.
+ Archive of all functions in the General namespace — function composition, piping, property accessors, and combinators.
 ---
 
 <h1 class="page-title">{{ page.title }}</h1>
 
 <div class="breadcrumbs">
   <a href="{{ site.url | absolute_url }}">Home</a>
-  >> <a href="{{ site.url }}{{ page.url }}">{{page.title}}</a>
+  >> <a href="{{ site.url }}{{ page.url }}">{{ page.title }}</a>
 </div>
 
 > The structural backbone of the library. `compose()` and `pipe()` stitch smaller functions into bigger ones; the property accessors bridge arrays and objects with a single API; the combinators (`always`, `ifThen`, `ifElse`, `sideEffect`) handle common higher-order control flow.
 
-#### Composition and Piping
+#### Compose vs pipe
 
-Two sides of the same coin. `pipe()` takes a value and threads it through a list of callables immediately. `compose()` returns a Closure you can reuse across many inputs — ideal as a callback for `array_map` or inside another constructor.
+`compose` returns a Closure you can reuse. `pipe` takes a value and threads it through immediately.
 
 {% highlight php %}
-// pipe — immediate. Value in, value out.
-$result = GeneralFunctions\pipe(
+// Build once, reuse.
+$slugify = F\compose('trim', 'strtolower', Str\replaceWith(' ', '-'));
+$slugify('  Hello World  ');           // 'hello-world'
+
+// Immediate — value in, value out.
+F\pipe(
     '  Hello World  ',
     'trim',
     'strtolower',
-    Strings\replaceWith(' ', '-')
-); // 'hello-world'
-
-// compose — deferred. Build once, reuse.
-$slugify = GeneralFunctions\compose(
-    'trim',
-    'strtolower',
-    Strings\replaceWith(' ', '-')
-);
-
-array_map($slugify, ['  Hello World  ', 'FOO Bar']);
-// ['hello-world', 'foo-bar']
+    Str\replaceWith(' ', '-')
+);                                     // 'hello-world'
 {% endhighlight %}
 
-> `composeR()` / `pipeR()` run the callables in reverse order. `composeSafe()` halts at the first `null`. `composeTypeSafe()` takes a validator callable and halts if any step's output fails it.
+`composeR` / `pipeR` run callables in reverse order. `composeSafe` halts on the first `null`; `composeTypeSafe` halts on a custom type-check failure.
 
-#### Working with Records (arrays & objects)
-
-The property accessors work the same way whether the record is an array or an object — set a property once, use it anywhere.
+#### Property access — arrays or objects, one API
 
 {% highlight php %}
-$getName = GeneralFunctions\getProperty('name');
-
-$isAdult = GeneralFunctions\propertyEquals('adult', true);
-
 $users = [
-    ['name' => 'Ada', 'adult' => true],
-    ['name' => 'Bea', 'adult' => false],
+    ['name' => 'Ada', 'role' => 'admin'],
+    ['name' => 'Bea', 'role' => 'user'],
 ];
 
-array_map($getName, $users);  // ['Ada', 'Bea']
-array_filter($users, $isAdult); // [['name' => 'Ada', 'adult' => true]]
+$getName  = F\getProperty('name');
+$isAdmin  = F\propertyEquals('role', 'admin');
+
+array_map($getName,  $users);          // ['Ada', 'Bea']
+array_filter($users, $isAdmin);        // [ ['name' => 'Ada', ...] ]
 {% endhighlight %}
 
-> `pluckProperty()` traverses nested paths. `setProperty()` is the curried setter. `encodeProperty()` + `recordEncoder()` let you build a record from scratch using composable setters.
+`pluckProperty` follows a nested path. `hasProperty` is the existence predicate. `setProperty` is the curried setter. `encodeProperty` + `recordEncoder` build a new record from scratch.
 
 #### Combinators
 
-`always()` returns a Closure that ignores its input and returns a fixed value — useful as a default value supplier. `ifThen()` / `ifElse()` lift conditional logic into composable callables. `sideEffect()` runs a callable for its effect and returns its input unchanged — great for logging inside a pipe.
+{% highlight php %}
+$toIntOrZero = F\ifElse(
+    'is_numeric',
+    'intval',
+    F\always(0)
+);
 
-## General Functions.
+$toIntOrZero('42');                    // 42
+$toIntOrZero('nope');                  // 0
+{% endhighlight %}
+
+Also: `ifThen` (apply a transform only when a predicate matches), `sideEffect` (run a callable for its side effect and return the input unchanged — great for logging inside a pipeline), `invoker` (wrap a callable into a uniform Closure).
+
+### Deep-dive examples
+
+- [Transforming complex objects]({{ site.url }}/examples/complex-objects.html) — `recordEncoder` + `encodeProperty` building view models from API payloads.
+- [Null-safe pipelines]({{ site.url }}/examples/null-safe-pipelines.html) — `composeSafe`, `composeTypeSafe`, and `ifElse` defaults.
+- [Audit trails with tap / sideEffect]({{ site.url }}/examples/audit-trails-with-tap.html) — observability inside a pipeline without breaking it.
+- [All worked examples]({{ site.url }}/examples.html) →
+
+## General Functions
 
 <div class="container">
     <div class="grid all-functions">
     {% for function in site.general %}
         {% if true != function.deprecated %}
         <div class="col-12 col-md-4">
-            <a href="{{ site.url }}{{ function.url}}">{{ function.title }}</a>
+            <a href="{{ site.url }}{{ function.url }}">{{ function.title }}</a>
         </div>
         {% endif %}
     {% endfor %}

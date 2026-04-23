@@ -8,112 +8,72 @@ description: >
 <h1 class="page-title">{{ page.title }}</h1>
 
 <div class="breadcrumbs">
-  <a href="{{ site.url | absolute_url  }}">Home</a>
-  >> <a href="{{ site.url }}{{ page.url }}">{{page.title}}</a>
+  <a href="{{ site.url | absolute_url }}">Home</a>
+  >> <a href="{{ site.url }}{{ page.url }}">{{ page.title }}</a>
 </div>
 
-> A collection of functions for composing numeric operations. Every constructor here is partially applied — supply a fixed operand up front and receive a reusable Closure that accepts the other operand later.
+> Composable numeric operations. Each constructor binds a fixed operand up front and returns a reusable Closure that accepts the other operand later. All functions accept `int` or `float` only — passing anything else throws `InvalidArgumentException`.
 
-> All these functions accept `int` or `float` only. Numeric strings must be cast first — passing anything else throws `InvalidArgumentException`.
-
-#### Basic Arithmetic
-
-You can do some basic arithmetic using composable functions. This allows for the creation of a base value, then work using the passed value.
+#### Arithmetic
 
 {% highlight php %}
-// Add
-$addTo5 = Num\sum(5);
-$addTo5(15.5); // 20.5
-$addTo5(-2);   // 3
+$addTo5      = Num\sum(5);
+$addTo5(15.5);        // 20.5
+$addTo5(-2);          // 3
 
-// Subtract (value - initial)
-$subtractFrom10 = Num\subtract(10);
-$subtractFrom10(3);  // -7
-$subtractFrom10(20); // 10
+$divideBy3   = Num\divideBy(3);
+$divideBy3(12);       // 4.0
+$divideBy3(10);       // 3.3333333333333
 
-// Multiply
-$multiplyBy10 = Num\multiply(10);
-$multiplyBy10(5);   // 50
-$multiplyBy10(2.5); // 25.0
-
-// Divide By (value / divisor)
-$divideBy3 = Num\divideBy(3);
-$divideBy3(12); // 4
-$divideBy3(10); // 3.3333333333333
-
-// Divide Into (dividend / value)
-$divideInto12 = Num\divideInto(12);
-$divideInto12(4); // 3
+// Note the argument order: subtract(X)(Y) computes Y − X
+$minusTen    = Num\subtract(10);
+$minusTen(25);        // 15
 {% endhighlight %}
 
-#### Multiples, Factors and Remainders
+Also: `multiply`, `divideInto`, `remainderBy`, `remainderInto`, `power`, `root`, `round`.
 
-Basic modulus operations and whole-factor checks — everything you need to bucket numbers.
-
-{% highlight php %}
-// Is value a multiple of the pre-defined number?
-$isEven = Num\isMultipleOf(2);
-$isEven(12); // true
-$isEven(13); // false
-
-// Is value a factor of the pre-defined number?
-$factorOf12 = Num\isFactorOf(12);
-$factorOf12(3); // true   — 12 / 3 is a whole number
-$factorOf12(5); // false
-
-// Remainder (value % divisor)
-$remainderBy2 = Num\remainderBy(2);
-$remainderBy2(10); // 0
-$remainderBy2(9);  // 1
-
-// Remainder (dividend % value)
-$remainderInto10 = Num\remainderInto(10);
-$remainderInto10(3); // 1   — 10 % 3
-{% endhighlight %}
-
-#### Rounding, Powers and Roots
+#### Predicates
 
 {% highlight php %}
-// Round to N decimal places
-$round2dp = Num\round(2);
-$round2dp(3.14159); // 3.14
+$isEven      = Num\isMultipleOf(2);
+$isEven(12);          // true
+$isEven(13);          // false
+$isEven(0);           // false   — zero is never a multiple here
 
-// Raise to a fixed power
-$squared = Num\power(2);
-$squared(5);   // 25
-$squared(1.5); // 2.25
-
-// Take the nth root
-$sqrt = Num\root(2);
-$sqrt(16); // 4.0
-$sqrt(2);  // 1.4142135623731
+$factorOf12  = Num\isFactorOf(12);
+$factorOf12(3);       // true    — 12 / 3 has no remainder
+$factorOf12(5);       // false
 {% endhighlight %}
 
 #### Accumulators
 
-Running totals across successive calls. Each call with a value appends; call with `null` (or no argument) to read the running total out.
-
 {% highlight php %}
-// Integer accumulator
-$total = Num\accumulatorInt();
+// Each call returns a fresh accumulator; call with null (or no arg) to finalise.
+$total = Num\accumulatorInt(0);
+
 $total = $total(5);
 $total = $total(10);
-$total = $total(2);
-echo $total(); // 17
+$total = $total(-3);
 
-// Float accumulator — same shape, float-typed
-$running = Num\accumulatorFloat(0.0);
-echo $running(1.5)(2.25)(0.25)(); // 4.0
+echo $total();        // 12
 {% endhighlight %}
 
-## Number Functions.
+`accumulatorFloat` follows the same pattern for floats.
+
+### Deep-dive examples
+
+- [Currency and pricing pipelines]({{ site.url }}/examples/currency-pricing.html) — multiply + VAT + round composed into one pipeline.
+- [Grouping and aggregation]({{ site.url }}/examples/grouping-aggregation.html) — combining Number predicates with `Arr\filter` and `Arr\sumWhere`.
+- [All worked examples]({{ site.url }}/examples.html) →
+
+## Number Functions
 
 <div class="container">
     <div class="grid all-functions">
     {% for function in site.numbers %}
         {% if true != function.deprecated %}
         <div class="col-12 col-md-4">
-            <a href="{{ site.url }}{{ function.url}}">{{ function.title }}</a>
+            <a href="{{ site.url }}{{ function.url }}">{{ function.title }}</a>
         </div>
         {% endif %}
     {% endfor %}
