@@ -16,9 +16,9 @@ plugins:
   - jekyll-algolia
 
 algolia:
-  application_id: 3I9M0779FL
+  application_id: 9A26W2EM0P
   index_name: function_constructors
-  search_only_api_key: 58762fb92611153c3fe4d65d0215ef0f
+  search_only_api_key: 9c0bd26d6949450b8526c511a47a97ad
   powered_by: false
 
 # Build settings
