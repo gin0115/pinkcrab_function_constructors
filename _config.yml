@@ -57,6 +57,9 @@ collections:
   objects:
     output: true
     permalink: /objects/:title.html
+  comparisons:
+    output: true
+    permalink: /comparisons/:title.html
   examples:
     output: true
     permalink: /examples/:title.html

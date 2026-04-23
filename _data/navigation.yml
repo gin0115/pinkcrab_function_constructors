@@ -13,6 +13,8 @@ main:
         url: /general.html
       - title: "Objects"
         url: /objects.html
+      - title: "Comparisons"
+        url: /comparisons.html
   - title: "Examples"
     url: /examples.html
   - title: "Tags"

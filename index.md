@@ -188,3 +188,13 @@ $array = $setKeyOfSArray('new value');
         {% endfor %}
     </ul>
 </div>
+<div class="function__releated-group">
+    <h3><a href="{{ site.url | absolute_url }}/comparisons.html">
+        <em>Comparison</em> Functions
+    </a></h3>
+    <ul>
+        {% for related in site.comparisons %}
+            <li><a href="{{ site.url | absolute_url }}{{related.url}}">{{ related.title }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
