@@ -9,6 +9,8 @@ main:
         url: /strings.html
       - title: "Numbers"
         url: /numbers.html
+      - title: "General"
+        url: /general.html
   - title: "Tags"
     url: /tags.html
   - title: "GitHub"

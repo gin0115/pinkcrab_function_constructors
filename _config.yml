@@ -51,3 +51,6 @@ collections:
   tags:
     output: true
     permalink: /tags/:title.html
+  general:
+    output: true
+    permalink: /general/:title.html
