@@ -39,11 +39,13 @@ aux_links:
   "Function Constructors":
     - "//github.com/gin0115/pinkcrab_function_constructors"
 
-title: Function Constructors
+title: PinkCrab Function Constructors
+masthead_title: PinkCrab Function Constructors
 tagline: Create functions from functions with PHP
 description: >-
   A package which allow for the use of common PHP Functions via partial application, ideal
   for creating new functions on the fly or piped.
+logo: /img/pinkcrab-logo.png
 
 name                     : "Glynn Quelch | PinkCrab"
 url: https://gin0115.github.io/pinkcrab_function_constructors
