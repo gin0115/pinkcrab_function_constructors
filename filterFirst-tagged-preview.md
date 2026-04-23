@@ -74,7 +74,7 @@ description: Mock of the proposed shared doc layout — type signature, at-a-gla
     gap: 0.75em;
     background: #263238;
     color: #c3e88d;
-    padding: 0.55em 0.6em 0.55em 0.9em;
+    padding: 0.55em 0.9em 0.55em 0.6em;
     border-radius: 3px;
     font-family: monospace;
     font-size: 0.98em;
@@ -205,8 +205,8 @@ description: Mock of the proposed shared doc layout — type signature, at-a-gla
 </div>
 
 <div class="v-typesig" data-open="false">
-    <span class="v-typesig__sig"><span class="v-generic">&lt;T&gt;</span> (<span class="v-generic">T</span> <span class="v-arrow">→</span> <span class="v-builtin">bool</span>) <span class="v-arrow">→</span> (<span class="v-builtin">Iterable</span>&lt;<span class="v-generic">T</span>&gt; <span class="v-arrow">→</span> <span class="v-generic">T</span> | <span class="v-builtin">null</span>)</span>
     <button type="button" class="v-typesig__trigger" aria-expanded="false" aria-controls="v-typesig-reveal" aria-label="Show plain-English translation" title="Plain-English translation">?</button>
+    <span class="v-typesig__sig"><span class="v-generic">&lt;T&gt;</span> (<span class="v-generic">T</span> <span class="v-arrow">→</span> <span class="v-builtin">bool</span>) <span class="v-arrow">→</span> (<span class="v-builtin">Iterable</span>&lt;<span class="v-generic">T</span>&gt; <span class="v-arrow">→</span> <span class="v-generic">T</span> | <span class="v-builtin">null</span>)</span>
 </div>
 <div id="v-typesig-reveal" class="v-typesig__reveal" aria-hidden="true">
     Given a predicate on <code>T</code>, returns a function that consumes an iterable of <code>T</code> and returns either a <code>T</code> (the first match) or <code>null</code> (no match).
