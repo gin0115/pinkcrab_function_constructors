@@ -20,6 +20,18 @@ algolia:
   index_name: function_constructors
   search_only_api_key: 9c0bd26d6949450b8526c511a47a97ad
   powered_by: false
+  settings:
+    searchableAttributes:
+      - unordered(title)
+      - unordered(content)
+      - group
+      - subgroup
+      - categories
+      - tags
+    attributesForFaceting:
+      - group
+      - subgroup
+      - tags
 
 # Build settings
 remote_theme: mmistakes/minimal-mistakes
