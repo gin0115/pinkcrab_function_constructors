@@ -47,6 +47,8 @@ Use `Tags → [lazy](/tags/lazy.html)` / `[short-circuit](/tags/short-circuit.ht
 
 {% highlight php %}
 use PinkCrab\FunctionConstructors\Arrays;
+use PinkCrab\FunctionConstructors\Numbers;
+use PinkCrab\FunctionConstructors\Comparisons;
 
 foreach (Arrays\take(5)($naturals()) as $n) {
     echo $n . ' ';
@@ -75,7 +77,7 @@ The pipeline pulls 1, tests (fail), pulls 2, tests (pass), yields, continues unt
 ## Take until a condition — short-circuit
 
 {% highlight php %}
-foreach (Arrays\takeUntil(fn($n) => $n > 100)($naturals()) as $n) {
+foreach (Arrays\takeUntil(Comparisons\isGreaterThan(100))($naturals()) as $n) {
     echo $n . ' ';
 }
 // 1 2 3 ... 99 100

@@ -80,7 +80,7 @@ $cartItems = [
 ];
 
 // Sum of the transformed prices via sumWhere — map + sum in one pass.
-$total = A\sumWhere(F\compose(F\getProperty('price'), $eurosAsFloat));
+$total = Arrays\sumWhere(F\compose(F\getProperty('price'), $eurosAsFloat));
 
 echo $total($cartItems);   // 49.84
 {% endhighlight %}

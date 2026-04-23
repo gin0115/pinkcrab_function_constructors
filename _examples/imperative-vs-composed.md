@@ -50,7 +50,7 @@ use PinkCrab\FunctionConstructors\Arrays;
 // --- named concepts ---
 
 $isVerified     = fn($order) => ! empty($order['customer']['verified']);
-$isHighValue    = fn($order) => $order['total'] >= 100;
+$isHighValue    = F\compose(F\getProperty('total'), C\isGreaterThanOrEqualTo(100));
 
 $getCustomer    = F\getProperty('customer');
 
@@ -61,9 +61,9 @@ $formatCustomer = fn($c) =>
 // --- the pipeline ---
 
 $shortlist = F\compose(
-    A\filter(C\groupAnd($isVerified, $isHighValue)),
-    A\map($getCustomer),
-    A\map($formatCustomer),
+    Arrays\filter(C\groupAnd($isVerified, $isHighValue)),
+    Arrays\map($getCustomer),
+    Arrays\map($formatCustomer),
     'array_unique',
     function ($a) { sort($a); return $a; }
 )($orders);
@@ -77,7 +77,7 @@ $shortlist = F\compose(
 | Concepts named | 0 | `$isVerified`, `$isHighValue`, `$formatCustomer` |
 | Can reuse "high-value" as a predicate elsewhere | No | Yes — just reference `$isHighValue` |
 | Can unit-test "formatCustomer" in isolation | No | Yes — it's a pure one-arg function |
-| Adding a new filter | Wedge an `if` into the loop | Add one more `A\filter(...)` step |
+| Adding a new filter | Wedge an `if` into the loop | Add one more `Arrays\filter(...)` step |
 | Order of operations | Implicit in nesting | Explicit, linear, top-to-bottom |
 
 ## When imperative wins
