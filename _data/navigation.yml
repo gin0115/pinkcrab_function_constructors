@@ -7,5 +7,7 @@ main:
     url: /strings.html
   - title: "Numbers"
     url: /numbers.html
+  - title: "Tags"
+    url: /tags.html
   - title: "GitHub"
     url: https://github.com/gin0115/pinkcrab_function_constructors

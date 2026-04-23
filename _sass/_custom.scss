@@ -359,3 +359,43 @@ code.inline {
     font-size: 0.95em;
 }
 .fn-glance strong { color: #33691e; }
+
+.tag-archive__description {
+    font-size: 1.05em;
+    color: #37474f;
+    border-left: 4px solid #8bc34a;
+    padding: 0.6em 1em;
+    background: #f1f8e9;
+    border-radius: 0 4px 4px 0;
+    margin: 0.8em 0 1.5em;
+}
+.tag-archive__list {
+    column-count: 2;
+    column-gap: 2em;
+    margin: 0.4em 0 1.5em;
+}
+.tag-archive__list li { break-inside: avoid; }
+
+.tag-index__list {
+    list-style: none;
+    padding: 0;
+    margin: 1em 0;
+}
+.tag-index__list > li {
+    padding: 0.6em 0;
+    border-bottom: 1px dashed #cfd8dc;
+    line-height: 1.5;
+}
+.tag-index__list > li:last-child { border-bottom: none; }
+.tag-index__count {
+    display: inline-block;
+    min-width: 1.8em;
+    padding: 0 0.5em;
+    margin: 0 0.4em;
+    border-radius: 999px;
+    background: #eceff1;
+    color: #546e7a;
+    text-align: center;
+    font-size: 0.85em;
+    font-weight: 600;
+}

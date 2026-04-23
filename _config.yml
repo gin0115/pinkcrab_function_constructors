@@ -48,3 +48,6 @@ collections:
   numbers:
     output: true
     permalink: /numbers/:title.html
+  tags:
+    output: true
+    permalink: /tags/:title.html

@@ -1,0 +1,38 @@
+---
+layout: base
+---
+
+<h1 class="page-title">{{ page.label | default: page.slug | capitalize }}</h1>
+
+<div class="breadcrumbs">
+    <a href="{{ site.url | absolute_url }}">Home</a>
+    &raquo; <a href="{{ site.url | absolute_url }}/tags.html">Tags</a>
+    &raquo; {{ page.label | default: page.slug }}
+</div>
+
+{% if page.description %}
+<p class="tag-archive__description">{{ page.description }}</p>
+{% endif %}
+
+{{ content }}
+
+{% assign total = 0 %}
+{% for collection in site.collections %}
+    {% if collection.label == "tags" or collection.label == "posts" %}{% continue %}{% endif %}
+    {% assign matches = collection.docs | where_exp: "d", "d.tags contains page.slug" %}
+    {% if matches.size > 0 %}
+        {% assign total = total | plus: matches.size %}
+        <h2>{{ collection.label | capitalize }} <small>({{ matches.size }})</small></h2>
+        <ul class="tag-archive__list">
+            {% for doc in matches %}
+                {% if true != doc.deprecated %}
+                    <li><a href="{{ site.url | absolute_url }}{{ doc.url }}">{{ doc.title }}</a></li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endfor %}
+
+{% if total == 0 %}
+<p><em>No functions currently carry this tag.</em></p>
+{% endif %}

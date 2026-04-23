@@ -26,11 +26,11 @@ layout: default
 {% if page.tags %}
 <div class="fn-chips">
     {% for slug in page.tags %}
-        {% assign tag = site.data.tags[slug] %}
+        {% assign tag = site.tags | where: "slug", slug | first %}
         {% if tag %}
-            <span class="fn-chip" tabindex="0"
-                  data-tip-heading="{{ tag.label | capitalize }}"
-                  data-tip="{{ tag.description }}">{{ tag.label }}</span>
+            <a class="fn-chip" href="{{ site.url | absolute_url }}{{ tag.url }}"
+               data-tip-heading="{{ tag.label | capitalize }}"
+               data-tip="{{ tag.description }}">{{ tag.label }}</a>
         {% endif %}
     {% endfor %}
 </div>
