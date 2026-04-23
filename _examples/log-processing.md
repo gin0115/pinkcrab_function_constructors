@@ -117,9 +117,9 @@ $efficient = F\compose(
 // Or: enrich before filtering, if some filters need enriched data.
 $alternate = F\compose(
     A\map($parse),
-    A\filter(fn($r) => $r !== null),
+    A\filter(C\not('is_null')),
     A\map($enrich),
-    A\filter(fn($r) => $r['country'] !== 'RU')
+    A\filter(C\not(F\propertyEquals('country', 'RU')))
 );
 {% endhighlight %}
 
