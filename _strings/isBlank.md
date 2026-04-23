@@ -18,6 +18,15 @@ since: 0.1.0
 deprecated: false
 alternative: false
 
+tags: [predicate, returns-bool, pure]
+
+typeSignature: "mixed → bool"
+typeSignatureEn: >
+ Returns true when the value is a string of length zero; any non-string value returns false.
+
+atGlance: >
+ A direct predicate — no curry, no Closure. True only for an empty string; whitespace, null, zero, and empty arrays all return false.
+
 definition: >
  /**
    * @param mixed $value

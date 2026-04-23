@@ -17,6 +17,15 @@ since: 0.1.0
 deprecated: false
 alternative: false
 
+tags: [predicate, returns-closure, returns-bool, pure]
+
+typeSignature: "string → (string → bool)"
+typeSignatureEn: >
+ Given a regex pattern, returns a predicate that is true when the argument matches the pattern.
+
+atGlance: >
+ Bind a regex; the returned Closure asks 'does this string match?'. Wraps <code>preg_match()</code>.
+
 definition: >
  /**
    * @param string $pattern The pattern to look for.

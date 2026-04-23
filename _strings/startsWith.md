@@ -17,6 +17,15 @@ since: 0.1.0
 deprecated: false
 alternative: false
 
+tags: [predicate, returns-closure, returns-bool, pure]
+
+typeSignature: "string → (string → bool)"
+typeSignatureEn: >
+ Given a prefix, returns a predicate that is true when the argument starts with it.
+
+atGlance: >
+ Bind a prefix; the returned Closure is a reusable "starts with this?" check. Wraps <code>str_starts_with()</code>.
+
 definition: >
  /**
    * @param string $find The value to look for.

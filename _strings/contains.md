@@ -17,6 +17,15 @@ since: 0.1.0
 deprecated: false
 alternative: false
 
+tags: [predicate, returns-closure, returns-bool, pure]
+
+typeSignature: "string → (string → bool)"
+typeSignatureEn: >
+ Given a needle, returns a predicate that is true when the argument contains the needle as a substring.
+
+atGlance: >
+ Bind a substring to look for; the returned Closure asks 'does this string contain it?'. Wraps <code>str_contains()</code>.
+
 definition: >
  /**
    * @param string $find The value to look for.
