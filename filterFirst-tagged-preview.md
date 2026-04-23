@@ -82,14 +82,27 @@ description: Mock of the proposed shared doc layout — type signature, at-a-gla
 .v-typesig .v-generic { color: #82b1ff; font-weight: 700; }
 .v-typesig .v-arrow   { color: #ff9e80; }
 .v-typesig .v-builtin { color: #f07178; }
-/* ---------- plain-English reveal for the type signature ---------- */
+/* ---------- plain-English reveal: button lives inside the block ---------- */
 .v-reveal {
-    margin: 0.3em 0 1em;
-}
-.v-reveal__trigger {
     display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    align-items: flex-start;
+    gap: 0.6em;
+    margin: 0.5em 0 1em;
+    padding: 4px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    max-width: 100%;
+    transition: background 200ms ease, border-color 200ms ease, padding 200ms ease;
+}
+.v-reveal[data-open="true"] {
+    background: #f5f7f8;
+    border-color: #cfd8dc;
+    padding: 0.55em 0.9em;
+}
+
+.v-reveal__trigger {
+    flex-shrink: 0;
     width: 22px;
     height: 22px;
     padding: 0;
@@ -103,7 +116,10 @@ description: Mock of the proposed shared doc layout — type signature, at-a-gla
     line-height: 1;
     cursor: pointer;
     user-select: none;
-    transition: background 120ms ease, color 120ms ease, border-color 120ms ease, transform 180ms ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 160ms ease, color 160ms ease, border-color 160ms ease, transform 220ms ease;
 }
 .v-reveal__trigger:hover,
 .v-reveal__trigger:focus {
@@ -112,7 +128,7 @@ description: Mock of the proposed shared doc layout — type signature, at-a-gla
     border-color: #546e7a;
     outline: none;
 }
-.v-reveal__trigger[aria-expanded="true"] {
+.v-reveal[data-open="true"] .v-reveal__trigger {
     color: #fff;
     background: #263238;
     border-color: #263238;
@@ -120,31 +136,24 @@ description: Mock of the proposed shared doc layout — type signature, at-a-gla
 }
 
 .v-reveal__panel {
+    flex: 1;
     overflow: hidden;
     max-height: 0;
     opacity: 0;
-    margin-top: 0;
-    background: #f5f7f8;
-    border: 1px solid #cfd8dc;
-    border-radius: 4px;
     color: #37474f;
     font-size: 0.9em;
     line-height: 1.5;
-    box-sizing: border-box;
-    transition: max-height 220ms ease, opacity 180ms ease, margin-top 180ms ease, padding 180ms ease;
-    padding: 0 0.9em;
+    transition: max-height 260ms ease, opacity 200ms ease;
 }
-.v-reveal__panel--open {
+.v-reveal[data-open="true"] .v-reveal__panel {
     max-height: 400px;
     opacity: 1;
-    margin-top: 0.5em;
-    padding: 0.7em 0.9em;
 }
 .v-reveal__panel code {
     background: #eceff1;
     padding: 1px 5px;
     border-radius: 3px;
-    font-size: 0.9em;
+    font-size: 0.95em;
     color: #1565c0;
 }
 
@@ -207,105 +216,11 @@ description: Mock of the proposed shared doc layout — type signature, at-a-gla
     <span class="v-tip-popup__body"></span>
 </div>
 
-<script>
-(() => {
-    const popup = document.getElementById('v-tip-popup');
-    if (!popup) return;
-    const headingEl = popup.querySelector('.v-tip-popup__heading');
-    const bodyEl    = popup.querySelector('.v-tip-popup__body');
-    const isTouchDevice = window.matchMedia('(hover: none)').matches;
-    let activeChip = null;
-
-    const show = (chip) => {
-        const heading = chip.getAttribute('data-tip-heading') || '';
-        const body    = chip.getAttribute('data-tip') || '';
-        if (!body) return;
-
-        headingEl.textContent = heading;
-        bodyEl.textContent = body;
-        popup.classList.add('v-tip-popup--visible');
-        popup.setAttribute('aria-hidden', 'false');
-
-        // Measure and position AFTER render so dimensions are correct.
-        window.requestAnimationFrame(() => {
-            const chipRect  = chip.getBoundingClientRect();
-            const popupRect = popup.getBoundingClientRect();
-            const margin = 8;
-
-            const top  = chipRect.top + window.scrollY - popupRect.height - 10;
-            let   left = chipRect.left + window.scrollX + (chipRect.width / 2) - (popupRect.width / 2);
-
-            // Clamp to viewport horizontally.
-            const minLeft = window.scrollX + margin;
-            const maxLeft = window.scrollX + document.documentElement.clientWidth - popupRect.width - margin;
-            if (left < minLeft) left = minLeft;
-            if (left > maxLeft) left = maxLeft;
-
-            popup.style.top  = `${top}px`;
-            popup.style.left = `${left}px`;
-
-            // Re-centre the little arrow over the chip if the popup got clamped.
-            const chipCentre = chipRect.left + window.scrollX + (chipRect.width / 2);
-            const arrowLeft  = chipCentre - left;
-            popup.style.setProperty('--arrow-left', `${arrowLeft}px`);
-        });
-
-        activeChip = chip;
-    };
-
-    const hide = () => {
-        popup.classList.remove('v-tip-popup--visible');
-        popup.setAttribute('aria-hidden', 'true');
-        activeChip = null;
-    };
-
-    document.querySelectorAll('.v-chip').forEach((chip) => {
-        chip.addEventListener('mouseenter', () => show(chip));
-        chip.addEventListener('mouseleave', hide);
-        chip.addEventListener('focus',      () => show(chip));
-        chip.addEventListener('blur',       hide);
-
-        // Touch devices: first tap shows the tooltip, second tap follows the link.
-        chip.addEventListener('click', (e) => {
-            if (isTouchDevice && activeChip !== chip) {
-                e.preventDefault();
-                show(chip);
-            }
-        });
-    });
-
-    // Tap outside dismisses the tooltip on touch devices.
-    document.addEventListener('click', (e) => {
-        if (activeChip && !e.target.closest('.v-chip')) hide();
-    });
-
-    // Scroll or resize invalidates positioning — hide rather than try to recompute.
-    window.addEventListener('scroll', hide, { passive: true });
-    window.addEventListener('resize', hide);
-})();
-
-// -------- JS reveal: click-to-expand panel for longer explanations --------
-(() => {
-    document.querySelectorAll('.v-reveal__trigger').forEach((trigger) => {
-        const panelId = trigger.getAttribute('aria-controls');
-        const panel = panelId ? document.getElementById(panelId) : null;
-        if (!panel) return;
-
-        trigger.addEventListener('click', () => {
-            const isOpen = trigger.getAttribute('aria-expanded') === 'true';
-            trigger.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
-            panel.setAttribute('aria-hidden', isOpen ? 'true' : 'false');
-            panel.classList.toggle('v-reveal__panel--open', !isOpen);
-        });
-    });
-})();
-</script>
-
 <div class="v-typesig">
   <span class="v-generic">&lt;T&gt;</span> (<span class="v-generic">T</span> <span class="v-arrow">→</span> <span class="v-builtin">bool</span>) <span class="v-arrow">→</span> (<span class="v-builtin">Iterable</span>&lt;<span class="v-generic">T</span>&gt; <span class="v-arrow">→</span> <span class="v-generic">T</span> | <span class="v-builtin">null</span>)
 </div>
 
-<div class="v-reveal">
+<div class="v-reveal" data-open="false">
     <button type="button" class="v-reveal__trigger" aria-expanded="false" aria-controls="v-reveal-typesig" aria-label="Show plain-English translation of the type signature" title="Plain-English translation">?</button>
     <div id="v-reveal-typesig" class="v-reveal__panel" aria-hidden="true">
         Given a predicate on <code>T</code>, returns a function that consumes an iterable of <code>T</code> and returns either a <code>T</code> (the first match) or <code>null</code> (no match).
@@ -423,3 +338,92 @@ echo $firstLowercase($words);
         <li><strong>Source:</strong> <a href="https://github.com/gin0115/pinkcrab_function_constructors/blob/master/src/arrays.php#L390" target="_blank">GitHub</a></li>
     </ul>
 </div>
+
+<script>
+// -------- JS tooltip popover on chips --------
+(() => {
+    const popup = document.getElementById('v-tip-popup');
+    if (!popup) return;
+    const headingEl = popup.querySelector('.v-tip-popup__heading');
+    const bodyEl    = popup.querySelector('.v-tip-popup__body');
+    const isTouchDevice = window.matchMedia('(hover: none)').matches;
+    let activeChip = null;
+
+    const show = (chip) => {
+        const heading = chip.getAttribute('data-tip-heading') || '';
+        const body    = chip.getAttribute('data-tip') || '';
+        if (!body) return;
+
+        headingEl.textContent = heading;
+        bodyEl.textContent = body;
+        popup.classList.add('v-tip-popup--visible');
+        popup.setAttribute('aria-hidden', 'false');
+
+        window.requestAnimationFrame(() => {
+            const chipRect  = chip.getBoundingClientRect();
+            const popupRect = popup.getBoundingClientRect();
+            const margin = 8;
+
+            const top  = chipRect.top + window.scrollY - popupRect.height - 10;
+            let   left = chipRect.left + window.scrollX + (chipRect.width / 2) - (popupRect.width / 2);
+
+            const minLeft = window.scrollX + margin;
+            const maxLeft = window.scrollX + document.documentElement.clientWidth - popupRect.width - margin;
+            if (left < minLeft) left = minLeft;
+            if (left > maxLeft) left = maxLeft;
+
+            popup.style.top  = `${top}px`;
+            popup.style.left = `${left}px`;
+
+            const chipCentre = chipRect.left + window.scrollX + (chipRect.width / 2);
+            const arrowLeft  = chipCentre - left;
+            popup.style.setProperty('--arrow-left', `${arrowLeft}px`);
+        });
+
+        activeChip = chip;
+    };
+
+    const hide = () => {
+        popup.classList.remove('v-tip-popup--visible');
+        popup.setAttribute('aria-hidden', 'true');
+        activeChip = null;
+    };
+
+    document.querySelectorAll('.v-chip').forEach((chip) => {
+        chip.addEventListener('mouseenter', () => show(chip));
+        chip.addEventListener('mouseleave', hide);
+        chip.addEventListener('focus',      () => show(chip));
+        chip.addEventListener('blur',       hide);
+
+        chip.addEventListener('click', (e) => {
+            if (isTouchDevice && activeChip !== chip) {
+                e.preventDefault();
+                show(chip);
+            }
+        });
+    });
+
+    document.addEventListener('click', (e) => {
+        if (activeChip && !e.target.closest('.v-chip')) hide();
+    });
+
+    window.addEventListener('scroll', hide, { passive: true });
+    window.addEventListener('resize', hide);
+})();
+
+// -------- JS reveal: click ? to expand inline info block --------
+(() => {
+    document.querySelectorAll('.v-reveal').forEach((container) => {
+        const trigger = container.querySelector('.v-reveal__trigger');
+        const panel   = container.querySelector('.v-reveal__panel');
+        if (!trigger || !panel) return;
+
+        trigger.addEventListener('click', () => {
+            const isOpen = container.dataset.open === 'true';
+            container.dataset.open = isOpen ? 'false' : 'true';
+            trigger.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+            panel.setAttribute('aria-hidden', isOpen ? 'true' : 'false');
+        });
+    });
+})();
+</script>
